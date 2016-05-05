@@ -1,0 +1,37 @@
+{
+  "linters": {
+    "nolint": {
+      "type": "nolint",
+      "include": "(\\.py$)"
+    },
+    "generated": {
+      "type": "generated",
+      "include": "(\\.py$)"
+    },
+    "flake8": {
+      "type": "flake8",
+      "include": "(\\.py$)",
+      "exclude": "(migrations/)",
+      "severity": {
+        "E501": "disabled",
+        "E502": "disabled",
+        "E501": "disabled",
+        "F403": "disabled"
+      }
+    },
+    "text": {
+      "type": "text",
+      "include": "(\\.py$)",
+      "exclude": "(migrations/)",
+      "severity": {
+        "3": "disabled",
+        "5": "disabled"
+      }
+    },
+    "text": {
+      "type": "spelling",
+      "exclude": "(migrations/)",
+      "include": "(\\.py$)"
+    }
+  }
+}

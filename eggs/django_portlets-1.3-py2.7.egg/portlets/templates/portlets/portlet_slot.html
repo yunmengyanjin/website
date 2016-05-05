@@ -1,0 +1,5 @@
+{% if portlets %}
+    {% for portlet in portlets %}
+        {{ portlet|safe }}
+    {% endfor %}
+{% endif %}

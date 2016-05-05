@@ -1,0 +1,2 @@
+class PayPalFailure(Exception):
+    pass

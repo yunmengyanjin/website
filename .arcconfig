@@ -1,0 +1,7 @@
+{
+    "project_id": "yunmengyanjin",
+    "conduit_uri": "http://www.shiroimagnolia.com/",
+    "load": ["./.arclib", "./traphic/conphig"],
+    "arcanist_configuration": "Conphig",
+    "unit.engine": "DjangoUnitTestEngine"
+}

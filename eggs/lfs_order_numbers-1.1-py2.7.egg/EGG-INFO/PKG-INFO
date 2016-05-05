@@ -1,0 +1,30 @@
+Metadata-Version: 1.1
+Name: lfs-order-numbers
+Version: 1.1
+Summary: UNKNOWN
+Home-page: http://www.getlfs.com
+Author: Kai Diefenbach
+Author-email: kai.diefenbach@iqpp.de
+License: BSD
+Description: What is it?
+        ===========
+        
+        lfs_order_numbers is the default order number generator of LFS
+        
+        1.1 (2015-04-21)
+        ================
+        
+        * Adds Django 1.8 support
+        
+        1.0 (2013-03-22)
+        ================
+        
+        * Initial release
+        
+Keywords: django e-commerce online-shop
+Platform: UNKNOWN
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Django
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python

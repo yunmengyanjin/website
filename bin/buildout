@@ -1,0 +1,12 @@
+#!/usr/bin/python
+
+import sys
+sys.path[0:0] = [
+  '/vagrant/eggs/setuptools-21.0.0-py2.7.egg',
+  '/vagrant/eggs/zc.buildout-2.5.1-py2.7.egg',
+  ]
+
+import zc.buildout.buildout
+
+if __name__ == '__main__':
+    sys.exit(zc.buildout.buildout.main())
