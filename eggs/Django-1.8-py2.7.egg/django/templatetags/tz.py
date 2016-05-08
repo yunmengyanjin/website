@@ -89,7 +89,6 @@ class LocalTimeNode(Node):
     """
     Template node class used by ``localtime_tag``.
     """
-
     def __init__(self, nodelist, use_tz):
         self.nodelist = nodelist
         self.use_tz = use_tz
@@ -106,7 +105,6 @@ class TimezoneNode(Node):
     """
     Template node class used by ``timezone_tag``.
     """
-
     def __init__(self, nodelist, tz):
         self.nodelist = nodelist
         self.tz = tz
@@ -121,7 +119,6 @@ class GetCurrentTimezoneNode(Node):
     """
     Template node class used by ``get_current_timezone_tag``.
     """
-
     def __init__(self, variable):
         self.variable = variable
 
@@ -192,8 +189,7 @@ def get_current_timezone_tag(parser, token):
     This will fetch the currently active time zone and put its name
     into the ``TIME_ZONE`` context variable.
     """
-    # token.split_contents() isn't useful here because this tag doesn't accept
-    # variable as arguments
+    # token.split_contents() isn't useful here because this tag doesn't accept variable as arguments
     args = token.contents.split()
     if len(args) != 3 or args[1] != 'as':
         raise TemplateSyntaxError("'get_current_timezone' requires "

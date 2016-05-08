@@ -139,7 +139,7 @@ class PsdImageFile(ImageFile.ImageFile):
         try:
             if layer <= 0:
                 raise IndexError
-            name, mode, bbox, tile = self.layers[layer - 1]
+            name, mode, bbox, tile = self.layers[layer-1]
             self.mode = mode
             self.tile = tile
             self.frame = layer
@@ -269,7 +269,7 @@ def _maketile(file, mode, bbox, channels):
             if mode == "CMYK":
                 layer += ";I"
             tile.append(("raw", bbox, offset, layer))
-            offset = offset + xsize * ysize
+            offset = offset + xsize*ysize
 
     elif compression == 1:
         #
@@ -284,9 +284,9 @@ def _maketile(file, mode, bbox, channels):
                 layer += ";I"
             tile.append(
                 ("packbits", bbox, offset, layer)
-            )
+                )
             for y in range(ysize):
-                offset = offset + i16(bytecount[i:i + 2])
+                offset = offset + i16(bytecount[i:i+2])
                 i += 2
 
     file.seek(offset)

@@ -23,8 +23,7 @@ from django.utils.six.moves.urllib.parse import (
 )
 
 RAISE_ERROR = object()
-host_validation_re = re.compile(
-    r"^([a-z0-9.-]+|\[[a-f0-9]*:[a-f0-9:]+\])(:\d+)?$")
+host_validation_re = re.compile(r"^([a-z0-9.-]+|\[[a-f0-9]*:[a-f0-9:]+\])(:\d+)?$")
 
 
 class UnreadablePostError(IOError):
@@ -68,11 +67,8 @@ class HttpRequest(object):
         if self.method is None or not self.get_full_path():
             return force_str('<%s>' % self.__class__.__name__)
         return force_str(
-            '<%s: %s %r>' %
-            (self.__class__.__name__,
-             self.method,
-             force_str(
-                 self.get_full_path())))
+            '<%s: %s %r>' % (self.__class__.__name__, self.method, force_str(self.get_full_path()))
+        )
 
     def get_host(self):
         """Returns the HTTP host using the environment or request headers."""
@@ -107,17 +103,12 @@ class HttpRequest(object):
     def get_full_path(self):
         # RFC 3986 requires query string arguments to be in the ASCII range.
         # Rather than crash if this doesn't happen, we encode defensively.
-        return '%s%s' % (escape_uri_path(self.path),
-                         ('?' + iri_to_uri(self.META.get('QUERY_STRING',
-                                                         ''))) if self.META.get('QUERY_STRING',
-                                                                                '') else '')
+        return '%s%s' % (
+            escape_uri_path(self.path),
+            ('?' + iri_to_uri(self.META.get('QUERY_STRING', ''))) if self.META.get('QUERY_STRING', '') else ''
+        )
 
-    def get_signed_cookie(
-            self,
-            key,
-            default=RAISE_ERROR,
-            salt='',
-            max_age=None):
+    def get_signed_cookie(self, key, default=RAISE_ERROR, salt='', max_age=None):
         """
         Attempts to return a signed cookie. If the signature fails or the
         cookie has expired, raises an exception... unless you provide the
@@ -156,8 +147,9 @@ class HttpRequest(object):
             location = '//%s' % self.get_full_path()
         bits = urlsplit(location)
         if not (bits.scheme and bits.netloc):
-            current_uri = '{scheme}://{host}{path}'.format(
-                scheme=self.scheme, host=self.get_host(), path=self.path)
+            current_uri = '{scheme}://{host}{path}'.format(scheme=self.scheme,
+                                                           host=self.get_host(),
+                                                           path=self.path)
             # Join the constructed URL with the provided location, which will
             # allow the provided ``location`` to apply query strings to the
             # base path as well as override the host, if it begins with //
@@ -213,44 +205,34 @@ class HttpRequest(object):
     @property
     def upload_handlers(self):
         if not self._upload_handlers:
-            # If there are no upload handlers defined, initialize them from
-            # settings.
+            # If there are no upload handlers defined, initialize them from settings.
             self._initialize_handlers()
         return self._upload_handlers
 
     @upload_handlers.setter
     def upload_handlers(self, upload_handlers):
         if hasattr(self, '_files'):
-            raise AttributeError(
-                "You cannot set the upload handlers after the upload has been processed.")
+            raise AttributeError("You cannot set the upload handlers after the upload has been processed.")
         self._upload_handlers = upload_handlers
 
     def parse_file_upload(self, META, post_data):
         """Returns a tuple of (POST QueryDict, FILES MultiValueDict)."""
         self.upload_handlers = ImmutableList(
             self.upload_handlers,
-            warning="You cannot alter upload handlers after the upload has been processed.")
-        parser = MultiPartParser(
-            META,
-            post_data,
-            self.upload_handlers,
-            self.encoding)
+            warning="You cannot alter upload handlers after the upload has been processed."
+        )
+        parser = MultiPartParser(META, post_data, self.upload_handlers, self.encoding)
         return parser.parse()
 
     @property
     def body(self):
         if not hasattr(self, '_body'):
             if self._read_started:
-                raise RawPostDataException(
-                    "You cannot access body after reading from request's data stream")
+                raise RawPostDataException("You cannot access body after reading from request's data stream")
             try:
                 self._body = self.read()
             except IOError as e:
-                six.reraise(
-                    UnreadablePostError,
-                    UnreadablePostError(
-                        *e.args),
-                    sys.exc_info()[2])
+                six.reraise(UnreadablePostError, UnreadablePostError(*e.args), sys.exc_info()[2])
             self._stream = BytesIO(self._body)
         return self._body
 
@@ -262,8 +244,7 @@ class HttpRequest(object):
     def _load_post_and_files(self):
         """Populate self._post and self._files if the content-type is a form type"""
         if self.method != 'POST':
-            self._post, self._files = QueryDict(
-                '', encoding=self._encoding), MultiValueDict()
+            self._post, self._files = QueryDict('', encoding=self._encoding), MultiValueDict()
             return
         if self._read_started and not hasattr(self, '_body'):
             self._mark_post_parse_error()
@@ -276,8 +257,7 @@ class HttpRequest(object):
             else:
                 data = self
             try:
-                self._post, self._files = self.parse_file_upload(
-                    self.META, data)
+                self._post, self._files = self.parse_file_upload(self.META, data)
             except MultiPartParserError:
                 # An error occurred while parsing POST data. Since when
                 # formatting the error the request handler might access
@@ -289,11 +269,9 @@ class HttpRequest(object):
                 self._mark_post_parse_error()
                 raise
         elif self.META.get('CONTENT_TYPE', '').startswith('application/x-www-form-urlencoded'):
-            self._post, self._files = QueryDict(
-                self.body, encoding=self._encoding), MultiValueDict()
+            self._post, self._files = QueryDict(self.body, encoding=self._encoding), MultiValueDict()
         else:
-            self._post, self._files = QueryDict(
-                '', encoding=self._encoding), MultiValueDict()
+            self._post, self._files = QueryDict('', encoding=self._encoding), MultiValueDict()
 
     def close(self):
         if hasattr(self, '_files'):
@@ -313,22 +291,14 @@ class HttpRequest(object):
         try:
             return self._stream.read(*args, **kwargs)
         except IOError as e:
-            six.reraise(
-                UnreadablePostError,
-                UnreadablePostError(
-                    *e.args),
-                sys.exc_info()[2])
+            six.reraise(UnreadablePostError, UnreadablePostError(*e.args), sys.exc_info()[2])
 
     def readline(self, *args, **kwargs):
         self._read_started = True
         try:
             return self._stream.readline(*args, **kwargs)
         except IOError as e:
-            six.reraise(
-                UnreadablePostError,
-                UnreadablePostError(
-                    *e.args),
-                sys.exc_info()[2])
+            six.reraise(UnreadablePostError, UnreadablePostError(*e.args), sys.exc_info()[2])
 
     def xreadlines(self):
         while True:
@@ -370,8 +340,7 @@ class QueryDict(MultiValueDict):
         self.encoding = encoding
         if six.PY3:
             if isinstance(query_string, bytes):
-                # query_string normally contains URL-encoded data, a subset of
-                # ASCII.
+                # query_string normally contains URL-encoded data, a subset of ASCII.
                 try:
                     query_string = query_string.decode(encoding)
                 except UnicodeDecodeError:
@@ -426,10 +395,7 @@ class QueryDict(MultiValueDict):
         result = self.__class__('', mutable=True, encoding=self.encoding)
         memo[id(self)] = result
         for key, value in six.iterlists(self):
-            result.setlist(
-                copy.deepcopy(
-                    key, memo), copy.deepcopy(
-                    value, memo))
+            result.setlist(copy.deepcopy(key, memo), copy.deepcopy(value, memo))
         return result
 
     def setlist(self, key, list_):
@@ -535,14 +501,13 @@ def build_request_repr(request, path_override=None, GET_override=None,
     except Exception:
         meta = '<could not parse>'
     path = path_override if path_override is not None else request.path
-    return force_str(
-        '<%s\npath:%s,\nGET:%s,\nPOST:%s,\nCOOKIES:%s,\nMETA:%s>' %
-        (request.__class__.__name__,
-         path,
-         six.text_type(get),
-         six.text_type(post),
-         six.text_type(cookies),
-         six.text_type(meta)))
+    return force_str('<%s\npath:%s,\nGET:%s,\nPOST:%s,\nCOOKIES:%s,\nMETA:%s>' %
+                     (request.__class__.__name__,
+                      path,
+                      six.text_type(get),
+                      six.text_type(post),
+                      six.text_type(cookies),
+                      six.text_type(meta)))
 
 
 # It's neither necessary nor appropriate to use

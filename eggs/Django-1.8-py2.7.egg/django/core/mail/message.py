@@ -85,15 +85,13 @@ def forbid_multi_line_headers(name, val, encoding):
     encoding = encoding or settings.DEFAULT_CHARSET
     val = force_text(val)
     if '\n' in val or '\r' in val:
-        raise BadHeaderError(
-            "Header values can't contain newlines (got %r for header %r)" %
-            (val, name))
+        raise BadHeaderError("Header values can't contain newlines (got %r for header %r)" % (val, name))
     try:
         val.encode('ascii')
     except UnicodeEncodeError:
         if name.lower() in ADDRESS_HEADERS:
             val = ', '.join(sanitize_address(addr, encoding)
-                            for addr in getaddresses((val,)))
+                for addr in getaddresses((val,)))
         else:
             val = Header(val, encoding).encode()
     else:
@@ -126,7 +124,6 @@ def sanitize_address(addr, encoding):
 
 
 class MIMEMixin():
-
     def as_string(self, unixfrom=False, linesep='\n'):
         """Return the entire formatted message as a string.
         Optional `unixfrom' when True, means include the Unix From_ envelope
@@ -185,9 +182,7 @@ class SafeMIMEText(MIMEMixin, MIMEText):
                 self.set_charset(utf8_charset)
             else:
                 self.set_payload(_text, utf8_charset)
-            self.replace_header(
-                'Content-Type', 'text/%s; charset="%s"' %
-                (_subtype, _charset))
+            self.replace_header('Content-Type', 'text/%s; charset="%s"' % (_subtype, _charset))
         elif _charset is None:
             # the default value of '_charset' is 'us-ascii' on Python 2
             MIMEText.__init__(self, _text, _subtype)
@@ -201,13 +196,7 @@ class SafeMIMEText(MIMEMixin, MIMEText):
 
 class SafeMIMEMultipart(MIMEMixin, MIMEMultipart):
 
-    def __init__(
-            self,
-            _subtype='mixed',
-            boundary=None,
-            _subparts=None,
-            encoding=None,
-            **_params):
+    def __init__(self, _subtype='mixed', boundary=None, _subparts=None, encoding=None, **_params):
         self.encoding = encoding
         MIMEMultipart.__init__(self, _subtype, boundary, _subparts, **_params)
 
@@ -282,8 +271,7 @@ class EmailMessage(object):
         if self.cc:
             msg['Cc'] = ', '.join(self.cc)
         if self.reply_to:
-            msg['Reply-To'] = self.extra_headers.get(
-                'Reply-To', ', '.join(self.reply_to))
+            msg['Reply-To'] = self.extra_headers.get('Reply-To', ', '.join(self.reply_to))
 
         # Email header names are case-insensitive (RFC 2045), so we have to
         # accommodate that when doing comparisons.
@@ -344,9 +332,7 @@ class EmailMessage(object):
         if self.attachments:
             encoding = self.encoding or settings.DEFAULT_CHARSET
             body_msg = msg
-            msg = SafeMIMEMultipart(
-                _subtype=self.mixed_subtype,
-                encoding=encoding)
+            msg = SafeMIMEMultipart(_subtype=self.mixed_subtype, encoding=encoding)
             if self.body:
                 msg.attach(body_msg)
             for attachment in self.attachments:
@@ -416,19 +402,9 @@ class EmailMultiAlternatives(EmailMessage):
     """
     alternative_subtype = 'alternative'
 
-    def __init__(
-            self,
-            subject='',
-            body='',
-            from_email=None,
-            to=None,
-            bcc=None,
-            connection=None,
-            attachments=None,
-            headers=None,
-            alternatives=None,
-            cc=None,
-            reply_to=None):
+    def __init__(self, subject='', body='', from_email=None, to=None, bcc=None,
+            connection=None, attachments=None, headers=None, alternatives=None,
+            cc=None, reply_to=None):
         """
         Initialize a single email message (which can be sent to multiple
         recipients).
@@ -456,9 +432,7 @@ class EmailMultiAlternatives(EmailMessage):
         encoding = self.encoding or settings.DEFAULT_CHARSET
         if self.alternatives:
             body_msg = msg
-            msg = SafeMIMEMultipart(
-                _subtype=self.alternative_subtype,
-                encoding=encoding)
+            msg = SafeMIMEMultipart(_subtype=self.alternative_subtype, encoding=encoding)
             if self.body:
                 msg.attach(body_msg)
             for alternative in self.alternatives:

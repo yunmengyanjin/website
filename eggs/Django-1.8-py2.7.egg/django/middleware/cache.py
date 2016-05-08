@@ -60,7 +60,6 @@ class UpdateCacheMiddleware(object):
     UpdateCacheMiddleware must be the first piece of middleware in
     MIDDLEWARE_CLASSES so that it'll get called last during the response phase.
     """
-
     def __init__(self):
         self.cache_timeout = settings.CACHE_MIDDLEWARE_SECONDS
         self.key_prefix = settings.CACHE_MIDDLEWARE_KEY_PREFIX
@@ -68,9 +67,7 @@ class UpdateCacheMiddleware(object):
         self.cache = caches[self.cache_alias]
 
     def _should_update_cache(self, request, response):
-        return hasattr(
-            request,
-            '_cache_update_cache') and request._cache_update_cache
+        return hasattr(request, '_cache_update_cache') and request._cache_update_cache
 
     def process_response(self, request, response):
         """Sets the cache, if needed."""
@@ -83,8 +80,7 @@ class UpdateCacheMiddleware(object):
 
         # Don't cache responses that set a user-specific (and maybe security
         # sensitive) cookie in response to a cookie-less request.
-        if not request.COOKIES and response.cookies and has_vary_header(
-                response, 'Cookie'):
+        if not request.COOKIES and response.cookies and has_vary_header(response, 'Cookie'):
             return response
 
         # Try to get the timeout from the "max-age" section of the "Cache-
@@ -98,12 +94,7 @@ class UpdateCacheMiddleware(object):
             return response
         patch_response_headers(response, timeout)
         if timeout:
-            cache_key = learn_cache_key(
-                request,
-                response,
-                timeout,
-                self.key_prefix,
-                cache=self.cache)
+            cache_key = learn_cache_key(request, response, timeout, self.key_prefix, cache=self.cache)
             if hasattr(response, 'render') and callable(response.render):
                 response.add_post_render_callback(
                     lambda r: self.cache.set(cache_key, r, timeout)
@@ -121,7 +112,6 @@ class FetchFromCacheMiddleware(object):
     FetchFromCacheMiddleware must be the last piece of middleware in
     MIDDLEWARE_CLASSES so that it'll get called last during the request phase.
     """
-
     def __init__(self):
         self.key_prefix = settings.CACHE_MIDDLEWARE_KEY_PREFIX
         self.cache_alias = settings.CACHE_MIDDLEWARE_ALIAS
@@ -137,17 +127,14 @@ class FetchFromCacheMiddleware(object):
             return None  # Don't bother checking the cache.
 
         # try and get the cached GET response
-        cache_key = get_cache_key(
-            request, self.key_prefix, 'GET', cache=self.cache)
+        cache_key = get_cache_key(request, self.key_prefix, 'GET', cache=self.cache)
         if cache_key is None:
             request._cache_update_cache = True
             return None  # No cache information available, need to rebuild.
         response = self.cache.get(cache_key, None)
-        # if it wasn't found and we are looking for a HEAD, try looking just
-        # for that
+        # if it wasn't found and we are looking for a HEAD, try looking just for that
         if response is None and request.method == 'HEAD':
-            cache_key = get_cache_key(
-                request, self.key_prefix, 'HEAD', cache=self.cache)
+            cache_key = get_cache_key(request, self.key_prefix, 'HEAD', cache=self.cache)
             response = self.cache.get(cache_key, None)
 
         if response is None:
@@ -166,7 +153,6 @@ class CacheMiddleware(UpdateCacheMiddleware, FetchFromCacheMiddleware):
     Also used as the hook point for the cache decorator, which is generated
     using the decorator-from-middleware utility.
     """
-
     def __init__(self, cache_timeout=None, **kwargs):
         # We need to differentiate between "provided, but using default value",
         # and "not provided". If the value is provided using a default, then

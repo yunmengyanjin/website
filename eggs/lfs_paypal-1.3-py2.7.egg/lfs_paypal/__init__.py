@@ -18,7 +18,6 @@ from paypal.standard.conf import SANDBOX_POSTBACK_ENDPOINT
 
 
 class PayPalProcessor(PaymentMethodProcessor):
-
     def process(self):
         if settings.LFS_PAYPAL_REDIRECT:
             return {
@@ -45,12 +44,8 @@ class PayPalProcessor(PaymentMethodProcessor):
             "upload": "1",
             "business": settings.PAYPAL_RECEIVER_EMAIL,
             "currency_code": default_currency,
-            "notify_url": "http://" +
-            current_site.domain +
-            reverse('paypal-ipn'),
-            "return": "http://" +
-            current_site.domain +
-            reverse('lfs_thank_you'),
+            "notify_url": "http://" + current_site.domain + reverse('paypal-ipn'),
+            "return": "http://" + current_site.domain + reverse('lfs_thank_you'),
             "first_name": self.order.invoice_address.firstname,
             "last_name": self.order.invoice_address.lastname,
             "address1": self.order.invoice_address.line1,
@@ -62,11 +57,8 @@ class PayPalProcessor(PaymentMethodProcessor):
             "custom": self.order.uuid,
             "invoice": self.order.uuid,
             "item_name": shop.shop_owner,
-            "amount": "%.2f" %
-            (self.order.price -
-             self.order.tax),
-            "tax": "%.2f" %
-            self.order.tax,
+            "amount": "%.2f" % (self.order.price - self.order.tax),
+            "tax": "%.2f" % self.order.tax,
         }
 
         parameters = "&".join(["%s=%s" % (k, v) for (k, v) in info.items()])

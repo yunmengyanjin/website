@@ -48,14 +48,13 @@ class LayerMapping(object):
     "A class that maps OGR Layers to GeoDjango Models."
 
     # Acceptable 'base' types for a multi-geometry type.
-    MULTI_TYPES = {
-        1: OGRGeomType('MultiPoint'),
-        2: OGRGeomType('MultiLineString'),
-        3: OGRGeomType('MultiPolygon'),
-        OGRGeomType('Point25D').num: OGRGeomType('MultiPoint25D'),
-        OGRGeomType('LineString25D').num: OGRGeomType('MultiLineString25D'),
-        OGRGeomType('Polygon25D').num: OGRGeomType('MultiPolygon25D'),
-    }
+    MULTI_TYPES = {1: OGRGeomType('MultiPoint'),
+                   2: OGRGeomType('MultiLineString'),
+                   3: OGRGeomType('MultiPolygon'),
+                   OGRGeomType('Point25D').num: OGRGeomType('MultiPoint25D'),
+                   OGRGeomType('LineString25D').num: OGRGeomType('MultiLineString25D'),
+                   OGRGeomType('Polygon25D').num: OGRGeomType('MultiPolygon25D'),
+                   }
 
     # Acceptable Django field types and corresponding acceptable OGR
     # counterparts.
@@ -146,9 +145,7 @@ class LayerMapping(object):
         elif transaction_mode == 'commit_on_success':
             self.transaction_decorator = transaction.atomic
         else:
-            raise LayerMapError(
-                'Unrecognized transaction mode: %s' %
-                transaction_mode)
+            raise LayerMapError('Unrecognized transaction mode: %s' % transaction_mode)
 
     # #### Checking routines used during initialization ####
     def check_fid_range(self, fid_range):
@@ -185,9 +182,7 @@ class LayerMapping(object):
             try:
                 idx = ogr_fields.index(ogr_map_fld)
             except ValueError:
-                raise LayerMapError(
-                    'Given mapping OGR field "%s" not found in OGR Layer.' %
-                    ogr_map_fld)
+                raise LayerMapError('Given mapping OGR field "%s" not found in OGR Layer.' % ogr_map_fld)
             return idx
 
         # No need to increment through each feature in the model, simply check
@@ -198,18 +193,14 @@ class LayerMapping(object):
             try:
                 model_field = self.model._meta.get_field(field_name)
             except FieldDoesNotExist:
-                raise LayerMapError(
-                    'Given mapping field "%s" not in given Model fields.' %
-                    field_name)
+                raise LayerMapError('Given mapping field "%s" not in given Model fields.' % field_name)
 
-            # Getting the string name for the Django field class (e.g.,
-            # 'PointField').
+            # Getting the string name for the Django field class (e.g., 'PointField').
             fld_name = model_field.__class__.__name__
 
             if isinstance(model_field, GeometryField):
                 if self.geom_field:
-                    raise LayerMapError(
-                        'LayerMapping does not support more than one GeometryField per model.')
+                    raise LayerMapError('LayerMapping does not support more than one GeometryField per model.')
 
                 # Getting the coordinate dimension of the geometry field.
                 coord_dim = model_field.dim
@@ -220,21 +211,14 @@ class LayerMapping(object):
                     else:
                         gtype = OGRGeomType(ogr_name)
                 except GDALException:
-                    raise LayerMapError(
-                        'Invalid mapping for GeometryField "%s".' %
-                        field_name)
+                    raise LayerMapError('Invalid mapping for GeometryField "%s".' % field_name)
 
                 # Making sure that the OGR Layer's Geometry is compatible.
                 ltype = self.layer.geom_type
-                if not (
-                    ltype.name.startswith(
-                        gtype.name) or self.make_multi(
-                        ltype,
-                        model_field)):
-                    raise LayerMapError(
-                        'Invalid mapping geometry; model has %s%s, '
-                        'layer geometry type is %s.' %
-                        (fld_name, '(dim=3)' if coord_dim == 3 else '', ltype))
+                if not (ltype.name.startswith(gtype.name) or self.make_multi(ltype, model_field)):
+                    raise LayerMapError('Invalid mapping geometry; model has %s%s, '
+                                        'layer geometry type is %s.' %
+                                        (fld_name, '(dim=3)' if coord_dim == 3 else '', ltype))
 
                 # Setting the `geom_field` attribute w/the name of the model field
                 # that is a Geometry.  Also setting the coordinate dimension
@@ -251,31 +235,24 @@ class LayerMapping(object):
                         try:
                             rel_model._meta.get_field(rel_name)
                         except FieldDoesNotExist:
-                            raise LayerMapError(
-                                'ForeignKey mapping field "%s" not in %s fields.' %
-                                (rel_name, rel_model.__class__.__name__))
+                            raise LayerMapError('ForeignKey mapping field "%s" not in %s fields.' %
+                                                (rel_name, rel_model.__class__.__name__))
                     fields_val = rel_model
                 else:
-                    raise TypeError(
-                        'ForeignKey mapping must be of dictionary type.')
+                    raise TypeError('ForeignKey mapping must be of dictionary type.')
             else:
                 # Is the model field type supported by LayerMapping?
                 if model_field.__class__ not in self.FIELD_TYPES:
-                    raise LayerMapError(
-                        'Django field type "%s" has no OGR mapping (yet).' %
-                        fld_name)
+                    raise LayerMapError('Django field type "%s" has no OGR mapping (yet).' % fld_name)
 
                 # Is the OGR field in the Layer?
                 idx = check_ogr_fld(ogr_name)
                 ogr_field = ogr_field_types[idx]
 
                 # Can the OGR field type be mapped to the Django field type?
-                if not issubclass(
-                    ogr_field, self.FIELD_TYPES[
-                        model_field.__class__]):
-                    raise LayerMapError(
-                        'OGR field "%s" (of type %s) cannot be mapped to Django %s.' %
-                        (ogr_field, ogr_field.__name__, fld_name))
+                if not issubclass(ogr_field, self.FIELD_TYPES[model_field.__class__]):
+                    raise LayerMapError('OGR field "%s" (of type %s) cannot be mapped to Django %s.' %
+                                        (ogr_field, ogr_field.__name__, fld_name))
                 fields_val = model_field
 
             self.fields[field_name] = fields_val
@@ -310,8 +287,7 @@ class LayerMapping(object):
             if unique not in self.mapping:
                 raise ValueError
         else:
-            raise TypeError(
-                'Unique keyword argument must be set with a tuple, list, or string.')
+            raise TypeError('Unique keyword argument must be set with a tuple, list, or string.')
 
     # Keyword argument retrieval routines ####
     def feature_kwargs(self, feat):
@@ -332,8 +308,7 @@ class LayerMapping(object):
                 try:
                     val = self.verify_geom(feat.geom, model_field)
                 except GDALException:
-                    raise LayerMapError(
-                        'Could not retrieve geometry from feature.')
+                    raise LayerMapError('Could not retrieve geometry from feature.')
             elif isinstance(model_field, models.base.ModelBase):
                 # The related _model_, not a field was passed in -- indicating
                 # another mapping for the related Model.
@@ -375,25 +350,21 @@ class LayerMapping(object):
             else:
                 val = ogr_field.value
             if model_field.max_length and len(val) > model_field.max_length:
-                raise InvalidString(
-                    '%s model field maximum string length is %s, given %s characters.' %
-                    (model_field.name, model_field.max_length, len(val)))
+                raise InvalidString('%s model field maximum string length is %s, given %s characters.' %
+                                    (model_field.name, model_field.max_length, len(val)))
         elif isinstance(ogr_field, OFTReal) and isinstance(model_field, models.DecimalField):
             try:
                 # Creating an instance of the Decimal value to use.
                 d = Decimal(str(ogr_field.value))
             except DecimalInvalidOperation:
-                raise InvalidDecimal(
-                    'Could not construct decimal from: %s' %
-                    ogr_field.value)
+                raise InvalidDecimal('Could not construct decimal from: %s' % ogr_field.value)
 
             # Getting the decimal value as a tuple.
             dtup = d.as_tuple()
             digits = dtup[1]
             d_idx = dtup[2]  # index where the decimal is
 
-            # Maximum amount of precision, or digits to the left of the
-            # decimal.
+            # Maximum amount of precision, or digits to the left of the decimal.
             max_prec = model_field.max_digits - model_field.decimal_places
 
             # Getting the digits to the left of the decimal place for the
@@ -409,17 +380,15 @@ class LayerMapping(object):
                 raise InvalidDecimal(
                     'A DecimalField with max_digits %d, decimal_places %d must '
                     'round to an absolute value less than 10^%d.' %
-                    (model_field.max_digits, model_field.decimal_places, max_prec))
+                    (model_field.max_digits, model_field.decimal_places, max_prec)
+                )
             val = d
         elif isinstance(ogr_field, (OFTReal, OFTString)) and isinstance(model_field, models.IntegerField):
-            # Attempt to convert any OFTReal and OFTString value to an
-            # OFTInteger.
+            # Attempt to convert any OFTReal and OFTString value to an OFTInteger.
             try:
                 val = int(ogr_field.value)
             except ValueError:
-                raise InvalidInteger(
-                    'Could not construct integer from: %s' %
-                    ogr_field.value)
+                raise InvalidInteger('Could not construct integer from: %s' % ogr_field.value)
         else:
             val = ogr_field.value
         return val
@@ -437,8 +406,7 @@ class LayerMapping(object):
         # Constructing and verifying the related model keyword arguments.
         fk_kwargs = {}
         for field_name, ogr_name in rel_mapping.items():
-            fk_kwargs[field_name] = self.verify_ogr_field(
-                feat[ogr_name], rel_model._meta.get_field(field_name))
+            fk_kwargs[field_name] = self.verify_ogr_field(feat[ogr_name], rel_model._meta.get_field(field_name))
 
         # Attempting to retrieve and return the related model.
         try:
@@ -482,18 +450,13 @@ class LayerMapping(object):
         SpatialRefSys = self.spatial_backend.spatial_ref_sys()
         try:
             # Getting the target spatial reference system
-            target_srs = SpatialRefSys.objects.using(
-                self.using).get(
-                srid=self.geo_field.srid).srs
+            target_srs = SpatialRefSys.objects.using(self.using).get(srid=self.geo_field.srid).srs
 
             # Creating the CoordTransform object
             return CoordTransform(self.source_srs, target_srs)
         except Exception as msg:
             new_msg = 'Could not translate between the data source and model geometry: %s' % msg
-            six.reraise(
-                LayerMapError,
-                LayerMapError(new_msg),
-                sys.exc_info()[2])
+            six.reraise(LayerMapError, LayerMapError(new_msg), sys.exc_info()[2])
 
     def geometry_field(self):
         "Returns the GeometryField instance associated with the geographic column."
@@ -577,9 +540,7 @@ class LayerMapping(object):
                     if strict:
                         raise
                     elif not silent:
-                        stream.write(
-                            'Ignoring Feature ID %s because: %s\n' %
-                            (feat.fid, msg))
+                        stream.write('Ignoring Feature ID %s because: %s\n' % (feat.fid, msg))
                 else:
                     # Constructing the model using the keyword args
                     is_update = False
@@ -590,8 +551,7 @@ class LayerMapping(object):
                             # Getting the keyword arguments and retrieving
                             # the unique model.
                             u_kwargs = self.unique_kwargs(kwargs)
-                            m = self.model.objects.using(
-                                self.using).get(**u_kwargs)
+                            m = self.model.objects.using(self.using).get(**u_kwargs)
                             is_update = True
 
                             # Getting the geometry (in OGR form), creating
@@ -614,28 +574,23 @@ class LayerMapping(object):
                         m.save(using=self.using)
                         num_saved += 1
                         if verbose:
-                            stream.write(
-                                '%s: %s\n' %
-                                ('Updated' if is_update else 'Saved', m))
+                            stream.write('%s: %s\n' % ('Updated' if is_update else 'Saved', m))
                     except Exception as msg:
                         if strict:
                             # Bailing out if the `strict` keyword is set.
                             if not silent:
                                 stream.write(
                                     'Failed to save the feature (id: %s) into the '
-                                    'model with the keyword arguments:\n' % feat.fid)
+                                    'model with the keyword arguments:\n' % feat.fid
+                                )
                                 stream.write('%s\n' % kwargs)
                             raise
                         elif not silent:
-                            stream.write(
-                                'Failed to save %s:\n %s\nContinuing\n' %
-                                (kwargs, msg))
+                            stream.write('Failed to save %s:\n %s\nContinuing\n' % (kwargs, msg))
 
                 # Printing progress information, if requested.
                 if progress and num_feat % progress_interval == 0:
-                    stream.write(
-                        'Processed %d features, saved %d ...\n' %
-                        (num_feat, num_saved))
+                    stream.write('Processed %d features, saved %d ...\n' % (num_feat, num_saved))
 
             # Only used for status output purposes -- incremental saving uses the
             # values returned here.
@@ -648,8 +603,7 @@ class LayerMapping(object):
         if step and isinstance(step, int) and step < nfeat:
             # Incremental saving is requested at the given interval (step)
             if default_range:
-                raise LayerMapError(
-                    'The `step` keyword may not be used in conjunction with the `fid_range` keyword.')
+                raise LayerMapError('The `step` keyword may not be used in conjunction with the `fid_range` keyword.')
             beg, num_feat, num_saved = (0, 0, 0)
             indices = range(step, nfeat, step)
             n_i = len(indices)
@@ -663,13 +617,10 @@ class LayerMapping(object):
                     step_slice = slice(beg, end)
 
                 try:
-                    num_feat, num_saved = _save(
-                        step_slice, num_feat, num_saved)
+                    num_feat, num_saved = _save(step_slice, num_feat, num_saved)
                     beg = end
                 except:  # Deliberately catch everything
-                    stream.write(
-                        '%s\nFailed to save slice: %s\n' %
-                        ('=-' * 20, step_slice))
+                    stream.write('%s\nFailed to save slice: %s\n' % ('=-' * 20, step_slice))
                     raise
         else:
             # Otherwise, just calling the previously defined _save() function.

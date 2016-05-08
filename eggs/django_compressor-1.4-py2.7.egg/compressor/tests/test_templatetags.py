@@ -26,7 +26,6 @@ def render(template_string, context_dict=None):
 
 
 class TemplatetagTestCase(TestCase):
-
     def setUp(self):
         self.old_enabled = settings.COMPRESS_ENABLED
         settings.COMPRESS_ENABLED = True
@@ -133,7 +132,6 @@ class TemplatetagTestCase(TestCase):
 
 
 class PrecompilerTemplatetagTestCase(TestCase):
-
     def setUp(self):
         self.old_enabled = settings.COMPRESS_ENABLED
         self.old_precompilers = settings.COMPRESS_PRECOMPILERS

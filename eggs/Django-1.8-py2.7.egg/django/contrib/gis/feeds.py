@@ -29,9 +29,7 @@ class GeoFeedMixin(object):
             handler.addQuickElement('geo:lat', '%f' % lat)
             handler.addQuickElement('geo:lon', '%f' % lon)
         else:
-            handler.addQuickElement(
-                'georss:point', self.georss_coords(
-                    (coords,)))
+            handler.addQuickElement('georss:point', self.georss_coords((coords,)))
 
     def add_georss_element(self, handler, item, w3c_geo=False):
         """
@@ -49,8 +47,7 @@ class GeoFeedMixin(object):
                     if len(geom) == 2:
                         box_coords = geom
                     else:
-                        raise ValueError(
-                            'Only should be two sets of coordinates.')
+                        raise ValueError('Only should be two sets of coordinates.')
                 else:
                     if len(geom) == 2:
                         # Point: (X, Y)
@@ -59,45 +56,33 @@ class GeoFeedMixin(object):
                         # Box: (X0, Y0, X1, Y1)
                         box_coords = (geom[:2], geom[2:])
                     else:
-                        raise ValueError(
-                            'Only should be 2 or 4 numeric elements.')
+                        raise ValueError('Only should be 2 or 4 numeric elements.')
                 # If a GeoRSS box was given via tuple.
                 if box_coords is not None:
                     if w3c_geo:
-                        raise ValueError(
-                            'Cannot use simple GeoRSS box in W3C Geo feeds.')
-                    handler.addQuickElement(
-                        'georss:box', self.georss_coords(box_coords))
+                        raise ValueError('Cannot use simple GeoRSS box in W3C Geo feeds.')
+                    handler.addQuickElement('georss:box', self.georss_coords(box_coords))
             else:
                 # Getting the lower-case geometry type.
                 gtype = str(geom.geom_type).lower()
                 if gtype == 'point':
-                    self.add_georss_point(
-                        handler, geom.coords, w3c_geo=w3c_geo)
+                    self.add_georss_point(handler, geom.coords, w3c_geo=w3c_geo)
                 else:
                     if w3c_geo:
-                        raise ValueError(
-                            'W3C Geo only supports Point geometries.')
+                        raise ValueError('W3C Geo only supports Point geometries.')
                     # For formatting consistent w/the GeoRSS simple standard:
                     # http://georss.org/1.0#simple
                     if gtype in ('linestring', 'linearring'):
-                        handler.addQuickElement(
-                            'georss:line', self.georss_coords(
-                                geom.coords))
+                        handler.addQuickElement('georss:line', self.georss_coords(geom.coords))
                     elif gtype in ('polygon',):
                         # Only support the exterior ring.
-                        handler.addQuickElement(
-                            'georss:polygon', self.georss_coords(
-                                geom[0].coords))
+                        handler.addQuickElement('georss:polygon', self.georss_coords(geom[0].coords))
                     else:
-                        raise ValueError(
-                            'Geometry type "%s" not supported.' %
-                            geom.geom_type)
+                        raise ValueError('Geometry type "%s" not supported.' % geom.geom_type)
 
 
 # ### SyndicationFeed subclasses ###
 class GeoRSSFeed(Rss201rev2Feed, GeoFeedMixin):
-
     def rss_attributes(self):
         attrs = super(GeoRSSFeed, self).rss_attributes()
         attrs['xmlns:georss'] = 'http://www.georss.org/georss'
@@ -113,7 +98,6 @@ class GeoRSSFeed(Rss201rev2Feed, GeoFeedMixin):
 
 
 class GeoAtom1Feed(Atom1Feed, GeoFeedMixin):
-
     def root_attributes(self):
         attrs = super(GeoAtom1Feed, self).root_attributes()
         attrs['xmlns:georss'] = 'http://www.georss.org/georss'
@@ -129,7 +113,6 @@ class GeoAtom1Feed(Atom1Feed, GeoFeedMixin):
 
 
 class W3CGeoFeed(Rss201rev2Feed, GeoFeedMixin):
-
     def rss_attributes(self):
         attrs = super(W3CGeoFeed, self).rss_attributes()
         attrs['xmlns:geo'] = 'http://www.w3.org/2003/01/geo/wgs84_pos#'

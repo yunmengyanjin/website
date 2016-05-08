@@ -117,9 +117,9 @@ class PpmImageFile(ImageFile.ImageFile):
 
         self.size = xsize, ysize
         self.tile = [("raw",
-                      (0, 0, xsize, ysize),
-                      self.fp.tell(),
-                      (rawmode, 0, 1))]
+                     (0, 0, xsize, ysize),
+                     self.fp.tell(),
+                     (rawmode, 0, 1))]
 
         # ALTERNATIVE: load via builtin debug function
         # self.im = Image.core.open_ppm(self.filename)
@@ -156,7 +156,7 @@ def _save(im, fp, filename):
             fp.write(b"65535\n")
         elif rawmode == "I;32B":
             fp.write(b"2147483648\n")
-    ImageFile._save(im, fp, [("raw", (0, 0) + im.size, 0, (rawmode, 0, 1))])
+    ImageFile._save(im, fp, [("raw", (0, 0)+im.size, 0, (rawmode, 0, 1))])
 
     # ALTERNATIVE: save via builtin debug function
     # im._dump(filename)

@@ -49,7 +49,6 @@ class cached_property(object):
     Optional ``name`` argument allows you to make cached properties of other
     methods. (e.g.  url = cached_property(get_absolute_url, name='url') )
     """
-
     def __init__(self, func, name=None):
         self.func = func
         self.__doc__ = getattr(func, '__doc__')
@@ -266,8 +265,7 @@ class LazyObject(object):
         """
         Must be implemented by subclasses to initialize the wrapped object.
         """
-        raise NotImplementedError(
-            'subclasses of LazyObject must provide a _setup() method')
+        raise NotImplementedError('subclasses of LazyObject must provide a _setup() method')
 
     # Because we have messed with __class__ below, we confuse pickle as to what
     # class we are pickling. It also appears to stop __reduce__ from being
@@ -295,12 +293,7 @@ class LazyObject(object):
             # code fails miserably (see regression test). Instead, we return
             # exactly what's returned if there's no ``__reduce__`` method at
             # all.
-            return (
-                copyreg._reconstructor,
-                (self.__class__,
-                 object,
-                 None),
-                self.__getstate__())
+            return (copyreg._reconstructor, (self.__class__, object, None), self.__getstate__())
 
     def __deepcopy__(self, memo):
         if self._wrapped is empty:
@@ -350,7 +343,6 @@ class SimpleLazyObject(LazyObject):
     Designed for compound objects of unknown type. For builtins or objects of
     known type, use django.utils.functional.lazy.
     """
-
     def __init__(self, func):
         """
         Pass in a callable that returns the object to be wrapped.
@@ -443,8 +435,7 @@ else:
         }
         roots = set(dir(cls)) & set(convert)
         if not roots:
-            raise ValueError(
-                'must define at least one ordering operation: < > <= >=')
+            raise ValueError('must define at least one ordering operation: < > <= >=')
         root = max(roots)       # prefer __lt__ to __le__ to __gt__ to __ge__
         for opname, opfunc in convert[root]:
             if opname not in roots:

@@ -26,22 +26,14 @@ class ATZipCodeField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            ATZipCodeField,
-            self).__init__(
-            r'^[1-9]{1}\d{3}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(ATZipCodeField, self).__init__(r'^[1-9]{1}\d{3}$',
+                                             max_length, min_length, *args, **kwargs)
 
 
 class ATStateSelect(Select):
     """
     A ``Select`` widget that uses a list of AT states as its choices.
     """
-
     def __init__(self, attrs=None):
         super(ATStateSelect, self).__init__(attrs, choices=STATE_CHOICES)
 
@@ -58,8 +50,9 @@ class ATSocialSecurityNumberField(Field):
     This code is based on information available on
     http://de.wikipedia.org/wiki/Sozialversicherungsnummer#.C3.96sterreich
     """
-    default_error_messages = {'invalid': _(
-        'Enter a valid Austrian Social Security Number in XXXX XXXXXX format.'), }
+    default_error_messages = {
+        'invalid': _('Enter a valid Austrian Social Security Number in XXXX XXXXXX format.'),
+    }
 
     def clean(self, value):
         value = super(ATSocialSecurityNumberField, self).clean(value)

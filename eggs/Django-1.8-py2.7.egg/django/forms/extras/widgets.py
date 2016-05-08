@@ -66,8 +66,7 @@ class SelectDateWidget(Widget):
         # Optional string, list, or tuple to use as empty_label.
         if isinstance(empty_label, (list, tuple)):
             if not len(empty_label) == 3:
-                raise ValueError(
-                    'empty_label list/tuple must have 3 elements.')
+                raise ValueError('empty_label list/tuple must have 3 elements.')
 
             self.year_none_value = (0, empty_label[0])
             self.month_none_value = (0, empty_label[1])
@@ -89,41 +88,21 @@ class SelectDateWidget(Widget):
                 if settings.USE_L10N:
                     try:
                         input_format = get_format('DATE_INPUT_FORMATS')[0]
-                        v = datetime.datetime.strptime(
-                            force_str(value), input_format)
+                        v = datetime.datetime.strptime(force_str(value), input_format)
                         year_val, month_val, day_val = v.year, v.month, v.day
                     except ValueError:
                         pass
                 else:
                     match = RE_DATE.match(value)
                     if match:
-                        year_val, month_val, day_val = [
-                            int(v) for v in match.groups()]
+                        year_val, month_val, day_val = [int(v) for v in match.groups()]
         html = {}
         choices = [(i, i) for i in self.years]
-        html['year'] = self.create_select(
-            name,
-            self.year_field,
-            value,
-            year_val,
-            choices,
-            self.year_none_value)
+        html['year'] = self.create_select(name, self.year_field, value, year_val, choices, self.year_none_value)
         choices = list(six.iteritems(self.months))
-        html['month'] = self.create_select(
-            name,
-            self.month_field,
-            value,
-            month_val,
-            choices,
-            self.month_none_value)
+        html['month'] = self.create_select(name, self.month_field, value, month_val, choices, self.month_none_value)
         choices = [(i, i) for i in range(1, 32)]
-        html['day'] = self.create_select(
-            name,
-            self.day_field,
-            value,
-            day_val,
-            choices,
-            self.day_none_value)
+        html['day'] = self.create_select(name, self.day_field, value, day_val, choices, self.day_none_value)
 
         output = []
         for field in _parse_date_fmt():

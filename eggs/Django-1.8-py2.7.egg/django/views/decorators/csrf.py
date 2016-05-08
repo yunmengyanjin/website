@@ -15,7 +15,6 @@ using the decorator multiple times, is harmless and efficient.
 class _EnsureCsrfToken(CsrfViewMiddleware):
     # We need this to behave just like the CsrfViewMiddleware, but not reject
     # requests or log warnings.
-
     def _reject(self, request, reason):
         return None
 
@@ -30,18 +29,11 @@ enforces.
 
 
 class _EnsureCsrfCookie(CsrfViewMiddleware):
-
     def _reject(self, request, reason):
         return None
 
     def process_view(self, request, callback, callback_args, callback_kwargs):
-        retval = super(
-            _EnsureCsrfCookie,
-            self).process_view(
-            request,
-            callback,
-            callback_args,
-            callback_kwargs)
+        retval = super(_EnsureCsrfCookie, self).process_view(request, callback, callback_args, callback_kwargs)
         # Forces process_response to send the cookie
         get_token(request)
         return retval

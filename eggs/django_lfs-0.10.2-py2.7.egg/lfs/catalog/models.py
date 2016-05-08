@@ -158,64 +158,33 @@ class Category(models.Model):
     """
     name = models.CharField(_(u"Name"), max_length=50)
     slug = models.SlugField(_(u"Slug"), unique=True)
-    parent = models.ForeignKey(
-        "self",
-        verbose_name=_(u"Parent"),
-        blank=True,
-        null=True)
+    parent = models.ForeignKey("self", verbose_name=_(u"Parent"), blank=True, null=True)
 
     # If selected it shows products of the sub categories within the product
     # view. If not it shows only direct products of the category.
-    show_all_products = models.BooleanField(
-        _(u"Show all products"), default=True)
+    show_all_products = models.BooleanField(_(u"Show all products"), default=True)
 
-    products = models.ManyToManyField(
-        "Product",
-        verbose_name=_(u"Products"),
-        blank=True,
-        related_name="categories")
+    products = models.ManyToManyField("Product", verbose_name=_(u"Products"), blank=True, related_name="categories")
     short_description = models.TextField(_(u"Short description"), blank=True)
     description = models.TextField(_(u"Description"), blank=True)
-    image = ImageWithThumbsField(
-        _(u"Image"),
-        upload_to="images",
-        blank=True,
-        null=True,
-        sizes=THUMBNAIL_SIZES)
+    image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=THUMBNAIL_SIZES)
     position = models.IntegerField(_(u"Position"), default=1000)
-    exclude_from_navigation = models.BooleanField(
-        _(u"Exclude from navigation"), default=False)
+    exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
 
-    static_block = models.ForeignKey(
-        "StaticBlock",
-        verbose_name=_(u"Static block"),
-        blank=True,
-        null=True,
-        related_name="categories")
-    template = models.PositiveSmallIntegerField(
-        _(u"Category template"),
-        blank=True,
-        null=True,
-        choices=CATEGORY_TEMPLATES)
+    static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="categories")
+    template = models.PositiveSmallIntegerField(_(u"Category template"), blank=True, null=True, choices=CATEGORY_TEMPLATES)
     active_formats = models.BooleanField(_(u"Active formats"), default=False)
 
     product_rows = models.IntegerField(_(u"Product rows"), default=3)
     product_cols = models.IntegerField(_(u"Product cols"), default=3)
     category_cols = models.IntegerField(_(u"Category cols"), default=3)
 
-    meta_title = models.CharField(
-        _(u"Meta title"),
-        max_length=100,
-        default="<name>")
+    meta_title = models.CharField(_(u"Meta title"), max_length=100, default="<name>")
     meta_keywords = models.TextField(_(u"Meta keywords"), blank=True)
     meta_description = models.TextField(_(u"Meta description"), blank=True)
 
     level = models.PositiveSmallIntegerField(default=1)
-    uid = models.CharField(
-        max_length=50,
-        editable=False,
-        unique=True,
-        default=get_unique_id_str)
+    uid = models.CharField(max_length=50, editable=False, unique=True, default=get_unique_id_str)
 
     class Meta:
         ordering = ("position", )
@@ -248,8 +217,7 @@ class Category(models.Model):
                 children.append(category)
                 _get_all_children(category, children)
 
-        cache_key = "%s-category-all-children-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        cache_key = "%s-category-all-children-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         children = cache.get(cache_key)
         if children is not None:
             return children
@@ -266,8 +234,7 @@ class Category(models.Model):
         """
         Returns the first level child categories.
         """
-        cache_key = "%s-category-children-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        cache_key = "%s-category-children-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
 
         categories = cache.get(cache_key)
         if categories is not None:
@@ -282,7 +249,7 @@ class Category(models.Model):
         """
         Returns format information.
         """
-        if self.active_formats:
+        if self.active_formats == True:
             return {
                 "product_cols": self.product_cols,
                 "product_rows": self.product_rows,
@@ -351,8 +318,7 @@ class Category(models.Model):
         """
         Returns all parent categories.
         """
-        cache_key = "%s-category-parents-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        cache_key = "%s-category-parents-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         parents = cache.get(cache_key)
         if parents is not None:
             return parents
@@ -370,8 +336,7 @@ class Category(models.Model):
         """
         Returns the direct products of the category.
         """
-        cache_key = "%s-category-products-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        cache_key = "%s-category-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         products = cache.get(cache_key)
         if products is not None:
             return products
@@ -387,14 +352,13 @@ class Category(models.Model):
         """
         from lfs.caching.utils import get_cache_group_id
         properties_version = get_cache_group_id('global-properties-version')
-        cache_key = "%s-%s-category-property-groups-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, properties_version, self.id)
+        cache_key = "%s-%s-category-property-groups-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, properties_version,
+                                                           self.id)
         pgs = cache.get(cache_key)
         if pgs is not None:
             return pgs
         products = self.get_products()
-        pgs = lfs.catalog.models.PropertyGroup.objects.filter(
-            products__in=products).distinct()
+        pgs = lfs.catalog.models.PropertyGroup.objects.filter(products__in=products).distinct()
         cache.set(cache_key, pgs)
 
         return pgs
@@ -403,8 +367,7 @@ class Category(models.Model):
         """
         Returns the direct products and all products of the sub categories
         """
-        cache_key = "%s-category-all-products-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        cache_key = "%s-category-all-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         products = cache.get(cache_key)
         if products is not None:
             return products
@@ -431,8 +394,7 @@ class Category(models.Model):
         """
         Returns the static block of the category.
         """
-        cache_key = "%s-static-block-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        cache_key = "%s-static-block-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         blocks = cache.get(cache_key)
         if blocks is not None:
             return blocks
@@ -625,118 +587,52 @@ class Product(models.Model):
         The type of the quantity field: Integer or Decimal for now.
     """
     # All products
-    name = models.CharField(
-        _(u"Name"),
-        help_text=_(u"The name of the product."),
-        max_length=80,
-        blank=True)
-    slug = models.SlugField(
-        _(u"Slug"),
-        help_text=_(u"The unique last part of the Product's URL."),
-        unique=True,
-        max_length=120)
-    sku = models.CharField(
-        _(u"SKU"),
-        help_text=_(u"Your unique article number of the product."),
-        blank=True,
-        max_length=30)
+    name = models.CharField(_(u"Name"), help_text=_(u"The name of the product."), max_length=80, blank=True)
+    slug = models.SlugField(_(u"Slug"), help_text=_(u"The unique last part of the Product's URL."), unique=True, max_length=120)
+    sku = models.CharField(_(u"SKU"), help_text=_(u"Your unique article number of the product."), blank=True, max_length=30)
     price = models.FloatField(_(u"Price"), default=0.0)
-    price_calculator = models.CharField(
-        _(u"Price calculator"),
-        null=True,
-        blank=True,
-        choices=settings.LFS_PRICE_CALCULATORS,
-        max_length=255)
+    price_calculator = models.CharField(_(u"Price calculator"), null=True, blank=True,
+                                        choices=settings.LFS_PRICE_CALCULATORS,
+                                        max_length=255)
     effective_price = models.FloatField(_(u"Price"), blank=True)
-    price_unit = models.CharField(
-        _(u"Price unit"),
-        blank=True,
-        max_length=20,
-        choices=LFS_PRICE_UNITS)
-    unit = models.CharField(
-        _(u"Quantity field unit"),
-        blank=True,
-        max_length=20,
-        choices=LFS_UNITS)
+    price_unit = models.CharField(_(u"Price unit"), blank=True, max_length=20, choices=LFS_PRICE_UNITS)
+    unit = models.CharField(_(u"Quantity field unit"), blank=True, max_length=20, choices=LFS_UNITS)
     short_description = models.TextField(_(u"Short description"), blank=True)
     description = models.TextField(_(u"Description"), blank=True)
-    images = generic.GenericRelation(
-        "Image",
-        verbose_name=_(u"Images"),
-        object_id_field="content_id",
-        content_type_field="content_type")
+    images = generic.GenericRelation("Image", verbose_name=_(u"Images"),
+        object_id_field="content_id", content_type_field="content_type")
 
-    meta_title = models.CharField(
-        _(u"Meta title"),
-        blank=True,
-        default="<name>",
-        max_length=80)
+    meta_title = models.CharField(_(u"Meta title"), blank=True, default="<name>", max_length=80)
     meta_keywords = models.TextField(_(u"Meta keywords"), blank=True)
     meta_description = models.TextField(_(u"Meta description"), blank=True)
 
-    related_products = models.ManyToManyField(
-        "self",
-        verbose_name=_(u"Related products"),
-        blank=True,
-        symmetrical=False,
-        related_name="reverse_related_products")
+    related_products = models.ManyToManyField("self", verbose_name=_(u"Related products"), blank=True,
+        symmetrical=False, related_name="reverse_related_products")
 
-    accessories = models.ManyToManyField(
-        "Product",
-        verbose_name=_(u"Acessories"),
-        blank=True,
-        symmetrical=False,
-        through="ProductAccessories",
+    accessories = models.ManyToManyField("Product", verbose_name=_(u"Acessories"), blank=True,
+        symmetrical=False, through="ProductAccessories",
         related_name="reverse_accessories")
 
     for_sale = models.BooleanField(_(u"For sale"), default=False)
     for_sale_price = models.FloatField(_(u"For sale price"), default=0.0)
     active = models.BooleanField(_(u"Active"), default=False)
-    creation_date = models.DateTimeField(
-        _(u"Creation date"), auto_now_add=True)
+    creation_date = models.DateTimeField(_(u"Creation date"), auto_now_add=True)
 
     # Stocks
-    supplier = models.ForeignKey(
-        Supplier,
-        related_name='product_set',
-        null=True,
-        blank=True)
+    supplier = models.ForeignKey(Supplier, related_name='product_set', null=True, blank=True)
     deliverable = models.BooleanField(_(u"Deliverable"), default=True)
-    manual_delivery_time = models.BooleanField(
-        _(u"Manual delivery time"), default=False)
-    delivery_time = models.ForeignKey(
-        "DeliveryTime",
-        verbose_name=_(u"Delivery time"),
-        blank=True,
-        null=True,
-        related_name="products_delivery_time")
-    order_time = models.ForeignKey(
-        "DeliveryTime",
-        verbose_name=_(u"Order time"),
-        blank=True,
-        null=True,
-        related_name="products_order_time")
+    manual_delivery_time = models.BooleanField(_(u"Manual delivery time"), default=False)
+    delivery_time = models.ForeignKey("DeliveryTime", verbose_name=_(u"Delivery time"), blank=True, null=True, related_name="products_delivery_time")
+    order_time = models.ForeignKey("DeliveryTime", verbose_name=_(u"Order time"), blank=True, null=True, related_name="products_order_time")
     ordered_at = models.DateField(_(u"Ordered at"), blank=True, null=True)
-    manage_stock_amount = models.BooleanField(
-        _(u"Manage stock amount"), default=False)
+    manage_stock_amount = models.BooleanField(_(u"Manage stock amount"), default=False)
     stock_amount = models.FloatField(_(u"Stock amount"), default=0)
 
-    active_packing_unit = models.PositiveSmallIntegerField(
-        _(u"Active packing"), default=0)
-    packing_unit = models.FloatField(
-        _(u"Amount per packing"), blank=True, null=True)
-    packing_unit_unit = models.CharField(
-        _(u"Packing unit"),
-        blank=True,
-        max_length=30,
-        choices=LFS_PACKING_UNITS)
+    active_packing_unit = models.PositiveSmallIntegerField(_(u"Active packing"), default=0)
+    packing_unit = models.FloatField(_(u"Amount per packing"), blank=True, null=True)
+    packing_unit_unit = models.CharField(_(u"Packing unit"), blank=True, max_length=30, choices=LFS_PACKING_UNITS)
 
-    static_block = models.ForeignKey(
-        "StaticBlock",
-        verbose_name=_(u"Static block"),
-        blank=True,
-        null=True,
-        related_name="products")
+    static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="products")
 
     # Dimension
     weight = models.FloatField(_(u"Weight"), default=0.0)
@@ -746,103 +642,54 @@ class Product(models.Model):
 
     # Standard Products
     tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
-    sub_type = models.CharField(
-        _(u"Subtype"),
-        max_length=10,
-        choices=PRODUCT_TYPE_CHOICES,
-        default=STANDARD_PRODUCT)
+    sub_type = models.CharField(_(u"Subtype"),
+        max_length=10, choices=PRODUCT_TYPE_CHOICES, default=STANDARD_PRODUCT)
 
     # Varianted Products
-    default_variant = models.ForeignKey(
-        "self",
-        verbose_name=_(u"Default variant"),
-        blank=True,
-        null=True)
-    category_variant = models.SmallIntegerField(
-        _(u"Category variant"), blank=True, null=True,)
+    default_variant = models.ForeignKey("self", verbose_name=_(u"Default variant"), blank=True, null=True)
+    category_variant = models.SmallIntegerField(_(u"Category variant"), blank=True, null=True,)
 
-    variants_display_type = models.IntegerField(
-        _(u"Variants display type"),
-        choices=VARIANTS_DISPLAY_TYPE_CHOICES,
-        default=LIST)
+    variants_display_type = models.IntegerField(_(u"Variants display type"),
+        choices=VARIANTS_DISPLAY_TYPE_CHOICES, default=LIST)
 
     # Product Variants
     variant_position = models.IntegerField(default=999)
-    parent = models.ForeignKey(
-        "self",
-        blank=True,
-        null=True,
-        verbose_name=_(u"Parent"),
-        related_name="variants")
+    parent = models.ForeignKey("self", blank=True, null=True, verbose_name=_(u"Parent"), related_name="variants")
     active_name = models.BooleanField(_(u"Active name"), default=False)
     active_sku = models.BooleanField(_(u"Active SKU"), default=False)
-    active_short_description = models.BooleanField(
-        _(u"Active short description"), default=False)
-    active_static_block = models.BooleanField(
-        _(u"Active static bock"), default=False)
-    active_description = models.BooleanField(
-        _(u"Active description"), default=False)
+    active_short_description = models.BooleanField(_(u"Active short description"), default=False)
+    active_static_block = models.BooleanField(_(u"Active static bock"), default=False)
+    active_description = models.BooleanField(_(u"Active description"), default=False)
     active_price = models.BooleanField(_(u"Active price"), default=False)
-    active_for_sale = models.PositiveSmallIntegerField(
-        _("Active for sale"), choices=CHOICES, default=CHOICES_STANDARD)
-    active_for_sale_price = models.BooleanField(
-        _(u"Active for sale price"), default=False)
+    active_for_sale = models.PositiveSmallIntegerField(_("Active for sale"), choices=CHOICES, default=CHOICES_STANDARD)
+    active_for_sale_price = models.BooleanField(_(u"Active for sale price"), default=False)
     active_images = models.BooleanField(_(u"Active Images"), default=False)
-    active_related_products = models.BooleanField(
-        _(u"Active related products"), default=False)
-    active_accessories = models.BooleanField(
-        _(u"Active accessories"), default=False)
-    active_meta_title = models.BooleanField(
-        _(u"Active meta title"), default=False)
-    active_meta_description = models.BooleanField(
-        _(u"Active meta description"), default=False)
-    active_meta_keywords = models.BooleanField(
-        _(u"Active meta keywords"), default=False)
-    active_dimensions = models.BooleanField(
-        _(u"Active dimensions"), default=False)
-    template = models.PositiveSmallIntegerField(
-        _(u"Product template"),
-        blank=True,
-        null=True,
-        choices=PRODUCT_TEMPLATES)
+    active_related_products = models.BooleanField(_(u"Active related products"), default=False)
+    active_accessories = models.BooleanField(_(u"Active accessories"), default=False)
+    active_meta_title = models.BooleanField(_(u"Active meta title"), default=False)
+    active_meta_description = models.BooleanField(_(u"Active meta description"), default=False)
+    active_meta_keywords = models.BooleanField(_(u"Active meta keywords"), default=False)
+    active_dimensions = models.BooleanField(_(u"Active dimensions"), default=False)
+    template = models.PositiveSmallIntegerField(_(u"Product template"), blank=True, null=True, choices=PRODUCT_TEMPLATES)
 
     # Price calculation
-    active_price_calculation = models.BooleanField(
-        _(u"Active price calculation"), default=False)
-    price_calculation = models.CharField(
-        _(u"Price Calculation"), blank=True, max_length=100)
+    active_price_calculation = models.BooleanField(_(u"Active price calculation"), default=False)
+    price_calculation = models.CharField(_(u"Price Calculation"), blank=True, max_length=100)
 
     # Base price
-    active_base_price = models.PositiveSmallIntegerField(
-        _(u"Active base price"), default=0)
-    base_price_unit = models.CharField(
-        _(u"Base price unit"),
-        blank=True,
-        max_length=30,
-        choices=LFS_BASE_PRICE_UNITS)
-    base_price_amount = models.FloatField(
-        _(u"Base price amount"), default=0.0, blank=True, null=True)
+    active_base_price = models.PositiveSmallIntegerField(_(u"Active base price"), default=0)
+    base_price_unit = models.CharField(_(u"Base price unit"), blank=True, max_length=30, choices=LFS_BASE_PRICE_UNITS)
+    base_price_amount = models.FloatField(_(u"Base price amount"), default=0.0, blank=True, null=True)
 
     # Manufacturer
-    sku_manufacturer = models.CharField(
-        _(u"SKU Manufacturer"), blank=True, max_length=100)
-    manufacturer = models.ForeignKey(
-        Manufacturer,
-        verbose_name=_(u"Manufacturer"),
-        blank=True,
-        null=True,
-        related_name="products",
-        on_delete=models.SET_NULL)
-    type_of_quantity_field = models.PositiveSmallIntegerField(
-        _(u"Type of quantity field"), blank=True, null=True, choices=QUANTITY_FIELD_TYPES)
+    sku_manufacturer = models.CharField(_(u"SKU Manufacturer"), blank=True, max_length=100)
+    manufacturer = models.ForeignKey(Manufacturer, verbose_name=_(u"Manufacturer"), blank=True, null=True,
+                                     related_name="products", on_delete=models.SET_NULL)
+    type_of_quantity_field = models.PositiveSmallIntegerField(_(u"Type of quantity field"), blank=True, null=True, choices=QUANTITY_FIELD_TYPES)
 
     objects = ActiveManager()
 
-    uid = models.CharField(
-        max_length=50,
-        editable=False,
-        unique=True,
-        default=get_unique_id_str)
+    uid = models.CharField(max_length=50, editable=False, unique=True, default=get_unique_id_str)
 
     class Meta:
         ordering = ("name", )
@@ -860,8 +707,7 @@ class Product(models.Model):
             dv = self.parent.get_default_variant()
             # if this is default variant
             if dv and self.pk == dv.pk:
-                # trigger effective price calculation for parent to have it set
-                # to price of default variant
+                # trigger effective price calculation for parent to have it set to price of default variant
                 super(Product, self).save(*args, **kwargs)
                 self.parent.save()
             else:
@@ -944,8 +790,7 @@ class Product(models.Model):
         """
         Returns the categories of the product.
         """
-        cache_key = "%s-product-categories-%s-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id, with_parents)
+        cache_key = "%s-product-categories-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id, with_parents)
         categories = cache.get(cache_key)
 
         if categories is not None:
@@ -1032,8 +877,7 @@ class Product(models.Model):
         if self.is_variant():
             if self.active_description:
                 description = self.description
-                description = description.replace(
-                    "%P", self.parent.description)
+                description = description.replace("%P", self.parent.description)
             else:
                 description = self.parent.description
         else:
@@ -1064,9 +908,8 @@ class Product(models.Model):
             else:
                 return self.active_base_price == CHOICES_YES
         else:
-            # we have to check for 1 as it's value set
-            return self.active_base_price in (1, CHOICES_YES)
-            # by checkbox input
+            return self.active_base_price in (1, CHOICES_YES)  # we have to check for 1 as it's value set
+                                                               # by checkbox input
 
     def get_base_packing_price(self, request, with_properties=True):
         """
@@ -1128,8 +971,7 @@ class Product(models.Model):
         """
         Returns all images of the product, including the main image.
         """
-        cache_key = "%s-product-images-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        cache_key = "%s-product-images-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         images = cache.get(cache_key)
 
         if images is None:
@@ -1187,10 +1029,7 @@ class Product(models.Model):
             md = self.meta_description
 
         md = md.replace("<name>", self.get_name())
-        md = md.replace(
-            "<short-description>",
-            striptags(
-                self.get_short_description()))
+        md = md.replace("<short-description>", striptags(self.get_short_description()))
         return md
 
     # TODO: Check whether there is a test case for that and write one if not.
@@ -1217,10 +1056,8 @@ class Product(models.Model):
         from lfs.caching.utils import get_cache_group_id
         pid = self.get_parent().pk
         properties_version = get_cache_group_id('global-properties-version')
-        group_id = '%s-%s' % (properties_version,
-                              get_cache_group_id('properties-%s' % pid))
-        cache_key = "%s-%s-productpropertyvalue%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id)
+        group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
+        cache_key = "%s-%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id)
         options = cache.get(cache_key)
         if options is None:
             options = {}
@@ -1239,20 +1076,14 @@ class Product(models.Model):
         from lfs.caching.utils import get_cache_group_id
         pid = self.get_parent().pk
         properties_version = get_cache_group_id('global-properties-version')
-        group_id = '%s-%s' % (properties_version,
-                              get_cache_group_id('properties-%s' % pid))
-        cache_key = "%s-%s-displayed-properties-%s" % (
-            group_id, settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
+        cache_key = "%s-%s-displayed-properties-%s" % (group_id, settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         properties = cache.get(cache_key)
         if properties:
             return properties
 
         properties = []
-        for ppv in self.property_values.filter(
-                property__display_on_product=True,
-                type=PROPERTY_VALUE_TYPE_DISPLAY).order_by(
-                'property_group__name',
-                'property__position'):
+        for ppv in self.property_values.filter(property__display_on_product=True, type=PROPERTY_VALUE_TYPE_DISPLAY).order_by('property_group__name', 'property__position'):
             if ppv.property.is_select_field:
                 try:
                     po = PropertyOption.objects.get(pk=int(float(ppv.value)))
@@ -1285,10 +1116,8 @@ class Product(models.Model):
         from lfs.caching.utils import get_cache_group_id
         pid = self.get_parent().pk
         properties_version = get_cache_group_id('global-properties-version')
-        group_id = '%s-%s' % (properties_version,
-                              get_cache_group_id('properties-%s' % pid))
-        cache_key = "%s-variant-properties-%s-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id)
+        group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
+        cache_key = "%s-variant-properties-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id)
 
         properties = cache.get(cache_key)
         if properties:
@@ -1296,9 +1125,7 @@ class Product(models.Model):
 
         properties = []
 
-        for ppv in self.property_values.filter(
-                type=PROPERTY_VALUE_TYPE_VARIANT).order_by(
-                "property_group__name", "property__position"):
+        for ppv in self.property_values.filter(type=PROPERTY_VALUE_TYPE_VARIANT).order_by("property_group__name", "property__position"):
             if ppv.property.is_select_field:
                 try:
                     po = PropertyOption.objects.get(pk=int(float(ppv.value)))
@@ -1344,16 +1171,14 @@ class Product(models.Model):
                 property_group = prop_dict['property_group']
                 for property_option in prop.options.all():
                     # check if option exists in any variant
-                    option_used = ProductPropertyValue.objects.filter(
-                        parent_id=self.pk,
-                        product__active=True,
-                        property=prop,
-                        property_group=property_group,
-                        type=PROPERTY_VALUE_TYPE_VARIANT,
-                        value=property_option.pk).exists()
+                    option_used = ProductPropertyValue.objects.filter(parent_id=self.pk,
+                                                                      product__active=True,
+                                                                      property=prop,
+                                                                      property_group=property_group,
+                                                                      type=PROPERTY_VALUE_TYPE_VARIANT,
+                                                                      value=property_option.pk).exists()
                     if option_used:
-                        if variant and variant.has_option(
-                                property_group, prop, property_option):
+                        if variant and variant.has_option(property_group, prop, property_option):
                             selected = True
                             selected_option_value = property_option.pk
                         else:
@@ -1364,20 +1189,17 @@ class Product(models.Model):
                             "selected": selected,
                         })
 
-                # check for variants that do not have such property and if such
-                # variants exists add empty option
-                ppv_count = ProductPropertyValue.objects.filter(
-                    parent_id=self.pk,
-                    product__active=True,
-                    type=PROPERTY_VALUE_TYPE_VARIANT,
-                    property=prop,
-                    property_group=property_group).count()
+                # check for variants that do not have such property and if such variants exists add empty option
+                ppv_count = ProductPropertyValue.objects.filter(parent_id=self.pk,
+                                                                product__active=True,
+                                                                type=PROPERTY_VALUE_TYPE_VARIANT,
+                                                                property=prop,
+                                                                property_group=property_group).count()
                 if ppv_count != self.get_variants().count():
                     selected = False
                     if variant and selected_option_value == '':
                         selected = True
-                    options.insert(
-                        0, {'id': '', 'name': '', 'selected': selected})
+                    options.insert(0, {'id': '', 'name': '', 'selected': selected})
                 if not (len(options) == 1 and options[0]['id'] == ''):
                     properties.append({
                         "id": prop.id,
@@ -1396,26 +1218,24 @@ class Product(models.Model):
                 property_group = prop_dict['property_group']
                 if variant:
                     try:
-                        ppv = ProductPropertyValue.objects.get(
-                            product=variant,
-                            type=PROPERTY_VALUE_TYPE_VARIANT,
-                            property=prop,
-                            property_group=property_group)
+                        ppv = ProductPropertyValue.objects.get(product=variant,
+                                                               type=PROPERTY_VALUE_TYPE_VARIANT,
+                                                               property=prop,
+                                                               property_group=property_group)
                         selected_option_value = ppv.value
-                        selected_option_name = prop.options.get(
-                            pk=ppv.value).name
+                        selected_option_name = prop.options.get(pk=ppv.value).name
                     except (ProductPropertyValue.DoesNotExist, PropertyOption.DoesNotExist):
                         pass
                 properties.append({
-                    "id": prop.id,
-                    "name": prop.name,
-                    "title": prop.title,
-                    "unit": prop.unit,
-                    "selected_option_name": selected_option_name,
-                    "selected_option_value": selected_option_value,
-                    "property_group": property_group,
-                    "property_group_id": property_group.id if property_group else 0
-                })
+                                    "id": prop.id,
+                                    "name": prop.name,
+                                    "title": prop.title,
+                                    "unit": prop.unit,
+                                    "selected_option_name": selected_option_name,
+                                    "selected_option_value": selected_option_value,
+                                    "property_group": property_group,
+                                    "property_group_id": property_group.id if property_group else 0
+                                 })
         return properties
 
     def get_variant_properties_for_parent(self):
@@ -1426,10 +1246,8 @@ class Product(models.Model):
         from lfs.caching.utils import get_cache_group_id
         pid = self.get_parent().pk
         properties_version = get_cache_group_id('global-properties-version')
-        group_id = '%s-%s' % (properties_version,
-                              get_cache_group_id('properties-%s' % pid))
-        cache_key = "%s-variant-properties-for-parent-%s-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id)
+        group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
+        cache_key = "%s-variant-properties-for-parent-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id)
 
         properties = cache.get(cache_key)
         if properties:
@@ -1447,19 +1265,13 @@ class Product(models.Model):
         from lfs.caching.utils import get_cache_group_id
         pid = self.get_parent().pk
         properties_version = get_cache_group_id('global-properties-version')
-        group_id = '%s-%s' % (properties_version,
-                              get_cache_group_id('properties-%s' % pid))
-        options = cache.get(
-            "%s-%s-productpropertyvalue%s" %
-            (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id))
+        group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
+        options = cache.get("%s-%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id))
         if options is None:
             options = {}
-            for pvo in self.property_values.filter(
-                    property_group=property_group):
+            for pvo in self.property_values.filter(property_group=property_group):
                 options[pvo.property_id] = pvo.value
-            cache.set(
-                "%s-%s-productpropertyvalue%s" %
-                (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id), options)
+            cache.set("%s-%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id), options)
 
         try:
             return options[prop.id] == str(option.id)
@@ -1477,11 +1289,8 @@ class Product(models.Model):
             if prop.add_price:
                 # Try to get the default value of the property
                 try:
-                    ppv = ProductPropertyValue.objects.get(
-                        product=self,
-                        property_group=property_group,
-                        property=prop,
-                        type=PROPERTY_VALUE_TYPE_DEFAULT)
+                    ppv = ProductPropertyValue.objects.get(product=self, property_group=property_group,
+                                                           property=prop, type=PROPERTY_VALUE_TYPE_DEFAULT)
                     po = PropertyOption.objects.get(pk=ppv.value)
                 except (ObjectDoesNotExist, ValueError):
                     # If there is no explicit default value try to get the first
@@ -1513,8 +1322,7 @@ class Product(models.Model):
         if obj.price_calculator is not None:
             price_calculator = obj.price_calculator
         else:
-            price_calculator = lfs.core.utils.get_default_shop(
-                request).price_calculator
+            price_calculator = lfs.core.utils.get_default_shop(request).price_calculator
 
         price_calculator_class = lfs.core.utils.import_symbol(price_calculator)
         return price_calculator_class(request, self)
@@ -1664,10 +1472,8 @@ class Product(models.Model):
         """
         properties = []
         for property_group in self.property_groups.all():
-            for prop in property_group.properties.order_by(
-                    "groupspropertiesrelation"):
-                properties.append(
-                    {'property_group': property_group, 'property': prop})
+            for prop in property_group.properties.order_by("groupspropertiesrelation"):
+                properties.append({'property_group': property_group, 'property': prop})
 
         return properties
 
@@ -1675,8 +1481,7 @@ class Product(models.Model):
         """
         Returns local properties of the product
         """
-        return [{'property_group': None, 'property': prop}
-                for prop in self.properties.order_by("productspropertiesrelation")]
+        return [{'property_group': None, 'property': prop} for prop in self.properties.order_by("productspropertiesrelation")]
 
     def get_properties(self):
         """
@@ -1685,11 +1490,7 @@ class Product(models.Model):
         properties = self.get_global_properties()
         properties.extend(self.get_local_properties())
 
-        properties.sort(
-            lambda a,
-            b: cmp(
-                a['property'].position,
-                b['property'].position))
+        properties.sort(lambda a, b: cmp(a['property'].position, b['property'].position))
 
         return properties
 
@@ -1700,15 +1501,11 @@ class Product(models.Model):
         # global
         properties = []
         for property_group in self.property_groups.all():
-            for prop in property_group.properties.filter(
-                    type=PROPERTY_SELECT_FIELD,
-                    variants=True).order_by("groupspropertiesrelation"):
-                properties.append(
-                    {'property_group': property_group, 'property': prop})
+            for prop in property_group.properties.filter(type=PROPERTY_SELECT_FIELD, variants=True).order_by("groupspropertiesrelation"):
+                properties.append({'property_group': property_group, 'property': prop})
 
         # local
-        for prop in self.properties.filter(
-                type=PROPERTY_SELECT_FIELD).order_by("productspropertiesrelation"):
+        for prop in self.properties.filter(type=PROPERTY_SELECT_FIELD).order_by("productspropertiesrelation"):
             properties.append({'property_group': None, 'property': prop})
 
         return properties
@@ -1720,14 +1517,11 @@ class Product(models.Model):
         # global
         properties = []
         for property_group in self.property_groups.all():
-            for prop in property_group.properties.filter(
-                    configurable=True).order_by("groupspropertiesrelation"):
-                properties.append(
-                    {'property_group': property_group, 'property': prop})
+            for prop in property_group.properties.filter(configurable=True).order_by("groupspropertiesrelation"):
+                properties.append({'property_group': property_group, 'property': prop})
 
         # local
-        for prop in self.properties.filter(
-                configurable=True).order_by("productspropertiesrelation"):
+        for prop in self.properties.filter(configurable=True).order_by("productspropertiesrelation"):
             properties.append(prop)
 
         return properties
@@ -1761,8 +1555,7 @@ class Product(models.Model):
         """
         Returns the related products of the product.
         """
-        cache_key = "%s-related-products-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        cache_key = "%s-related-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         related_products = cache.get(cache_key)
 
         if related_products is None:
@@ -1783,8 +1576,7 @@ class Product(models.Model):
         This is either a selected variant or the first added variant. If the
         product has no variants it is None.
         """
-        cache_key = "%s-default-variant-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        cache_key = "%s-default-variant-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         default_variant = cache.get(cache_key)
 
         if default_variant is not None:
@@ -1870,9 +1662,9 @@ class Product(models.Model):
                 prices.append(price)
 
             return {
-                "price": min(prices),
-                "starting_from": len(prices) > 1,
-            }
+            "price": min(prices),
+            "starting_from": len(prices) > 1,
+        }
 
     def get_cheapest_standard_price_gross(self, request):
         """
@@ -1924,8 +1716,7 @@ class Product(models.Model):
         Returns the static block of the product. Takes care whether the product
         is a variant and meta description are active or not.
         """
-        cache_key = "%s-product-static-block-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        cache_key = "%s-product-static-block-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         block = cache.get(cache_key)
         if block is not None:
             return block
@@ -1967,10 +1758,9 @@ class Product(models.Model):
         """
         options.sort()
         parsed_options = []
-        # remove option with empty option_id (this means that variant doesn't
-        # have such property)
+        # remove option with empty option_id (this means that variant doesn't have such property)
         for option in options:
-            if option.find('|') == len(option) - 1:
+            if option.find('|') == len(option) -1:
                 continue
             parsed_options.append(option)
         options = "".join(parsed_options)
@@ -1980,14 +1770,9 @@ class Product(models.Model):
             variants = variants.filter(active=True)
 
         for variant in variants:
-            temp = variant.property_values.filter(
-                type=PROPERTY_VALUE_TYPE_VARIANT)
-            temp = sorted(
-                [
-                    "%s|%s|%s" %
-                    (x.property_group_id if x.property_group_id else 0,
-                     x.property_id,
-                     x.value) for x in temp])
+            temp = variant.property_values.filter(type=PROPERTY_VALUE_TYPE_VARIANT)
+            temp = ["%s|%s|%s" % (x.property_group_id if x.property_group_id else 0, x.property_id, x.value) for x in temp]
+            temp.sort()
             temp = "".join(temp)
 
             if temp == options:
@@ -2145,8 +1930,7 @@ class Product(models.Model):
             quantity = 1 if quantity <= 0 else quantity
 
         type_of_quantity_field = self.get_type_of_quantity_field()
-        if type_of_quantity_field == QUANTITY_FIELD_INTEGER or getattr(
-                settings, 'LFS_FORCE_INTEGER_QUANTITY', False):
+        if type_of_quantity_field == QUANTITY_FIELD_INTEGER or getattr(settings, 'LFS_FORCE_INTEGER_QUANTITY', False):
             quantity = int(quantity)
 
         return quantity
@@ -2204,7 +1988,7 @@ class Product(models.Model):
         """
         Method to return the path of the product template
         """
-        if self.template is not None:
+        if self.template != None:
             id = int(self.template)
             return PRODUCT_TEMPLATES[id][1]["file"]
         return None
@@ -2234,12 +2018,8 @@ class ProductAccessories(models.Model):
     quantity
         The proposed amount of accessories for the product.
     """
-    product = models.ForeignKey("Product", verbose_name=_(
-        u"Product"), related_name="productaccessories_product")
-    accessory = models.ForeignKey(
-        "Product",
-        verbose_name=_(u"Accessory"),
-        related_name="productaccessories_accessory")
+    product = models.ForeignKey("Product", verbose_name=_(u"Product"), related_name="productaccessories_product")
+    accessory = models.ForeignKey("Product", verbose_name=_(u"Accessory"), related_name="productaccessories_accessory")
     position = models.IntegerField(_(u"Position"), default=999)
     quantity = models.FloatField(_(u"Quantity"), default=1)
 
@@ -2273,16 +2053,9 @@ class PropertyGroup(models.Model):
           The assigned products of the property group.
     """
     name = models.CharField(_(u"Name"), blank=True, max_length=50)
-    products = models.ManyToManyField(
-        Product,
-        verbose_name=_(u"Products"),
-        related_name="property_groups")
+    products = models.ManyToManyField(Product, verbose_name=_(u"Products"), related_name="property_groups")
     position = models.IntegerField(_(u"Position"), default=1000)
-    uid = models.CharField(
-        max_length=50,
-        editable=False,
-        unique=True,
-        default=get_unique_id_str)
+    uid = models.CharField(max_length=50, editable=False, unique=True, default=get_unique_id_str)
 
     class Meta:
         ordering = ("position", )
@@ -2379,30 +2152,16 @@ class Property(models.Model):
     """
     name = models.CharField(_(u"Name"), max_length=100)
     title = models.CharField(_(u"Title"), max_length=100)
-    groups = models.ManyToManyField(
-        PropertyGroup,
-        verbose_name=_(u"Group"),
-        blank=True,
-        through="GroupsPropertiesRelation",
-        related_name="properties")
-    products = models.ManyToManyField(
-        Product,
-        verbose_name=_(u"Products"),
-        blank=True,
-        through="ProductsPropertiesRelation",
-        related_name="properties")
+    groups = models.ManyToManyField(PropertyGroup, verbose_name=_(u"Group"), blank=True, through="GroupsPropertiesRelation", related_name="properties")
+    products = models.ManyToManyField(Product, verbose_name=_(u"Products"), blank=True, through="ProductsPropertiesRelation", related_name="properties")
     position = models.IntegerField(_(u"Position"), blank=True, null=True)
     unit = models.CharField(_(u"Unit"), blank=True, max_length=15)
-    display_on_product = models.BooleanField(
-        _(u"Display on product"), default=False)
+    display_on_product = models.BooleanField(_(u"Display on product"), default=False)
     local = models.BooleanField(_(u"Local"), default=False)
     variants = models.BooleanField(_(u"For Variants"), default=False)
     filterable = models.BooleanField(_(u"Filterable"), default=False)
     configurable = models.BooleanField(_(u"Configurable"), default=False)
-    type = models.PositiveSmallIntegerField(
-        _(u"Type"),
-        choices=PROPERTY_FIELD_CHOICES,
-        default=PROPERTY_TEXT_FIELD)
+    type = models.PositiveSmallIntegerField(_(u"Type"), choices=PROPERTY_FIELD_CHOICES, default=PROPERTY_TEXT_FIELD)
     price = models.FloatField(_(u"Price"), blank=True, null=True)
     display_price = models.BooleanField(_(u"Display price"), default=True)
     add_price = models.BooleanField(_(u"Add price"), default=True)
@@ -2411,22 +2170,14 @@ class Property(models.Model):
     unit_min = models.FloatField(_(u"Min"), blank=True, null=True)
     unit_max = models.FloatField(_(u"Max"), blank=True, null=True)
     unit_step = models.FloatField(_(u"Step"), blank=True, null=True)
-    decimal_places = models.PositiveSmallIntegerField(
-        _(u"Decimal places"), default=0)
+    decimal_places = models.PositiveSmallIntegerField(_(u"Decimal places"), default=0)
 
     required = models.BooleanField(_(u"Required"), default=False)
 
-    step_type = models.PositiveSmallIntegerField(
-        _(u"Step type"),
-        choices=PROPERTY_STEP_TYPE_CHOICES,
-        default=PROPERTY_STEP_TYPE_AUTOMATIC)
+    step_type = models.PositiveSmallIntegerField(_(u"Step type"), choices=PROPERTY_STEP_TYPE_CHOICES, default=PROPERTY_STEP_TYPE_AUTOMATIC)
     step = models.IntegerField(_(u"Step"), blank=True, null=True)
 
-    uid = models.CharField(
-        max_length=50,
-        editable=False,
-        unique=True,
-        default=get_unique_id_str)
+    uid = models.CharField(max_length=50, editable=False, unique=True, default=get_unique_id_str)
 
     class Meta:
         verbose_name_plural = _(u"Properties")
@@ -2484,10 +2235,7 @@ class FilterStep(models.Model):
         The start of the range. The end will be calculated from the start of the
         next step
     """
-    property = models.ForeignKey(
-        Property,
-        verbose_name=_(u"Property"),
-        related_name="steps")
+    property = models.ForeignKey(Property, verbose_name=_(u"Property"), related_name="steps")
     start = models.FloatField()
 
     class Meta:
@@ -2515,10 +2263,7 @@ class GroupsPropertiesRelation(models.Model):
     position
         The position of the property within the group.
     """
-    group = models.ForeignKey(
-        PropertyGroup,
-        verbose_name=_(u"Group"),
-        related_name="groupproperties")
+    group = models.ForeignKey(PropertyGroup, verbose_name=_(u"Group"), related_name="groupproperties")
     property = models.ForeignKey(Property, verbose_name=_(u"Property"))
     position = models.IntegerField(_(u"Position"), default=999)
 
@@ -2546,8 +2291,7 @@ class ProductsPropertiesRelation(models.Model):
         The position of the property within the product.
 
     """
-    product = models.ForeignKey(Product, verbose_name=_(
-        u"Product"), related_name="productsproperties")
+    product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="productsproperties")
     property = models.ForeignKey(Property, verbose_name=_(u"Property"))
     position = models.IntegerField(_(u"Position"), default=999)
 
@@ -2579,20 +2323,13 @@ class PropertyOption(models.Model):
         The position of the option within the property
 
     """
-    property = models.ForeignKey(
-        Property,
-        verbose_name=_(u"Property"),
-        related_name="options")
+    property = models.ForeignKey(Property, verbose_name=_(u"Property"), related_name="options")
 
     name = models.CharField(_(u"Name"), max_length=100)
     price = models.FloatField(_(u"Price"), blank=True, null=True, default=0.0)
     position = models.IntegerField(_(u"Position"), default=99)
 
-    uid = models.CharField(
-        max_length=50,
-        editable=False,
-        unique=True,
-        default=get_unique_id_str)
+    uid = models.CharField(max_length=50, editable=False, unique=True, default=get_unique_id_str)
 
     class Meta:
         ordering = ["position"]
@@ -2630,40 +2367,21 @@ class ProductPropertyValue(models.Model):
         The type of the product value, which is one of "filter value",
         "default value", "display value", "variant value".
     """
-    product = models.ForeignKey(
-        Product,
-        verbose_name=_(u"Product"),
-        related_name="property_values")
+    product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="property_values")
     parent_id = models.IntegerField(_(u"Parent"), blank=True, null=True)
-    property = models.ForeignKey(
-        "Property",
-        verbose_name=_(u"Property"),
-        related_name="property_values")
-    property_group = models.ForeignKey(
-        "PropertyGroup",
-        verbose_name=_(u"Property group"),
-        blank=True,
-        null=True,
-        related_name="property_values")
+    property = models.ForeignKey("Property", verbose_name=_(u"Property"), related_name="property_values")
+    property_group = models.ForeignKey("PropertyGroup", verbose_name=_(u"Property group"), blank=True, null=True,
+                                       related_name="property_values")
     value = models.CharField(_(u"Value"), blank=True, max_length=100)
-    value_as_float = models.FloatField(
-        _(u"Value as float"), blank=True, null=True)
+    value_as_float = models.FloatField(_(u"Value as float"), blank=True, null=True)
     type = models.PositiveSmallIntegerField(_(u"Type"))
 
     class Meta:
-        unique_together = (
-            "product",
-            "property",
-            "property_group",
-            "value",
-            "type")
+        unique_together = ("product", "property", "property_group", "value", "type")
 
     def __unicode__(self):
         property_group_name = self.property_group.name if self.property_group_id else ''
-        return u"%s/%s/%s: %s" % (self.product.get_name(),
-                                  property_group_name,
-                                  self.property.name,
-                                  self.value)
+        return u"%s/%s/%s: %s" % (self.product.get_name(), property_group_name, self.property.name, self.value)
 
     def save(self, *args, **kwargs):
         """
@@ -2705,24 +2423,12 @@ class Image(models.Model):
         The position of the image within the content object it belongs to.
 
     """
-    content_type = models.ForeignKey(
-        ContentType,
-        verbose_name=_(u"Content type"),
-        related_name="image",
-        blank=True,
-        null=True)
-    content_id = models.PositiveIntegerField(
-        _(u"Content id"), blank=True, null=True)
-    content = generic.GenericForeignKey(
-        ct_field="content_type", fk_field="content_id")
+    content_type = models.ForeignKey(ContentType, verbose_name=_(u"Content type"), related_name="image", blank=True, null=True)
+    content_id = models.PositiveIntegerField(_(u"Content id"), blank=True, null=True)
+    content = generic.GenericForeignKey(ct_field="content_type", fk_field="content_id")
 
     title = models.CharField(_(u"Title"), blank=True, max_length=100)
-    image = ImageWithThumbsField(
-        _(u"Image"),
-        upload_to="images",
-        blank=True,
-        null=True,
-        sizes=THUMBNAIL_SIZES)
+    image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=THUMBNAIL_SIZES)
     position = models.PositiveSmallIntegerField(_(u"Position"), default=999)
 
     class Meta:
@@ -2760,16 +2466,9 @@ class File(models.Model):
     title = models.CharField(blank=True, max_length=100)
     slug = models.SlugField()
 
-    content_type = models.ForeignKey(
-        ContentType,
-        verbose_name=_(u"Content type"),
-        related_name="files",
-        blank=True,
-        null=True)
-    content_id = models.PositiveIntegerField(
-        _(u"Content id"), blank=True, null=True)
-    content = generic.GenericForeignKey(
-        ct_field="content_type", fk_field="content_id")
+    content_type = models.ForeignKey(ContentType, verbose_name=_(u"Content type"), related_name="files", blank=True, null=True)
+    content_id = models.PositiveIntegerField(_(u"Content id"), blank=True, null=True)
+    content = generic.GenericForeignKey(ct_field="content_type", fk_field="content_id")
 
     position = models.SmallIntegerField(default=999)
     description = models.CharField(blank=True, max_length=100)
@@ -2809,11 +2508,7 @@ class StaticBlock(models.Model):
     name = models.CharField(_(u"Name"), max_length=30)
     display_files = models.BooleanField(_(u"Display files"), default=True)
     html = models.TextField(_(u"HTML"), blank=True)
-    files = generic.GenericRelation(
-        File,
-        verbose_name=_(u"Files"),
-        object_id_field="content_id",
-        content_type_field="content_type")
+    files = generic.GenericRelation(File, verbose_name=_(u"Files"), object_id_field="content_id", content_type_field="content_type")
     position = models.SmallIntegerField(_(u"Position"), default=1000)
 
     class Meta:
@@ -2844,10 +2539,7 @@ class DeliveryTime(models.Model):
     """
     min = models.FloatField(_(u"Min"))
     max = models.FloatField(_(u"Max"))
-    unit = models.PositiveSmallIntegerField(
-        _(u"Unit"),
-        choices=DELIVERY_TIME_UNIT_CHOICES,
-        default=DELIVERY_TIME_UNIT_DAYS)
+    unit = models.PositiveSmallIntegerField(_(u"Unit"), choices=DELIVERY_TIME_UNIT_CHOICES, default=DELIVERY_TIME_UNIT_DAYS)
     description = models.TextField(_(u"Description"), blank=True)
 
     class Meta:
@@ -2865,8 +2557,7 @@ class DeliveryTime(models.Model):
         """
         Adds to delivery times.
         """
-        # If necessary we transform both delivery times to the same base
-        # (hours)
+        # If necessary we transform both delivery times to the same base (hours)
         if self.unit != other.unit:
             a = self.as_hours()
             b = other.as_hours()
@@ -3060,10 +2751,7 @@ class ProductAttachment(models.Model):
     title = models.CharField(_(u"Title"), max_length=50)
     description = models.TextField(_(u"Description"), blank=True)
     file = models.FileField(upload_to="files", max_length=500)
-    product = models.ForeignKey(
-        Product,
-        verbose_name=_(u"Product"),
-        related_name="attachments")
+    product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="attachments")
     position = models.IntegerField(_(u"Position"), default=1)
 
     class Meta:

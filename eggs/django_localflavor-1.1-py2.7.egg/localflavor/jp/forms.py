@@ -20,14 +20,8 @@ class JPPostalCodeField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            JPPostalCodeField,
-            self).__init__(
-            r'^\d{3}-\d{4}$|^\d{7}$',
-            max_length,
-            min_length,
-            *args,
-            **kwargs)
+        super(JPPostalCodeField, self).__init__(r'^\d{3}-\d{4}$|^\d{7}$',
+                                                max_length, min_length, *args, **kwargs)
 
     def clean(self, value):
         """
@@ -42,7 +36,6 @@ class JPPrefectureSelect(Select):
     """
     A Select widget that uses a list of Japanese prefectures as its choices.
     """
-
     def __init__(self, attrs=None):
         super(JPPrefectureSelect, self).__init__(attrs, choices=JP_PREFECTURES)
 
@@ -52,10 +45,5 @@ class JPPrefectureCodeSelect(Select):
     A Select widget that uses a list of Japanese prefectures as its choices
     and the prefectures code as the post value.
     """
-
     def __init__(self, attrs=None):
-        super(
-            JPPrefectureCodeSelect,
-            self).__init__(
-            attrs,
-            choices=JP_PREFECTURE_CODES)
+        super(JPPrefectureCodeSelect, self).__init__(attrs, choices=JP_PREFECTURE_CODES)

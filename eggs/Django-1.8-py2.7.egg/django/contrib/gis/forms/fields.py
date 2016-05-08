@@ -22,9 +22,8 @@ class GeometryField(forms.Field):
         'required': _('No geometry value provided.'),
         'invalid_geom': _('Invalid geometry value.'),
         'invalid_geom_type': _('Invalid geometry type.'),
-        'transform_error': _(
-            'An error occurred when transforming the geometry '
-            'to the SRID of the geometry form field.'),
+        'transform_error': _('An error occurred when transforming the geometry '
+                             'to the SRID of the geometry form field.'),
     }
 
     def __init__(self, **kwargs):
@@ -46,8 +45,7 @@ class GeometryField(forms.Field):
             try:
                 value = GEOSGeometry(value)
             except (GEOSException, ValueError, TypeError):
-                raise forms.ValidationError(
-                    self.error_messages['invalid_geom'], code='invalid_geom')
+                raise forms.ValidationError(self.error_messages['invalid_geom'], code='invalid_geom')
 
         # Try to set the srid
         if not value.srid:
@@ -70,11 +68,8 @@ class GeometryField(forms.Field):
 
         # Ensuring that the geometry is of the correct type (indicated
         # using the OGC string label).
-        if str(geom.geom_type).upper(
-        ) != self.geom_type and not self.geom_type == 'GEOMETRY':
-            raise forms.ValidationError(
-                self.error_messages['invalid_geom_type'],
-                code='invalid_geom_type')
+        if str(geom.geom_type).upper() != self.geom_type and not self.geom_type == 'GEOMETRY':
+            raise forms.ValidationError(self.error_messages['invalid_geom_type'], code='invalid_geom_type')
 
         # Transforming the geometry if the SRID was set.
         if self.srid and self.srid != -1 and self.srid != geom.srid:
@@ -82,8 +77,7 @@ class GeometryField(forms.Field):
                 geom.transform(self.srid)
             except GEOSException:
                 raise forms.ValidationError(
-                    self.error_messages['transform_error'],
-                    code='transform_error')
+                    self.error_messages['transform_error'], code='transform_error')
 
         return geom
 

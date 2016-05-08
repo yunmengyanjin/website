@@ -24,10 +24,7 @@ from lfs.core.signals import product_removed_property_group
 
 
 @permission_required("core.manage_shop")
-def manage_properties(
-        request,
-        product_id,
-        template_name="manage/product/properties.html"):
+def manage_properties(request, product_id, template_name="manage/product/properties.html"):
     """Displays the UI for manage the properties for the product with passed
     product_id.
     """
@@ -46,16 +43,14 @@ def manage_properties(
     if not product.is_product_with_variants():
         for property_group in product.property_groups.all():
             properties = []
-            for prop in property_group.properties.filter(
-                    configurable=True).order_by("groupspropertiesrelation"):
+            for prop in property_group.properties.filter(configurable=True).order_by("groupspropertiesrelation"):
                 display_configurables = True
 
                 try:
-                    ppv = ProductPropertyValue.objects.get(
-                        property=prop,
-                        property_group=property_group,
-                        product=product,
-                        type=PROPERTY_VALUE_TYPE_DEFAULT)
+                    ppv = ProductPropertyValue.objects.get(property=prop,
+                                                           property_group=property_group,
+                                                           product=product,
+                                                           type=PROPERTY_VALUE_TYPE_DEFAULT)
                 except ProductPropertyValue.DoesNotExist:
                     ppv_id = None
                     ppv_value = ""
@@ -99,17 +94,15 @@ def manage_properties(
         # Filterable
         for property_group in product.property_groups.all():
             properties = []
-            for prop in property_group.properties.filter(
-                    filterable=True).order_by("groupspropertiesrelation"):
+            for prop in property_group.properties.filter(filterable=True).order_by("groupspropertiesrelation"):
 
                 display_filterables = True
 
                 # Try to get the value, if it already exists.
-                ppvs = ProductPropertyValue.objects.filter(
-                    property=prop,
-                    property_group=property_group,
-                    product=product,
-                    type=PROPERTY_VALUE_TYPE_FILTER)
+                ppvs = ProductPropertyValue.objects.filter(property=prop,
+                                                           property_group=property_group,
+                                                           product=product,
+                                                           type=PROPERTY_VALUE_TYPE_FILTER)
                 value_ids = [ppv.value for ppv in ppvs]
 
                 # Mark selected options
@@ -159,17 +152,15 @@ def manage_properties(
         # Displayable
         for property_group in product.property_groups.all():
             properties = []
-            for prop in property_group.properties.filter(
-                    display_on_product=True).order_by("groupspropertiesrelation"):
+            for prop in property_group.properties.filter(display_on_product=True).order_by("groupspropertiesrelation"):
 
                 display_displayables = True
 
                 # Try to get the value, if it already exists.
-                ppvs = ProductPropertyValue.objects.filter(
-                    property=prop,
-                    property_group=property_group,
-                    product=product,
-                    type=PROPERTY_VALUE_TYPE_DISPLAY)
+                ppvs = ProductPropertyValue.objects.filter(property=prop,
+                                                           property_group=property_group,
+                                                           product=product,
+                                                           type=PROPERTY_VALUE_TYPE_DISPLAY)
                 value_ids = [ppv.value for ppv in ppvs]
 
                 # Mark selected options
@@ -219,23 +210,20 @@ def manage_properties(
 
     if product.is_variant():
         product_variant_properties_dict = {}
-        qs = ProductPropertyValue.objects.filter(
-            product=product, type=PROPERTY_VALUE_TYPE_VARIANT)
+        qs = ProductPropertyValue.objects.filter(product=product, type=PROPERTY_VALUE_TYPE_VARIANT)
         for ppv in qs:
             try:
-                property_option = PropertyOption.objects.get(
-                    property_id=ppv.property_id, pk=ppv.value)
+                property_option = PropertyOption.objects.get(property_id=ppv.property_id, pk=ppv.value)
                 property_group_name = ppv.property_group.name if ppv.property_group_id else ''
-                group_dict = product_variant_properties_dict.setdefault(
-                    ppv.property_group_id or 0, {
-                        'property_group_name': property_group_name, 'properties': []})
+                group_dict = product_variant_properties_dict.setdefault(ppv.property_group_id or 0,
+                                                                       {'property_group_name': property_group_name,
+                                                                        'properties': []})
                 group_dict['properties'].append(property_option)
             except (ProductPropertyValue.DoesNotExist, PropertyOption.DoesNotExist):
                 continue
 
         groups = product_variant_properties_dict.values()
-        sorted_groups = sorted(
-            groups, key=lambda group: group['property_group_name'])
+        sorted_groups = sorted(groups, key=lambda group: group['property_group_name'])
         for group in sorted_groups:
             product_variant_properties.append(group)
 
@@ -282,8 +270,7 @@ def update_property_groups(request, product_id):
                 property_group.products.add(product_id)
         else:
             property_group.products.remove(product_id)
-            product_removed_property_group.send(
-                sender=property_group, product=product)
+            product_removed_property_group.send(sender=property_group, product=product)
 
     update_product_cache(product)
 
@@ -298,8 +285,7 @@ def update_properties(request, product_id):
     """
     ppv_type = int(request.POST.get("type"))
     product = get_object_or_404(Product, pk=product_id)
-    ProductPropertyValue.objects.filter(
-        product=product_id, type=ppv_type).delete()
+    ProductPropertyValue.objects.filter(product=product_id, type=ppv_type).delete()
 
     # Update property values
     for key in request.POST.keys():
@@ -315,14 +301,12 @@ def update_properties(request, product_id):
             if prop.is_valid_value(value):
                 # we have to use get_or_create because it is possible that we get same property values twice, eg.
                 # if we have a SELECT typ property assigned to two different groups, and both these groups bound
-                # to the product. In this case we will have same property shown
-                # twice at management page
-                ProductPropertyValue.objects.get_or_create(
-                    product=product,
-                    property_group_id=property_group_id,
-                    property=prop,
-                    value=value,
-                    type=ppv_type)
+                # to the product. In this case we will have same property shown twice at management page
+                ProductPropertyValue.objects.get_or_create(product=product,
+                                                           property_group_id=property_group_id,
+                                                           property=prop,
+                                                           value=value,
+                                                           type=ppv_type)
     update_product_cache(product)
 
     url = reverse("lfs_manage_product", kwargs={"product_id": product_id})

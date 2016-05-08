@@ -69,7 +69,6 @@ import zc.buildout
 class ChecksumError(zc.buildout.UserError):
     pass
 
-
 class Download(object):
     """Configurable download utility.
 
@@ -213,7 +212,7 @@ class Download(object):
             e = sys.exc_info()[1]
             os.remove(tmp_path)
             raise zc.buildout.UserError("Error downloading extends for URL "
-                                        "%s: %s" % (url, e))
+                              "%s: %s" % (url, e))
         except Exception:
             os.remove(tmp_path)
             raise

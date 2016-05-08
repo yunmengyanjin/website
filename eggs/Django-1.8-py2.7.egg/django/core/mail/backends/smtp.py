@@ -13,7 +13,6 @@ class EmailBackend(BaseEmailBackend):
     """
     A wrapper that manages the SMTP network connection.
     """
-
     def __init__(self, host=None, port=None, username=None, password=None,
                  use_tls=None, fail_silently=False, use_ssl=None, timeout=None,
                  ssl_keyfile=None, ssl_certfile=None,
@@ -56,16 +55,13 @@ class EmailBackend(BaseEmailBackend):
                 'certfile': self.ssl_certfile,
             })
         try:
-            self.connection = connection_class(
-                self.host, self.port, **connection_params)
+            self.connection = connection_class(self.host, self.port, **connection_params)
 
             # TLS/SSL are mutually exclusive, so only attempt TLS over
             # non-secure connections.
             if not self.use_ssl and self.use_tls:
                 self.connection.ehlo()
-                self.connection.starttls(
-                    keyfile=self.ssl_keyfile,
-                    certfile=self.ssl_certfile)
+                self.connection.starttls(keyfile=self.ssl_keyfile, certfile=self.ssl_certfile)
                 self.connection.ehlo()
             if self.username and self.password:
                 self.connection.login(self.username, self.password)
@@ -119,16 +115,12 @@ class EmailBackend(BaseEmailBackend):
         """A helper method that does the actual sending."""
         if not email_message.recipients():
             return False
-        from_email = sanitize_address(
-            email_message.from_email,
-            email_message.encoding)
+        from_email = sanitize_address(email_message.from_email, email_message.encoding)
         recipients = [sanitize_address(addr, email_message.encoding)
                       for addr in email_message.recipients()]
         message = email_message.message()
         try:
-            self.connection.sendmail(
-                from_email, recipients, message.as_bytes(
-                    linesep='\r\n'))
+            self.connection.sendmail(from_email, recipients, message.as_bytes(linesep='\r\n'))
         except smtplib.SMTPException:
             if not self.fail_silently:
                 raise

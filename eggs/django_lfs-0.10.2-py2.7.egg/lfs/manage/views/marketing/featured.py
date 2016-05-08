@@ -22,7 +22,7 @@ from lfs.marketing.models import FeaturedProduct
 
 @permission_required("manage_shop")
 def manage_featured(
-        request, template_name="manage/marketing/featured.html"):
+    request, template_name="manage/marketing/featured.html"):
     """
     """
     inline = manage_featured_inline(request, as_string=True)
@@ -43,9 +43,7 @@ def manage_featured(
 
 @permission_required("manage_shop")
 def manage_featured_inline(
-        request,
-        as_string=False,
-        template_name="manage/marketing/featured_inline.html"):
+    request, as_string=False, template_name="manage/marketing/featured_inline.html"):
     """
     """
     featured = FeaturedProduct.objects.all()
@@ -66,7 +64,7 @@ def manage_featured_inline(
         page = r.get("page", s.get("featured_products_page", 1))
         filter_ = r.get("filter", s.get("filter"))
         category_filter = r.get("featured_category_filter",
-                                s.get("featured_category_filter"))
+                          s.get("featured_category_filter"))
     else:
         page = r.get("page", 1)
         filter_ = r.get("filter")
@@ -78,8 +76,7 @@ def manage_featured_inline(
     s["featured_category_filter"] = category_filter
 
     try:
-        s["featured-amount"] = int(r.get("featured-amount",
-                                         s.get("featured-amount")))
+        s["featured-amount"] = int(r.get("featured-amount", s.get("featured-amount")))
     except TypeError:
         s["featured-amount"] = 25
 
@@ -87,10 +84,8 @@ def manage_featured_inline(
     if filter_:
         filters &= Q(name__icontains=filter_)
         filters |= Q(sku__icontains=filter_)
-        filters |= (Q(sub_type=VARIANT) & Q(active_sku=False)
-                    & Q(parent__sku__icontains=filter_))
-        filters |= (Q(sub_type=VARIANT) & Q(active_name=False)
-                    & Q(parent__name__icontains=filter_))
+        filters |= (Q(sub_type=VARIANT) & Q(active_sku=False) & Q(parent__sku__icontains=filter_))
+        filters |= (Q(sub_type=VARIANT) & Q(active_name=False) & Q(parent__name__icontains=filter_))
 
     if category_filter:
         if category_filter == "None":
@@ -145,8 +140,7 @@ def add_featured(request):
 
     _update_positions()
 
-    html = [["#featured-inline",
-             manage_featured_inline(request, as_string=True)]]
+    html = [["#featured-inline", manage_featured_inline(request, as_string=True)]]
     result = json.dumps({
         "html": html,
         "message": _(u"Featured product has been added.")
@@ -175,8 +169,7 @@ def update_featured(request):
                 _update_positions()
                 featured_changed.send(featured)
 
-        html = [["#featured-inline",
-                 manage_featured_inline(request, as_string=True)]]
+        html = [["#featured-inline", manage_featured_inline(request, as_string=True)]]
         result = json.dumps({
             "html": html,
             "message": _(u"Featured product has been removed.")
@@ -198,8 +191,7 @@ def update_featured(request):
 
         _update_positions()
 
-        html = [["#featured-inline",
-                 manage_featured_inline(request, as_string=True)]]
+        html = [["#featured-inline", manage_featured_inline(request, as_string=True)]]
         result = json.dumps({
             "html": html,
             "message": _(u"Featured product has been updated.")

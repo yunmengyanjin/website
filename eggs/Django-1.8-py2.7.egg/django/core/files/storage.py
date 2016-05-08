@@ -89,26 +89,21 @@ class Storage(object):
         # exceed the max_length.
         while self.exists(name) or (max_length and len(name) > max_length):
             # file_ext includes the dot.
-            name = os.path.join(
-                dir_name, "%s_%s%s" %
-                (file_root, get_random_string(7), file_ext))
+            name = os.path.join(dir_name, "%s_%s%s" % (file_root, get_random_string(7), file_ext))
             if max_length is None:
                 continue
             # Truncate file_root if max_length exceeded.
             truncation = len(name) - max_length
             if truncation > 0:
                 file_root = file_root[:-truncation]
-                # Entire file_root was truncated in attempt to find an
-                # available filename.
+                # Entire file_root was truncated in attempt to find an available filename.
                 if not file_root:
                     raise SuspiciousFileOperation(
                         'Storage can not find an available filename for "%s". '
                         'Please make sure that the corresponding file field '
                         'allows sufficient "max_length".' % name
                     )
-                name = os.path.join(
-                    dir_name, "%s_%s%s" %
-                    (file_root, get_random_string(7), file_ext))
+                name = os.path.join(dir_name, "%s_%s%s" % (file_root, get_random_string(7), file_ext))
         return name
 
     def path(self, name):
@@ -117,8 +112,7 @@ class Storage(object):
         Python's built-in open() function. Storage systems that can't be
         accessed using open() should *not* implement this method.
         """
-        raise NotImplementedError(
-            "This backend doesn't support absolute paths.")
+        raise NotImplementedError("This backend doesn't support absolute paths.")
 
     # The following methods form the public API for storage systems, but with
     # no default implementations. Subclasses must implement *all* of these.
@@ -127,63 +121,55 @@ class Storage(object):
         """
         Deletes the specified file from the storage system.
         """
-        raise NotImplementedError(
-            'subclasses of Storage must provide a delete() method')
+        raise NotImplementedError('subclasses of Storage must provide a delete() method')
 
     def exists(self, name):
         """
         Returns True if a file referenced by the given name already exists in the
         storage system, or False if the name is available for a new file.
         """
-        raise NotImplementedError(
-            'subclasses of Storage must provide an exists() method')
+        raise NotImplementedError('subclasses of Storage must provide an exists() method')
 
     def listdir(self, path):
         """
         Lists the contents of the specified path, returning a 2-tuple of lists;
         the first item being directories, the second item being files.
         """
-        raise NotImplementedError(
-            'subclasses of Storage must provide a listdir() method')
+        raise NotImplementedError('subclasses of Storage must provide a listdir() method')
 
     def size(self, name):
         """
         Returns the total size, in bytes, of the file specified by name.
         """
-        raise NotImplementedError(
-            'subclasses of Storage must provide a size() method')
+        raise NotImplementedError('subclasses of Storage must provide a size() method')
 
     def url(self, name):
         """
         Returns an absolute URL where the file's contents can be accessed
         directly by a Web browser.
         """
-        raise NotImplementedError(
-            'subclasses of Storage must provide a url() method')
+        raise NotImplementedError('subclasses of Storage must provide a url() method')
 
     def accessed_time(self, name):
         """
         Returns the last accessed time (as datetime object) of the file
         specified by name.
         """
-        raise NotImplementedError(
-            'subclasses of Storage must provide an accessed_time() method')
+        raise NotImplementedError('subclasses of Storage must provide an accessed_time() method')
 
     def created_time(self, name):
         """
         Returns the creation time (as datetime object) of the file
         specified by name.
         """
-        raise NotImplementedError(
-            'subclasses of Storage must provide a created_time() method')
+        raise NotImplementedError('subclasses of Storage must provide a created_time() method')
 
     def modified_time(self, name):
         """
         Returns the last modified time (as datetime object) of the file
         specified by name.
         """
-        raise NotImplementedError(
-            'subclasses of Storage must provide a modified_time() method')
+        raise NotImplementedError('subclasses of Storage must provide a modified_time() method')
 
 
 @deconstructible
@@ -192,11 +178,7 @@ class FileSystemStorage(Storage):
     Standard filesystem storage
     """
 
-    def __init__(
-            self,
-            location=None,
-            base_url=None,
-            file_permissions_mode=None,
+    def __init__(self, location=None, base_url=None, file_permissions_mode=None,
             directory_permissions_mode=None):
         if location is None:
             location = settings.MEDIA_ROOT
@@ -270,8 +252,7 @@ class FileSystemStorage(Storage):
                         locks.lock(fd, locks.LOCK_EX)
                         for chunk in content.chunks():
                             if _file is None:
-                                mode = 'wb' if isinstance(
-                                    chunk, bytes) else 'wt'
+                                mode = 'wb' if isinstance(chunk, bytes) else 'wt'
                                 _file = os.fdopen(fd, mode)
                             _file.write(chunk)
                     finally:
@@ -349,7 +330,6 @@ def get_storage_class(import_path=None):
 
 
 class DefaultStorage(LazyObject):
-
     def _setup(self):
         self._wrapped = get_storage_class()()
 

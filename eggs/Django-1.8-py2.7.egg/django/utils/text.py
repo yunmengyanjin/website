@@ -47,8 +47,7 @@ def wrap(text, width):
 
     def _generator():
         for line in text.splitlines(True):  # True keeps trailing linebreaks
-            max_width = min(
-                (line.endswith('\n') and width + 1 or width), width)
+            max_width = min((line.endswith('\n') and width + 1 or width), width)
             while len(line) > max_width:
                 space = line[:max_width + 1].rfind(' ') + 1
                 if space == 0:
@@ -59,8 +58,7 @@ def wrap(text, width):
                         break
                 yield '%s\n' % line[:space - 1]
                 line = line[space:]
-                max_width = min(
-                    (line.endswith('\n') and width + 1 or width), width)
+                max_width = min((line.endswith('\n') and width + 1 or width), width)
             if line:
                 yield line
     return ''.join(_generator())
@@ -71,7 +69,6 @@ class Truncator(SimpleLazyObject):
     """
     An object used to truncate text, either by characters or words.
     """
-
     def __init__(self, text):
         super(Truncator, self).__init__(lambda: force_text(text))
 
@@ -111,8 +108,7 @@ class Truncator(SimpleLazyObject):
                 if truncate_len == 0:
                     break
         if html:
-            return self._truncate_html(
-                length, truncate, text, truncate_len, False)
+            return self._truncate_html(length, truncate, text, truncate_len, False)
         return self._text_chars(length, truncate, text, truncate_len)
     chars = allow_lazy(chars)
 
@@ -146,8 +142,7 @@ class Truncator(SimpleLazyObject):
         """
         length = int(num)
         if html:
-            return self._truncate_html(
-                length, truncate, self._wrapped, length, True)
+            return self._truncate_html(length, truncate, self._wrapped, length, True)
         return self._text_words(length, truncate)
     words = allow_lazy(words)
 
@@ -283,33 +278,10 @@ normalize_newlines = allow_lazy(normalize_newlines, six.text_type)
 
 def phone2numeric(phone):
     """Converts a phone number with letters into its numeric equivalent."""
-    char2number = {
-        'a': '2',
-        'b': '2',
-        'c': '2',
-        'd': '3',
-        'e': '3',
-        'f': '3',
-        'g': '4',
-        'h': '4',
-        'i': '4',
-        'j': '5',
-        'k': '5',
-        'l': '5',
-        'm': '6',
-        'n': '6',
-        'o': '6',
-        'p': '7',
-        'q': '7',
-        'r': '7',
-        's': '7',
-        't': '8',
-        'u': '8',
-        'v': '8',
-        'w': '9',
-        'x': '9',
-        'y': '9',
-        'z': '9'}
+    char2number = {'a': '2', 'b': '2', 'c': '2', 'd': '3', 'e': '3', 'f': '3',
+         'g': '4', 'h': '4', 'i': '4', 'j': '5', 'k': '5', 'l': '5', 'm': '6',
+         'n': '6', 'o': '6', 'p': '7', 'q': '7', 'r': '7', 's': '7', 't': '8',
+         'u': '8', 'v': '8', 'w': '9', 'x': '9', 'y': '9', 'z': '9'}
     return ''.join(char2number.get(c, c) for c in phone.lower())
 phone2numeric = allow_lazy(phone2numeric)
 
@@ -325,7 +297,6 @@ def compress_string(s):
 
 
 class StreamingBuffer(object):
-
     def __init__(self):
         self.vals = []
 
@@ -373,9 +344,9 @@ def javascript_quote(s, quote_double_quotes=False):
     def fix(match):
         return "\\u%04x" % ord(match.group(1))
 
-    if isinstance(s, bytes):
+    if type(s) == bytes:
         s = s.decode('utf-8')
-    elif not isinstance(s, six.text_type):
+    elif type(s) != six.text_type:
         raise TypeError(s)
     s = s.replace('\\', '\\\\')
     s = s.replace('\r', '\\r')
@@ -475,9 +446,7 @@ def slugify(value):
     Also strips leading and trailing whitespace.
     """
     value = force_text(value)
-    value = unicodedata.normalize(
-        'NFKD', value).encode(
-        'ascii', 'ignore').decode('ascii')
+    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
     value = re.sub('[^\w\s-]', '', value).strip().lower()
     return mark_safe(re.sub('[-\s]+', '-', value))
 slugify = allow_lazy(slugify, six.text_type, SafeText)

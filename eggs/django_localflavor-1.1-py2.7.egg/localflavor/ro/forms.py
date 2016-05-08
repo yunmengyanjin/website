@@ -142,7 +142,6 @@ class ROCountySelect(Select):
     A Select widget that uses a list of Romanian counties (judete) as its
     choices.
     """
-
     def __init__(self, attrs=None):
         super(ROCountySelect, self).__init__(attrs, choices=COUNTIES_CHOICES)
 
@@ -157,16 +156,8 @@ class ROIBANField(IBANFormField):
     .. deprecated:: 1.1
         Use `IBANFormField` with `included_countries=('RO',)` option instead.
     """
-
     def __init__(self, *args, **kwargs):
-        super(
-            ROIBANField,
-            self).__init__(
-            use_nordea_extensions=False,
-            include_countries=(
-                'RO',
-            ),
-            **kwargs)
+        super(ROIBANField, self).__init__(use_nordea_extensions=False, include_countries=('RO',), **kwargs)
 
 
 class ROPhoneNumberField(RegexField):
@@ -192,15 +183,8 @@ class ROPhoneNumberField(RegexField):
     }
 
     def __init__(self, max_length=20, min_length=3, *args, **kwargs):
-        super(
-            ROPhoneNumberField,
-            self).__init__(
-            phone_digits_re,
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(ROPhoneNumberField, self).__init__(phone_digits_re,
+                max_length, min_length, *args, **kwargs)
 
     def clean(self, value):
         """
@@ -230,11 +214,5 @@ class ROPostalCodeField(RegexField):
     }
 
     def __init__(self, max_length=6, min_length=6, *args, **kwargs):
-        super(
-            ROPostalCodeField,
-            self).__init__(
-            r'^[0-9][0-8][0-9]{4}$',
-            max_length,
-            min_length,
-            *args,
-            **kwargs)
+        super(ROPostalCodeField, self).__init__(r'^[0-9][0-8][0-9]{4}$',
+                                                max_length, min_length, *args, **kwargs)

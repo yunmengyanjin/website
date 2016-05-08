@@ -22,10 +22,8 @@ class Loader(BaseLoader):
 
     def cache_key(self, template_name, template_dirs):
         if template_dirs:
-            # If template directories were specified, use a hash to
-            # differentiate
-            return '-'.join([template_name,
-                             hashlib.sha1(force_bytes('|'.join(template_dirs))).hexdigest()])
+            # If template directories were specified, use a hash to differentiate
+            return '-'.join([template_name, hashlib.sha1(force_bytes('|'.join(template_dirs))).hexdigest()])
         else:
             return template_name
 
@@ -44,8 +42,7 @@ class Loader(BaseLoader):
                 except TemplateDoesNotExist:
                     pass
                 else:
-                    origin = self.engine.make_origin(
-                        display_name, loader, name, dirs)
+                    origin = self.engine.make_origin(display_name, loader, name, dirs)
                     result = template, origin
                     break
         self.find_template_cache[key] = result
@@ -65,8 +62,7 @@ class Loader(BaseLoader):
             template, origin = self.find_template(template_name, template_dirs)
             if not hasattr(template, 'render'):
                 try:
-                    template = Template(
-                        template, origin, template_name, self.engine)
+                    template = Template(template, origin, template_name, self.engine)
                 except TemplateDoesNotExist:
                     # If compiling the template we found raises TemplateDoesNotExist,
                     # back off to returning the source and display name for the template

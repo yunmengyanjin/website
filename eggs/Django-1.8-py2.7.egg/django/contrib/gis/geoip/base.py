@@ -91,8 +91,7 @@ class GeoIP(object):
         if not path:
             path = GEOIP_SETTINGS.get('GEOIP_PATH', None)
             if not path:
-                raise GeoIPException(
-                    'GeoIP path must be provided via parameter or the GEOIP_PATH setting.')
+                raise GeoIPException('GeoIP path must be provided via parameter or the GEOIP_PATH setting.')
         if not isinstance(path, six.string_types):
             raise TypeError('Invalid path type: %s' % type(path).__name__)
 
@@ -100,16 +99,12 @@ class GeoIP(object):
             # Constructing the GeoIP database filenames using the settings
             # dictionary.  If the database files for the GeoLite country
             # and/or city datasets exist, then try and open them.
-            country_db = os.path.join(
-                path, country or GEOIP_SETTINGS.get(
-                    'GEOIP_COUNTRY', 'GeoIP.dat'))
+            country_db = os.path.join(path, country or GEOIP_SETTINGS.get('GEOIP_COUNTRY', 'GeoIP.dat'))
             if os.path.isfile(country_db):
                 self._country = GeoIP_open(force_bytes(country_db), cache)
                 self._country_file = country_db
 
-            city_db = os.path.join(
-                path, city or GEOIP_SETTINGS.get(
-                    'GEOIP_CITY', 'GeoLiteCity.dat'))
+            city_db = os.path.join(path, city or GEOIP_SETTINGS.get('GEOIP_CITY', 'GeoLiteCity.dat'))
             if os.path.isfile(city_db):
                 self._city = GeoIP_open(force_bytes(city_db), cache)
                 self._city_file = city_db
@@ -128,12 +123,9 @@ class GeoIP(object):
                 self._country = ptr
                 self._country_file = path
             else:
-                raise GeoIPException(
-                    'Unable to recognize database edition: %s' %
-                    info)
+                raise GeoIPException('Unable to recognize database edition: %s' % info)
         else:
-            raise GeoIPException(
-                'GeoIP path must be a valid file or directory.')
+            raise GeoIPException('GeoIP path must be a valid file or directory.')
 
     def __del__(self):
         # Cleaning any GeoIP file handles lying around.
@@ -144,33 +136,21 @@ class GeoIP(object):
         if self._city:
             GeoIP_delete(self._city)
 
-    def _check_query(
-            self,
-            query,
-            country=False,
-            city=False,
-            city_or_country=False):
+    def _check_query(self, query, country=False, city=False, city_or_country=False):
         "Helper routine for checking the query and database availability."
         # Making sure a string was passed in for the query.
         if not isinstance(query, six.string_types):
-            raise TypeError(
-                'GeoIP query must be a string, not type %s' %
-                type(query).__name__)
+            raise TypeError('GeoIP query must be a string, not type %s' % type(query).__name__)
 
         # Extra checks for the existence of country and city databases.
         if city_or_country and not (self._country or self._city):
             raise GeoIPException('Invalid GeoIP country and city data files.')
         elif country and not self._country:
-            raise GeoIPException(
-                'Invalid GeoIP country data file: %s' %
-                self._country_file)
+            raise GeoIPException('Invalid GeoIP country data file: %s' % self._country_file)
         elif city and not self._city:
-            raise GeoIPException(
-                'Invalid GeoIP city data file: %s' %
-                self._city_file)
+            raise GeoIPException('Invalid GeoIP city data file: %s' % self._city_file)
 
-        # Return the query string back to the caller. GeoIP only takes
-        # bytestrings.
+        # Return the query string back to the caller. GeoIP only takes bytestrings.
         return force_bytes(query)
 
     def city(self, query):
@@ -270,8 +250,7 @@ class GeoIP(object):
         info = ''
         if GeoIP_lib_version:
             info += 'GeoIP Library:\n\t%s\n' % GeoIP_lib_version()
-        return info + \
-            'Country:\n\t%s\nCity:\n\t%s' % (self.country_info, self.city_info)
+        return info + 'Country:\n\t%s\nCity:\n\t%s' % (self.country_info, self.city_info)
 
     # #### Methods for compatibility w/the GeoIP-Python API. ####
     @classmethod

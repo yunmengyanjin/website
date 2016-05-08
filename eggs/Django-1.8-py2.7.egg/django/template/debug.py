@@ -9,28 +9,19 @@ from django.utils.timezone import template_localtime
 
 
 class DebugLexer(Lexer):
-
     def tokenize(self):
         "Return a list of tokens from a given template_string"
         result, upto = [], 0
         for match in tag_re.finditer(self.template_string):
             start, end = match.span()
             if start > upto:
-                result.append(
-                    self.create_token(
-                        self.template_string[
-                            upto:start], (upto, start), False))
+                result.append(self.create_token(self.template_string[upto:start], (upto, start), False))
                 upto = start
-            result.append(
-                self.create_token(
-                    self.template_string[
-                        start:end], (start, end), True))
+            result.append(self.create_token(self.template_string[start:end], (start, end), True))
             upto = end
         last_bit = self.template_string[upto:]
         if last_bit:
-            result.append(
-                self.create_token(
-                    last_bit, (upto, upto + len(last_bit)), False))
+            result.append(self.create_token(last_bit, (upto, upto + len(last_bit)), False))
         return result
 
     def create_token(self, token_string, source, in_tag):
@@ -40,7 +31,6 @@ class DebugLexer(Lexer):
 
 
 class DebugParser(Parser):
-
     def __init__(self, lexer):
         super(DebugParser, self).__init__(lexer)
         self.command_stack = []
@@ -71,8 +61,7 @@ class DebugParser(Parser):
 
     def unclosed_block_tag(self, parse_until):
         command, source = self.command_stack.pop()
-        msg = "Unclosed tag '%s'. Looking for one of: %s " % (
-            command, ', '.join(parse_until))
+        msg = "Unclosed tag '%s'. Looking for one of: %s " % (command, ', '.join(parse_until))
         raise self.source_error(source, msg)
 
     def compile_filter_error(self, token, e):
@@ -85,7 +74,6 @@ class DebugParser(Parser):
 
 
 class DebugNodeList(NodeList):
-
     def render_node(self, node, context):
         try:
             return node.render(context)
@@ -96,7 +84,6 @@ class DebugNodeList(NodeList):
 
 
 class DebugVariableNode(VariableNode):
-
     def render(self, context):
         try:
             output = self.filter_expression.resolve(context)
@@ -109,8 +96,7 @@ class DebugVariableNode(VariableNode):
             if not hasattr(e, 'django_template_source'):
                 e.django_template_source = self.source
             raise
-        if (context.autoescape and not isinstance(
-                output, SafeData)) or isinstance(output, EscapeData):
+        if (context.autoescape and not isinstance(output, SafeData)) or isinstance(output, EscapeData):
             return conditional_escape(output)
         else:
             return output

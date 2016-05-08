@@ -20,30 +20,19 @@ CARDS = {
 
 # Well known test numbers
 TEST_NUMBERS = [
-    "378282246310005",
-    "371449635398431",
-    "378734493671000",
-    "30569309025904",
-    "38520000023237",
-    "6011111111111117",
-    "6011000990139424",
-    "555555555554444",
-    "5105105105105100",
-    "4111111111111111",
-    "4012888888881881",
-    "4222222222222"]
-
+    "378282246310005", "371449635398431", "378734493671000", "30569309025904",
+    "38520000023237", "6011111111111117", "6011000990139424", "555555555554444",
+    "5105105105105100", "4111111111111111", "4012888888881881", "4222222222222"
+]
 
 def verify_credit_card(number):
     """Returns the card type for given card number or None if invalid."""
     return CreditCard(number).verify()
 
-
 class CreditCard(object):
-
     def __init__(self, number):
         self.number = number
-
+	
     def is_number(self):
         """True if there is at least one digit in number."""
         self.number = re.sub(r'[^\d]', '', self.number)

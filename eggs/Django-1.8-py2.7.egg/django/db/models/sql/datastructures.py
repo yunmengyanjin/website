@@ -15,7 +15,6 @@ class MultiJoin(Exception):
     multi-valued join was attempted (if the caller wants to treat that
     exceptionally).
     """
-
     def __init__(self, names_pos, path_with_names):
         self.level = names_pos
         # The path travelled, this includes the path to the multijoin.
@@ -44,7 +43,6 @@ class Join(object):
         - relabeled_clone()
 
     """
-
     def __init__(self, table_name, parent_alias, table_alias, join_type,
                  join_field, nullable):
         # Join table
@@ -70,15 +68,10 @@ class Join(object):
         """
         params = []
         sql = []
-        alias_str = '' if self.table_alias == self.table_name else (
-            ' %s' %
-            self.table_alias)
+        alias_str = '' if self.table_alias == self.table_name else (' %s' % self.table_alias)
         qn = compiler.quote_name_unless_alias
         qn2 = connection.ops.quote_name
-        sql.append(
-            '%s %s%s ON (' %
-            (self.join_type, qn(
-                self.table_name), alias_str))
+        sql.append('%s %s%s ON (' % (self.join_type, qn(self.table_name), alias_str))
         for index, (lhs_col, rhs_col) in enumerate(self.join_cols):
             if index != 0:
                 sql.append(' AND ')
@@ -140,15 +133,9 @@ class BaseTable(object):
         self.table_alias = alias
 
     def as_sql(self, compiler, connection):
-        alias_str = '' if self.table_alias == self.table_name else (
-            ' %s' %
-            self.table_alias)
+        alias_str = '' if self.table_alias == self.table_name else (' %s' % self.table_alias)
         base_sql = compiler.quote_name_unless_alias(self.table_name)
         return base_sql + alias_str, []
 
     def relabeled_clone(self, change_map):
-        return self.__class__(
-            self.table_name,
-            change_map.get(
-                self.table_alias,
-                self.table_alias))
+        return self.__class__(self.table_name, change_map.get(self.table_alias, self.table_alias))

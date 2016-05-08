@@ -9,7 +9,7 @@ from django.test.testcases import (
     skipUnlessDBFeature
 )
 from django.test.utils import (ignore_warnings, modify_settings,
-                               override_settings, override_system_checks)
+    override_settings, override_system_checks)
 
 __all__ = [
     'Client', 'RequestFactory', 'TestCase', 'TransactionTestCase',

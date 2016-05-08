@@ -27,23 +27,19 @@ def ping_google(sitemap_url=None, ping_url=PING_URL):
     if sitemap_url is None:
         try:
             # First, try to get the "index" sitemap URL.
-            sitemap_url = urlresolvers.reverse(
-                'django.contrib.sitemaps.views.index')
+            sitemap_url = urlresolvers.reverse('django.contrib.sitemaps.views.index')
         except urlresolvers.NoReverseMatch:
             try:
                 # Next, try for the "global" sitemap URL.
-                sitemap_url = urlresolvers.reverse(
-                    'django.contrib.sitemaps.views.sitemap')
+                sitemap_url = urlresolvers.reverse('django.contrib.sitemaps.views.sitemap')
             except urlresolvers.NoReverseMatch:
                 pass
 
     if sitemap_url is None:
-        raise SitemapNotFound(
-            "You didn't provide a sitemap_url, and the sitemap URL couldn't be auto-detected.")
+        raise SitemapNotFound("You didn't provide a sitemap_url, and the sitemap URL couldn't be auto-detected.")
 
     if not django_apps.is_installed('django.contrib.sites'):
-        raise ImproperlyConfigured(
-            "ping_google requires django.contrib.sites, which isn't installed.")
+        raise ImproperlyConfigured("ping_google requires django.contrib.sites, which isn't installed.")
     Site = django_apps.get_model('sites.Site')
     current_site = Site.objects.get_current()
     url = "http://%s%s" % (current_site.domain, sitemap_url)
@@ -97,7 +93,8 @@ class Sitemap(object):
             if site is None:
                 raise ImproperlyConfigured(
                     "To use sitemaps, either enable the sites framework or pass "
-                    "a Site/RequestSite object in your view.")
+                    "a Site/RequestSite object in your view."
+                )
         domain = site.domain
 
         if getattr(self, 'i18n', False):
@@ -117,8 +114,7 @@ class Sitemap(object):
         latest_lastmod = None
         all_items_lastmod = True  # track if all items have a lastmod
         for item in self.paginator.page(page).object_list:
-            loc = "%s://%s%s" % (protocol, domain,
-                                 self.__get('location', item))
+            loc = "%s://%s%s" % (protocol, domain, self.__get('location', item))
             priority = self.__get('priority', item, None)
             lastmod = self.__get('lastmod', item, None)
             if all_items_lastmod:
@@ -154,8 +150,7 @@ class FlatPageSitemap(Sitemap):
 
     def items(self):
         if not django_apps.is_installed('django.contrib.sites'):
-            raise ImproperlyConfigured(
-                "FlatPageSitemap requires django.contrib.sites, which isn't installed.")
+            raise ImproperlyConfigured("FlatPageSitemap requires django.contrib.sites, which isn't installed.")
         Site = django_apps.get_model('sites.Site')
         current_site = Site.objects.get_current()
         return current_site.flatpage_set.filter(registration_required=False)

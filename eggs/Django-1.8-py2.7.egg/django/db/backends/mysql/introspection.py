@@ -36,11 +36,7 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
     }
 
     def get_field_type(self, data_type, description):
-        field_type = super(
-            DatabaseIntrospection,
-            self).get_field_type(
-            data_type,
-            description)
+        field_type = super(DatabaseIntrospection, self).get_field_type(data_type, description)
         if field_type == 'IntegerField' and 'auto_increment' in description.extra:
             return 'AutoField'
         return field_type
@@ -62,28 +58,27 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
         #   not visible length (#5725)
         # - precision and scale (for decimal fields) (#5014)
         # - auto_increment is not available in cursor.description
-        InfoLine = namedtuple(
-            'InfoLine',
-            'col_name data_type max_len num_prec num_scale extra')
+        InfoLine = namedtuple('InfoLine', 'col_name data_type max_len num_prec num_scale extra')
         cursor.execute("""
             SELECT column_name, data_type, character_maximum_length, numeric_precision, numeric_scale, extra
             FROM information_schema.columns
             WHERE table_name = %s AND table_schema = DATABASE()""", [table_name])
         field_info = {line[0]: InfoLine(*line) for line in cursor.fetchall()}
 
-        cursor.execute(
-            "SELECT * FROM %s LIMIT 1" %
-            self.connection.ops.quote_name(table_name))
+        cursor.execute("SELECT * FROM %s LIMIT 1" % self.connection.ops.quote_name(table_name))
         to_int = lambda i: int(i) if i is not None else i
         fields = []
         for line in cursor.description:
             col_name = force_text(line[0])
-            fields.append(FieldInfo(*((col_name,
-                                       ) + line[1:3] + (to_int(field_info[col_name].max_len) or line[3],
-                                                        to_int(field_info[col_name].num_prec) or line[4],
-                                                        to_int(field_info[col_name].num_scale) or line[5]) + (line[6],
-                                                                                                              ) + (field_info[col_name].extra,
-                                                                                                                   ))))
+            fields.append(
+                FieldInfo(*((col_name,)
+                            + line[1:3]
+                            + (to_int(field_info[col_name].max_len) or line[3],
+                               to_int(field_info[col_name].num_prec) or line[4],
+                               to_int(field_info[col_name].num_scale) or line[5])
+                            + (line[6],)
+                            + (field_info[col_name].extra,)))
+            )
         return fields
 
     def get_relations(self, cursor, table_name):
@@ -114,8 +109,7 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
         return key_columns
 
     def get_indexes(self, cursor, table_name):
-        cursor.execute("SHOW INDEX FROM %s" %
-                       self.connection.ops.quote_name(table_name))
+        cursor.execute("SHOW INDEX FROM %s" % self.connection.ops.quote_name(table_name))
         # Do a two-pass search for indexes: on first pass check which indexes
         # are multicolumn, on second pass check which single-column indexes
         # are present.
@@ -130,8 +124,7 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
                 continue
             if row[4] not in indexes:
                 indexes[row[4]] = {'primary_key': False, 'unique': False}
-            # It's possible to have the unique and PK constraints in separate
-            # indexes.
+            # It's possible to have the unique and PK constraints in separate indexes.
             if row[2] == 'PRIMARY':
                 indexes[row[4]]['primary_key'] = True
             if not row[1]:
@@ -166,9 +159,7 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
                 kc.table_schema = %s AND
                 kc.table_name = %s
         """
-        cursor.execute(
-            name_query, [
-                self.connection.settings_dict['NAME'], table_name])
+        cursor.execute(name_query, [self.connection.settings_dict['NAME'], table_name])
         for constraint, column, ref_table, ref_column in cursor.fetchall():
             if constraint not in constraints:
                 constraints[constraint] = {
@@ -177,9 +168,7 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
                     'unique': False,
                     'index': False,
                     'check': False,
-                    'foreign_key': (
-                        ref_table,
-                        ref_column) if ref_column else None,
+                    'foreign_key': (ref_table, ref_column) if ref_column else None,
                 }
             constraints[constraint]['columns'].add(column)
         # Now get the constraint types
@@ -190,9 +179,7 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
                 c.table_schema = %s AND
                 c.table_name = %s
         """
-        cursor.execute(
-            type_query, [
-                self.connection.settings_dict['NAME'], table_name])
+        cursor.execute(type_query, [self.connection.settings_dict['NAME'], table_name])
         for constraint, kind in cursor.fetchall():
             if kind.lower() == "primary key":
                 constraints[constraint]['primary_key'] = True
@@ -200,10 +187,8 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
             elif kind.lower() == "unique":
                 constraints[constraint]['unique'] = True
         # Now add in the indexes
-        cursor.execute("SHOW INDEX FROM %s" %
-                       self.connection.ops.quote_name(table_name))
-        for table, non_unique, index, colseq, column in [
-                x[:5] for x in cursor.fetchall()]:
+        cursor.execute("SHOW INDEX FROM %s" % self.connection.ops.quote_name(table_name))
+        for table, non_unique, index, colseq, column in [x[:5] for x in cursor.fetchall()]:
             if index not in constraints:
                 constraints[index] = {
                     'columns': OrderedSet(),

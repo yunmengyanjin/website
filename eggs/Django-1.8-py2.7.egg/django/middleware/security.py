@@ -5,7 +5,6 @@ from django.http import HttpResponsePermanentRedirect
 
 
 class SecurityMiddleware(object):
-
     def __init__(self):
         self.sts_seconds = settings.SECURE_HSTS_SECONDS
         self.sts_include_subdomains = settings.SECURE_HSTS_INCLUDE_SUBDOMAINS
@@ -13,8 +12,7 @@ class SecurityMiddleware(object):
         self.xss_filter = settings.SECURE_BROWSER_XSS_FILTER
         self.redirect = settings.SECURE_SSL_REDIRECT
         self.redirect_host = settings.SECURE_SSL_HOST
-        self.redirect_exempt = [
-            re.compile(r) for r in settings.SECURE_REDIRECT_EXEMPT]
+        self.redirect_exempt = [re.compile(r) for r in settings.SECURE_REDIRECT_EXEMPT]
 
     def process_request(self, request):
         path = request.path.lstrip("/")

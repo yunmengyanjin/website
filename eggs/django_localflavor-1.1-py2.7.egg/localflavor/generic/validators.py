@@ -127,8 +127,7 @@ class IBANValidator(object):
     def iban_checksum(value):
         """ Returns check digits for an input IBAN number. Original checksum in input value is ignored. """
 
-        # 1. Move the two initial characters to the end of the string,
-        # replacing checksum for '00'
+        # 1. Move the two initial characters to the end of the string, replacing checksum for '00'
         value = value[4:] + value[:2] + '00'
 
         # 2. Replace each letter in the string with two digits, thereby expanding the string, where
@@ -140,11 +139,9 @@ class IBANValidator(object):
             elif 'A' <= x <= 'Z':
                 value_digits += str(ord(x) - 55)
             else:
-                raise ValidationError(
-                    _('%s is not a valid character for IBAN.') % x)
+                raise ValidationError(_('%s is not a valid character for IBAN.') % x)
 
-        # 3. The remainder of the number above when divided by 97 is then
-        # subtracted from 98.
+        # 3. The remainder of the number above when divided by 97 is then subtracted from 98.
         return '%02d' % (98 - int(value_digits) % 97)
 
     def __call__(self, value):
@@ -158,27 +155,18 @@ class IBANValidator(object):
 
         value = value.upper().replace(' ', '').replace('-', '')
 
-        # Check that the total IBAN length is correct as per the country. If
-        # not, the IBAN is invalid.
+        # Check that the total IBAN length is correct as per the country. If not, the IBAN is invalid.
         country_code = value[:2]
         if country_code in self.validation_countries:
 
             if self.validation_countries[country_code] != len(value):
-                msg_params = {
-                    'country_code': country_code,
-                    'number': self.validation_countries[country_code]}
-                raise ValidationError(
-                    _('%(country_code)s IBANs must contain %(number)s characters.') %
-                    msg_params)
+                msg_params = {'country_code': country_code, 'number': self.validation_countries[country_code]}
+                raise ValidationError(_('%(country_code)s IBANs must contain %(number)s characters.') % msg_params)
 
         else:
-            raise ValidationError(
-                _('%s is not a valid country code for IBAN.') %
-                country_code)
+            raise ValidationError(_('%s is not a valid country code for IBAN.') % country_code)
         if self.include_countries and country_code not in self.include_countries:
-            raise ValidationError(
-                _('%s IBANs are not allowed in this field.') %
-                country_code)
+            raise ValidationError(_('%s IBANs are not allowed in this field.') % country_code)
 
         if self.iban_checksum(value) != value[2:4]:
             raise ValidationError(_('Not a valid IBAN.'))
@@ -201,20 +189,15 @@ class BICValidator(object):
         # Length is 8 or 11.
         bic_length = len(value)
         if bic_length != 8 and bic_length != 11:
-            raise ValidationError(
-                _('BIC codes have either 8 or 11 characters.'))
+            raise ValidationError(_('BIC codes have either 8 or 11 characters.'))
 
         # First 4 letters are A - Z.
         institution_code = value[:4]
         for x in institution_code:
             if x not in string.ascii_uppercase:
-                raise ValidationError(
-                    _('%s is not a valid institution code.') %
-                    institution_code)
+                raise ValidationError(_('%s is not a valid institution code.') % institution_code)
 
         # Letters 5 and 6 consist of an ISO 3166-1 alpha-2 country code.
         country_code = value[4:6]
         if country_code not in ISO_3166_1_ALPHA2_COUNTRY_CODES:
-            raise ValidationError(
-                _('%s is not a valid country code.') %
-                country_code)
+            raise ValidationError(_('%s is not a valid country code.') % country_code)

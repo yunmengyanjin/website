@@ -5,7 +5,6 @@ import portlets.utils
 class PortletsBase(object):
     """Mixin class to make objects portlets aware.
     """
-
     def get_portlets(self, slot):
         """Returns True if the passed slot is blocked. Otherwise False.
 

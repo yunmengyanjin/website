@@ -17,7 +17,6 @@ class PERegionSelect(Select):
     """
     A Select widget that uses a list of Peruvian Regions as its choices.
     """
-
     def __init__(self, attrs=None):
         super(PERegionSelect, self).__init__(attrs, choices=REGION_CHOICES)
 

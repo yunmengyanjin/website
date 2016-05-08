@@ -43,7 +43,6 @@ class CallableSettingWrapper(object):
     * Not to call in the debug page (#21345).
     * Not to break the debug page if the callable forbidding to set attributes (#23070).
     """
-
     def __init__(self, callable_setting):
         self._wrapped = callable_setting
 
@@ -93,10 +92,7 @@ def technical_500_response(request, exc_type, exc_value, tb, status_code=500):
     reporter = ExceptionReporter(request, exc_type, exc_value, tb)
     if request.is_ajax():
         text = reporter.get_traceback_text()
-        return HttpResponse(
-            text,
-            status=status_code,
-            content_type='text/plain')
+        return HttpResponse(text, status=status_code, content_type='text/plain')
     else:
         html = reporter.get_traceback_html()
         return HttpResponse(html, status=status_code, content_type='text/html')
@@ -123,8 +119,7 @@ class ExceptionReporterFilter(object):
         if request is None:
             return repr(None)
         else:
-            return build_request_repr(
-                request, POST_override=self.get_post_parameters(request))
+            return build_request_repr(request, POST_override=self.get_post_parameters(request))
 
     def get_post_parameters(self, request):
         if request is None:
@@ -157,8 +152,7 @@ class SafeExceptionReporterFilter(ExceptionReporterFilter):
         This mitigates leaking sensitive POST parameters if something like
         request.POST['nonexistent_key'] throws an exception (#21098).
         """
-        sensitive_post_parameters = getattr(
-            request, 'sensitive_post_parameters', [])
+        sensitive_post_parameters = getattr(request, 'sensitive_post_parameters', [])
         if self.is_active(request) and sensitive_post_parameters:
             multivaluedict = multivaluedict.copy()
             for param in sensitive_post_parameters:
@@ -174,8 +168,7 @@ class SafeExceptionReporterFilter(ExceptionReporterFilter):
         if request is None:
             return {}
         else:
-            sensitive_post_parameters = getattr(
-                request, 'sensitive_post_parameters', [])
+            sensitive_post_parameters = getattr(request, 'sensitive_post_parameters', [])
             if self.is_active(request) and sensitive_post_parameters:
                 cleansed = request.POST.copy()
                 if sensitive_post_parameters == '__ALL__':
@@ -197,8 +190,7 @@ class SafeExceptionReporterFilter(ExceptionReporterFilter):
             # Cleanse the request's POST parameters.
             value = self.get_request_repr(value)
         elif isinstance(value, MultiValueDict):
-            # Cleanse MultiValueDicts (request.POST is the one we usually care
-            # about)
+            # Cleanse MultiValueDicts (request.POST is the one we usually care about)
             value = self.get_cleansed_multivaluedict(request, value)
         return value
 
@@ -217,8 +209,7 @@ class SafeExceptionReporterFilter(ExceptionReporterFilter):
                 # The sensitive_variables decorator was used, so we take note
                 # of the sensitive variables' names.
                 wrapper = current_frame.f_locals['sensitive_variables_wrapper']
-                sensitive_variables = getattr(
-                    wrapper, 'sensitive_variables', None)
+                sensitive_variables = getattr(wrapper, 'sensitive_variables', None)
                 break
             current_frame = current_frame.f_back
 
@@ -258,7 +249,6 @@ class ExceptionReporter(object):
     """
     A class to organize and coordinate reporting on exceptions.
     """
-
     def __init__(self, request, exc_type, exc_value, tb, is_email=False):
         self.request = request
         self.filter = get_exception_reporter_filter(self.request)
@@ -273,9 +263,7 @@ class ExceptionReporter(object):
 
         # Handle deprecated string exceptions
         if isinstance(self.exc_type, six.string_types):
-            self.exc_value = Exception(
-                'Deprecated String Exception: %r' %
-                self.exc_type)
+            self.exc_value = Exception('Deprecated String Exception: %r' % self.exc_type)
             self.exc_type = type(self.exc_value)
 
     def format_path_status(self, path):
@@ -343,15 +331,12 @@ class ExceptionReporter(object):
                 frame_vars = []
                 for k, v in frame['vars']:
                     v = pprint(v)
-                    # The force_escape filter assume unicode, make sure that
-                    # works
+                    # The force_escape filter assume unicode, make sure that works
                     if isinstance(v, six.binary_type):
-                        # don't choke on non-utf-8 input
-                        v = v.decode('utf-8', 'replace')
+                        v = v.decode('utf-8', 'replace')  # don't choke on non-utf-8 input
                     # Trim large blobs of data
                     if len(v) > 4096:
-                        v = '%s... <trimmed %d bytes string>' % (
-                            v[0:4096], len(v))
+                        v = '%s... <trimmed %d bytes string>' % (v[0:4096], len(v))
                     frame_vars.append((k, force_escape(v)))
                 frame['vars'] = frame_vars
             frames[i] = frame
@@ -401,10 +386,7 @@ class ExceptionReporter(object):
     def get_traceback_text(self):
         "Return plain text version of debug 500 HTTP error page."
         t = DEBUG_ENGINE.from_string(TECHNICAL_500_TEXT_TEMPLATE)
-        c = Context(
-            self.get_traceback_data(),
-            autoescape=False,
-            use_l10n=False)
+        c = Context(self.get_traceback_data(), autoescape=False, use_l10n=False)
         return t.render(c)
 
     def get_template_exception_info(self):
@@ -447,13 +429,7 @@ class ExceptionReporter(object):
             'name': origin.name,
         }
 
-    def _get_lines_from_file(
-            self,
-            filename,
-            lineno,
-            context_lines,
-            loader=None,
-            module_name=None):
+    def _get_lines_from_file(self, filename, lineno, context_lines, loader=None, module_name=None):
         """
         Returns context_lines before and after lineno from file.
         Returns (pre_context_lineno, pre_context, context_line, post_context).
@@ -487,8 +463,7 @@ class ExceptionReporter(object):
                 if match:
                     encoding = match.group(1).decode('ascii')
                     break
-            source = [six.text_type(sline, encoding, 'replace')
-                      for sline in source]
+            source = [six.text_type(sline, encoding, 'replace') for sline in source]
 
         lower_bound = max(0, lineno - context_lines)
         upper_bound = lineno + context_lines
@@ -514,7 +489,8 @@ class ExceptionReporter(object):
             loader = tb.tb_frame.f_globals.get('__loader__')
             module_name = tb.tb_frame.f_globals.get('__name__') or ''
             pre_context_lineno, pre_context, context_line, post_context = self._get_lines_from_file(
-                filename, lineno, 7, loader, module_name, )
+                filename, lineno, 7, loader, module_name,
+            )
             if pre_context_lineno is not None:
                 frames.append({
                     'tb': tb,
@@ -539,8 +515,7 @@ class ExceptionReporter(object):
         """
         import traceback
         frames = self.get_traceback_frames()
-        tb = [(f['filename'], f['lineno'], f['function'], f['context_line'])
-              for f in frames]
+        tb = [(f['filename'], f['lineno'], f['function'], f['context_line']) for f in frames]
         list = ['Traceback (most recent call last):\n']
         list += traceback.format_list(tb)
         list += traceback.format_exception_only(self.exc_type, self.exc_value)
@@ -609,9 +584,9 @@ def default_urlconf(request):
         "heading": _("It worked!"),
         "subheading": _("Congratulations on your first Django-powered page."),
         "instructions": _("Of course, you haven't actually done any work yet. "
-                          "Next, start your first app by running <code>python manage.py startapp [app_label]</code>."),
+            "Next, start your first app by running <code>python manage.py startapp [app_label]</code>."),
         "explanation": _("You're seeing this message because you have <code>DEBUG = True</code> in your "
-                         "Django settings file and you haven't configured any URLs. Get to work!"),
+            "Django settings file and you haven't configured any URLs. Get to work!"),
     })
 
     return HttpResponse(t.render(c), content_type='text/html')
@@ -621,15 +596,14 @@ def default_urlconf(request):
 # always work even if the template loader is broken.
 #
 
-TECHNICAL_500_TEMPLATE = (
-    """
+TECHNICAL_500_TEMPLATE = ("""
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="robots" content="NONE,NOARCHIVE">
   <title>{% if exception_type %}{{ exception_type }}{% else %}Report{% endif %}"""
-    """{% if request %} at {{ request.path_info|escape }}{% endif %}</title>
+"""{% if request %} at {{ request.path_info|escape }}{% endif %}</title>
   <style type="text/css">
     html * { padding:0; margin:0; }
     body * { padding:10px 20px; }
@@ -747,10 +721,10 @@ TECHNICAL_500_TEMPLATE = (
 <body>
 <div id="summary">
   <h1>{% if exception_type %}{{ exception_type }}{% else %}Report{% endif %}"""
-    """{% if request %} at {{ request.path_info|escape }}{% endif %}</h1>
+  """{% if request %} at {{ request.path_info|escape }}{% endif %}</h1>
   <pre class="exception_value">"""
-    """{% if exception_value %}{{ exception_value|force_escape }}{% else %}No exception message supplied{% endif %}"""
-    """</pre>
+ """{% if exception_value %}{{ exception_value|force_escape }}{% else %}No exception message supplied{% endif %}"""
+"""</pre>
   <table class="meta">
 {% if request %}
     <tr>

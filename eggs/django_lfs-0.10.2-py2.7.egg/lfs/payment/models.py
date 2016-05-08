@@ -13,12 +13,8 @@ class ActivePaymentMethodManager(models.Manager):
     """
     A manager which return just valid shipping methods.
     """
-
     def active(self):
-        return super(
-            ActivePaymentMethodManager,
-            self).get_query_set().filter(
-            active=True)
+        return super(ActivePaymentMethodManager, self).get_query_set().filter(active=True)
 
 
 class PaymentMethod(models.Model, Criteria):
@@ -72,26 +68,12 @@ class PaymentMethod(models.Model, Criteria):
     name = models.CharField(_(u"Name"), max_length=50)
     description = models.TextField(_(u"Description"), blank=True)
     note = models.TextField(_(u"note"), blank=True)
-    image = models.ImageField(
-        _(u"Image"),
-        upload_to="images",
-        blank=True,
-        null=True)
+    image = models.ImageField(_(u"Image"), upload_to="images", blank=True, null=True)
     tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
     price = models.FloatField(_(u"Price"), default=0.0)
     deletable = models.BooleanField(default=True)
-    module = models.CharField(
-        _(u'Module'),
-        blank=True,
-        max_length=100,
-        choices=getattr(
-            settings,
-            "LFS_PAYMENT_METHOD_PROCESSORS",
-            []))
-    type = models.PositiveSmallIntegerField(
-        _(u'Type'),
-        choices=lfs.payment.settings.PAYMENT_METHOD_TYPES_CHOICES,
-        default=lfs.payment.settings.PM_PLAIN)
+    module = models.CharField(_(u'Module'), blank=True, max_length=100, choices=getattr(settings, "LFS_PAYMENT_METHOD_PROCESSORS", []))
+    type = models.PositiveSmallIntegerField(_(u'Type'), choices=lfs.payment.settings.PAYMENT_METHOD_TYPES_CHOICES, default=lfs.payment.settings.PM_PLAIN)
     objects = ActivePaymentMethodManager()
 
     class Meta:
@@ -121,17 +103,13 @@ class PaymentMethodPrice(models.Model, Criteria):
         The order in which all prices of the belonging payment method are tested
         for validity. Less comes first.
     """
-
     def __unicode__(self):
         return u"%s" % self.price
 
     class Meta:
         ordering = ("priority", )
 
-    payment_method = models.ForeignKey(
-        PaymentMethod,
-        verbose_name=_(u"Payment method"),
-        related_name="prices")
+    payment_method = models.ForeignKey(PaymentMethod, verbose_name=_(u"Payment method"), related_name="prices")
     price = models.FloatField(_(u"Price"), default=0.0)
     priority = models.IntegerField(_(u"Priority"), default=0)
     active = models.BooleanField(_(u"Active"), default=False)

@@ -10,27 +10,13 @@ class Command(BaseCommand):
     requires_system_checks = False
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            'args',
-            metavar='fixture',
-            nargs='*',
+        parser.add_argument('args', metavar='fixture', nargs='*',
             help='Path(s) to fixtures to load before running the server.')
-        parser.add_argument(
-            '--noinput',
-            action='store_false',
-            dest='interactive',
-            default=True,
+        parser.add_argument('--noinput', action='store_false', dest='interactive', default=True,
             help='Tells Django to NOT prompt the user for input of any kind.')
-        parser.add_argument(
-            '--addrport',
-            default='',
+        parser.add_argument('--addrport', default='',
             help='Port number or ipaddr:port to run the server on.')
-        parser.add_argument(
-            '--ipv6',
-            '-6',
-            action='store_true',
-            dest='use_ipv6',
-            default=False,
+        parser.add_argument('--ipv6', '-6', action='store_true', dest='use_ipv6', default=False,
             help='Tells Django to use an IPv6 address.')
 
     def handle(self, *fixture_labels, **options):
@@ -38,8 +24,7 @@ class Command(BaseCommand):
         interactive = options.get('interactive')
 
         # Create a test database.
-        db_name = connection.creation.create_test_db(
-            verbosity=verbosity, autoclobber=not interactive, serialize=False)
+        db_name = connection.creation.create_test_db(verbosity=verbosity, autoclobber=not interactive, serialize=False)
 
         # Import the fixture data into the test database.
         call_command('loaddata', *fixture_labels, **{'verbosity': verbosity})

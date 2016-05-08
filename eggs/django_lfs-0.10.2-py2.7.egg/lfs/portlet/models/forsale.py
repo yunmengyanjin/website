@@ -25,8 +25,7 @@ class ForsalePortlet(Portlet):
     name = _("Product Forsale")
 
     limit = models.IntegerField(_(u"Limit"), default=5)
-    current_category = models.BooleanField(
-        _(u"Use current category"), default=False)
+    current_category = models.BooleanField(_(u"Use current category"), default=False)
     slideshow = models.BooleanField(_(u"Slideshow"), default=False)
 
     @property
@@ -42,24 +41,21 @@ class ForsalePortlet(Portlet):
         if self.current_category:
             obj = context.get("category") or context.get("product")
             if obj:
-                category = obj if isinstance(
-                    obj, Category) else obj.get_current_category(request)
+                category = obj if isinstance(obj, Category) else obj.get_current_category(request)
                 categories = [category]
                 categories.extend(category.get_all_children())
-                products = products.filter(categories__in=categories)[
-                    :self.limit]
+                products = products.filter(categories__in=categories)[:self.limit]
             else:
                 products = None
         else:
             products = products[:self.limit]
 
-        return render_to_string("lfs/portlets/forsale.html",
-                                RequestContext(request,
-                                               {"title": self.rendered_title,
-                                                "slideshow": self.slideshow,
-                                                "products": products,
-                                                "MEDIA_URL": context.get("MEDIA_URL"),
-                                                }))
+        return render_to_string("lfs/portlets/forsale.html", RequestContext(request, {
+            "title": self.rendered_title,
+            "slideshow": self.slideshow,
+            "products": products,
+            "MEDIA_URL": context.get("MEDIA_URL"),
+        }))
 
     def form(self, **kwargs):
         """

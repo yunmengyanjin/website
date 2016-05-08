@@ -1,6 +1,5 @@
 from zc.buildout.buildout import print_
 
-
 class Debug:
 
     def __init__(self, buildout, name, options):
@@ -9,7 +8,8 @@ class Debug:
         self.options = options
 
     def install(self):
-        items = sorted(self.options.items())
+        items = list(self.options.items())
+        items.sort()
         for option, value in items:
             print_("  %s=%r" % (option, value))
         return ()

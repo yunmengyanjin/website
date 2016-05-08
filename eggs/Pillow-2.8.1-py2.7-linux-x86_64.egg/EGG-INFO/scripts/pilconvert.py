@@ -15,12 +15,9 @@
 
 from __future__ import print_function
 
-import getopt
-import string
-import sys
+import getopt, string, sys
 
 from PIL import Image
-
 
 def usage():
     print("PIL Convert 0.5/1998-12-30 -- convert image files")
@@ -52,7 +49,7 @@ except getopt.error as v:
 format = None
 convert = None
 
-options = {}
+options = { }
 
 for o, a in opt:
 
@@ -62,7 +59,7 @@ for o, a in opt:
         print("Supported formats (* indicates output format):")
         for i in id:
             if i in Image.SAVE:
-                print(i + "*", end=' ')
+                print(i+"*", end=' ')
             else:
                 print(i, end=' ')
         sys.exit(1)

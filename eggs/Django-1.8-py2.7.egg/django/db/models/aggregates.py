@@ -14,27 +14,14 @@ class Aggregate(Func):
     contains_aggregate = True
     name = None
 
-    def resolve_expression(
-            self,
-            query=None,
-            allow_joins=True,
-            reuse=None,
-            summarize=False,
-            for_save=False):
+    def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
         assert len(self.source_expressions) == 1
         # Aggregates are not allowed in UPDATE queries, so ignore for_save
-        c = super(
-            Aggregate,
-            self).resolve_expression(
-            query,
-            allow_joins,
-            reuse,
-            summarize)
+        c = super(Aggregate, self).resolve_expression(query, allow_joins, reuse, summarize)
         if c.source_expressions[0].contains_aggregate and not summarize:
             name = self.source_expressions[0].name
-            raise FieldError(
-                "Cannot compute %s('%s'): '%s' is an aggregate" %
-                (c.name, name, name))
+            raise FieldError("Cannot compute %s('%s'): '%s' is an aggregate" % (
+                c.name, name, name))
         c._patch_aggregate(query)  # backward-compatibility support
         return c
 
@@ -45,8 +32,7 @@ class Aggregate(Func):
     @property
     def default_alias(self):
         if hasattr(self.source_expressions[0], 'name'):
-            return '%s__%s' % (self.source_expressions[
-                               0].name, self.name.lower())
+            return '%s__%s' % (self.source_expressions[0].name, self.name.lower())
         raise TypeError("Complex expressions require an alias")
 
     def get_group_by_cols(self):
@@ -77,8 +63,7 @@ class Aggregate(Func):
         placeholder_alias = "_XXXXXXXX_"
         self.add_to_query(query, placeholder_alias, None, None, None)
         sql_aggregate = query.aggregates.pop(placeholder_alias)
-        if 'sql_function' not in self.extra and hasattr(
-                sql_aggregate, 'sql_function'):
+        if 'sql_function' not in self.extra and hasattr(sql_aggregate, 'sql_function'):
             self.extra['function'] = sql_aggregate.sql_function
 
         if hasattr(sql_aggregate, 'sql_template'):
@@ -90,12 +75,7 @@ class Avg(Aggregate):
     name = 'Avg'
 
     def __init__(self, expression, **extra):
-        super(
-            Avg,
-            self).__init__(
-            expression,
-            output_field=FloatField(),
-            **extra)
+        super(Avg, self).__init__(expression, output_field=FloatField(), **extra)
 
     def convert_value(self, value, expression, connection, context):
         if value is None:
@@ -111,13 +91,8 @@ class Count(Aggregate):
     def __init__(self, expression, distinct=False, **extra):
         if expression == '*':
             expression = Value(expression)
-        super(
-            Count,
-            self).__init__(
-            expression,
-            distinct='DISTINCT ' if distinct else '',
-            output_field=IntegerField(),
-            **extra)
+        super(Count, self).__init__(
+            expression, distinct='DISTINCT ' if distinct else '', output_field=IntegerField(), **extra)
 
     def __repr__(self):
         return "{}({}, distinct={})".format(
@@ -147,12 +122,7 @@ class StdDev(Aggregate):
 
     def __init__(self, expression, sample=False, **extra):
         self.function = 'STDDEV_SAMP' if sample else 'STDDEV_POP'
-        super(
-            StdDev,
-            self).__init__(
-            expression,
-            output_field=FloatField(),
-            **extra)
+        super(StdDev, self).__init__(expression, output_field=FloatField(), **extra)
 
     def __repr__(self):
         return "{}({}, sample={})".format(
@@ -177,12 +147,7 @@ class Variance(Aggregate):
 
     def __init__(self, expression, sample=False, **extra):
         self.function = 'VAR_SAMP' if sample else 'VAR_POP'
-        super(
-            Variance,
-            self).__init__(
-            expression,
-            output_field=FloatField(),
-            **extra)
+        super(Variance, self).__init__(expression, output_field=FloatField(), **extra)
 
     def __repr__(self):
         return "{}({}, sample={})".format(

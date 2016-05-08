@@ -12,8 +12,7 @@ class Command(BaseCommand):
         cnt = 0
         for customer in Customer.objects.filter(user__isnull=True):
             has_cart = Cart.objects.filter(session=customer.session).exists()
-            has_orders = Order.objects.filter(
-                session=customer.session).exists()
+            has_orders = Order.objects.filter(session=customer.session).exists()
             if not has_cart and not has_orders:
                 for address in customer.addresses.all():
                     if not address.order:

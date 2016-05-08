@@ -12,18 +12,15 @@ class DatabaseCreation(BaseDatabaseCreation):
             suffix.append('COLLATE %s' % test_settings['COLLATION'])
         return ' '.join(suffix)
 
-    def sql_for_inline_foreign_key_references(
-            self, model, field, known_models, style):
+    def sql_for_inline_foreign_key_references(self, model, field, known_models, style):
         "All inline references are pending under MySQL"
         return [], True
 
     def sql_destroy_indexes_for_fields(self, model, fields, style):
         if len(fields) == 1 and fields[0].db_tablespace:
-            tablespace_sql = self.connection.ops.tablespace_sql(
-                fields[0].db_tablespace)
+            tablespace_sql = self.connection.ops.tablespace_sql(fields[0].db_tablespace)
         elif model._meta.db_tablespace:
-            tablespace_sql = self.connection.ops.tablespace_sql(
-                model._meta.db_tablespace)
+            tablespace_sql = self.connection.ops.tablespace_sql(model._meta.db_tablespace)
         else:
             tablespace_sql = ""
         if tablespace_sql:
@@ -34,8 +31,7 @@ class DatabaseCreation(BaseDatabaseCreation):
         for f in fields:
             field_names.append(style.SQL_FIELD(qn(f.column)))
 
-        index_name = "%s_%s" % (model._meta.db_table,
-                                self._digest([f.name for f in fields]))
+        index_name = "%s_%s" % (model._meta.db_table, self._digest([f.name for f in fields]))
 
         from ..utils import truncate_name
 

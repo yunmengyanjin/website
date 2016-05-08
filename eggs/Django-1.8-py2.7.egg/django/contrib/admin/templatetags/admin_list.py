@@ -37,16 +37,10 @@ def paginator_number(cl, i):
     elif i == cl.page_num:
         return format_html('<span class="this-page">{}</span> ', i + 1)
     else:
-        return format_html(
-            '<a href="{}"{}>{}</a> ',
-            cl.get_query_string(
-                {
-                    PAGE_VAR: i}),
-            mark_safe(
-                ' class="end"' if i == cl.paginator.num_pages -
-                1 else ''),
-            i +
-            1)
+        return format_html('<a href="{}"{}>{}</a> ',
+                           cl.get_query_string({PAGE_VAR: i}),
+                           mark_safe(' class="end"' if i == cl.paginator.num_pages - 1 else ''),
+                           i + 1)
 
 
 @register.inclusion_tag('admin/pagination.html')
@@ -56,8 +50,7 @@ def pagination(cl):
     """
     paginator, page_num = cl.paginator, cl.page_num
 
-    pagination_required = (
-        not cl.show_all or not cl.can_show_all) and cl.multi_page
+    pagination_required = (not cl.show_all or not cl.can_show_all) and cl.multi_page
     if not pagination_required:
         page_range = []
     else:
@@ -80,19 +73,9 @@ def pagination(cl):
             else:
                 page_range.extend(range(0, page_num + 1))
             if page_num < (paginator.num_pages - ON_EACH_SIDE - ON_ENDS - 1):
-                page_range.extend(
-                    range(
-                        page_num +
-                        1,
-                        page_num +
-                        ON_EACH_SIDE +
-                        1))
+                page_range.extend(range(page_num + 1, page_num + ON_EACH_SIDE + 1))
                 page_range.append(DOT)
-                page_range.extend(
-                    range(
-                        paginator.num_pages -
-                        ON_ENDS,
-                        paginator.num_pages))
+                page_range.extend(range(paginator.num_pages - ON_ENDS, paginator.num_pages))
             else:
                 page_range.extend(range(page_num + 1, paginator.num_pages))
 
@@ -240,17 +223,12 @@ def items_for_result(cl, result, form):
                         result_repr = field_val
                 else:
                     result_repr = display_for_field(value, f)
-                if isinstance(
-                    f,
-                    (models.DateField,
-                     models.TimeField,
-                     models.ForeignKey)):
+                if isinstance(f, (models.DateField, models.TimeField, models.ForeignKey)):
                     row_classes.append('nowrap')
         if force_text(result_repr) == '':
             result_repr = mark_safe('&nbsp;')
         row_class = mark_safe(' class="%s"' % ' '.join(row_classes))
-        # If list_display_links not defined, add the link tag to the first
-        # field
+        # If list_display_links not defined, add the link tag to the first field
         if link_in_col(first, field_name, cl):
             table_tag = 'th' if first else 'td'
             first = False
@@ -262,8 +240,7 @@ def items_for_result(cl, result, form):
             except NoReverseMatch:
                 link_or_text = result_repr
             else:
-                url = add_preserved_filters(
-                    {'preserved_filters': cl.preserved_filters, 'opts': cl.opts}, url)
+                url = add_preserved_filters({'preserved_filters': cl.preserved_filters, 'opts': cl.opts}, url)
                 # Convert the pk to something that can be used in Javascript.
                 # Problem cases are long ints (23L) and non-ASCII strings.
                 if cl.to_field:
@@ -305,7 +282,6 @@ class ResultList(list):
     # changelist, annotated with the form object for error
     # reporting purposes. Needed to maintain backwards
     # compatibility with existing admin templates.
-
     def __init__(self, form, *items):
         self.form = form
         super(ResultList, self).__init__(*items)
@@ -352,8 +328,7 @@ def date_hierarchy(cl):
     if cl.date_hierarchy:
         field_name = cl.date_hierarchy
         field = cl.opts.get_field(field_name)
-        dates_or_datetimes = 'datetimes' if isinstance(
-            field, models.DateTimeField) else 'dates'
+        dates_or_datetimes = 'datetimes' if isinstance(field, models.DateTimeField) else 'dates'
         year_field = '%s__year' % field_name
         month_field = '%s__month' % field_name
         day_field = '%s__day' % field_name
@@ -375,10 +350,7 @@ def date_hierarchy(cl):
                         month_lookup = date_range['first'].month
 
         if year_lookup and month_lookup and day_lookup:
-            day = datetime.date(
-                int(year_lookup),
-                int(month_lookup),
-                int(day_lookup))
+            day = datetime.date(int(year_lookup), int(month_lookup), int(day_lookup))
             return {
                 'show': True,
                 'back': {
@@ -388,8 +360,7 @@ def date_hierarchy(cl):
                 'choices': [{'title': capfirst(formats.date_format(day, 'MONTH_DAY_FORMAT'))}]
             }
         elif year_lookup and month_lookup:
-            days = cl.queryset.filter(
-                **{year_field: year_lookup, month_field: month_lookup})
+            days = cl.queryset.filter(**{year_field: year_lookup, month_field: month_lookup})
             days = getattr(days, dates_or_datetimes)(field_name, 'day')
             return {
                 'show': True,
@@ -417,11 +388,7 @@ def date_hierarchy(cl):
                 } for month in months]
             }
         else:
-            years = getattr(
-                cl.queryset,
-                dates_or_datetimes)(
-                field_name,
-                'year')
+            years = getattr(cl.queryset, dates_or_datetimes)(field_name, 'year')
             return {
                 'show': True,
                 'choices': [{

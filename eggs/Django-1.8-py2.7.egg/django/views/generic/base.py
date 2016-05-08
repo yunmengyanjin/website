@@ -34,15 +34,7 @@ class View(object):
     dispatch-by-method and simple sanity checking.
     """
 
-    http_method_names = [
-        'get',
-        'post',
-        'put',
-        'patch',
-        'delete',
-        'head',
-        'options',
-        'trace']
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete', 'head', 'options', 'trace']
 
     def __init__(self, **kwargs):
         """
@@ -65,11 +57,9 @@ class View(object):
                                 "keyword argument to %s(). Don't do that."
                                 % (key, cls.__name__))
             if not hasattr(cls, key):
-                raise TypeError(
-                    "%s() received an invalid keyword %r. as_view "
-                    "only accepts arguments that are already "
-                    "attributes of the class." %
-                    (cls.__name__, key))
+                raise TypeError("%s() received an invalid keyword %r. as_view "
+                                "only accepts arguments that are already "
+                                "attributes of the class." % (cls.__name__, key))
 
         def view(request, *args, **kwargs):
             self = cls(**initkwargs)
@@ -93,20 +83,18 @@ class View(object):
         # defer to the error handler. Also defer to the error handler if the
         # request method isn't on the approved list.
         if request.method.lower() in self.http_method_names:
-            handler = getattr(self, request.method.lower(),
-                              self.http_method_not_allowed)
+            handler = getattr(self, request.method.lower(), self.http_method_not_allowed)
         else:
             handler = self.http_method_not_allowed
         return handler(request, *args, **kwargs)
 
     def http_method_not_allowed(self, request, *args, **kwargs):
-        logger.warning(
-            'Method Not Allowed (%s): %s',
-            request.method,
-            request.path,
+        logger.warning('Method Not Allowed (%s): %s', request.method, request.path,
             extra={
                 'status_code': 405,
-                'request': request})
+                'request': request
+            }
+        )
         return http.HttpResponseNotAllowed(self._allowed_methods())
 
     def options(self, request, *args, **kwargs):
@@ -166,7 +154,6 @@ class TemplateView(TemplateResponseMixin, ContextMixin, View):
     A view that renders a template.  This view will also pass into the context
     any keyword arguments passed by the url conf.
     """
-
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
@@ -236,10 +223,10 @@ class RedirectView(View):
                 return http.HttpResponseRedirect(url)
         else:
             logger.warning('Gone: %s', request.path,
-                           extra={
-                               'status_code': 410,
-                               'request': request
-                           })
+                        extra={
+                            'status_code': 410,
+                            'request': request
+                        })
             return http.HttpResponseGone()
 
     def head(self, request, *args, **kwargs):

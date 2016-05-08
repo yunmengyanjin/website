@@ -35,11 +35,7 @@ class ActionGroup(models.Model):
     name
         The name of the group.
     """
-    name = models.CharField(
-        _(u"Name"),
-        blank=True,
-        max_length=100,
-        unique=True)
+    name = models.CharField(_(u"Name"), blank=True, max_length=100, unique=True)
 
     class Meta:
         ordering = ("name", )
@@ -79,16 +75,9 @@ class Action(models.Model):
     active = models.BooleanField(_(u"Active"), default=False)
     title = models.CharField(_(u"Title"), max_length=40)
     link = models.CharField(_(u"Link"), blank=True, max_length=100)
-    group = models.ForeignKey(
-        ActionGroup,
-        verbose_name=_(u"Group"),
-        related_name="actions")
+    group = models.ForeignKey(ActionGroup, verbose_name=_(u"Group"), related_name="actions")
     position = models.IntegerField(_(u"Position"), default=999)
-    parent = models.ForeignKey(
-        "self",
-        verbose_name=_(u"Parent"),
-        blank=True,
-        null=True)
+    parent = models.ForeignKey("self", verbose_name=_(u"Parent"), blank=True, null=True)
 
     def __unicode__(self):
         return self.title
@@ -175,58 +164,31 @@ class Shop(models.Model):
     notification_emails = models.TextField(_(u"Notification email addresses"))
 
     description = models.TextField(_(u"Description"), blank=True)
-    image = ImageWithThumbsField(
-        _(u"Image"), upload_to="images", blank=True, null=True, sizes=(
-            (60, 60), (100, 100), (200, 200), (400, 400)))
-    static_block = models.ForeignKey(
-        StaticBlock,
-        verbose_name=_(u"Static block"),
-        blank=True,
-        null=True,
-        related_name="shops")
+    image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=((60, 60), (100, 100), (200, 200), (400, 400)))
+    static_block = models.ForeignKey(StaticBlock, verbose_name=_(u"Static block"), blank=True, null=True, related_name="shops")
 
     product_cols = models.IntegerField(_(u"Product cols"), default=1)
     product_rows = models.IntegerField(_(u"Product rows"), default=10)
     category_cols = models.IntegerField(_(u"Category cols"), default=1)
-    delivery_time = models.ForeignKey(
-        DeliveryTime,
-        verbose_name=_(u"Delivery time"),
-        blank=True,
-        null=True)
+    delivery_time = models.ForeignKey(DeliveryTime, verbose_name=_(u"Delivery time"), blank=True, null=True)
 
-    google_analytics_id = models.CharField(
-        _(u"Google Analytics ID"), blank=True, max_length=20)
-    ga_site_tracking = models.BooleanField(
-        _(u"Google Analytics Site Tracking"), default=False)
-    ga_ecommerce_tracking = models.BooleanField(
-        _(u"Google Analytics E-Commerce Tracking"), default=False)
+    google_analytics_id = models.CharField(_(u"Google Analytics ID"), blank=True, max_length=20)
+    ga_site_tracking = models.BooleanField(_(u"Google Analytics Site Tracking"), default=False)
+    ga_ecommerce_tracking = models.BooleanField(_(u"Google Analytics E-Commerce Tracking"), default=False)
 
-    invoice_countries = models.ManyToManyField(
-        Country, verbose_name=_(u"Invoice countries"), related_name="invoice")
-    shipping_countries = models.ManyToManyField(
-        Country, verbose_name=_(u"Shipping countries"), related_name="shipping")
-    default_country = models.ForeignKey(
-        Country, verbose_name=_(u"Default shipping country"))
+    invoice_countries = models.ManyToManyField(Country, verbose_name=_(u"Invoice countries"), related_name="invoice")
+    shipping_countries = models.ManyToManyField(Country, verbose_name=_(u"Shipping countries"), related_name="shipping")
+    default_country = models.ForeignKey(Country, verbose_name=_(u"Default shipping country"))
 
-    use_international_currency_code = models.BooleanField(
-        _(u"Use international currency codes"), default=False)
-    price_calculator = models.CharField(
-        choices=settings.LFS_PRICE_CALCULATORS,
-        max_length=255,
-        default=settings.LFS_PRICE_CALCULATORS[0][0],
-        verbose_name=_(u"Price calculator"))
+    use_international_currency_code = models.BooleanField(_(u"Use international currency codes"), default=False)
+    price_calculator = models.CharField(choices=settings.LFS_PRICE_CALCULATORS, max_length=255,
+                                        default=settings.LFS_PRICE_CALCULATORS[0][0],
+                                        verbose_name=_(u"Price calculator"))
 
-    checkout_type = models.PositiveSmallIntegerField(
-        _(u"Checkout type"),
-        choices=CHECKOUT_TYPES,
-        default=CHECKOUT_TYPE_SELECT)
+    checkout_type = models.PositiveSmallIntegerField(_(u"Checkout type"), choices=CHECKOUT_TYPES, default=CHECKOUT_TYPE_SELECT)
     confirm_toc = models.BooleanField(_(u"Confirm TOC"), default=False)
 
-    meta_title = models.CharField(
-        _(u"Meta title"),
-        blank=True,
-        default="<name>",
-        max_length=80)
+    meta_title = models.CharField(_(u"Meta title"), blank=True, default="<name>", max_length=80)
     meta_keywords = models.TextField(_(u"Meta keywords"), blank=True)
     meta_description = models.TextField(_(u"Meta description"), blank=True)
 
@@ -248,8 +210,7 @@ class Shop(models.Model):
     def get_default_country(self):
         """Returns the default country of the shop.
         """
-        cache_key = "%s-default-country-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        cache_key = "%s-default-country-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         default_country = cache.get(cache_key)
         if default_country:
             return default_country
@@ -263,8 +224,8 @@ class Shop(models.Model):
         """Returns the notification e-mail addresses as list
         """
         import re
-        addresses = re.split("[\s,]+", self.notification_emails)
-        return addresses
+        adresses = re.split("[\s,]+", self.notification_emails)
+        return adresses
 
     def get_parent_for_portlets(self):
         """Implements contract for django-portlets. Returns always None as there

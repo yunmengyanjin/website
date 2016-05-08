@@ -24,7 +24,6 @@ def unlocalize(value):
 
 
 class LocalizeNode(Node):
-
     def __init__(self, nodelist, use_l10n):
         self.nodelist = nodelist
         self.use_l10n = use_l10n
@@ -58,9 +57,7 @@ def localize_tag(parser, token):
     if len(bits) == 1:
         use_l10n = True
     elif len(bits) > 2 or bits[1] not in ('on', 'off'):
-        raise TemplateSyntaxError(
-            "%r argument should be 'on' or 'off'" %
-            bits[0])
+        raise TemplateSyntaxError("%r argument should be 'on' or 'off'" % bits[0])
     else:
         use_l10n = bits[1] == 'on'
     nodelist = parser.parse(('endlocalize',))

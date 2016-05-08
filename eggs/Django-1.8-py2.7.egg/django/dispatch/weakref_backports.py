@@ -29,7 +29,6 @@ class WeakMethod(ref):
         except AttributeError:
             raise TypeError("argument should be a bound method, not {}"
                             .format(type(meth)))
-
         def _cb(arg):
             # The self-weakref trick is needed to avoid creating a reference
             # cycle.
@@ -56,8 +55,7 @@ class WeakMethod(ref):
         if isinstance(other, WeakMethod):
             if not self._alive or not other._alive:
                 return self is other
-            return ref.__eq__(
-                self, other) and self._func_ref == other._func_ref
+            return ref.__eq__(self, other) and self._func_ref == other._func_ref
         return False
 
     def __ne__(self, other):

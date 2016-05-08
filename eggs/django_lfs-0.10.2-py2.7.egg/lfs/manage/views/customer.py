@@ -25,10 +25,7 @@ from lfs.order.models import Order
 
 # Views
 @permission_required("core.manage_shop")
-def customer(
-        request,
-        customer_id,
-        template_name="manage/customer/customer.html"):
+def customer(request, customer_id, template_name="manage/customer/customer.html"):
     """Base view to display the customer with passed customer id.
     """
     return render_to_response(template_name, RequestContext(request, {
@@ -49,10 +46,7 @@ def customers(request, template_name="manage/customer/customers.html"):
 
 
 # Parts
-def customer_filters_inline(
-        request,
-        customer_id,
-        template_name="manage/customer/customer_filters_inline.html"):
+def customer_filters_inline(request, customer_id, template_name="manage/customer/customer_filters_inline.html"):
     """Renders the filters section of the customer view.
     """
     customer_filters = request.session.get("customer-filters", {})
@@ -64,9 +58,7 @@ def customer_filters_inline(
     }))
 
 
-def customers_filters_inline(
-        request,
-        template_name="manage/customer/customers_filters_inline.html"):
+def customers_filters_inline(request, template_name="manage/customer/customers_filters_inline.html"):
     """Renders the filters section of the customers overview view.
     """
     customer_filters = request.session.get("customer-filters", {})
@@ -111,10 +103,7 @@ def customers_filters_inline(
 
 
 @permission_required("core.manage_shop")
-def customer_inline(
-        request,
-        customer_id,
-        template_name="manage/customer/customer_inline.html"):
+def customer_inline(request, customer_id, template_name="manage/customer/customer_inline.html"):
     """Displays customer with provided customer id.
     """
     customer = lfs_get_object_or_404(Customer, pk=customer_id)
@@ -133,29 +122,22 @@ def customer_inline(
         cart_price = None
     else:
         # Shipping
-        selected_shipping_method = lfs.shipping.utils.get_selected_shipping_method(
-            request)
-        shipping_costs = lfs.shipping.utils.get_shipping_costs(
-            request, selected_shipping_method)
+        selected_shipping_method = lfs.shipping.utils.get_selected_shipping_method(request)
+        shipping_costs = lfs.shipping.utils.get_shipping_costs(request, selected_shipping_method)
 
         # Payment
-        selected_payment_method = lfs.payment.utils.get_selected_payment_method(
-            request)
-        payment_costs = lfs.payment.utils.get_payment_costs(
-            request, selected_payment_method)
+        selected_payment_method = lfs.payment.utils.get_selected_payment_method(request)
+        payment_costs = lfs.payment.utils.get_payment_costs(request, selected_payment_method)
 
-        cart_price = cart.get_price_gross(
-            request) + shipping_costs["price_gross"] + payment_costs["price"]
+        cart_price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
 
     if customer.selected_shipping_address:
-        shipping_address = customer.selected_shipping_address.as_html(
-            request, "shipping")
+        shipping_address = customer.selected_shipping_address.as_html(request, "shipping")
     else:
         shipping_address = None
 
     if customer.selected_invoice_address:
-        invoice_address = customer.selected_invoice_address.as_html(
-            request, "invoice")
+        invoice_address = customer.selected_invoice_address.as_html(request, "invoice")
     else:
         invoice_address = None
 
@@ -170,9 +152,7 @@ def customer_inline(
 
 
 @permission_required("core.manage_shop")
-def customers_inline(
-        request,
-        template_name="manage/customer/customers_inline.html"):
+def customers_inline(request, template_name="manage/customer/customers_inline.html"):
     """Displays carts overview.
     """
     customer_filters = request.session.get("customer-filters", {})
@@ -220,10 +200,7 @@ def customers_inline(
 
 
 @permission_required("core.manage_shop")
-def selectable_customers_inline(
-        request,
-        customer_id,
-        template_name="manage/customer/selectable_customers_inline.html"):
+def selectable_customers_inline(request, customer_id, template_name="manage/customer/selectable_customers_inline.html"):
     """Display selectable customers.
     """
     AMOUNT = 30
@@ -299,14 +276,8 @@ def set_ordering(request, ordering):
     if request.REQUEST.get("came-from") == "customer":
         customer_id = request.REQUEST.get("customer-id")
         html = (
-            ("#selectable-customers-inline",
-             selectable_customers_inline(
-                 request,
-                 customer_id)),
-            ("#customer-inline",
-             customer_inline(
-                 request,
-                 customer_id=customer_id)),
+            ("#selectable-customers-inline", selectable_customers_inline(request, customer_id)),
+            ("#customer-inline", customer_inline(request, customer_id=customer_id)),
         )
     else:
         html = (("#customers-inline", customers_inline(request)),)
@@ -335,14 +306,8 @@ def set_customer_filters(request):
     if request.REQUEST.get("came-from") == "customer":
         customer_id = request.REQUEST.get("customer-id")
         html = (
-            ("#selectable-customers-inline",
-             selectable_customers_inline(
-                 request,
-                 customer_id)),
-            ("#customer-inline",
-             customer_inline(
-                 request,
-                 customer_id=customer_id)),
+            ("#selectable-customers-inline", selectable_customers_inline(request, customer_id)),
+            ("#customer-inline", customer_inline(request, customer_id=customer_id)),
         )
     else:
         html = (("#customers-inline", customers_inline(request)),)
@@ -367,18 +332,9 @@ def reset_customer_filters(request):
     if request.REQUEST.get("came-from") == "customer":
         customer_id = request.REQUEST.get("customer-id")
         html = (
-            ("#selectable-customers-inline",
-             selectable_customers_inline(
-                 request,
-                 customer_id)),
-            ("#customer-inline",
-             customer_inline(
-                 request,
-                 customer_id=customer_id)),
-            ("#customer-filters-inline",
-             customer_filters_inline(
-                 request,
-                 customer_id)),
+            ("#selectable-customers-inline", selectable_customers_inline(request, customer_id)),
+            ("#customer-inline", customer_inline(request, customer_id=customer_id)),
+            ("#customer-filters-inline", customer_filters_inline(request, customer_id)),
         )
     else:
         html = (("#customers-inline", customers_inline(request)),)
@@ -398,8 +354,7 @@ def _get_filtered_customers(request, customer_filters):
     """
     """
     customer_ordering = request.session.get("customer-ordering", "id")
-    customer_ordering_order = request.session.get(
-        "customer-ordering-order", "")
+    customer_ordering_order = request.session.get("customer-ordering-order", "")
 
     customers = Customer.objects.all()
 
@@ -411,7 +366,6 @@ def _get_filtered_customers(request, customer_filters):
         customers = customers.filter(f)
 
     # Ordering
-    customers = customers.distinct().order_by("%s%s" %
-                                              (customer_ordering_order, customer_ordering))
+    customers = customers.distinct().order_by("%s%s" % (customer_ordering_order, customer_ordering))
 
     return customers

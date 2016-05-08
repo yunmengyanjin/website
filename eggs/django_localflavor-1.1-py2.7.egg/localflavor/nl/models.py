@@ -21,16 +21,15 @@ class NLBankAccountNumberFieldValidator(RegexValidator):
     }
 
     def __init__(self, regex=None, message=None, code=None):
-        super(NLBankAccountNumberFieldValidator, self).__init__(
-            regex='^[0-9]+$', message=self.default_error_messages['invalid'])
+        super(NLBankAccountNumberFieldValidator, self).__init__(regex='^[0-9]+$',
+                                                                message=self.default_error_messages['invalid'])
         self.no_leading_zeros_regex = re.compile('[1-9]+')
 
     def __call__(self, value):
         super(NLBankAccountNumberFieldValidator, self).__call__(value)
 
         # Need to check for values over the field's max length before the zero are stripped.
-        # This check is needed to allow this validator to be used without
-        # Django's MaxLengthValidator.
+        # This check is needed to allow this validator to be used without Django's MaxLengthValidator.
         if len(value) > 10:
             raise ValidationError(self.default_error_messages['wrong_length'])
 
@@ -48,8 +47,7 @@ class NLBankAccountNumberFieldValidator(RegexValidator):
             if len(value) == 9:
                 value = "0" + value
 
-            eleven_test_sum = sum(
-                [int(a) * b for a, b in zip(value, range(1, 11))])
+            eleven_test_sum = sum([int(a) * b for a, b in zip(value, range(1, 11))])
             if eleven_test_sum % 11 != 0:
                 raise ValidationError(self.default_error_messages['invalid'])
 
@@ -62,7 +60,6 @@ class NLBankAccountNumberField(models.CharField):
 
     .. versionadded:: 1.1
     """
-
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('max_length', 10)
         super(NLBankAccountNumberField, self).__init__(*args, **kwargs)

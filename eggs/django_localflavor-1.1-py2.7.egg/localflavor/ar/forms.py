@@ -18,7 +18,6 @@ class ARProvinceSelect(Select):
     A Select widget that uses a list of Argentinean provinces/autonomous cities
     as its choices.
     """
-
     def __init__(self, attrs=None):
         super(ARProvinceSelect, self).__init__(attrs, choices=PROVINCE_CHOICES)
 
@@ -36,14 +35,9 @@ class ARPostalCodeField(RegexField):
     }
 
     def __init__(self, max_length=8, min_length=4, *args, **kwargs):
-        super(
-            ARPostalCodeField,
-            self).__init__(
-            r'^\d{4}$|^[A-HJ-NP-Za-hj-np-z]\d{4}\D{3}$',
-            max_length,
-            min_length,
-            *args,
-            **kwargs)
+        super(ARPostalCodeField, self).__init__(r'^\d{4}$|^[A-HJ-NP-Za-hj-np-z]\d{4}\D{3}$',
+                                                max_length, min_length,
+                                                *args, **kwargs)
 
     def clean(self, value):
         value = super(ARPostalCodeField, self).clean(value)
@@ -104,15 +98,8 @@ class ARCUITField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            ARCUITField,
-            self).__init__(
-            r'^\d{2}-?\d{8}-?\d$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(ARCUITField, self).__init__(r'^\d{2}-?\d{8}-?\d$',
+                                          max_length, min_length, *args, **kwargs)
 
     def clean(self, value):
         """

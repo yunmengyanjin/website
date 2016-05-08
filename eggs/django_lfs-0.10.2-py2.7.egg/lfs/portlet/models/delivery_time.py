@@ -38,11 +38,7 @@ class DeliveryTimePortlet(Portlet):
                 "delivery_time": info["delivery_time"],
             }
 
-        return render_to_string(
-            "lfs/portlets/delivery_time.html",
-            RequestContext(
-                request,
-                d))
+        return render_to_string("lfs/portlets/delivery_time.html", RequestContext(request, d))
 
     def form(self, **kwargs):
         return DeliveryTimeForm(instance=self, **kwargs)

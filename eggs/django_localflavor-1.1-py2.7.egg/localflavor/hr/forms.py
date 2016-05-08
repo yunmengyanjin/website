@@ -33,7 +33,6 @@ class HRCountySelect(Select):
     """
     A Select widget that uses a list of counties of Croatia as its choices.
     """
-
     def __init__(self, attrs=None):
         super(HRCountySelect, self).__init__(attrs, choices=HR_COUNTY_CHOICES)
 
@@ -43,10 +42,9 @@ class HRLicensePlatePrefixSelect(Select):
     A Select widget that uses a list of vehicle license plate prefixes of
     Croatia as its choices.
     """
-
     def __init__(self, attrs=None):
-        super(HRLicensePlatePrefixSelect, self).__init__(
-            attrs, choices=HR_LICENSE_PLATE_PREFIX_CHOICES)
+        super(HRLicensePlatePrefixSelect, self).__init__(attrs,
+                                                         choices=HR_LICENSE_PLATE_PREFIX_CHOICES)
 
 
 class HRPhoneNumberPrefixSelect(Select):
@@ -54,10 +52,9 @@ class HRPhoneNumberPrefixSelect(Select):
     A Select widget that uses a list of phone number prefixes of Croatia as its
     choices.
     """
-
     def __init__(self, attrs=None):
-        super(HRPhoneNumberPrefixSelect, self).__init__(
-            attrs, choices=HR_PHONE_NUMBER_PREFIX_CHOICES)
+        super(HRPhoneNumberPrefixSelect, self).__init__(attrs,
+                                                        choices=HR_PHONE_NUMBER_PREFIX_CHOICES)
 
 
 class HRJMBGField(Field):
@@ -126,15 +123,8 @@ class HROIBField(RegexField):
     }
 
     def __init__(self, min_length=11, max_length=11, *args, **kwargs):
-        super(
-            HROIBField,
-            self).__init__(
-            r'^\d{11}$',
-            min_length,
-            max_length,
-            *
-            args,
-            **kwargs)
+        super(HROIBField, self).__init__(r'^\d{11}$',
+                                         min_length, max_length, *args, **kwargs)
 
     def clean(self, value):
         super(HROIBField, self).clean(value)
@@ -176,8 +166,7 @@ class HRLicensePlateField(Field):
 
         # Make sure the prefix is in the list of known codes.
         prefix = matches.group('prefix')
-        if prefix not in [choice[0]
-                          for choice in HR_LICENSE_PLATE_PREFIX_CHOICES]:
+        if prefix not in [choice[0] for choice in HR_LICENSE_PLATE_PREFIX_CHOICES]:
             raise ValidationError(self.error_messages['area'])
 
         # Make sure the number portion is not zero.
@@ -247,8 +236,7 @@ class HRPhoneNumberField(Field):
         if prefix[0] == '1':
             number = prefix[1] + number
             prefix = prefix[0]
-        if prefix not in [choice[0]
-                          for choice in HR_PHONE_NUMBER_PREFIX_CHOICES]:
+        if prefix not in [choice[0] for choice in HR_PHONE_NUMBER_PREFIX_CHOICES]:
             raise ValidationError(self.error_messages['area'])
 
         # Make sure the number is of adequate length.

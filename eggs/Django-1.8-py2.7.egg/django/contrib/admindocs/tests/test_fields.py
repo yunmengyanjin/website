@@ -17,7 +17,6 @@ class DescriptionLackingField(models.Field):
 
 
 class TestFieldType(unittest.TestCase):
-
     def setUp(self):
         pass
 

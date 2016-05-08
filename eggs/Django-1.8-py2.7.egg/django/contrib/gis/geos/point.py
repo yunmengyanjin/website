@@ -25,8 +25,7 @@ class Point(GEOSGeometry):
             ndim = len(x)
             coords = x
         elif isinstance(x, six.integer_types + (float,)) and isinstance(y, six.integer_types + (float,)):
-            # Here X, Y, and (optionally) Z were passed in individually, as
-            # parameters.
+            # Here X, Y, and (optionally) Z were passed in individually, as parameters.
             if isinstance(z, six.integer_types + (float,)):
                 ndim = 3
                 coords = [x, y, z]
@@ -34,8 +33,7 @@ class Point(GEOSGeometry):
                 ndim = 2
                 coords = [x, y]
         else:
-            raise TypeError(
-                'Invalid parameters given for Point initialization.')
+            raise TypeError('Invalid parameters given for Point initialization.')
 
         point = self._create_point(ndim, coords)
 
@@ -67,8 +65,7 @@ class Point(GEOSGeometry):
             self._set_cs()
         else:
             # can this happen?
-            raise GEOSException(
-                'Geometry resulting from slice deletion was invalid.')
+            raise GEOSException('Geometry resulting from slice deletion was invalid.')
 
     def _set_single(self, index, value):
         self._cs.setOrdinate(index, 0, value)

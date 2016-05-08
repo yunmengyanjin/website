@@ -96,7 +96,7 @@ class USSocialSecurityNumberField(CharField):
 
     def formfield(self, **kwargs):
         from localflavor.us.forms import (USSocialSecurityNumberField as
-                                          USSocialSecurityNumberFieldFormField)
+            USSocialSecurityNumberFieldFormField)
         defaults = {'form_class': USSocialSecurityNumberFieldFormField}
         defaults.update(kwargs)
         return super(USSocialSecurityNumberField, self).formfield(**defaults)

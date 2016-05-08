@@ -26,7 +26,6 @@ from lfs.page.models import Page
 
 # Views
 class PageSEOView(SEOView):
-
     def get(self, request, id):
         if id == '1':
             return HttpResponseForbidden()

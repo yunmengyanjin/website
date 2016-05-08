@@ -21,7 +21,6 @@ class CZRegionSelect(Select):
     """
     A select widget widget with list of Czech regions as choices.
     """
-
     def __init__(self, attrs=None):
         super(CZRegionSelect, self).__init__(attrs, choices=REGION_CHOICES)
 
@@ -36,14 +35,8 @@ class CZPostalCodeField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            CZPostalCodeField,
-            self).__init__(
-            r'^\d{5}$|^\d{3} \d{2}$',
-            max_length,
-            min_length,
-            *args,
-            **kwargs)
+        super(CZPostalCodeField, self).__init__(r'^\d{5}$|^\d{3} \d{2}$',
+                                                max_length, min_length, *args, **kwargs)
 
     def clean(self, value):
         """

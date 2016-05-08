@@ -25,8 +25,7 @@ def shop_view(request, template_name="lfs/shop/shop.html"):
     """Displays the shop.
     """
     # TODO: this is not necessary here as we have context processor that sets 'SHOP' variable
-    # this should be removed at some point but is here for backward
-    # compatibility
+    #       this should be removed at some point but is here for backward compatibility
     shop = lfs_get_object_or_404(Shop, pk=1)
     return render_to_response(template_name, RequestContext(request, {
         "shop": shop
@@ -55,10 +54,7 @@ def server_error(request):
         pass
     else:
         mail = EmailMessage(
-            subject="Error LFS",
-            body=response,
-            from_email=from_email,
-            to=to_emails)
+            subject="Error LFS", body=response, from_email=from_email, to=to_emails)
         mail.send(fail_silently=True)
 
     t = loader.get_template('500.html')
@@ -70,18 +66,11 @@ def one_time_setup():
     if lfs_locale:
         try:
             locale.setlocale(locale.LC_ALL, lfs_locale)
-        except locale.Error as e:
-            logger.error(
-                "Unsupported locale in settings.LFS_LOCALE: '%s'." %
-                lfs_locale)
+        except locale.Error, e:
+            logger.error("Unsupported locale in settings.LFS_LOCALE: '%s'." % lfs_locale)
 
 
 class TextTemplateView(TemplateView):
-
     def render_to_response(self, context, **kwargs):
-        return super(
-            TextTemplateView,
-            self).render_to_response(
-            context,
-            content_type='text/plain',
-            **kwargs)
+        return super(TextTemplateView, self).render_to_response(context,
+                        content_type='text/plain', **kwargs)

@@ -29,16 +29,14 @@ class Polygon(GEOSGeometry):
         ...                ((4, 4), (4, 6), (6, 6), (6, 4), (4, 4)))
         """
         if not args:
-            raise TypeError(
-                'Must provide at least one LinearRing, or a tuple, to initialize a Polygon.')
+            raise TypeError('Must provide at least one LinearRing, or a tuple, to initialize a Polygon.')
 
         # Getting the ext_ring and init_holes parameters from the argument list
         ext_ring = args[0]
         init_holes = args[1:]
         n_holes = len(init_holes)
 
-        # If initialized as Polygon(shell, (LinearRing, LinearRing)) [for
-        # backward-compatibility]
+        # If initialized as Polygon(shell, (LinearRing, LinearRing)) [for backward-compatibility]
         if n_holes == 1 and isinstance(init_holes[0], (tuple, list)):
             if len(init_holes[0]) == 0:
                 init_holes = ()
@@ -65,9 +63,8 @@ class Polygon(GEOSGeometry):
         x0, y0, x1, y1 = bbox
         for z in bbox:
             if not isinstance(z, six.integer_types + (float,)):
-                return GEOSGeometry(
-                    'POLYGON((%s %s, %s %s, %s %s, %s %s, %s %s))' %
-                    (x0, y0, x0, y1, x1, y1, x1, y0, x0, y0))
+                return GEOSGeometry('POLYGON((%s %s, %s %s, %s %s, %s %s, %s %s))' %
+                                    (x0, y0, x0, y1, x1, y1, x1, y0, x0, y0))
         return Polygon(((x0, y0), (x0, y1), (x1, y1), (x1, y0), (x0, y0)))
 
     # ### These routines are needed for list-like operation w/ListMixin ###
@@ -142,10 +139,7 @@ class Polygon(GEOSGeometry):
             return capi.get_intring(self.ptr, index - 1)
 
     def _get_single_external(self, index):
-        return GEOSGeometry(
-            capi.geom_clone(
-                self._get_single_internal(index)),
-            srid=self.srid)
+        return GEOSGeometry(capi.geom_clone(self._get_single_internal(index)), srid=self.srid)
 
     _set_single = GEOSGeometry._set_single_rebuild
     _assign_extended_slice = GEOSGeometry._assign_extended_slice_rebuild
@@ -178,11 +172,6 @@ class Polygon(GEOSGeometry):
     @property
     def kml(self):
         "Returns the KML representation of this Polygon."
-        inner_kml = ''.join(
-            "<innerBoundaryIs>%s</innerBoundaryIs>" %
-            self[
-                i +
-                1].kml for i in range(
-                self.num_interior_rings))
-        return "<Polygon><outerBoundaryIs>%s</outerBoundaryIs>%s</Polygon>" % (self[
-                                                                               0].kml, inner_kml)
+        inner_kml = ''.join("<innerBoundaryIs>%s</innerBoundaryIs>" % self[i + 1].kml
+            for i in range(self.num_interior_rings))
+        return "<Polygon><outerBoundaryIs>%s</outerBoundaryIs>%s</Polygon>" % (self[0].kml, inner_kml)

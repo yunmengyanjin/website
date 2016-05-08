@@ -37,25 +37,13 @@ class LoginTestCase(TestCase):
     fixtures = ['lfs_shop.xml', "lfs_user.xml"]
 
     def setUp(self):
-        self.p0 = Product.objects.create(
-            name="Product 0",
-            slug="product-0",
-            price=5,
-            active=True,
-            sub_type=STANDARD_PRODUCT)
+        self.p0 = Product.objects.create(name="Product 0", slug="product-0", price=5, active=True, sub_type=STANDARD_PRODUCT)
 
         self.pg = PropertyGroup.objects.create(name="T-Shirts")
-        self.pp1 = Property.objects.create(
-            name="Length", type=PROPERTY_TEXT_FIELD)
-        self.gpr1 = GroupsPropertiesRelation.objects.create(
-            group=self.pg, property=self.pp1)
+        self.pp1 = Property.objects.create(name="Length", type=PROPERTY_TEXT_FIELD)
+        self.gpr1 = GroupsPropertiesRelation.objects.create(group=self.pg, property=self.pp1)
 
-        self.p1 = Product.objects.create(
-            name="Product 1",
-            slug="product-1",
-            price=5,
-            active=True,
-            sub_type=CONFIGURABLE_PRODUCT)
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=5, active=True, sub_type=CONFIGURABLE_PRODUCT)
         self.pg.products = [self.p1]
         self.pg.save()
 
@@ -121,10 +109,7 @@ class LoginTestCase(TestCase):
         rf = RequestFactory()
         session = SessionStore()
 
-        request = rf.post("/",
-                          {"product_id": self.p1.id,
-                           "quantity": 1,
-                           "property-%s" % self.pp1.id: "A"})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1, "property-%s" % self.pp1.id: "A"})
         request.session = session
         request.user = AnonymousUser()
 
@@ -136,10 +121,7 @@ class LoginTestCase(TestCase):
         cart = get_cart(request)
         self.assertEqual(int(cart.get_items()[0].amount), 1)
 
-        request = rf.post("/",
-                          {"product_id": self.p1.id,
-                           "quantity": 10,
-                           "property-%s" % self.pp1.id: "B"})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 10, "property-%s" % self.pp1.id: "B"})
         request.session = session
         request.user = AnonymousUser()
         add_to_cart(request)
@@ -165,10 +147,7 @@ class LoginTestCase(TestCase):
         # logout
         session = SessionStore()
 
-        request = rf.post("/",
-                          {"product_id": self.p1.id,
-                           "quantity": 2,
-                           "property-%s" % self.pp1.id: "A"})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 2, "property-%s" % self.pp1.id: "A"})
         request.session = session
         request.user = AnonymousUser()
 
@@ -180,10 +159,7 @@ class LoginTestCase(TestCase):
         cart = get_cart(request)
         self.assertEqual(int(cart.get_items()[0].amount), 2)
 
-        request = rf.post("/",
-                          {"product_id": self.p1.id,
-                           "quantity": 20,
-                           "property-%s" % self.pp1.id: "B"})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 20, "property-%s" % self.pp1.id: "B"})
         request.session = session
         request.user = AnonymousUser()
         add_to_cart(request)
@@ -222,25 +198,10 @@ class CartModelsTestCase(TestCase):
 
         self.tax = Tax.objects.create(rate=19.0)
 
-        self.p1 = Product.objects.create(
-            name="Product 1",
-            slug="product-1",
-            price=10.0,
-            tax=self.tax,
-            active=True)
-        self.p2 = Product.objects.create(
-            name="Product 2",
-            slug="product-2",
-            price=100.0,
-            tax=self.tax,
-            active=True)
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0, tax=self.tax, active=True)
+        self.p2 = Product.objects.create(name="Product 2", slug="product-2", price=100.0, tax=self.tax, active=True)
         # This product is not considered as it is not active
-        self.p3 = Product.objects.create(
-            name="Product 3",
-            slug="product-3",
-            price=1000.0,
-            tax=self.tax,
-            active=False)
+        self.p3 = Product.objects.create(name="Product 3", slug="product-3", price=1000.0, tax=self.tax, active=False)
 
         self.cart = Cart.objects.create()
         CartItem.objects.create(cart=self.cart, product=self.p1, amount=1)
@@ -286,21 +247,11 @@ class CartItemTestCase(TestCase):
     def setUp(self):
         self.tax = Tax.objects.create(rate=19.0)
 
-        self.p1 = Product.objects.create(
-            name="Product 1",
-            slug="product-1",
-            price=10.0,
-            tax=self.tax,
-            active=True)
-        self.p2 = Product.objects.create(
-            name="Product 2",
-            slug="product-2",
-            price=100.0,
-            tax=self.tax)
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0, tax=self.tax, active=True)
+        self.p2 = Product.objects.create(name="Product 2", slug="product-2", price=100.0, tax=self.tax)
 
         self.cart = Cart.objects.create()
-        self.item = CartItem.objects.create(
-            cart=self.cart, product=self.p1, amount=1)
+        self.item = CartItem.objects.create(cart=self.cart, product=self.p1, amount=1)
 
     def test_get_properties(self):
         """
@@ -332,12 +283,10 @@ class AddToCartTestCase(TestCase):
     def setUp(self):
         """
         """
-        self.p1 = Product.objects.create(
-            name="Product 1", slug="product-1", price=10.0)
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0)
         from django.contrib.auth.models import User
 
-        self.dt = DeliveryTime.objects.create(
-            min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
+        self.dt = DeliveryTime.objects.create(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
         self.user = User.objects.create(username="doe")
         self.session = SessionStore()
         self.session.save()
@@ -414,8 +363,7 @@ class AddToCartTestCase(TestCase):
 
         # This need to result in a message to the customer
         result = add_to_cart(request)
-        self.failIf(result.cookies.get("message").__str__().find(
-            "Sorry%2C%20but%20%27Product%201%27%20is%20only%20one%20time%20available.") == -1)
+        self.failIf(result.cookies.get("message").__str__().find("Sorry%2C%20but%20%27Product%201%27%20is%20only%20one%20time%20available.") == -1)
 
         # But no message if product is ordered ...
         self.p1.order_time = self.dt
@@ -448,8 +396,7 @@ class AddToCartTestCase(TestCase):
 
         # This need to result in a message to the customer
         result = add_to_cart(request)
-        self.failIf(result.cookies.get("message").__str__().find(
-            "Sorry%2C%20but%20%27Product%201%27%20is%20only%202.0%20times%20available.") == -1)
+        self.failIf(result.cookies.get("message").__str__().find("Sorry%2C%20but%20%27Product%201%27%20is%20only%202.0%20times%20available.") == -1)
 
         # But no message if product is ordered ...
         self.p1.order_time = self.dt
@@ -475,13 +422,8 @@ class RefreshCartTestCase(TestCase):
     def setUp(self):
         """
         """
-        self.p1 = Product.objects.create(
-            name="Product 1",
-            slug="product-1",
-            price=10.0,
-            active=True)
-        self.dt = DeliveryTime.objects.create(
-            min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0, active=True)
+        self.dt = DeliveryTime.objects.create(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
         self.user = User.objects.create(username="doe")
         self.session = SessionStore()
         self.session.save()
@@ -507,11 +449,8 @@ class RefreshCartTestCase(TestCase):
         sm = ShippingMethod.objects.create(name='sm')
 
         # Refresh item amount
-        request = rf.post("/",
-                          {"product_id": self.p1.id,
-                           "amount-cart-item_%s" % cart.get_items()[0].id: 2,
-                           "shipping_method": sm.pk,
-                           "payment_method": pm.pk})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 2,
+                                "shipping_method": sm.pk, "payment_method": pm.pk})
         request.session = self.session
         request.user = self.user
         refresh_cart(request)
@@ -542,19 +481,14 @@ class RefreshCartTestCase(TestCase):
         sm = ShippingMethod.objects.create(name='sm')
 
         # Try to increase item to two, but there is only one in stock
-        request = rf.post("/",
-                          {"product_id": self.p1.id,
-                           "amount-cart-item_%s" % cart.get_items()[0].id: 2,
-                           "shipping_method": sm.pk,
-                           "payment_method": pm.pk})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 2,
+                                "shipping_method": sm.pk, "payment_method": pm.pk})
         request.session = self.session
         request.user = self.user
 
         # This results into a message to the customer
         result = json.loads(refresh_cart(request).content)
-        self.assertEqual(
-            result.get("message"),
-            "Sorry, but \'Product 1\' is only one time available.")
+        self.assertEqual(result.get("message"), "Sorry, but \'Product 1\' is only one time available.")
 
         # And the amount of the item is still 1.0
         self.assertEqual(cart.get_amount_of_items(), 1.0)
@@ -567,8 +501,7 @@ class RefreshCartTestCase(TestCase):
         self.assertEqual(result.get("message"), "")
         self.assertEqual(cart.get_amount_of_items(), 2.0)
 
-        # Or if LFS not managing stock amount the product can be added to the
-        # cart
+        # Or if LFS not managing stock amount the product can be added to the cart
         self.p1.order_time = None
         self.p1.manage_stock_amount = False
         self.p1.save()
@@ -602,11 +535,8 @@ class RefreshCartTestCase(TestCase):
         sm = ShippingMethod.objects.create(name='sm')
 
         # Increase items to two
-        request = rf.post("/",
-                          {"product_id": self.p1.id,
-                           "amount-cart-item_%s" % cart.get_items()[0].id: 2,
-                           "shipping_method": sm.pk,
-                           "payment_method": pm.pk})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 2,
+                                "shipping_method": sm.pk, "payment_method": pm.pk})
         request.session = self.session
         request.user = self.user
 
@@ -616,18 +546,13 @@ class RefreshCartTestCase(TestCase):
         self.assertEqual(cart.get_amount_of_items(), 2.0)
 
         # Try to increase item to 3, but there are only 2 in stock
-        request = rf.post("/",
-                          {"product_id": self.p1.id,
-                           "amount-cart-item_%s" % cart.get_items()[0].id: 3,
-                           "shipping_method": sm.pk,
-                           "payment_method": pm.pk})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 3,
+                                "shipping_method": sm.pk, "payment_method": pm.pk})
         request.session = self.session
         request.user = self.user
 
         result = json.loads(refresh_cart(request).content)
-        self.assertEqual(
-            result.get("message"),
-            "Sorry, but \'Product 1\' is only 2.0 times available.")
+        self.assertEqual(result.get("message"), "Sorry, but \'Product 1\' is only 2.0 times available.")
 
         # And the amount of the item is still 2.0
         self.assertEqual(cart.get_amount_of_items(), 2.0)
@@ -640,8 +565,7 @@ class RefreshCartTestCase(TestCase):
         self.assertEqual(result.get("message"), "")
         self.assertEqual(cart.get_amount_of_items(), 3.0)
 
-        # Or if LFS not managing stock amount the product can be added to the
-        # cart
+        # Or if LFS not managing stock amount the product can be added to the cart
         self.p1.order_time = None
         self.p1.manage_stock_amount = False
         self.p1.save()
@@ -682,11 +606,8 @@ class RefreshCartTestCase(TestCase):
         sm = ShippingMethod.objects.create(name='sm')
 
         # Try to increase item to two, but there is no product in stock anymore
-        request = rf.post("/",
-                          {"product_id": self.p1.id,
-                           "amount-cart-item_%s" % item_id: 2,
-                           "shipping_method": sm.pk,
-                           "payment_method": pm.pk})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % item_id: 2,
+                                "shipping_method": sm.pk, "payment_method": pm.pk})
         request.session = self.session
         request.user = self.user
 
@@ -704,16 +625,10 @@ class AddedToCartTestCase(TestCase):
     def setUp(self):
         """
         """
-        self.p1 = Product.objects.create(
-            name="Product 1",
-            slug="product-1",
-            price=10.0,
-            active=True,
-            manage_stock_amount=False)
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0, active=True, manage_stock_amount=False)
         from django.contrib.auth.models import User
 
-        self.dt = DeliveryTime.objects.create(
-            min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
+        self.dt = DeliveryTime.objects.create(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
         self.user = User.objects.create(username="doe")
         self.session = SessionStore()
         self.session.save()
@@ -732,16 +647,13 @@ class AddedToCartTestCase(TestCase):
         add_to_cart(request)
         response = added_to_cart_items(request)
 
-        # need to test for two versions of currency output (Mac and Ubuntu
-        # differ)
-        self.failIf(
-            response.find(u'Total: <span class="money">$10.00</span>') == -1)
+        # need to test for two versions of currency output (Mac and Ubuntu differ)
+        self.failIf(response.find(u'Total: <span class="money">$10.00</span>') == -1)
 
         # Added product_1 to cart again
         add_to_cart(request)
         response = added_to_cart_items(request)
-        self.failIf(
-            response.find(u'Total: <span class="money">$20.00</span>') == -1)
+        self.failIf(response.find(u'Total: <span class="money">$20.00</span>') == -1)
 
     def test_totals_2(self):
         """Add a product with explicit quantity to cart
@@ -756,11 +668,9 @@ class AddedToCartTestCase(TestCase):
         # Added product_1 two times to cart
         add_to_cart(request)
         response = added_to_cart_items(request)
-        self.failIf(
-            response.find(u'Total: <span class="money">$20.00</span>') == -1)
+        self.failIf(response.find(u'Total: <span class="money">$20.00</span>') == -1)
 
         # Added product_1 two times to cart again
         add_to_cart(request)
         response = added_to_cart_items(request)
-        self.failIf(
-            response.find(u'Total: <span class="money">$40.00</span>') == -1)
+        self.failIf(response.find(u'Total: <span class="money">$40.00</span>') == -1)

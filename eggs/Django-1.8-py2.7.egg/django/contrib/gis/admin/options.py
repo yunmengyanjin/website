@@ -61,11 +61,7 @@ class GeoModelAdmin(ModelAdmin):
             kwargs['widget'] = self.get_map_widget(db_field)
             return db_field.formfield(**kwargs)
         else:
-            return super(
-                GeoModelAdmin,
-                self).formfield_for_dbfield(
-                db_field,
-                **kwargs)
+            return super(GeoModelAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 
     def get_map_widget(self, db_field):
         """
@@ -73,17 +69,12 @@ class GeoModelAdmin(ModelAdmin):
         in the `widget` attribute) using the settings from the attributes set
         in this class.
         """
-        is_collection = db_field.geom_type in (
-            'MULTIPOINT',
-            'MULTILINESTRING',
-            'MULTIPOLYGON',
-            'GEOMETRYCOLLECTION')
+        is_collection = db_field.geom_type in ('MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON', 'GEOMETRYCOLLECTION')
         if is_collection:
             if db_field.geom_type == 'GEOMETRYCOLLECTION':
                 collection_type = 'Any'
             else:
-                collection_type = OGRGeomType(
-                    db_field.geom_type.replace('MULTI', ''))
+                collection_type = OGRGeomType(db_field.geom_type.replace('MULTI', ''))
         else:
             collection_type = 'None'
 
@@ -93,8 +84,7 @@ class GeoModelAdmin(ModelAdmin):
 
             wms_options = ''
             if self.wms_options:
-                wms_options = ["%s: '%s'" %
-                               pair for pair in self.wms_options.items()]
+                wms_options = ["%s: '%s'" % pair for pair in self.wms_options.items()]
                 wms_options = ', %s' % ', '.join(wms_options)
 
             params = {'default_lon': self.default_lon,

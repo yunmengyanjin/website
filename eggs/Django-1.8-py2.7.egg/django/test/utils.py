@@ -43,7 +43,6 @@ TZ_SUPPORT = hasattr(time, 'tzset')
 
 
 class Approximate(object):
-
     def __init__(self, val, places=7):
         self.val = val
         self.places = places
@@ -61,7 +60,6 @@ class ContextList(list):
     """A wrapper that provides direct key access to context items contained
     in a list of context objects.
     """
-
     def __getitem__(self, key):
         if isinstance(key, six.string_types):
             for subcontext in self:
@@ -151,8 +149,7 @@ def get_runner(settings, test_runner_class=None):
         test_module_name = '.'.join(test_path[:-1])
     else:
         test_module_name = '.'
-    test_module = __import__(test_module_name, {}, {},
-                             force_str(test_path[-1]))
+    test_module = __import__(test_module_name, {}, {}, force_str(test_path[-1]))
     test_runner = getattr(test_module, test_path[-1])
     return test_runner
 
@@ -174,7 +171,6 @@ class override_settings(object):
     it's used with the ``with`` statement. In either event entering/exiting
     are called before and after, respectively, the function/block is executed.
     """
-
     def __init__(self, **kwargs):
         self.options = kwargs
 
@@ -242,7 +238,6 @@ class modify_settings(override_settings):
     Like override_settings, but makes it possible to append, prepend or remove
     items instead of redefining the entire list.
     """
-
     def __init__(self, *args, **kwargs):
         if args:
             # Hack used when instantiating from SimpleTestCase.setUpClass.
@@ -274,11 +269,9 @@ class modify_settings(override_settings):
                 if isinstance(items, six.string_types):
                     items = [items]
                 if action == 'append':
-                    value = value + \
-                        [item for item in items if item not in value]
+                    value = value + [item for item in items if item not in value]
                 elif action == 'prepend':
-                    value = [
-                        item for item in items if item not in value] + value
+                    value = [item for item in items if item not in value] + value
                 elif action == 'remove':
                     value = [item for item in value if item not in items]
                 else:
@@ -416,7 +409,6 @@ class CaptureQueriesContext(object):
     """
     Context manager that captures queries executed by the specified connection.
     """
-
     def __init__(self, connection):
         self.connection = connection
 
@@ -450,7 +442,6 @@ class CaptureQueriesContext(object):
 
 
 class ignore_warnings(object):
-
     def __init__(self, **kwargs):
         self.ignore_kwargs = kwargs
         if 'message' in self.ignore_kwargs or 'module' in self.ignore_kwargs:
@@ -510,9 +501,9 @@ def patch_logger(logger_name, log_level):
 # don't enforce a specific timezone (with timezone.override or equivalent),
 # or attempt to interpret naive datetimes in the default timezone.
 
-requires_tz_support = skipUnless(
-    TZ_SUPPORT, "This test relies on the ability to run a program in an arbitrary "
-    "time zone, but your operating system isn't able to do that.")
+requires_tz_support = skipUnless(TZ_SUPPORT,
+        "This test relies on the ability to run a program in an arbitrary "
+        "time zone, but your operating system isn't able to do that.")
 
 
 @contextmanager

@@ -5,7 +5,6 @@ from localflavor.us.forms import USStateField, USStateSelect, USZipCodeField
 
 from postal.forms import PostalAddressForm
 
-
 class USPostalAddressForm(PostalAddressForm):
     line1 = forms.CharField(label=_(u"Street"), max_length=50)
     line2 = forms.CharField(label=_(u"Area"), required=False, max_length=100)

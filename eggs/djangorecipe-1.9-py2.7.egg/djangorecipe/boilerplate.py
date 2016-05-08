@@ -305,14 +305,14 @@ versions = {
         'urls': urls_template,
         'production_settings': production_settings,
         'development_settings': development_settings,
-    },
+        },
     '1.3': {
         'settings': settings_template_1_3,
         'urls': urls_template,
         'production_settings': production_settings,
         'development_settings': development_settings,
-    },
-}
+        },
+    }
 
 # Easy way to specify the newest Django version.
 versions['Newest'] = versions['1.3']

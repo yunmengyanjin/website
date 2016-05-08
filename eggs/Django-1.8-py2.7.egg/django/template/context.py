@@ -16,7 +16,6 @@ class ContextPopException(Exception):
 
 
 class ContextDict(dict):
-
     def __init__(self, context, *args, **kwargs):
         super(ContextDict, self).__init__(*args, **kwargs)
 
@@ -31,7 +30,6 @@ class ContextDict(dict):
 
 
 class BaseContext(object):
-
     def __init__(self, dict_=None):
         self._reset_dicts(dict_)
 
@@ -83,7 +81,7 @@ class BaseContext(object):
         return False
 
     def __contains__(self, key):
-        return key in self
+        return self.has_key(key)
 
     def get(self, key, otherwise=None):
         for d in reversed(self.dicts):
@@ -124,10 +122,9 @@ class BaseContext(object):
 
 class Context(BaseContext):
     "A stack container for variable context"
-
     def __init__(self, dict_=None, autoescape=True,
-                 current_app=_current_app_undefined,
-                 use_l10n=None, use_tz=None):
+            current_app=_current_app_undefined,
+            use_l10n=None, use_tz=None):
         if current_app is not _current_app_undefined:
             warnings.warn(
                 "The current_app argument of Context is deprecated. Use "
@@ -165,8 +162,7 @@ class Context(BaseContext):
     def update(self, other_dict):
         "Pushes other_dict to the stack of dictionaries in the Context"
         if not hasattr(other_dict, '__getitem__'):
-            raise TypeError(
-                'other_dict must be a mapping (dictionary-like) object.')
+            raise TypeError('other_dict must be a mapping (dictionary-like) object.')
         self.dicts.append(other_dict)
         return other_dict
 
@@ -186,7 +182,6 @@ class RenderContext(BaseContext):
     rendering of other templates as they would if they were stored in the normal
     template context.
     """
-
     def __iter__(self):
         for d in self.dicts[-1]:
             yield d
@@ -208,10 +203,9 @@ class RequestContext(Context):
     Additional processors can be specified as a list of callables
     using the "processors" keyword argument.
     """
-
     def __init__(self, request, dict_=None, processors=None,
-                 current_app=_current_app_undefined,
-                 use_l10n=None, use_tz=None):
+            current_app=_current_app_undefined,
+            use_l10n=None, use_tz=None):
         # current_app isn't passed here to avoid triggering the deprecation
         # warning in Context.__init__.
         super(RequestContext, self).__init__(

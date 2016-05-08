@@ -99,7 +99,7 @@ class ImageDraw:
             warnings.warn(
                 "'setink' is deprecated; use keyword arguments instead",
                 DeprecationWarning, stacklevel=2
-            )
+                )
         if isStringType(ink):
             ink = ImageColor.getcolor(ink, self.mode)
         if self.palette and not isinstance(ink, numbers.Number):
@@ -115,7 +115,7 @@ class ImageDraw:
             warnings.warn(
                 "'setfill' is deprecated; use keyword arguments instead",
                 DeprecationWarning, stacklevel=2
-            )
+                )
         self.fill = onoff
 
     ##
@@ -357,7 +357,7 @@ def floodfill(image, xy, value, border=None):
         while edge:
             newedge = []
             for (x, y) in edge:
-                for (s, t) in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                for (s, t) in ((x+1, y), (x-1, y), (x, y+1), (x, y-1)):
                     try:
                         p = pixel[s, t]
                     except IndexError:
@@ -371,7 +371,7 @@ def floodfill(image, xy, value, border=None):
         while edge:
             newedge = []
             for (x, y) in edge:
-                for (s, t) in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                for (s, t) in ((x+1, y), (x-1, y), (x, y+1), (x, y-1)):
                     try:
                         p = pixel[s, t]
                     except IndexError:

@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 from .messages import (CheckMessage,
-                       Debug, Info, Warning, Error, Critical,
-                       DEBUG, INFO, WARNING, ERROR, CRITICAL)
+        Debug, Info, Warning, Error, Critical,
+        DEBUG, INFO, WARNING, ERROR, CRITICAL)
 from .registry import register, run_checks, tag_exists, Tags
 
 # Import these to force registration of checks

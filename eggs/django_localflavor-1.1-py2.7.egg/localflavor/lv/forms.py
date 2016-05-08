@@ -43,11 +43,7 @@ class LVMunicipalitySelect(Select):
     """A select field of Latvian municipalities."""
 
     def __init__(self, attrs=None):
-        super(
-            LVMunicipalitySelect,
-            self).__init__(
-            attrs,
-            choices=MUNICIPALITY_CHOICES)
+        super(LVMunicipalitySelect, self).__init__(attrs, choices=MUNICIPALITY_CHOICES)
 
 
 class LVPersonalCodeField(Field):

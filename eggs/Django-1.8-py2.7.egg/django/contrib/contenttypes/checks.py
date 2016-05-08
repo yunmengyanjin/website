@@ -10,9 +10,9 @@ def check_generic_foreign_keys(**kwargs):
 
     errors = []
     fields = (obj
-              for cls in apps.get_models()
-              for obj in six.itervalues(vars(cls))
-              if isinstance(obj, GenericForeignKey))
+        for cls in apps.get_models()
+        for obj in six.itervalues(vars(cls))
+        if isinstance(obj, GenericForeignKey))
     for field in fields:
         errors.extend(field.check())
     return errors

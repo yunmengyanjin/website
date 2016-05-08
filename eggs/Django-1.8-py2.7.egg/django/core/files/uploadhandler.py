@@ -32,7 +32,6 @@ class StopUpload(UploadFileException):
     """
     This exception is raised when an upload must abort.
     """
-
     def __init__(self, connection_reset=False):
         """
         If ``connection_reset`` is ``True``, Django knows will halt the upload
@@ -77,13 +76,7 @@ class FileUploadHandler(object):
         self.content_type_extra = None
         self.request = request
 
-    def handle_raw_input(
-            self,
-            input_data,
-            META,
-            content_length,
-            boundary,
-            encoding=None):
+    def handle_raw_input(self, input_data, META, content_length, boundary, encoding=None):
         """
         Handle the raw input from the client.
 
@@ -101,14 +94,7 @@ class FileUploadHandler(object):
         """
         pass
 
-    def new_file(
-            self,
-            field_name,
-            file_name,
-            content_type,
-            content_length,
-            charset=None,
-            content_type_extra=None):
+    def new_file(self, field_name, file_name, content_type, content_length, charset=None, content_type_extra=None):
         """
         Signal that a new file has been started.
 
@@ -127,8 +113,7 @@ class FileUploadHandler(object):
         Receive data from the streamed upload parser. ``start`` is the position
         in the file of the chunk.
         """
-        raise NotImplementedError(
-            'subclasses of FileUploadHandler must provide a receive_data_chunk() method')
+        raise NotImplementedError('subclasses of FileUploadHandler must provide a receive_data_chunk() method')
 
     def file_complete(self, file_size):
         """
@@ -137,8 +122,7 @@ class FileUploadHandler(object):
 
         Subclasses should return a valid ``UploadedFile`` object.
         """
-        raise NotImplementedError(
-            'subclasses of FileUploadHandler must provide a file_complete() method')
+        raise NotImplementedError('subclasses of FileUploadHandler must provide a file_complete() method')
 
     def upload_complete(self):
         """
@@ -152,7 +136,6 @@ class TemporaryFileUploadHandler(FileUploadHandler):
     """
     Upload handler that streams data into a temporary file.
     """
-
     def __init__(self, *args, **kwargs):
         super(TemporaryFileUploadHandler, self).__init__(*args, **kwargs)
 
@@ -160,19 +143,8 @@ class TemporaryFileUploadHandler(FileUploadHandler):
         """
         Create the file object to append to as data is coming in.
         """
-        super(
-            TemporaryFileUploadHandler,
-            self).new_file(
-            file_name,
-            *
-            args,
-            **kwargs)
-        self.file = TemporaryUploadedFile(
-            self.file_name,
-            self.content_type,
-            0,
-            self.charset,
-            self.content_type_extra)
+        super(TemporaryFileUploadHandler, self).new_file(file_name, *args, **kwargs)
+        self.file = TemporaryUploadedFile(self.file_name, self.content_type, 0, self.charset, self.content_type_extra)
 
     def receive_data_chunk(self, raw_data, start):
         self.file.write(raw_data)
@@ -188,13 +160,7 @@ class MemoryFileUploadHandler(FileUploadHandler):
     File upload handler to stream uploads into memory (used for small files).
     """
 
-    def handle_raw_input(
-            self,
-            input_data,
-            META,
-            content_length,
-            boundary,
-            encoding=None):
+    def handle_raw_input(self, input_data, META, content_length, boundary, encoding=None):
         """
         Use the content_length to signal whether or not this handler should be in use.
         """

@@ -25,11 +25,8 @@ class LTMunicipalitySelect(Select):
     """A select field with the Lithuanian municipalities as choices"""
 
     def __init__(self, attrs=None):
-        super(
-            LTMunicipalitySelect,
-            self).__init__(
-            attrs,
-            choices=MUNICIPALITY_CHOICES)
+        super(LTMunicipalitySelect, self).__init__(attrs,
+                                                   choices=MUNICIPALITY_CHOICES)
 
 
 class LTIDCodeField(RegexField):
@@ -140,56 +137,10 @@ class LTPhoneField(Field):
 
     # Order dependent (shorter codes cannot go before longer ones)
     _area_codes = tuple(map(text_type,
-                            [425,
-                             315,
-                             381,
-                             319,
-                             450,
-                             313,
-                             528,
-                             386,
-                             349,
-                             426,
-                             447,
-                             346,
-                             427,
-                             347,
-                             445,
-                             459,
-                             318,
-                             343,
-                             443,
-                             383,
-                             469,
-                             421,
-                             460,
-                             451,
-                             448,
-                             319,
-                             422,
-                             428,
-                             458,
-                             440,
-                             345,
-                             380,
-                             449,
-                             441,
-                             382,
-                             387,
-                             446,
-                             444,
-                             528,
-                             340,
-                             389,
-                             310,
-                             342,
-                             386,
-                             385,
-                             45,
-                             46,
-                             41,
-                             37,
-                             5]))
+        [425, 315, 381, 319, 450, 313, 528, 386, 349, 426, 447, 346, 427, 347,
+         445, 459, 318, 343, 443, 383, 469, 421, 460, 451, 448, 319, 422, 428,
+         458, 440, 345, 380, 449, 441, 382, 387, 446, 444, 528, 340, 389, 310,
+         342, 386, 385, 45, 46, 41, 37, 5]))
     _stripable = re.compile(r'[\+()~ ]')
     default_error_messages = {
         'non-digit': _('Phone number can only contain digits'),

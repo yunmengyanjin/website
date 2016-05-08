@@ -76,9 +76,8 @@ def get_payment_costs(request, payment_method):
         tax_rate = 0.0
 
     price = criteria_utils.get_first_valid(request,
-                                           payment_method.prices.all())
-    # TODO: this assumes that payment price is given as gross price, we have
-    # to add payment processor here
+        payment_method.prices.all())
+    # TODO: this assumes that payment price is given as gross price, we have to add payment processor here
     if price is None:
         price = payment_method.price
         tax = (tax_rate / (tax_rate + 100)) * price
@@ -153,8 +152,7 @@ def get_pay_link(request, payment_method, order):
     thank you page after a customer has payed.
     """
     from lfs.core.utils import import_symbol
-    logger.info(
-        "Decprecated: lfs.payment.utils.get_pay_link: this function is deprecated. Please use Order.get_pay_link instead.")
+    logger.info("Decprecated: lfs.payment.utils.get_pay_link: this function is deprecated. Please use Order.get_pay_link instead.")
 
     if payment_method.module:
         payment_class = import_symbol(payment_method.module)

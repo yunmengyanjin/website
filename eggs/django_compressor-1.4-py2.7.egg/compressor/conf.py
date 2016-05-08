@@ -68,9 +68,7 @@ class CompressorConf(AppConf):
     OFFLINE_MANIFEST = 'manifest.json'
     # The Context to be used when TemplateFilter is used
     TEMPLATE_FILTER_CONTEXT = {}
-    # Function that returns the Jinja2 environment to use in offline
-    # compression.
-
+    # Function that returns the Jinja2 environment to use in offline compression.
     def JINJA2_GET_ENVIRONMENT():
         try:
             import jinja2

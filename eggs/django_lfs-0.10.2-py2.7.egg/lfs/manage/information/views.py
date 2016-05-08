@@ -13,7 +13,6 @@ from lfs.core.utils import import_symbol
 from lfs import __version__ as lfs_version
 from lfs_theme import __version__ as lfs_theme_version
 
-
 @permission_required("core.manage_shop")
 def environment(request, template_name="manage/information/environment.html"):
     """Displays miscellaneous information about the evnironment.

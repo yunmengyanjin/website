@@ -49,8 +49,7 @@ def manage_properties(request):
 
 
 @permission_required("core.manage_shop")
-def pages_inline(request, page, paginator, property_id,
-                 template_name="manage/properties/pages_inline.html"):
+def pages_inline(request, page, paginator, property_id, template_name="manage/properties/pages_inline.html"):
     """
     Displays the page navigation.
     """
@@ -62,10 +61,7 @@ def pages_inline(request, page, paginator, property_id,
 
 
 @permission_required("core.manage_shop")
-def manage_property(
-        request,
-        id,
-        template_name="manage/properties/property.html"):
+def manage_property(request, id, template_name="manage/properties/property.html"):
     """The main view to manage the property with passed id.
     """
     prop = get_object_or_404(Property, pk=id)
@@ -75,10 +71,7 @@ def manage_property(
             form.save()
             _update_property_positions()
             return lfs.core.utils.set_message_cookie(
-                url=reverse(
-                    "lfs_manage_shop_property",
-                    kwargs={
-                        "id": prop.id}),
+                url=reverse("lfs_manage_shop_property", kwargs={"id": prop.id}),
                 msg=_(u"Property type has been saved."),
             )
 
@@ -136,29 +129,21 @@ def _get_filtered_properties_for_property_view(request):
     """
     properties = Property.objects.filter(local=False)
     property_ordering = request.session.get("property-ordering", "name")
-    property_ordering_order = request.session.get(
-        "property-ordering-order", "")
+    property_ordering_order = request.session.get("property-ordering-order", "")
 
     # Filter
     property_filters = request.session.get("property_filters", {})
     name = property_filters.get("property_name", "")
     if name != "":
-        properties = properties.filter(
-            Q(name__icontains=name) | Q(title__icontains=name))
+        properties = properties.filter(Q(name__icontains=name) | Q(title__icontains=name))
 
-    properties = properties.order_by(
-        "%s%s" %
-        (property_ordering_order, property_ordering))
+    properties = properties.order_by("%s%s" % (property_ordering_order, property_ordering))
     return properties
 
 
 @permission_required("core.manage_shop")
-def selectable_properties_inline(
-        request,
-        page,
-        paginator,
-        property_id,
-        template_name="manage/properties/selectable_properties_inline.html"):
+def selectable_properties_inline(request, page, paginator, property_id,
+                                 template_name="manage/properties/selectable_properties_inline.html"):
     """
     Displays the selectable properties for the property view.
     """
@@ -196,18 +181,8 @@ def set_name_filter(request):
     property_id = request.REQUEST.get("property-id", 0)
 
     html = (
-        ("#selectable-properties-inline",
-         selectable_properties_inline(
-             request,
-             page,
-             paginator,
-             property_id)),
-        ("#pages-inline",
-         pages_inline(
-             request,
-             page,
-             paginator,
-             property_id)),
+        ("#selectable-properties-inline", selectable_properties_inline(request, page, paginator, property_id)),
+        ("#pages-inline", pages_inline(request, page, paginator, property_id)),
     )
 
     result = json.dumps({
@@ -232,28 +207,16 @@ def set_properties_page(request):
     page = paginator.page(request.REQUEST.get("page", 1))
 
     html = (
-        ("#pages-inline",
-         pages_inline(
-             request,
-             page,
-             paginator,
-             property_id)),
-        ("#selectable-properties-inline",
-         selectable_properties_inline(
-             request,
-             page,
-             paginator,
-             property_id)),
+        ("#pages-inline", pages_inline(request, page, paginator, property_id)),
+        ("#selectable-properties-inline", selectable_properties_inline(request, page, paginator, property_id)),
     )
 
-    return HttpResponse(json.dumps(
-        {"html": html}, cls=LazyEncoder), content_type='application/json')
+    return HttpResponse(
+        json.dumps({"html": html}, cls=LazyEncoder), content_type='application/json')
 
 
 @permission_required("core.manage_shop")
-def no_properties(
-        request,
-        template_name="manage/properties/no_properties.html"):
+def no_properties(request, template_name="manage/properties/no_properties.html"):
     """Displays that no properties exist.
     """
     return render_to_response(template_name, RequestContext(request, {}))
@@ -277,8 +240,7 @@ def update_property_type(request, id):
     if old_type != new_property.type:
         property_type_changed.send(prop)
 
-    # invalidate global properties version number (all product property caches
-    # will be invalidated)
+    # invalidate global properties version number (all product property caches will be invalidated)
     invalidate_cache_group_id('global-properties-version')
 
     return lfs.core.utils.set_message_cookie(
@@ -288,11 +250,8 @@ def update_property_type(request, id):
 
 
 @permission_required("core.manage_shop")
-def select_field(
-        request,
-        property,
-        template_name="manage/properties/property_select_field.html"):
-    """Displays the form of the select field property type.
+def select_field(request, property, template_name="manage/properties/property_select_field.html"):
+    """Displays the form of the select field propery type.
     """
     form = SelectFieldForm(instance=property)
 
@@ -312,19 +271,15 @@ def save_select_field(request, property_id):
     form = SelectFieldForm(instance=property, data=request.POST)
     property = form.save()
 
-    # invalidate global properties version number (all product property caches
-    # will be invalidated)
+    # invalidate global properties version number (all product property caches will be invalidated)
     invalidate_cache_group_id('global-properties-version')
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
 
 @permission_required("core.manage_shop")
-def number_field(
-        request,
-        property,
-        template_name="manage/properties/property_number_field.html"):
-    """Displays the form of the input field property type
+def number_field(request, property, template_name="manage/properties/property_number_field.html"):
+    """Displays the form of the input field propery type
     """
     number_field_form = NumberFieldForm(instance=property)
 
@@ -344,20 +299,15 @@ def save_number_field_validators(request, property_id):
     form = NumberFieldForm(instance=property, data=request.POST)
     property = form.save()
 
-    # invalidate global properties version number (all product property caches
-    # will be invalidated)
+    # invalidate global properties version number (all product property caches will be invalidated)
     invalidate_cache_group_id('global-properties-version')
 
     response = HttpResponseRedirect(request.META.get("HTTP_REFERER"))
-    return lfs.core.utils.set_message_to(
-        response, _(u"Validators have been saved."))
+    return lfs.core.utils.set_message_to(response, _(u"Validators have been saved."))
 
 
 @permission_required("core.manage_shop")
-def steps_inline(
-        request,
-        property_id,
-        template_name="manage/properties/step_inline.html"):
+def steps_inline(request, property_id, template_name="manage/properties/step_inline.html"):
     """Display the steps of a property. Factored out for Ajax requests.
     """
     property = get_object_or_404(Property, pk=property_id)
@@ -382,8 +332,7 @@ def save_step_range(request, property_id):
     form = StepRangeForm(instance=property, data=request.POST)
     property = form.save()
 
-    # invalidate global properties version number (all product property caches
-    # will be invalidated)
+    # invalidate global properties version number (all product property caches will be invalidated)
     invalidate_cache_group_id('global-properties-version')
 
     result = json.dumps({
@@ -403,8 +352,7 @@ def save_step_type(request, property_id):
     form = StepTypeForm(instance=property, data=request.POST)
     property = form.save()
 
-    # invalidate global properties version number (all product property caches
-    # will be invalidated)
+    # invalidate global properties version number (all product property caches will be invalidated)
     invalidate_cache_group_id('global-properties-version')
 
     html = [["#steps", steps_inline(request, property_id)]]
@@ -436,8 +384,7 @@ def add_step(request, property_id):
             else:
                 step.start = request.POST.get("start-%s" % step_id, "")
                 step.save()
-                # invalidate global properties version number (all product
-                # property caches will be invalidated)
+                # invalidate global properties version number (all product property caches will be invalidated)
                 invalidate_cache_group_id('global-properties-version')
         message = _(u"Steps have been updated.")
 
@@ -456,27 +403,20 @@ def delete_step(request, id):
     try:
         step = FilterStep.objects.get(pk=id)
     except FilterStep.DoesNotExist:
-        url = request.META.get(
-            "HTTP_REFERER",
-            reverse("lfs_manage_shop_property"))
+        url = request.META.get("HTTP_REFERER", reverse("lfs_manage_shop_property"))
     else:
         prop = step.property
         url = reverse("lfs_manage_shop_property", kwargs={"id": prop.id})
         step.delete()
-        # invalidate global properties version number (all product property
-        # caches will be invalidated)
+        # invalidate global properties version number (all product property caches will be invalidated)
         invalidate_cache_group_id('global-properties-version')
 
     response = HttpResponseRedirect(url)
-    return lfs.core.utils.set_message_to(
-        response, _(u"The step has been saved."))
+    return lfs.core.utils.set_message_to(response, _(u"The step has been saved."))
 
 
 @permission_required("core.manage_shop")
-def options_inline(
-        request,
-        property_id,
-        template_name="manage/properties/options_inline.html"):
+def options_inline(request, property_id, template_name="manage/properties/options_inline.html"):
     """Display the options of a propety. Factored out for Ajax requests.
     """
     property = get_object_or_404(Property, pk=property_id)
@@ -498,21 +438,17 @@ def add_property(request, template_name="manage/properties/add_property.html"):
             property.save()
             _update_property_positions()
             return lfs.core.utils.set_message_cookie(
-                url=reverse(
-                    "lfs_manage_shop_property",
-                    kwargs={
-                        "id": property.id}),
+                url=reverse("lfs_manage_shop_property", kwargs={"id": property.id}),
                 msg=_(u"Property has been added."),
             )
     else:
         form = PropertyAddForm()
 
-    return render_to_response(
-        template_name, RequestContext(
-            request, {
-                "form": form, "properties": Property.objects.filter(
-                    local=False), "came_from": request.REQUEST.get(
-                    "came_from", reverse("lfs_manage_shop_properties")), }))
+    return render_to_response(template_name, RequestContext(request, {
+        "form": form,
+        "properties": Property.objects.filter(local=False),
+        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_shop_properties")),
+    }))
 
 
 @permission_required("core.manage_shop")
@@ -523,14 +459,11 @@ def delete_property(request, id):
     try:
         property = Property.objects.get(pk=id)
     except Property.DoesNotExist:
-        url = request.META.get(
-            "HTTP_REFERER",
-            reverse("lfs_manage_shop_property"))
+        url = request.META.get("HTTP_REFERER", reverse("lfs_manage_shop_property"))
     else:
         property.delete()
         _update_property_positions()
-        # invalidate global properties version number (all product property
-        # caches will be invalidated)
+        # invalidate global properties version number (all product property caches will be invalidated)
         invalidate_cache_group_id('global-properties-version')
         url = reverse("lfs_manage_shop_properties")
 
@@ -553,8 +486,7 @@ def add_option(request, property_id):
             price = 0.0
 
         if name != "":
-            option = PropertyOption.objects.create(
-                name=name, price=price, property_id=property_id)
+            option = PropertyOption.objects.create(name=name, price=price, property_id=property_id)
             message = _(u"Option has been added.")
         else:
             message = _(u"Option could not be added.")
@@ -573,10 +505,7 @@ def add_option(request, property_id):
                     price = 0.0
 
                 try:
-                    position = int(
-                        request.POST.get(
-                            "position-%s" %
-                            option_id, 99))
+                    position = int(request.POST.get("position-%s" % option_id, 99))
                 except ValueError:
                     position = 99
 
@@ -587,8 +516,7 @@ def add_option(request, property_id):
         message = _(u"Options have been updated.")
 
     _update_positions(property)
-    # invalidate global properties version number (all product property caches
-    # will be invalidated)
+    # invalidate global properties version number (all product property caches will be invalidated)
     invalidate_cache_group_id('global-properties-version')
 
     html = [["#options", options_inline(request, property_id)]]
@@ -606,16 +534,13 @@ def delete_option(request, id):
     try:
         option = PropertyOption.objects.get(pk=id)
     except option.DoesNotExist:
-        url = request.META.get(
-            "HTTP_REFERER",
-            reverse("lfs_manage_shop_property"))
+        url = request.META.get("HTTP_REFERER", reverse("lfs_manage_shop_property"))
     else:
         property = option.property
         url = reverse("lfs_manage_shop_property", kwargs={"id": property.id})
         option.delete()
         _update_positions(property)
-        # invalidate global properties version number (all product property
-        # caches will be invalidated)
+        # invalidate global properties version number (all product property caches will be invalidated)
         invalidate_cache_group_id('global-properties-version')
 
     return HttpResponseRedirect(url)

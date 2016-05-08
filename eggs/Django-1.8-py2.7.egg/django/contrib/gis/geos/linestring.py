@@ -41,8 +41,7 @@ class LineString(GEOSGeometry):
             # Incrementing through each of the coordinates and verifying
             for i in range(1, ncoords):
                 if not isinstance(coords[i], (tuple, list, Point)):
-                    raise TypeError(
-                        'each coordinate should be a sequence (list or tuple)')
+                    raise TypeError('each coordinate should be a sequence (list or tuple)')
                 if len(coords[i]) != ndim:
                     raise TypeError('Dimension mismatch.')
             numpy_coords = False
@@ -106,8 +105,7 @@ class LineString(GEOSGeometry):
             self._post_init(self.srid)
         else:
             # can this happen?
-            raise GEOSException(
-                'Geometry resulting from slice deletion was invalid.')
+            raise GEOSException('Geometry resulting from slice deletion was invalid.')
 
     def _set_single(self, index, value):
         self._checkindex(index)

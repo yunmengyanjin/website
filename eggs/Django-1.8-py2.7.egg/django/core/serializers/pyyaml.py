@@ -26,13 +26,10 @@ except ImportError:
 
 
 class DjangoSafeDumper(SafeDumper):
-
     def represent_decimal(self, data):
         return self.represent_scalar('tag:yaml.org,2002:str', str(data))
 
-DjangoSafeDumper.add_representer(
-    decimal.Decimal,
-    DjangoSafeDumper.represent_decimal)
+DjangoSafeDumper.add_representer(decimal.Decimal, DjangoSafeDumper.represent_decimal)
 
 
 class Serializer(PythonSerializer):
@@ -49,21 +46,13 @@ class Serializer(PythonSerializer):
         # need to do something with those pesky times. Converting 'em to strings
         # isn't perfect, but it's better than a "!!python/time" type which would
         # halt deserialization under any other language.
-        if isinstance(
-                field,
-                models.TimeField) and getattr(
-                obj,
-                field.name) is not None:
+        if isinstance(field, models.TimeField) and getattr(obj, field.name) is not None:
             self._current[field.name] = str(getattr(obj, field.name))
         else:
             super(Serializer, self).handle_field(obj, field)
 
     def end_serialization(self):
-        yaml.dump(
-            self.objects,
-            self.stream,
-            Dumper=DjangoSafeDumper,
-            **self.options)
+        yaml.dump(self.objects, self.stream, Dumper=DjangoSafeDumper, **self.options)
 
     def getvalue(self):
         # Grand-parent super
@@ -81,17 +70,10 @@ def Deserializer(stream_or_string, **options):
     else:
         stream = stream_or_string
     try:
-        for obj in PythonDeserializer(
-                yaml.load(
-                    stream,
-                    Loader=SafeLoader),
-                **options):
+        for obj in PythonDeserializer(yaml.load(stream, Loader=SafeLoader), **options):
             yield obj
     except GeneratorExit:
         raise
     except Exception as e:
         # Map to deserializer error
-        six.reraise(
-            DeserializationError,
-            DeserializationError(e),
-            sys.exc_info()[2])
+        six.reraise(DeserializationError, DeserializationError(e), sys.exc_info()[2])

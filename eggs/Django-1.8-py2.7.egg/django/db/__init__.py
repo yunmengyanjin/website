@@ -1,17 +1,7 @@
 from django.core import signals
-from django.db.utils import (
-    DEFAULT_DB_ALIAS,
-    DJANGO_VERSION_PICKLE_KEY,
-    DataError,
-    OperationalError,
-    IntegrityError,
-    InternalError,
-    ProgrammingError,
-    NotSupportedError,
-    DatabaseError,
-    InterfaceError,
-    Error,
-    ConnectionHandler,
+from django.db.utils import (DEFAULT_DB_ALIAS, DJANGO_VERSION_PICKLE_KEY,
+    DataError, OperationalError, IntegrityError, InternalError, ProgrammingError,
+    NotSupportedError, DatabaseError, InterfaceError, Error, ConnectionHandler,
     ConnectionRouter)
 
 
@@ -42,7 +32,6 @@ class DefaultConnectionProxy(object):
     need to access the DatabaseWrapper object itself, use
     connections[DEFAULT_DB_ALIAS] instead.
     """
-
     def __getattr__(self, item):
         return getattr(connections[DEFAULT_DB_ALIAS], item)
 

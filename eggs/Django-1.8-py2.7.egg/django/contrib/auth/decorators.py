@@ -8,10 +8,7 @@ from django.utils.decorators import available_attrs
 from django.utils.six.moves.urllib.parse import urlparse
 
 
-def user_passes_test(
-        test_func,
-        login_url=None,
-        redirect_field_name=REDIRECT_FIELD_NAME):
+def user_passes_test(test_func, login_url=None, redirect_field_name=REDIRECT_FIELD_NAME):
     """
     Decorator for views that checks that the user passes the given test,
     redirecting to the log-in page if necessary. The test should be a callable
@@ -39,10 +36,7 @@ def user_passes_test(
     return decorator
 
 
-def login_required(
-        function=None,
-        redirect_field_name=REDIRECT_FIELD_NAME,
-        login_url=None):
+def login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_url=None):
     """
     Decorator for views that checks that the user is logged in, redirecting
     to the log-in page if necessary.

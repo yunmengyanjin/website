@@ -116,23 +116,17 @@ class PageTestCase(TestCase):
         self.page.meta_keywords = "<title> - John Doe"
         self.page.save()
 
-        self.assertEqual(
-            "Page Title - John Doe",
-            self.page.get_meta_keywords())
+        self.assertEqual("Page Title - John Doe", self.page.get_meta_keywords())
 
         self.page.meta_keywords = "<short-text> - John Doe"
         self.page.save()
 
-        self.assertEqual(
-            "This is a short text - John Doe",
-            self.page.get_meta_keywords())
+        self.assertEqual("This is a short text - John Doe", self.page.get_meta_keywords())
 
         self.page.meta_keywords = "<short-text> - John Doe - <title>"
         self.page.save()
 
-        self.assertEqual(
-            "This is a short text - John Doe - Page Title",
-            self.page.get_meta_keywords())
+        self.assertEqual("This is a short text - John Doe - Page Title", self.page.get_meta_keywords())
 
     def test_get_meta_description(self):
         self.assertEqual("", self.page.get_meta_description())
@@ -145,30 +139,19 @@ class PageTestCase(TestCase):
         self.page.meta_description = "<title> - John Doe"
         self.page.save()
 
-        self.assertEqual(
-            "Page Title - John Doe",
-            self.page.get_meta_description())
+        self.assertEqual("Page Title - John Doe", self.page.get_meta_description())
 
         self.page.meta_description = "<short-text> - John Doe"
         self.page.save()
 
-        self.assertEqual(
-            "This is a short text - John Doe",
-            self.page.get_meta_description())
+        self.assertEqual("This is a short text - John Doe", self.page.get_meta_description())
 
         self.page.meta_description = "<short-text> - John Doe - <title>"
         self.page.save()
 
-        self.assertEqual(
-            "This is a short text - John Doe - Page Title",
-            self.page.get_meta_description())
+        self.assertEqual("This is a short text - John Doe - Page Title", self.page.get_meta_description())
 
     def test_add_page_with_existing_slug(self):
         next_id = Page.objects.count() + 1
         Page.objects.create(id=next_id, title="Test1", slug="test")
-        self.assertRaises(
-            IntegrityError,
-            Page.objects.create,
-            id=next_id + 1,
-            title="Test2",
-            slug="test")
+        self.assertRaises(IntegrityError, Page.objects.create, id=next_id + 1, title="Test2", slug="test")

@@ -7,13 +7,13 @@ from PIL import _webp
 _VALID_WEBP_MODES = {
     "RGB": True,
     "RGBA": True,
-}
+    }
 
 _VP8_MODES_BY_IDENTIFIER = {
     b"VP8 ": "RGB",
     b"VP8X": "RGBA",
     b"VP8L": "RGBA",  # lossless
-}
+    }
 
 
 def _accept(prefix):

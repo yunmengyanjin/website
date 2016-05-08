@@ -38,9 +38,7 @@ class GEOSBase(object):
         if self._ptr:
             return self._ptr
         else:
-            raise GEOSException(
-                'NULL GEOS %s pointer encountered.' %
-                self.__class__.__name__)
+            raise GEOSException('NULL GEOS %s pointer encountered.' % self.__class__.__name__)
 
     def _set_ptr(self, ptr):
         # Only allow the pointer to be set with pointers of the

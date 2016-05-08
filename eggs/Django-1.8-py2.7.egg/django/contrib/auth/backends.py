@@ -44,16 +44,9 @@ class ModelBackend(object):
             if user_obj.is_superuser:
                 perms = Permission.objects.all()
             else:
-                perms = getattr(
-                    self, '_get_%s_permissions' %
-                    from_name)(user_obj)
-            perms = perms.values_list(
-                'content_type__app_label',
-                'codename').order_by()
-            setattr(
-                user_obj, perm_cache_name, set(
-                    "%s.%s" %
-                    (ct, name) for ct, name in perms))
+                perms = getattr(self, '_get_%s_permissions' % from_name)(user_obj)
+            perms = perms.values_list('content_type__app_label', 'codename').order_by()
+            setattr(user_obj, perm_cache_name, set("%s.%s" % (ct, name) for ct, name in perms))
         return getattr(user_obj, perm_cache_name)
 
     def get_user_permissions(self, user_obj, obj=None):

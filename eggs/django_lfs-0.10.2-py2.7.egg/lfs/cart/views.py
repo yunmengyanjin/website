@@ -64,23 +64,17 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     selected_country = shipping_utils.get_selected_shipping_country(request)
 
     # Get default shipping method, so that we have a one in any case.
-    selected_shipping_method = shipping_utils.get_selected_shipping_method(
-        request)
-    selected_payment_method = payment_utils.get_selected_payment_method(
-        request)
+    selected_shipping_method = shipping_utils.get_selected_shipping_method(request)
+    selected_payment_method = payment_utils.get_selected_payment_method(request)
 
-    shipping_costs = shipping_utils.get_shipping_costs(
-        request, selected_shipping_method)
+    shipping_costs = shipping_utils.get_shipping_costs(request, selected_shipping_method)
 
     # Payment
-    payment_costs = payment_utils.get_payment_costs(
-        request, selected_payment_method)
+    payment_costs = payment_utils.get_payment_costs(request, selected_payment_method)
 
     # Cart costs
-    cart_price = cart.get_price_gross(
-        request) + shipping_costs["price_gross"] + payment_costs["price"]
-    cart_tax = cart.get_tax(request) + \
-        shipping_costs["tax"] + payment_costs["tax"]
+    cart_price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
+    cart_tax = cart.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
 
     # Discounts
     discounts = lfs.discounts.utils.get_valid_discounts(request)
@@ -99,8 +93,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         voucher_message = MESSAGES[6]
     else:
         lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
-        is_voucher_effective, voucher_message = voucher.is_effective(
-            request, cart)
+        is_voucher_effective, voucher_message = voucher.is_effective(request, cart)
         if is_voucher_effective:
             display_voucher = True
             voucher_value = voucher.get_price_gross(request, cart)
@@ -174,9 +167,7 @@ def added_to_cart(request, template_name="lfs/cart/added_to_cart.html"):
     }))
 
 
-def added_to_cart_items(
-        request,
-        template_name="lfs/cart/added_to_cart_items.html"):
+def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.html"):
     """
     Displays the added items for the added-to-cart view.
     """
@@ -273,8 +264,7 @@ def add_to_cart(request, product_id=None):
                 property_group = None
                 if property_group_id != '0':
                     try:
-                        property_group = PropertyGroup.objects.get(
-                            pk=property_group_id)
+                        property_group = PropertyGroup.objects.get(pk=property_group_id)
                     except PropertyGroup.DoesNotExist:
                         continue
 
@@ -293,8 +283,7 @@ def add_to_cart(request, product_id=None):
                 if prop.is_number_field:
 
                     if (value < prop.unit_min) or (value > prop.unit_max):
-                        msg = _(u"%(name)s must be between %(min)s and %(max)s %(unit)s.") % {
-                            "name": prop.title, "min": prop.unit_min, "max": prop.unit_max, "unit": prop.unit}
+                        msg = _(u"%(name)s must be between %(min)s and %(max)s %(unit)s.") % {"name": prop.title, "min": prop.unit_min, "max": prop.unit_max, "unit": prop.unit}
                         return lfs.core.utils.set_message_cookie(
                             product.get_absolute_url(), msg)
 
@@ -308,8 +297,7 @@ def add_to_cart(request, product_id=None):
 
                     value = "%.2f" % value
                     if value not in steps:
-                        msg = _(u"Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s.") % {
-                            "name": prop.title, "value": value, "step": prop.unit_step}
+                        msg = _(u"Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s.") % {"name": prop.title, "value": value, "step": prop.unit_step}
                         return lfs.core.utils.set_message_cookie(
                             product.get_absolute_url(), msg)
 
@@ -325,14 +313,11 @@ def add_to_cart(request, product_id=None):
     message = ""
     if product.manage_stock_amount and cart_item.amount > product.stock_amount and not product.order_time:
         if product.stock_amount == 0:
-            message = _(u"Sorry, but '%(product)s' is not available anymore.") % {
-                "product": product.name}
+            message = _(u"Sorry, but '%(product)s' is not available anymore.") % {"product": product.name}
         elif product.stock_amount == 1:
-            message = _(u"Sorry, but '%(product)s' is only one time available.") % {
-                "product": product.name}
+            message = _(u"Sorry, but '%(product)s' is only one time available.") % {"product": product.name}
         else:
-            message = _(u"Sorry, but '%(product)s' is only %(amount)s times available.") % {
-                "product": product.name, "amount": product.stock_amount}
+            message = _(u"Sorry, but '%(product)s' is only %(amount)s times available.") % {"product": product.name, "amount": product.stock_amount}
         cart_item.amount = product.stock_amount
         cart_item.save()
 
@@ -366,8 +351,7 @@ def add_to_cart(request, product_id=None):
 
     # Update the customer's shipping method (if appropriate)
     customer = customer_utils.get_or_create_customer(request)
-    shipping_utils.update_to_valid_shipping_method(
-        request, customer, save=True)
+    shipping_utils.update_to_valid_shipping_method(request, customer, save=True)
 
     # Update the customer's payment method (if appropriate)
     payment_utils.update_to_valid_payment_method(request, customer, save=True)
@@ -444,16 +428,11 @@ def refresh_cart(request):
                 amount = 0
 
             if amount == 0:
-                message = _(
-                    u"Sorry, but '%(product)s' is not available anymore." % {
-                        "product": item.product.name})
+                message = _(u"Sorry, but '%(product)s' is not available anymore." % {"product": item.product.name})
             elif amount == 1:
-                message = _(
-                    u"Sorry, but '%(product)s' is only one time available." % {
-                        "product": item.product.name})
+                message = _(u"Sorry, but '%(product)s' is only one time available." % {"product": item.product.name})
             else:
-                message = _(u"Sorry, but '%(product)s' is only %(amount)s times available.") % {
-                    "product": item.product.name, "amount": amount}
+                message = _(u"Sorry, but '%(product)s' is only %(amount)s times available.") % {"product": item.product.name, "amount": amount}
 
         if item.product.get_active_packing_unit():
             item.amount = item.product.get_amount_by_packages(float(amount))
@@ -470,18 +449,15 @@ def refresh_cart(request):
     cart_changed.send(cart, request=request)
 
     # Update shipping method
-    shipping_method = get_object_or_404(
-        ShippingMethod, pk=request.POST.get("shipping_method"))
+    shipping_method = get_object_or_404(ShippingMethod, pk=request.POST.get("shipping_method"))
     customer.selected_shipping_method = shipping_method
 
     valid_shipping_methods = shipping_utils.get_valid_shipping_methods(request)
     if customer.selected_shipping_method not in valid_shipping_methods:
-        customer.selected_shipping_method = shipping_utils.get_default_shipping_method(
-            request)
+        customer.selected_shipping_method = shipping_utils.get_default_shipping_method(request)
 
     # Update payment method
-    payment_method = get_object_or_404(
-        PaymentMethod, pk=request.POST.get("payment_method"))
+    payment_method = get_object_or_404(PaymentMethod, pk=request.POST.get("payment_method"))
     customer.selected_payment_method = payment_method
 
     # Last but not least we save the customer ...

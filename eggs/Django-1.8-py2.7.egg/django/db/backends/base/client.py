@@ -12,5 +12,4 @@ class BaseDatabaseClient(object):
         self.connection = connection
 
     def runshell(self):
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseClient must provide a runshell() method')
+        raise NotImplementedError('subclasses of BaseDatabaseClient must provide a runshell() method')

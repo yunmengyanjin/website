@@ -50,11 +50,11 @@ class CommonMiddleware(object):
             for user_agent_regex in settings.DISALLOWED_USER_AGENTS:
                 if user_agent_regex.search(request.META['HTTP_USER_AGENT']):
                     logger.warning('Forbidden (User agent): %s', request.path,
-                                   extra={
-                                       'status_code': 403,
-                                       'request': request
-                                   }
-                                   )
+                        extra={
+                            'status_code': 403,
+                            'request': request
+                        }
+                    )
                     return http.HttpResponseForbidden('<h1>Forbidden</h1>')
 
         # Check for a redirect based on settings.APPEND_SLASH
@@ -75,15 +75,13 @@ class CommonMiddleware(object):
                     urlresolvers.is_valid_path("%s/" % request.path_info, urlconf)):
                 new_url[1] = new_url[1] + '/'
                 if settings.DEBUG and request.method == 'POST':
-                    raise RuntimeError(
-                        (""
-                         "You called this URL via POST, but the URL doesn't end "
-                         "in a slash and you have APPEND_SLASH set. Django can't "
-                         "redirect to the slash URL while maintaining POST data. "
-                         "Change your form to point to %s%s (note the trailing "
-                         "slash), or set APPEND_SLASH=False in your Django "
-                         "settings.") %
-                        (new_url[0], new_url[1]))
+                    raise RuntimeError((""
+                    "You called this URL via POST, but the URL doesn't end "
+                    "in a slash and you have APPEND_SLASH set. Django can't "
+                    "redirect to the slash URL while maintaining POST data. "
+                    "Change your form to point to %s%s (note the trailing "
+                    "slash), or set APPEND_SLASH=False in your Django "
+                    "settings.") % (new_url[0], new_url[1]))
 
         if new_url == old_url:
             # No redirects required.
@@ -140,11 +138,7 @@ class BrokenLinkEmailsMiddleware(object):
         if response.status_code == 404 and not settings.DEBUG:
             domain = request.get_host()
             path = request.get_full_path()
-            referer = force_text(
-                request.META.get(
-                    'HTTP_REFERER',
-                    ''),
-                errors='replace')
+            referer = force_text(request.META.get('HTTP_REFERER', ''), errors='replace')
 
             if not self.is_ignorable_request(request, path, domain, referer):
                 ua = request.META.get('HTTP_USER_AGENT', '<none>')
@@ -171,8 +165,7 @@ class BrokenLinkEmailsMiddleware(object):
         Returns True if the given request *shouldn't* notify the site managers.
         """
         # '?' in referer is identified as search engine source
-        if (not referer or (not self.is_internal_request(
-                domain, referer) and '?' in referer)):
+        if (not referer or
+                (not self.is_internal_request(domain, referer) and '?' in referer)):
             return True
-        return any(pattern.search(uri)
-                   for pattern in settings.IGNORABLE_404_URLS)
+        return any(pattern.search(uri) for pattern in settings.IGNORABLE_404_URLS)

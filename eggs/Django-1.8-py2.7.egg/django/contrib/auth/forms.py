@@ -22,15 +22,12 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 
 class ReadOnlyPasswordHashWidget(forms.Widget):
-
     def render(self, name, value, attrs):
         encoded = value
         final_attrs = self.build_attrs(attrs)
 
         if not encoded or encoded.startswith(UNUSABLE_PASSWORD_PREFIX):
-            summary = mark_safe(
-                "<strong>%s</strong>" %
-                ugettext("No password set."))
+            summary = mark_safe("<strong>%s</strong>" % ugettext("No password set."))
         else:
             try:
                 hasher = identify_hasher(encoded)
@@ -38,12 +35,11 @@ class ReadOnlyPasswordHashWidget(forms.Widget):
                 summary = mark_safe("<strong>%s</strong>" % ugettext(
                     "Invalid password format or unknown hashing algorithm."))
             else:
-                summary = format_html_join(
-                    '',
-                    "<strong>{}</strong>: {} ",
-                    ((ugettext(key),
-                      value) for key,
-                     value in hasher.safe_summary(encoded).items()))
+                summary = format_html_join('',
+                                           "<strong>{}</strong>: {} ",
+                                           ((ugettext(key), value)
+                                            for key, value in hasher.safe_summary(encoded).items())
+                                           )
 
         return format_html("<div{}>{}</div>", flatatt(final_attrs), summary)
 
@@ -73,9 +69,8 @@ class UserCreationForm(forms.ModelForm):
         'password_mismatch': _("The two password fields didn't match."),
     }
     password1 = forms.CharField(label=_("Password"),
-                                widget=forms.PasswordInput)
-    password2 = forms.CharField(
-        label=_("Password confirmation"),
+        widget=forms.PasswordInput)
+    password2 = forms.CharField(label=_("Password confirmation"),
         widget=forms.PasswordInput,
         help_text=_("Enter the same password as above, for verification."))
 
@@ -102,11 +97,10 @@ class UserCreationForm(forms.ModelForm):
 
 
 class UserChangeForm(forms.ModelForm):
-    password = ReadOnlyPasswordHashField(
-        label=_("Password"), help_text=_(
-            "Raw passwords are not stored, so there is no way to see "
-            "this user's password, but you can change the password "
-            "using <a href=\"password/\">this form</a>."))
+    password = ReadOnlyPasswordHashField(label=_("Password"),
+        help_text=_("Raw passwords are not stored, so there is no way to see "
+                    "this user's password, but you can change the password "
+                    "using <a href=\"password/\">this form</a>."))
 
     class Meta:
         model = User
@@ -150,11 +144,9 @@ class AuthenticationForm(forms.Form):
 
         # Set the label for the "username" field.
         UserModel = get_user_model()
-        self.username_field = UserModel._meta.get_field(
-            UserModel.USERNAME_FIELD)
+        self.username_field = UserModel._meta.get_field(UserModel.USERNAME_FIELD)
         if self.fields['username'].label is None:
-            self.fields['username'].label = capfirst(
-                self.username_field.verbose_name)
+            self.fields['username'].label = capfirst(self.username_field.verbose_name)
 
     def clean(self):
         username = self.cleaned_data.get('username')
@@ -203,14 +195,8 @@ class AuthenticationForm(forms.Form):
 class PasswordResetForm(forms.Form):
     email = forms.EmailField(label=_("Email"), max_length=254)
 
-    def send_mail(
-            self,
-            subject_template_name,
-            email_template_name,
-            context,
-            from_email,
-            to_email,
-            html_email_template_name=None):
+    def send_mail(self, subject_template_name, email_template_name,
+                  context, from_email, to_email, html_email_template_name=None):
         """
         Sends a django.core.mail.EmailMultiAlternatives to `to_email`.
         """
@@ -219,11 +205,9 @@ class PasswordResetForm(forms.Form):
         subject = ''.join(subject.splitlines())
         body = loader.render_to_string(email_template_name, context)
 
-        email_message = EmailMultiAlternatives(
-            subject, body, from_email, [to_email])
+        email_message = EmailMultiAlternatives(subject, body, from_email, [to_email])
         if html_email_template_name is not None:
-            html_email = loader.render_to_string(
-                html_email_template_name, context)
+            html_email = loader.render_to_string(html_email_template_name, context)
             email_message.attach_alternative(html_email, 'text/html')
 
         email_message.send()

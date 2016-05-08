@@ -31,14 +31,8 @@ class ISIdNumberField(RegexField):
     }
 
     def __init__(self, max_length=11, min_length=10, *args, **kwargs):
-        super(
-            ISIdNumberField,
-            self).__init__(
-            r'^\d{6}(-| )?\d{4}$',
-            max_length,
-            min_length,
-            *args,
-            **kwargs)
+        super(ISIdNumberField, self).__init__(r'^\d{6}(-| )?\d{4}$',
+                                              max_length, min_length, *args, **kwargs)
 
     def clean(self, value):
         value = super(ISIdNumberField, self).clean(value)
@@ -79,16 +73,9 @@ class ISPhoneNumberField(RegexField):
     Icelandic phone number. Seven digits with an optional hyphen or space after
     the first three digits.
     """
-
     def __init__(self, max_length=8, min_length=7, *args, **kwargs):
-        super(
-            ISPhoneNumberField,
-            self).__init__(
-            r'^\d{3}(-| )?\d{4}$',
-            max_length,
-            min_length,
-            *args,
-            **kwargs)
+        super(ISPhoneNumberField, self).__init__(r'^\d{3}(-| )?\d{4}$',
+                                                 max_length, min_length, *args, **kwargs)
 
     def clean(self, value):
         value = super(ISPhoneNumberField, self).clean(value)
@@ -103,6 +90,5 @@ class ISPostalCodeSelect(Select):
     """
     A Select widget that uses a list of Icelandic postal codes as its choices.
     """
-
     def __init__(self, attrs=None):
         super(ISPostalCodeSelect, self).__init__(attrs, choices=IS_POSTALCODES)

@@ -33,35 +33,19 @@ else:
 class Command(NoArgsCommand):
     help = "Compress content outside of the request/response cycle"
     option_list = NoArgsCommand.option_list + (
-        make_option(
-            '--extension',
-            '-e',
-            action='append',
-            dest='extensions',
+        make_option('--extension', '-e', action='append', dest='extensions',
             help='The file extension(s) to examine (default: ".html", '
-            'separate multiple extensions with commas, or use -e '
-            'multiple times)'),
-        make_option(
-            '-f',
-            '--force',
-            default=False,
-            action='store_true',
+                'separate multiple extensions with commas, or use -e '
+                'multiple times)'),
+        make_option('-f', '--force', default=False, action='store_true',
             help="Force the generation of compressed content even if the "
-            "COMPRESS_ENABLED setting is not True.",
-            dest='force'),
-        make_option(
-            '--follow-links',
-            default=False,
-            action='store_true',
+                "COMPRESS_ENABLED setting is not True.", dest='force'),
+        make_option('--follow-links', default=False, action='store_true',
             help="Follow symlinks when traversing the COMPRESS_ROOT "
-            "(which defaults to STATIC_ROOT). Be aware that using this "
-            "can lead to infinite recursion if a link points to a parent "
-            "directory of itself.",
-            dest='follow_links'),
-        make_option(
-            '--engine',
-            default="django",
-            action="store",
+                "(which defaults to STATIC_ROOT). Be aware that using this "
+                "can lead to infinite recursion if a link points to a parent "
+                "directory of itself.", dest='follow_links'),
+        make_option('--engine', default="django", action="store",
             help="Specifies the templating engine. jinja2 or django",
             dest="engine"),
     )
@@ -116,8 +100,7 @@ class Command(NoArgsCommand):
             from compressor.offline.django import DjangoParser
             parser = DjangoParser(charset=settings.FILE_CHARSET)
         else:
-            raise OfflineGenerationError(
-                "Invalid templating engine specified.")
+            raise OfflineGenerationError("Invalid templating engine specified.")
 
         return parser
 
@@ -143,7 +126,7 @@ class Command(NoArgsCommand):
             try:
                 module = import_module(loader.__module__)
                 get_template_sources = getattr(module,
-                                               'get_template_sources', None)
+                    'get_template_sources', None)
                 if get_template_sources is None:
                     get_template_sources = loader.get_template_sources
                 paths.update(list(get_template_sources('')))
@@ -161,17 +144,11 @@ class Command(NoArgsCommand):
             log.write("Considering paths:\n\t" + "\n\t".join(paths) + "\n")
         templates = set()
         for path in paths:
-            for root, dirs, files in os.walk(
-                path, followlinks=options.get(
-                    'followlinks', False)):
-                templates.update(
-                    os.path.join(
-                        root,
-                        name) for name in files if not name.startswith('.') and any(
-                        fnmatch(
-                            name,
-                            "*%s" %
-                            glob) for glob in extensions))
+            for root, dirs, files in os.walk(path,
+                    followlinks=options.get('followlinks', False)):
+                templates.update(os.path.join(root, name)
+                    for name in files if not name.startswith('.') and
+                        any(fnmatch(name, "*%s" % glob) for glob in extensions))
         if not templates:
             raise OfflineGenerationError("No templates found. Make sure your "
                                          "TEMPLATE_LOADERS and TEMPLATE_DIRS "
@@ -207,9 +184,7 @@ class Command(NoArgsCommand):
             except (TemplateDoesNotExist, TemplateSyntaxError) as e:
                 # Could be an error in some base template
                 if verbosity > 0:
-                    log.write(
-                        "Error parsing template %s: %s\n" %
-                        (template_name, e))
+                    log.write("Error parsing template %s: %s\n" % (template_name, e))
                 continue
             if nodes:
                 template.template_name = template_name
@@ -230,8 +205,7 @@ class Command(NoArgsCommand):
         count = 0
         results = []
         offline_manifest = SortedDict()
-        init_context = parser.get_init_context(
-            settings.COMPRESS_OFFLINE_CONTEXT)
+        init_context = parser.get_init_context(settings.COMPRESS_OFFLINE_CONTEXT)
 
         for template, nodes in compressor_nodes.items():
             context = Context(init_context)

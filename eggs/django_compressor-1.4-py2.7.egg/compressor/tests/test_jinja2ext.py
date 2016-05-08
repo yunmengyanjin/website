@@ -22,7 +22,6 @@ class TestJinja2CompressorExtension(TestCase):
        that we use jinja2 specific controls (*minus* character at block's
        beginning or end). For more information see jinja2 documentation.
     """
-
     def assertStrippedEqual(self, result, expected):
         self.assertEqual(result.strip(), expected.strip(), "%r != %r" % (
             result.strip(), expected.strip()))
@@ -34,28 +33,20 @@ class TestJinja2CompressorExtension(TestCase):
         self.env = self.jinja2.Environment(extensions=[CompressorExtension])
 
     def test_error_raised_if_no_arguments_given(self):
-        self.assertRaises(
-            self.jinja2.exceptions.TemplateSyntaxError,
-            self.env.from_string,
-            '{% compress %}Foobar{% endcompress %}')
+        self.assertRaises(self.jinja2.exceptions.TemplateSyntaxError,
+            self.env.from_string, '{% compress %}Foobar{% endcompress %}')
 
     def test_error_raised_if_wrong_kind_given(self):
-        self.assertRaises(
-            self.jinja2.exceptions.TemplateSyntaxError,
-            self.env.from_string,
-            '{% compress foo %}Foobar{% endcompress %}')
+        self.assertRaises(self.jinja2.exceptions.TemplateSyntaxError,
+            self.env.from_string, '{% compress foo %}Foobar{% endcompress %}')
 
     def test_error_raised_if_wrong_closing_kind_given(self):
-        self.assertRaises(
-            self.jinja2.exceptions.TemplateSyntaxError,
-            self.env.from_string,
-            '{% compress js %}Foobar{% endcompress css %}')
+        self.assertRaises(self.jinja2.exceptions.TemplateSyntaxError,
+            self.env.from_string, '{% compress js %}Foobar{% endcompress css %}')
 
     def test_error_raised_if_wrong_mode_given(self):
-        self.assertRaises(
-            self.jinja2.exceptions.TemplateSyntaxError,
-            self.env.from_string,
-            '{% compress css foo %}Foobar{% endcompress %}')
+        self.assertRaises(self.jinja2.exceptions.TemplateSyntaxError,
+            self.env.from_string, '{% compress css foo %}Foobar{% endcompress %}')
 
     @override_settings(COMPRESS_ENABLED=False)
     def test_compress_is_disabled(self):
@@ -69,8 +60,7 @@ class TestJinja2CompressorExtension(TestCase):
         self.assertEqual(tag_body, template.render())
 
         # Test with explicit kind
-        template_string = '{% compress css %}' + \
-            tag_body + '{% endcompress css %}'
+        template_string = '{% compress css %}' + tag_body + '{% endcompress css %}'
         template = self.env.from_string(template_string)
         self.assertEqual(tag_body, template.render())
 

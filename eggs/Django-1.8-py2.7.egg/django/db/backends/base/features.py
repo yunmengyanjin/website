@@ -104,8 +104,7 @@ class BaseDatabaseFeatures(object):
     # deferred
     can_defer_constraint_checks = False
 
-    # date_interval_sql can properly handle mixed Date/DateTime fields and
-    # timedeltas
+    # date_interval_sql can properly handle mixed Date/DateTime fields and timedeltas
     supports_mixed_date_datetime_comparisons = True
 
     # Does the backend support tablespaces? Default to False because it isn't
@@ -145,12 +144,10 @@ class BaseDatabaseFeatures(object):
     # Can the backend introspect an IPAddressField, instead of an CharField?
     can_introspect_ip_address_field = False
 
-    # Can the backend introspect a PositiveIntegerField, instead of an
-    # IntegerField?
+    # Can the backend introspect a PositiveIntegerField, instead of an IntegerField?
     can_introspect_positive_integer_field = False
 
-    # Can the backend introspect a SmallIntegerField, instead of an
-    # IntegerField?
+    # Can the backend introspect a SmallIntegerField, instead of an IntegerField?
     can_introspect_small_integer_field = False
 
     # Can the backend introspect a TimeField, instead of a DateTimeField?
@@ -183,12 +180,10 @@ class BaseDatabaseFeatures(object):
     # supported by the Python driver
     supports_paramstyle_pyformat = True
 
-    # Does the backend require literal defaults, rather than parameterized
-    # ones?
+    # Does the backend require literal defaults, rather than parameterized ones?
     requires_literal_defaults = False
 
-    # Does the backend require a connection reset after each material schema
-    # change?
+    # Does the backend require a connection reset after each material schema change?
     connection_persists_old_columns = False
 
     # What kind of error does the backend throw when accessing closed cursor?
@@ -209,8 +204,7 @@ class BaseDatabaseFeatures(object):
 
     uppercases_column_names = False
 
-    # Does the backend support "select for update" queries with limit (and
-    # offset)?
+    # Does the backend support "select for update" queries with limit (and offset)?
     supports_select_for_update_with_limit = True
 
     def __init__(self, connection):
@@ -239,8 +233,7 @@ class BaseDatabaseFeatures(object):
         except NotImplementedError:
             return False
 
-    def introspected_boolean_field_type(
-            self, field=None, created_separately=False):
+    def introspected_boolean_field_type(self, field=None, created_separately=False):
         """
         What is the type returned when the backend introspects a BooleanField?
         The optional arguments may be used to give further details of the field to be

@@ -18,7 +18,6 @@ class RUCountySelect(Select):
     """
     A Select widget that uses a list of Russian Counties as its choices.
     """
-
     def __init__(self, attrs=None):
         super(RUCountySelect, self).__init__(attrs, choices=RU_COUNTY_CHOICES)
 
@@ -27,7 +26,6 @@ class RURegionSelect(Select):
     """
     A Select widget that uses a list of Russian Regions as its choices.
     """
-
     def __init__(self, attrs=None):
         super(RURegionSelect, self).__init__(attrs, choices=RU_REGIONS_CHOICES)
 
@@ -42,15 +40,8 @@ class RUPostalCodeField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            RUPostalCodeField,
-            self).__init__(
-            r'^\d{6}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(RUPostalCodeField, self).__init__(r'^\d{6}$',
+                                                max_length, min_length, *args, **kwargs)
 
 
 class RUPassportNumberField(RegexField):
@@ -63,15 +54,8 @@ class RUPassportNumberField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            RUPassportNumberField,
-            self).__init__(
-            r'^\d{4} \d{6}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(RUPassportNumberField, self).__init__(r'^\d{4} \d{6}$',
+                                                    max_length, min_length, *args, **kwargs)
 
 
 class RUAlienPassportNumberField(RegexField):
@@ -84,11 +68,5 @@ class RUAlienPassportNumberField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            RUAlienPassportNumberField,
-            self).__init__(
-            r'^\d{2} \d{7}$',
-            max_length,
-            min_length,
-            *args,
-            **kwargs)
+        super(RUAlienPassportNumberField, self).__init__(r'^\d{2} \d{7}$',
+                                                         max_length, min_length, *args, **kwargs)

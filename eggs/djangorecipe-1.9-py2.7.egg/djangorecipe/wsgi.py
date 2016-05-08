@@ -8,7 +8,6 @@ def main(settings_file, logfile=None):
         import datetime
 
         class logger(object):
-
             def __init__(self, logfile):
                 self.logfile = logfile
 

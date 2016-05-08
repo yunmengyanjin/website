@@ -18,7 +18,6 @@ class CLRegionSelect(Select):
     A Select widget that uses a list of Chilean Regions (Regiones)
     as its choices.
     """
-
     def __init__(self, attrs=None):
         super(CLRegionSelect, self).__init__(attrs, choices=REGION_CHOICES)
 
@@ -40,22 +39,13 @@ class CLRutField(RegexField):
     def __init__(self, *args, **kwargs):
         if 'strict' in kwargs:
             del kwargs['strict']
-            super(
-                CLRutField,
-                self).__init__(
-                r'^(\d{1,2}\.)?\d{3}\.\d{3}-[\dkK]$',
-                error_message=self.default_error_messages['strict'],
-                *args,
-                **kwargs)
+            super(CLRutField, self).__init__(r'^(\d{1,2}\.)?\d{3}\.\d{3}-[\dkK]$',
+                                             error_message=self.default_error_messages['strict'],
+                                             *args, **kwargs)
         else:
             # In non-strict mode, accept RUTs that validate but do not exist in
             # the real world.
-            super(
-                CLRutField,
-                self).__init__(
-                r'^[\d\.]{1,11}-?[\dkK]$',
-                *args,
-                **kwargs)
+            super(CLRutField, self).__init__(r'^[\d\.]{1,11}-?[\dkK]$', *args, **kwargs)
 
     def clean(self, value):
         """
@@ -88,13 +78,7 @@ class CLRutField(RegexField):
         Turns the RUT into one normalized format. Returns a (rut, verifier)
         tuple.
         """
-        rut = smart_text(rut).replace(
-            ' ',
-            '').replace(
-            '.',
-            '').replace(
-            '-',
-            '')
+        rut = smart_text(rut).replace(' ', '').replace('.', '').replace('-', '')
         return rut[:-1], rut[-1].upper()
 
     def _format(self, code, verifier=None):

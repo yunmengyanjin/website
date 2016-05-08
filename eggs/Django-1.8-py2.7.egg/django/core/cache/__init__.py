@@ -32,9 +32,7 @@ __all__ = [
 DEFAULT_CACHE_ALIAS = 'default'
 
 if DEFAULT_CACHE_ALIAS not in settings.CACHES:
-    raise ImproperlyConfigured(
-        "You must define a '%s' cache" %
-        DEFAULT_CACHE_ALIAS)
+    raise ImproperlyConfigured("You must define a '%s' cache" % DEFAULT_CACHE_ALIAS)
 
 
 def get_cache(backend, **kwargs):
@@ -71,12 +69,11 @@ def _create_cache(backend, **kwargs):
             conf = settings.CACHES[backend]
         except KeyError:
             try:
-                # Trying to import the given backend, in case it's a dotted
-                # path
+                # Trying to import the given backend, in case it's a dotted path
                 import_string(backend)
             except ImportError as e:
-                raise InvalidCacheBackendError(
-                    "Could not find backend '%s': %s" % (backend, e))
+                raise InvalidCacheBackendError("Could not find backend '%s': %s" % (
+                    backend, e))
             location = kwargs.pop('LOCATION', '')
             params = kwargs
         else:
@@ -97,7 +94,6 @@ class CacheHandler(object):
 
     Ensures only one instance of each alias exists per thread.
     """
-
     def __init__(self):
         self._caches = local()
 
@@ -131,7 +127,6 @@ class DefaultCacheProxy(object):
     This allows the legacy `cache` object to be thread-safe using the new
     ``caches`` API.
     """
-
     def __getattr__(self, name):
         return getattr(caches[DEFAULT_CACHE_ALIAS], name)
 

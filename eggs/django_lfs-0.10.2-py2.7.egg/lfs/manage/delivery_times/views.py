@@ -23,9 +23,7 @@ def manage_delivery_times(request):
     """
     try:
         delivery_time = DeliveryTime.objects.all()[0]
-        url = reverse(
-            "lfs_manage_delivery_time", kwargs={
-                "id": delivery_time.id})
+        url = reverse("lfs_manage_delivery_time", kwargs={"id": delivery_time.id})
     except IndexError:
         url = reverse("lfs_no_delivery_times")
 
@@ -33,18 +31,12 @@ def manage_delivery_times(request):
 
 
 @permission_required("core.manage_shop")
-def manage_delivery_time(
-        request,
-        id,
-        template_name="manage/delivery_times/base.html"):
+def manage_delivery_time(request, id, template_name="manage/delivery_times/base.html"):
     """Provides a form to edit the delivery time with the passed id.
     """
     delivery_time = get_object_or_404(DeliveryTime, pk=id)
     if request.method == "POST":
-        form = DeliveryTimeForm(
-            instance=delivery_time,
-            data=request.POST,
-            files=request.FILES)
+        form = DeliveryTimeForm(instance=delivery_time, data=request.POST, files=request.FILES)
         if form.is_valid():
             form.save()
             return lfs.core.utils.set_message_cookie(
@@ -63,9 +55,7 @@ def manage_delivery_time(
 
 
 @permission_required("core.manage_shop")
-def no_delivery_times(
-        request,
-        template_name="manage/delivery_times/no_delivery_times.html"):
+def no_delivery_times(request, template_name="manage/delivery_times/no_delivery_times.html"):
     """Displays that there are no delivery times.
     """
     return render_to_response(template_name, RequestContext(request, {}))
@@ -81,23 +71,18 @@ def add_delivery_time(request, template_name="manage/delivery_times/add.html"):
             delivery_time = form.save()
 
             return lfs.core.utils.set_message_cookie(
-                url=reverse(
-                    "lfs_manage_delivery_time",
-                    kwargs={
-                        "id": delivery_time.id}),
+                url=reverse("lfs_manage_delivery_time", kwargs={"id": delivery_time.id}),
                 msg=_(u"Delivery time has been added."),
             )
 
     else:
         form = DeliveryTimeAddForm()
 
-    return render_to_response(template_name,
-                              RequestContext(request,
-                                             {"form": form,
-                                              "delivery_times": DeliveryTime.objects.all(),
-                                              "came_from": request.REQUEST.get("came_from",
-                                                                               reverse("lfs_manage_delivery_times")),
-                                              }))
+    return render_to_response(template_name, RequestContext(request, {
+        "form": form,
+        "delivery_times": DeliveryTime.objects.all(),
+        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_delivery_times")),
+    }))
 
 
 @permission_required("core.manage_shop")

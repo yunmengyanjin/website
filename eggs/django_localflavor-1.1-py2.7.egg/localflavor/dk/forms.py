@@ -28,7 +28,6 @@ class DKMunicipalitySelect(widgets.Select):
     A Select widget that uses a list of Danish municipalities (kommuner)
     as its choices.
     """
-
     def __init__(self, attrs=None, *args, **kwargs):
         super(DKMunicipalitySelect, self).__init__(
             attrs,

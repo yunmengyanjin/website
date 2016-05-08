@@ -9,7 +9,6 @@ class Criteria(object):
     """
     Base class for objects which have criteria.
     """
-
     def is_valid(self, request, product=None):
         """
         Returns ``True`` if the object is valid, otherwise ``False``.
@@ -29,8 +28,7 @@ class Criteria(object):
 
         criteria = []
         from lfs.criteria.models import Criterion
-        for criterion in Criterion.objects.filter(
-                content_id=self.id, content_type=content_type):
+        for criterion in Criterion.objects.filter(content_id=self.id, content_type=content_type):
             criteria.append(criterion.get_content_object())
         return criteria
 
@@ -55,8 +53,7 @@ class Criteria(object):
                 position = request.POST.get("position-%s" % id)
 
                 criterion_class = import_symbol(model)
-                criterion = criterion_class.objects.create(
-                    content=self, operator=operator, position=position)
+                criterion = criterion_class.objects.create(content=self, operator=operator, position=position)
 
                 if criterion.get_value_type() == criterion.MULTIPLE_SELECT:
                     value = request.POST.getlist("value-%s" % id)

@@ -42,8 +42,7 @@ def handle_extendsnode(extendsnode, block_context=None):
     block_context.add_blocks(blocks)
 
     block_stack = []
-    new_nodelist = remove_block_nodes(
-        parent_nodelist, block_stack, block_context)
+    new_nodelist = remove_block_nodes(parent_nodelist, block_stack, block_context)
     return new_nodelist
 
 
@@ -63,17 +62,14 @@ def remove_block_nodes(nodelist, block_stack, block_context):
             # IfNode has nodelist as a @property so we can not modify it
             if isinstance(node, IfNode):
                 node = copy(node)
-                for i, (condition, sub_nodelist) in enumerate(
-                        node.conditions_nodelists):
-                    sub_nodelist = remove_block_nodes(
-                        sub_nodelist, block_stack, block_context)
+                for i, (condition, sub_nodelist) in enumerate(node.conditions_nodelists):
+                    sub_nodelist = remove_block_nodes(sub_nodelist, block_stack, block_context)
                     node.conditions_nodelists[i] = (condition, sub_nodelist)
             else:
                 for attr in node.child_nodelists:
                     sub_nodelist = getattr(node, attr, None)
                     if sub_nodelist:
-                        sub_nodelist = remove_block_nodes(
-                            sub_nodelist, block_stack, block_context)
+                        sub_nodelist = remove_block_nodes(sub_nodelist, block_stack, block_context)
                         node = copy(node)
                         setattr(node, attr, sub_nodelist)
             new_nodelist.append(node)
@@ -85,8 +81,7 @@ def expand_blocknode(node, block_stack, block_context):
     if block is None:
         block = node
     block_stack.append(block)
-    expanded_nodelist = remove_block_nodes(
-        block.nodelist, block_stack, block_context)
+    expanded_nodelist = remove_block_nodes(block.nodelist, block_stack, block_context)
     block_stack.pop()
     if popped_block is not None:
         block_context.push(node.name, popped_block)
@@ -94,7 +89,6 @@ def expand_blocknode(node, block_stack, block_context):
 
 
 class DjangoParser(object):
-
     def __init__(self, charset):
         self.charset = charset
 
@@ -142,10 +136,7 @@ class DjangoParser(object):
 
     def walk_nodes(self, node):
         for node in self.get_nodelist(node):
-            if isinstance(
-                    node,
-                    CompressorNode) and node.is_offline_compression_enabled(
-                    forced=True):
+            if isinstance(node, CompressorNode) and node.is_offline_compression_enabled(forced=True):
                 yield node
             else:
                 for node in self.walk_nodes(node):

@@ -55,8 +55,7 @@ class Migration(object):
     def __eq__(self, other):
         if not isinstance(other, Migration):
             return False
-        return (self.name == other.name) and (
-            self.app_label == other.app_label)
+        return (self.name == other.name) and (self.app_label == other.app_label)
 
     def __ne__(self, other):
         return not (self == other)
@@ -98,11 +97,9 @@ class Migration(object):
             # there instead
             if collect_sql and not operation.reduces_to_sql:
                 schema_editor.collected_sql.append("--")
-                schema_editor.collected_sql.append(
-                    "-- MIGRATION NOW PERFORMS OPERATION THAT CANNOT BE "
-                    "WRITTEN AS SQL:")
-                schema_editor.collected_sql.append(
-                    "-- %s" % operation.describe())
+                schema_editor.collected_sql.append("-- MIGRATION NOW PERFORMS OPERATION THAT CANNOT BE "
+                                                   "WRITTEN AS SQL:")
+                schema_editor.collected_sql.append("-- %s" % operation.describe())
                 schema_editor.collected_sql.append("--")
                 continue
             # Save the state before the operation has run
@@ -110,15 +107,12 @@ class Migration(object):
             operation.state_forwards(self.app_label, project_state)
             # Run the operation
             if not schema_editor.connection.features.can_rollback_ddl and operation.atomic:
-                # We're forcing a transaction on a non-transactional-DDL
-                # backend
+                # We're forcing a transaction on a non-transactional-DDL backend
                 with atomic(schema_editor.connection.alias):
-                    operation.database_forwards(
-                        self.app_label, schema_editor, old_state, project_state)
+                    operation.database_forwards(self.app_label, schema_editor, old_state, project_state)
             else:
                 # Normal behaviour
-                operation.database_forwards(
-                    self.app_label, schema_editor, old_state, project_state)
+                operation.database_forwards(self.app_label, schema_editor, old_state, project_state)
         return project_state
 
     def unapply(self, project_state, schema_editor, collect_sql=False):
@@ -141,9 +135,7 @@ class Migration(object):
         for operation in self.operations:
             # If it's irreversible, error out
             if not operation.reversible:
-                raise Migration.IrreversibleError(
-                    "Operation %s in %s is not reversible" %
-                    (operation, self))
+                raise Migration.IrreversibleError("Operation %s in %s is not reversible" % (operation, self))
             # Preserve new state from previous run to not tamper the same state
             # over all operations
             new_state = new_state.clone()
@@ -156,23 +148,18 @@ class Migration(object):
             if collect_sql:
                 if not operation.reduces_to_sql:
                     schema_editor.collected_sql.append("--")
-                    schema_editor.collected_sql.append(
-                        "-- MIGRATION NOW PERFORMS OPERATION THAT CANNOT BE "
-                        "WRITTEN AS SQL:")
-                    schema_editor.collected_sql.append(
-                        "-- %s" % operation.describe())
+                    schema_editor.collected_sql.append("-- MIGRATION NOW PERFORMS OPERATION THAT CANNOT BE "
+                                                       "WRITTEN AS SQL:")
+                    schema_editor.collected_sql.append("-- %s" % operation.describe())
                     schema_editor.collected_sql.append("--")
                     continue
             if not schema_editor.connection.features.can_rollback_ddl and operation.atomic:
-                # We're forcing a transaction on a non-transactional-DDL
-                # backend
+                # We're forcing a transaction on a non-transactional-DDL backend
                 with atomic(schema_editor.connection.alias):
-                    operation.database_backwards(
-                        self.app_label, schema_editor, from_state, to_state)
+                    operation.database_backwards(self.app_label, schema_editor, from_state, to_state)
             else:
                 # Normal behaviour
-                operation.database_backwards(
-                    self.app_label, schema_editor, from_state, to_state)
+                operation.database_backwards(self.app_label, schema_editor, from_state, to_state)
         return project_state
 
 

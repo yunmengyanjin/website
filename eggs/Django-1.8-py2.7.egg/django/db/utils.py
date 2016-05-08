@@ -19,7 +19,7 @@ DEFAULT_DB_ALIAS = 'default'
 DJANGO_VERSION_PICKLE_KEY = '_django_version'
 
 
-class Error(Exception if six.PY3 else Exception):
+class Error(Exception if six.PY3 else StandardError):
     pass
 
 
@@ -112,10 +112,7 @@ def load_backend(backend_name):
     except ImportError as e_user:
         # The database backend wasn't found. Display a helpful error message
         # listing all possible (built-in) database backends.
-        backend_dir = os.path.join(
-            os.path.dirname(
-                upath(__file__)),
-            'backends')
+        backend_dir = os.path.join(os.path.dirname(upath(__file__)), 'backends')
         try:
             builtin_backends = [
                 name for _, name, ispkg in pkgutil.iter_modules([backend_dir])
@@ -140,7 +137,6 @@ class ConnectionDoesNotExist(Exception):
 
 
 class ConnectionHandler(object):
-
     def __init__(self, databases=None):
         """
         databases is an optional dictionary of database definitions (structured
@@ -160,9 +156,7 @@ class ConnectionHandler(object):
                 },
             }
         if DEFAULT_DB_ALIAS not in self._databases:
-            raise ImproperlyConfigured(
-                "You must define a '%s' database" %
-                DEFAULT_DB_ALIAS)
+            raise ImproperlyConfigured("You must define a '%s' database" % DEFAULT_DB_ALIAS)
         return self._databases
 
     def ensure_defaults(self, alias):
@@ -173,8 +167,7 @@ class ConnectionHandler(object):
         try:
             conn = self.databases[alias]
         except KeyError:
-            raise ConnectionDoesNotExist(
-                "The connection %s doesn't exist" % alias)
+            raise ConnectionDoesNotExist("The connection %s doesn't exist" % alias)
 
         conn.setdefault('ATOMIC_REQUESTS', False)
         conn.setdefault('AUTOCOMMIT', True)
@@ -183,9 +176,7 @@ class ConnectionHandler(object):
             conn['ENGINE'] = 'django.db.backends.dummy'
         conn.setdefault('CONN_MAX_AGE', 0)
         conn.setdefault('OPTIONS', {})
-        conn.setdefault(
-            'TIME_ZONE',
-            'UTC' if settings.USE_TZ else settings.TIME_ZONE)
+        conn.setdefault('TIME_ZONE', 'UTC' if settings.USE_TZ else settings.TIME_ZONE)
         for setting in ['NAME', 'USER', 'PASSWORD', 'HOST', 'PORT']:
             conn.setdefault(setting, '')
 
@@ -194,8 +185,7 @@ class ConnectionHandler(object):
         'USER_CREATE': 'CREATE_USER',
         'PASSWD': 'PASSWORD',
     }
-    TEST_SETTING_RENAMES_REVERSE = {
-        v: k for k, v in TEST_SETTING_RENAMES.items()}
+    TEST_SETTING_RENAMES_REVERSE = {v: k for k, v in TEST_SETTING_RENAMES.items()}
 
     def prepare_test_settings(self, alias):
         """
@@ -204,8 +194,7 @@ class ConnectionHandler(object):
         try:
             conn = self.databases[alias]
         except KeyError:
-            raise ConnectionDoesNotExist(
-                "The connection %s doesn't exist" % alias)
+            raise ConnectionDoesNotExist("The connection %s doesn't exist" % alias)
 
         test_dict_set = 'TEST' in conn
         test_settings = conn.setdefault('TEST', {})
@@ -225,11 +214,10 @@ class ConnectionHandler(object):
             else:
                 test_settings.update(old_test_settings)
                 for key, _ in six.iteritems(old_test_settings):
-                    warnings.warn(
-                        "In Django 1.9 the TEST_%s connection setting will be moved "
-                        "to a %s entry in the TEST setting" %
-                        (self.TEST_SETTING_RENAMES_REVERSE.get(
-                            key, key), key), RemovedInDjango19Warning, stacklevel=2)
+                    warnings.warn("In Django 1.9 the TEST_%s connection setting will be moved "
+                                  "to a %s entry in the TEST setting" %
+                                  (self.TEST_SETTING_RENAMES_REVERSE.get(key, key), key),
+                                  RemovedInDjango19Warning, stacklevel=2)
 
         for key in list(conn.keys()):
             if key.startswith('TEST_'):
@@ -237,9 +225,8 @@ class ConnectionHandler(object):
         # Check that they didn't just use the old name with 'TEST_' removed
         for key, new_key in six.iteritems(self.TEST_SETTING_RENAMES):
             if key in test_settings:
-                warnings.warn(
-                    "Test setting %s was renamed to %s; specified value (%s) ignored" %
-                    (key, new_key, test_settings[key]), stacklevel=2)
+                warnings.warn("Test setting %s was renamed to %s; specified value (%s) ignored" %
+                              (key, new_key, test_settings[key]), stacklevel=2)
         for key in ['CHARSET', 'COLLATION', 'NAME', 'MIRROR']:
             test_settings.setdefault(key, None)
 
@@ -277,7 +264,6 @@ class ConnectionHandler(object):
 
 
 class ConnectionRouter(object):
-
     def __init__(self, routers=None):
         """
         If routers is not specified, will default to settings.DATABASE_ROUTERS.
@@ -304,8 +290,7 @@ class ConnectionRouter(object):
                 try:
                     method = getattr(router, action)
                 except AttributeError:
-                    # If the router doesn't have a method, skip to the next
-                    # one.
+                    # If the router doesn't have a method, skip to the next one.
                     pass
                 else:
                     chosen_db = method(model, **hints)
@@ -342,7 +327,8 @@ class ConnectionRouter(object):
                     method = router.allow_syncdb
                     warnings.warn(
                         'Router.allow_syncdb has been deprecated and will stop working in Django 1.9. '
-                        'Rename the method to allow_migrate.', RemovedInDjango19Warning, stacklevel=2)
+                        'Rename the method to allow_migrate.',
+                        RemovedInDjango19Warning, stacklevel=2)
             except AttributeError:
                 # If the router doesn't have a method, skip to the next one.
                 continue
@@ -372,16 +358,9 @@ class ConnectionRouter(object):
             model=model,
         )
 
-    def get_migratable_models(
-            self,
-            app_config,
-            db,
-            include_auto_created=False):
+    def get_migratable_models(self, app_config, db, include_auto_created=False):
         """
         Return app models allowed to be synchronized on provided db.
         """
-        models = app_config.get_models(
-            include_auto_created=include_auto_created)
-        return [
-            model for model in models if self.allow_migrate_model(
-                db, model)]
+        models = app_config.get_models(include_auto_created=include_auto_created)
+        return [model for model in models if self.allow_migrate_model(db, model)]

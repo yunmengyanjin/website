@@ -26,8 +26,7 @@ class RatingMailTestCase(TestCase):
     def setUp(self):
         """
         """
-        self.p1 = Product.objects.create(
-            name="Product 1", slug="product-1", active=True)
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", active=True)
 
         self.c1 = Category.objects.create(name="Category 1", slug="category-1")
         self.c1.save()
@@ -35,11 +34,8 @@ class RatingMailTestCase(TestCase):
         self.c1.save()
 
         address = Address.objects.create()
-        self.o = Order.objects.create(
-            invoice_address=address,
-            shipping_address=address)
-        self.oi1 = OrderItem.objects.create(
-            order=self.o, product_amount=1, product=self.p1)
+        self.o = Order.objects.create(invoice_address=address, shipping_address=address)
+        self.oi1 = OrderItem.objects.create(order=self.o, product_amount=1, product=self.p1)
 
     def test_get_orders(self):
         """
@@ -74,8 +70,7 @@ class TopsellerTestCase(TestCase):
     def setUp(self):
         """
         """
-        self.p1 = Product.objects.create(
-            name="Product 1", slug="product-1", active=True)
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", active=True)
         self.t1 = Topseller.objects.create(product=self.p1)
 
     def test_defaults(self):
@@ -92,40 +87,28 @@ class TopsellerUtilsTestCase(TestCase):
     def setUp(self):
         """
         """
-        self.p1 = Product.objects.create(
-            name="Product 1", slug="product-1", active=True)
-        self.p2 = Product.objects.create(
-            name="Product 2", slug="product-2", active=True)
-        self.p3 = Product.objects.create(
-            name="Product 3", slug="product-3", active=True)
-        self.p4 = Product.objects.create(
-            name="Product 4", slug="product-4", active=True)
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", active=True)
+        self.p2 = Product.objects.create(name="Product 2", slug="product-2", active=True)
+        self.p3 = Product.objects.create(name="Product 3", slug="product-3", active=True)
+        self.p4 = Product.objects.create(name="Product 4", slug="product-4", active=True)
 
         self.c1 = Category.objects.create(name="Category 1", slug="category-1")
         self.c1.save()
 
-        self.c11 = Category.objects.create(
-            name="Category 11", slug="category-11", parent=self.c1)
+        self.c11 = Category.objects.create(name="Category 11", slug="category-11", parent=self.c1)
         self.c11.products = (self.p1, self.p2)
         self.c11.save()
 
-        self.c12 = Category.objects.create(
-            name="Category 12", slug="category-12", parent=self.c1)
+        self.c12 = Category.objects.create(name="Category 12", slug="category-12", parent=self.c1)
         self.c12.products = (self.p3, self.p4)
         self.c12.save()
 
         address = Address.objects.create()
-        self.o = Order.objects.create(
-            invoice_address=address,
-            shipping_address=address)
-        self.oi1 = OrderItem.objects.create(
-            order=self.o, product_amount=1, product=self.p1)
-        self.oi2 = OrderItem.objects.create(
-            order=self.o, product_amount=2, product=self.p2)
-        self.oi3 = OrderItem.objects.create(
-            order=self.o, product_amount=3, product=self.p3)
-        self.oi4 = OrderItem.objects.create(
-            order=self.o, product_amount=4, product=self.p4)
+        self.o = Order.objects.create(invoice_address=address, shipping_address=address)
+        self.oi1 = OrderItem.objects.create(order=self.o, product_amount=1, product=self.p1)
+        self.oi2 = OrderItem.objects.create(order=self.o, product_amount=2, product=self.p2)
+        self.oi3 = OrderItem.objects.create(order=self.o, product_amount=3, product=self.p3)
+        self.oi4 = OrderItem.objects.create(order=self.o, product_amount=4, product=self.p4)
 
         calculate_product_sales()
 
@@ -152,16 +135,14 @@ class TopsellerUtilsTestCase(TestCase):
         """Tests general topseller with explicitly selected products.
         """
         # Explicit topseller
-        self.p5 = Product.objects.create(
-            name="Product 5", slug="product-5", active=True)
+        self.p5 = Product.objects.create(name="Product 5", slug="product-5", active=True)
         t5 = Topseller.objects.create(product=self.p5, position=1)
 
         ts = lfs.marketing.utils.get_topseller(2)
         self.assertEqual(ts[0], self.p5)
         self.assertEqual(ts[1], self.p4)
 
-        self.p6 = Product.objects.create(
-            name="Product 6", slug="product-6", active=True)
+        self.p6 = Product.objects.create(name="Product 6", slug="product-6", active=True)
         t6 = Topseller.objects.create(product=self.p6, position=2)
 
         ts = lfs.marketing.utils.get_topseller(2)
@@ -232,8 +213,7 @@ class TopsellerUtilsTestCase(TestCase):
         selected products
         """
         # Explicit topseller for c1
-        self.p5 = Product.objects.create(
-            name="Product 5", slug="product-5", active=True)
+        self.p5 = Product.objects.create(name="Product 5", slug="product-5", active=True)
         t5 = Topseller.objects.create(product=self.p5, position=1)
 
         self.c11.products = (self.p1, self.p2, self.p5)

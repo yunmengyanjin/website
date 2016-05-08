@@ -28,15 +28,8 @@ class GRPostalCodeField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            GRPostalCodeField,
-            self).__init__(
-            r'^[12345678]\d{4}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(GRPostalCodeField, self).__init__(r'^[12345678]\d{4}$',
+                                                max_length, min_length, *args, **kwargs)
 
 
 class GRTaxNumberCodeField(Field):
@@ -94,8 +87,7 @@ class GRPhoneNumberField(Field):
         if len(phone_nr) == 10 and NUMERIC_RE.search(phone_nr):
             return value
 
-        if phone_nr[
-                :3] == '+30' and len(phone_nr) == 13 and NUMERIC_RE.search(phone_nr[3:]):
+        if phone_nr[:3] == '+30' and len(phone_nr) == 13 and NUMERIC_RE.search(phone_nr[3:]):
             return value
 
         raise ValidationError(self.error_messages['invalid'])
@@ -117,15 +109,10 @@ class GRMobilePhoneNumberField(Field):
 
         phone_nr = re.sub('[\-\s\(\)]', '', smart_text(value))
 
-        if len(phone_nr) == 10 and NUMERIC_RE.search(
-                phone_nr) and phone_nr.startswith('69'):
+        if len(phone_nr) == 10 and NUMERIC_RE.search(phone_nr) and phone_nr.startswith('69'):
             return value
 
-        if phone_nr[
-            :3] == '+30' and len(phone_nr) == 13 and NUMERIC_RE.search(
-            phone_nr[
-                3:]) and phone_nr[
-                3:].startswith('69'):
+        if phone_nr[:3] == '+30' and len(phone_nr) == 13 and NUMERIC_RE.search(phone_nr[3:]) and phone_nr[3:].startswith('69'):
             return value
 
         raise ValidationError(self.error_messages['invalid'])

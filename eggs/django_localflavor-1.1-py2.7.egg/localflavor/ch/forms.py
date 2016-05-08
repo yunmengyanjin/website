@@ -30,15 +30,8 @@ class CHZipCodeField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            CHZipCodeField,
-            self).__init__(
-            r'^\d{4}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(CHZipCodeField, self).__init__(r'^\d{4}$',
+                                             max_length, min_length, *args, **kwargs)
 
 
 class CHPhoneNumberField(Field):
@@ -59,8 +52,7 @@ class CHPhoneNumberField(Field):
         value = re.sub('(\.|\s|/|-)', '', smart_text(value))
         m = phone_digits_re.search(value)
         if m:
-            return '%s %s %s %s' % (
-                value[0:3], value[3:6], value[6:8], value[8:10])
+            return '%s %s %s %s' % (value[0:3], value[3:6], value[6:8], value[8:10])
         raise ValidationError(self.error_messages['invalid'])
 
 
@@ -68,7 +60,6 @@ class CHStateSelect(Select):
     """
     A Select widget that uses a list of CH states as its choices.
     """
-
     def __init__(self, attrs=None):
         super(CHStateSelect, self).__init__(attrs, choices=STATE_CHOICES)
 
@@ -83,8 +74,9 @@ class CHIdentityCardNumberField(Field):
         * Included checksums match calculated checksums
 
     """
-    default_error_messages = {'invalid': _(
-        'Enter a valid Swiss identity or passport card number in X1234567<0 or 1234567890 format.'), }
+    default_error_messages = {
+        'invalid': _('Enter a valid Swiss identity or passport card number in X1234567<0 or 1234567890 format.'),
+    }
 
     def has_valid_checksum(self, number):
         given_number, given_checksum = number[:-1], number[-1]
@@ -127,8 +119,7 @@ class CHIdentityCardNumberField(Field):
             raise ValidationError(self.error_messages['invalid'])
 
         result = match.groupdict()
-        idnumber, pos9, checksum = result[
-            'idnumber'], result['pos9'], result['checksum']
+        idnumber, pos9, checksum = result['idnumber'], result['pos9'], result['checksum']
 
         if (idnumber == '00000000' or
                 idnumber == 'A0000000'):

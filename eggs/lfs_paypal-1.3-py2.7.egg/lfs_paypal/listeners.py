@@ -38,7 +38,7 @@ def mark_payment(pp_obj, order_state=PAID):
                 lfs.core.signals.order_paid.send(sender=order)
                 if getattr(settings, 'LFS_SEND_ORDER_MAIL_ON_PAYMENT', False):
                     mail_utils.send_order_received_mail(order)
-    except Order.DoesNotExist as e:
+    except Order.DoesNotExist, e:
         logger.error("PayPal: %s" % e)
     return order
 
@@ -48,14 +48,11 @@ def successful_payment(sender, **kwargs):
     ipn_obj = sender
     order = mark_payment(ipn_obj, PAID)
     if order is not None:
-        transaction, created = PayPalOrderTransaction.objects.get_or_create(
-            order=order)
+        transaction, created = PayPalOrderTransaction.objects.get_or_create(order=order)
         transaction.ipn.add(ipn_obj)
         transaction.save()
     else:
-        logger.warning(
-            "PayPal: successful ipn payment, no order found for uuid %s" %
-            ipn_obj.custom)
+        logger.warning("PayPal: successful ipn payment, no order found for uuid %s" % ipn_obj.custom)
 
 
 def unsuccessful_payment(sender, **kwargs):
@@ -70,17 +67,13 @@ def unsuccessful_payment(sender, **kwargs):
             logger.info("PayPal: payment failed")
             order = mark_payment(ipn_obj, PAYMENT_FAILED)
         if order is not None:
-            transaction, created = PayPalOrderTransaction.objects.get_or_create(
-                order=order)
+            transaction, created = PayPalOrderTransaction.objects.get_or_create(order=order)
             transaction.ipn.add(ipn_obj)
             transaction.save()
         else:
-            logger.warning(
-                "PayPal: unsuccessful ipn payment, no order found for uuid %s" %
-                ipn_obj.custom)
+            logger.warning("PayPal: unsuccessful ipn payment, no order found for uuid %s" % ipn_obj.custom)
     else:
-        logger.warning(
-            "PayPal: unsuccessful ipn payment signal with no ipn object")
+        logger.warning("PayPal: unsuccessful ipn payment signal with no ipn object")
 
 
 def successful_pdt(sender, **kwargs):
@@ -95,11 +88,7 @@ def unsuccesful_pdt(sender, **kwargs):
     mark_payment(pdt_obj, False)
 
 
-payment_was_successful.connect(
-    successful_payment,
-    dispatch_uid="Order.ipn_successful")
-payment_was_flagged.connect(
-    unsuccessful_payment,
-    dispatch_uid="Order.ipn_unsuccessful")
+payment_was_successful.connect(successful_payment, dispatch_uid="Order.ipn_successful")
+payment_was_flagged.connect(unsuccessful_payment, dispatch_uid="Order.ipn_unsuccessful")
 pdt_successful.connect(successful_pdt, dispatch_uid="Order.pdt_successful")
 pdt_failed.connect(unsuccesful_pdt, dispatch_uid="Order.pdt_unsuccessful")

@@ -41,15 +41,13 @@ warnings.filterwarnings(
     'ignore', '.+is being parsed as a legacy, non PEP 440, version')
 
 _oprp = getattr(os.path, 'realpath', lambda path: path)
-
-
 def realpath(path):
     return os.path.normcase(os.path.abspath(_oprp(path)))
 
 default_index_url = os.environ.get(
     'buildout-testing-index-url',
     'http://pypi.python.org/simple',
-)
+    )
 
 logger = logging.getLogger('zc.buildout.easy_install')
 
@@ -67,9 +65,9 @@ if is_jython:
 # Make sure we're not being run with an older bootstrap.py that gives us
 # setuptools instead of setuptools
 has_distribute = pkg_resources.working_set.find(
-    pkg_resources.Requirement.parse('distribute')) is not None
+        pkg_resources.Requirement.parse('distribute')) is not None
 has_setuptools = pkg_resources.working_set.find(
-    pkg_resources.Requirement.parse('setuptools')) is not None
+        pkg_resources.Requirement.parse('setuptools')) is not None
 if has_distribute and not has_setuptools:
     sys.exit("zc.buildout 2 needs setuptools, not distribute."
              "  Are you using an outdated bootstrap.py?  Make sure"
@@ -78,21 +76,19 @@ if has_distribute and not has_setuptools:
 
 setuptools_loc = pkg_resources.working_set.find(
     pkg_resources.Requirement.parse('setuptools')
-).location
+    ).location
 
 # Include buildout and setuptools eggs in paths
 buildout_and_setuptools_path = [
     setuptools_loc,
     pkg_resources.working_set.find(
         pkg_resources.Requirement.parse('zc.buildout')).location,
-]
+    ]
 
 FILE_SCHEME = re.compile('file://', re.I).match
 DUNDER_FILE_PATTERN = re.compile(r"__file__ = '(?P<filename>.+)'$")
 
-
 class _Monkey(object):
-
     def __init__(self, module, **kw):
         mdict = self._mdict = module.__dict__
         self._before = mdict.copy()
@@ -106,21 +102,17 @@ class _Monkey(object):
         self._mdict.clear()
         self._mdict.update(self._before)
 
-
 class _NoWarn(object):
-
     def warn(self, *args, **kw):
         pass
 
 _no_warn = _NoWarn()
-
 
 class AllowHostsPackageIndex(setuptools.package_index.PackageIndex):
     """Will allow urls that are local to the system.
 
     No matter what is allow_hosts.
     """
-
     def url_ok(self, url, fatal=False):
         if FILE_SCHEME(url):
             return True
@@ -129,12 +121,10 @@ class AllowHostsPackageIndex(setuptools.package_index.PackageIndex):
         # "Link to <URL> ***BLOCKED*** by --allow-hosts" message.
         with _Monkey(setuptools.package_index, log=_no_warn):
             return setuptools.package_index.PackageIndex.url_ok(
-                self, url, False)
+                                                self, url, False)
 
 
 _indexes = {}
-
-
 def _get_index(index_url, find_links, allow_hosts=('*',)):
     key = index_url, tuple(find_links)
     index = _indexes.get(key)
@@ -163,7 +153,6 @@ if is_win32:
 else:
     _safe_arg = str
 
-
 def call_subprocess(args, **kw):
     if subprocess.call(args, **kw) != 0:
         raise Exception(
@@ -182,7 +171,6 @@ def _execute_permission():
 
 _easy_install_cmd = 'from setuptools.command.easy_install import main; main()'
 
-
 class Installer:
 
     _versions = {}
@@ -200,7 +188,7 @@ class Installer:
                  links=(),
                  index=None,
                  executable=sys.executable,
-                 always_unzip=None,  # Backward compat :/
+                 always_unzip=None, # Backward compat :/
                  path=None,
                  newest=True,
                  versions=None,
@@ -293,7 +281,7 @@ class Installer:
             # Environment.__getitem__.
             return dists[0], None
 
-        best_we_have = dists[0]  # Because dists are sorted from best to worst
+        best_we_have = dists[0] # Because dists are sorted from best to worst
 
         # We have some installed distros.  There might, theoretically, be
         # newer ones.  Let's find out which ones are available and see if
@@ -325,9 +313,9 @@ class Installer:
                 if (not _final_version(best_we_have.parsed_version)
                     and
                     (best_we_have.parsed_version
-                             <
-                             best_available.parsed_version
-                             )
+                     <
+                     best_available.parsed_version
+                     )
                     ):
                     return None, best_available
         else:
@@ -368,7 +356,7 @@ class Installer:
                 logger.debug('Running easy_install:\n"%s"\npath=%s\n',
                              '" "'.join(args), path)
 
-            sys.stdout.flush()  # We want any pending output first
+            sys.stdout.flush() # We want any pending output first
 
             exit_code = subprocess.call(list(args))
 
@@ -483,8 +471,9 @@ class Installer:
         return best[-1]
 
     def _fetch(self, dist, tmp, download_cache):
-        if (download_cache and (
-                realpath(os.path.dirname(dist.location)) == download_cache)):
+        if (download_cache
+            and (realpath(os.path.dirname(dist.location)) == download_cache)
+            ):
             return dist
 
         new_location = self._index.download(dist.location, tmp)
@@ -585,8 +574,7 @@ class Installer:
         if not self._install_from_cache and self._use_dependency_links:
             for dist in dists:
                 if dist.has_metadata('dependency_links.txt'):
-                    for link in dist.get_metadata_lines(
-                            'dependency_links.txt'):
+                    for link in dist.get_metadata_lines('dependency_links.txt'):
                         link = link.strip()
                         if link not in self._links:
                             logger.debug('Adding find link %r from %s',
@@ -604,7 +592,7 @@ class Installer:
                 (len(requirement.specs) == 1
                  and
                  requirement.specs[0][0] == '==')
-            ):
+                ):
                 logger.debug('Picked: %s = %s',
                              dist.project_name, dist.version)
                 self._picked_versions[dist.project_name] = dist.version
@@ -612,7 +600,7 @@ class Installer:
                 if not self._allow_picked_versions:
                     raise zc.buildout.UserError(
                         'Picked: %s = %s' % (dist.project_name, dist.version)
-                    )
+                        )
 
         return dists
 
@@ -631,10 +619,11 @@ class Installer:
                         dist)
                 requirement = self._constrain(
                     pkg_resources.Requirement.parse('setuptools')
-                )
+                    )
                 if ws.find(requirement) is None:
                     for dist in self._get_dist(requirement, ws):
                         ws.add(dist)
+
 
     def _constrain(self, requirement):
         """Return requirement with optional [versions] constraint added."""
@@ -683,7 +672,7 @@ class Installer:
         # because we have to constrain our requirements (see
         # versions_section_ignored_for_dependency_in_favor_of_site_packages in
         # zc.buildout.tests).
-        requirements.reverse()  # Set up the stack.
+        requirements.reverse() # Set up the stack.
         processed = {}  # This is a set of processed requirements.
         best = {}  # This is a mapping of package name -> dist.
         # Note that we don't use the existing environment, because we want
@@ -735,8 +724,7 @@ class Installer:
             extra_requirements = dist.requires(req.extras)[::-1]
             for extra_requirement in extra_requirements:
                 self._requirements_and_constraints.append(
-                    "Requirement of %s: %s" %
-                    (current_requirement, extra_requirement))
+                    "Requirement of %s: %s" % (current_requirement, extra_requirement))
             requirements.extend(extra_requirements)
 
             processed[req] = True
@@ -761,7 +749,7 @@ class Installer:
                 "We don't have a distribution for %s\n"
                 "and can't build one in offline (no-install) mode.\n"
                 % requirement
-            )
+                )
 
         logger.debug('Building %r', spec)
 
@@ -785,12 +773,12 @@ class Installer:
                         raise distutils.errors.DistutilsError(
                             "Couldn't find a setup script in %s"
                             % os.path.basename(dist.location)
-                        )
+                            )
                     if len(setups) > 1:
                         raise distutils.errors.DistutilsError(
                             "Multiple setup scripts in %s"
                             % os.path.basename(dist.location)
-                        )
+                            )
                     base = os.path.dirname(setups[0])
 
                 setup_cfg = os.path.join(base, 'setup.cfg')
@@ -831,7 +819,6 @@ def default_versions(versions=None):
         Installer._versions = normalize_versions(versions)
     return old
 
-
 def download_cache(path=-1):
     old = Installer._download_cache
     if path != -1:
@@ -840,13 +827,11 @@ def download_cache(path=-1):
         Installer._download_cache = path
     return old
 
-
 def install_from_cache(setting=None):
     old = Installer._install_from_cache
     if setting is not None:
         Installer._install_from_cache = bool(setting)
     return old
-
 
 def prefer_final(setting=None):
     old = Installer._prefer_final
@@ -854,13 +839,11 @@ def prefer_final(setting=None):
         Installer._prefer_final = bool(setting)
     return old
 
-
 def use_dependency_links(setting=None):
     old = Installer._use_dependency_links
     if setting is not None:
         Installer._use_dependency_links = bool(setting)
     return old
-
 
 def allow_picked_versions(setting=None):
     old = Installer._allow_picked_versions
@@ -868,13 +851,11 @@ def allow_picked_versions(setting=None):
         Installer._allow_picked_versions = bool(setting)
     return old
 
-
 def store_required_by(setting=None):
     old = Installer._store_required_by
     if setting is not None:
         Installer._store_required_by = bool(setting)
     return old
-
 
 def get_picked_versions():
     picked_versions = sorted(Installer._picked_versions.items())
@@ -885,7 +866,7 @@ def get_picked_versions():
 def install(specs, dest,
             links=(), index=None,
             executable=sys.executable,
-            always_unzip=None,  # Backward compat :/
+            always_unzip=None, # Backward compat :/
             path=None, working_set=None, newest=True, versions=None,
             use_dependency_links=None, allow_hosts=('*',),
             include_site_packages=None,
@@ -923,7 +904,7 @@ def _rm(*paths):
 
 def _copyeggs(src, dest, suffix, undo):
     result = []
-    undo.append(lambda: _rm(*result))
+    undo.append(lambda : _rm(*result))
     for name in os.listdir(src):
         if name.endswith(suffix):
             new = os.path.join(dest, name)
@@ -998,12 +979,11 @@ def develop(setup, dest,
         if build_ext:
             setup_cfg = os.path.join(directory, 'setup.cfg')
             if os.path.exists(setup_cfg):
-                os.rename(setup_cfg, setup_cfg + '-develop-aside')
-
+                os.rename(setup_cfg, setup_cfg+'-develop-aside')
                 def restore_old_setup():
                     if os.path.exists(setup_cfg):
                         os.remove(setup_cfg)
-                    os.rename(setup_cfg + '-develop-aside', setup_cfg)
+                    os.rename(setup_cfg+'-develop-aside', setup_cfg)
                 undo.append(restore_old_setup)
             else:
                 f = open(setup_cfg, 'w')
@@ -1020,13 +1000,13 @@ def develop(setup, dest,
             setuptools=setuptools_loc,
             setupdir=directory,
             setup=setup,
-            __file__=setup,
-        )).encode())
+            __file__ = setup,
+            )).encode())
 
         tmp3 = tempfile.mkdtemp('build', dir=dest)
-        undo.append(lambda: shutil.rmtree(tmp3))
+        undo.append(lambda : shutil.rmtree(tmp3))
 
-        args = [executable, tsetup, '-q', 'develop', '-mN', '-d', tmp3]
+        args = [executable,  tsetup, '-q', 'develop', '-mN', '-d', tmp3]
 
         log_level = logger.getEffectiveLevel()
         if log_level <= 0:
@@ -1086,7 +1066,7 @@ def scripts(reqs, working_set, executable, dest=None,
                         ' got string.')
 
     if initialization:
-        initialization = '\n' + initialization + '\n'
+        initialization = '\n'+initialization+'\n'
 
     entry_points = []
     distutils_scripts = []
@@ -1100,7 +1080,7 @@ def scripts(reqs, working_set, executable, dest=None,
                 entry_points.append(
                     (name, entry_point.module_name,
                      '.'.join(entry_point.attrs))
-                )
+                    )
             # The metadata on "old-style" distutils scripts is not retained by
             # distutils/setuptools, except by placing the original scripts in
             # /EGG-INFO/scripts/.
@@ -1136,7 +1116,7 @@ def scripts(reqs, working_set, executable, dest=None,
         generated.extend(
             _script(module_name, attrs, spath, sname, arguments,
                     initialization, rpsetup)
-        )
+            )
 
     for name, contents in distutils_scripts:
         if scripts is not None:
@@ -1151,7 +1131,7 @@ def scripts(reqs, working_set, executable, dest=None,
 
         generated.extend(
             _distutils_script(spath, sname, contents, initialization, rpsetup)
-        )
+            )
 
     if interpreter:
         sname = os.path.join(dest, interpreter)
@@ -1168,7 +1148,7 @@ def _relative_path_and_setup(sname, path, relative_paths):
         spath = ',\n  '.join(
             [_relativitize(os.path.normcase(path_item), sname, relative_paths)
              for path_item in path]
-        )
+            )
         rpsetup = relative_paths_setup
         for i in range(_relative_depth(relative_paths, sname)):
             rpsetup += "base = os.path.dirname(base)\n"
@@ -1180,7 +1160,7 @@ def _relative_path_and_setup(sname, path, relative_paths):
 
 def _relative_depth(common, path):
     n = 0
-    while True:
+    while 1:
         dirname = os.path.dirname(path)
         if dirname == path:
             raise AssertionError("dirname of %s is the same" % dirname)
@@ -1193,7 +1173,7 @@ def _relative_depth(common, path):
 
 def _relative_path(common, path):
     r = []
-    while True:
+    while 1:
         dirname, basename = os.path.split(path)
         r.append(basename)
         if dirname == common:
@@ -1226,7 +1206,6 @@ join = os.path.join
 base = os.path.dirname(os.path.abspath(os.path.realpath(__file__)))
 """
 
-
 def _script(module_name, attrs, path, dest, arguments, initialization, rsetup):
     if is_win32:
         dest += '-script.py'
@@ -1234,14 +1213,14 @@ def _script(module_name, attrs, path, dest, arguments, initialization, rsetup):
     python = _safe_arg(sys.executable)
 
     contents = script_template % dict(
-        python=python,
-        path=path,
-        module_name=module_name,
-        attrs=attrs,
-        arguments=arguments,
-        initialization=initialization,
-        relative_paths_setup=rsetup,
-    )
+        python = python,
+        path = path,
+        module_name = module_name,
+        attrs = attrs,
+        arguments = arguments,
+        initialization = initialization,
+        relative_paths_setup = rsetup,
+        )
     return _create_script(contents, dest)
 
 
@@ -1271,15 +1250,14 @@ def _distutils_script(path, dest, script_content, initialization, rsetup):
     python = _safe_arg(sys.executable)
 
     contents = distutils_script_template % dict(
-        python=python,
-        path=path,
-        initialization=initialization,
-        relative_paths_setup=rsetup,
-        before=before,
-        after=after
-    )
+        python = python,
+        path = path,
+        initialization = initialization,
+        relative_paths_setup = rsetup,
+        before = before,
+        after = after
+        )
     return _create_script(contents, dest)
-
 
 def _file_changed(filename, old_contents, mode='r'):
     try:
@@ -1291,7 +1269,6 @@ def _file_changed(filename, old_contents, mode='r'):
         else:
             raise
 
-
 def _create_script(contents, dest):
     generated = []
     script = dest
@@ -1300,10 +1277,10 @@ def _create_script(contents, dest):
 
     if is_win32:
         # generate exe file and give the script a magic name:
-        win32_exe = os.path.splitext(dest)[0]  # remove ".py"
+        win32_exe = os.path.splitext(dest)[0] # remove ".py"
         if win32_exe.endswith('-script'):
-            win32_exe = win32_exe[:-7]  # remove "-script"
-        win32_exe = win32_exe + '.exe'  # add ".exe"
+            win32_exe = win32_exe[:-7] # remove "-script"
+        win32_exe = win32_exe + '.exe' # add ".exe"
         try:
             new_data = setuptools.command.easy_install.get_win_launcher('cli')
         except AttributeError:
@@ -1376,11 +1353,11 @@ def _pyscript(path, dest, rsetup, initialization=''):
         path += ','  # Courtesy comma at the end of the list.
 
     contents = py_script_template % dict(
-        python=python,
-        path=path,
-        relative_paths_setup=rsetup,
+        python = python,
+        path = path,
+        relative_paths_setup = rsetup,
         initialization=initialization,
-    )
+        )
     changed = _file_changed(dest, contents)
 
     if is_win32:
@@ -1461,7 +1438,8 @@ with open(%(setup)r, 'U') as f:
 class VersionConflict(zc.buildout.UserError):
 
     def __init__(self, err, ws):
-        ws = sorted(ws)
+        ws = list(ws)
+        ws.sort()
         self.err, self.ws = err, ws
 
     def __str__(self):
@@ -1481,17 +1459,17 @@ class VersionConflict(zc.buildout.UserError):
 class MissingDistribution(zc.buildout.UserError):
 
     def __init__(self, req, ws):
-        ws = sorted(ws)
+        ws = list(ws)
+        ws.sort()
         self.data = req, ws
 
     def __str__(self):
         req, ws = self.data
         return "Couldn't find a distribution for %r." % str(req)
 
-
 def _log_requirement(ws, req):
     if (not logger.isEnabledFor(logging.DEBUG) and
-            not Installer._store_required_by):
+        not Installer._store_required_by):
         # Sorting the working set and iterating over it's requirements
         # is expensive, so short circuit the work if it won't even be
         # logged.  When profiling a simple buildout with 10 parts with
@@ -1500,7 +1478,8 @@ def _log_requirement(ws, req):
         # 6 fold improvement.
         return
 
-    ws = sorted(ws)
+    ws = list(ws)
+    ws.sort()
     for dist in ws:
         if req in dist.requires():
             logger.debug("  required by %s." % dist)
@@ -1508,7 +1487,6 @@ def _log_requirement(ws, req):
             if req_ not in Installer._required_by:
                 Installer._required_by[req_] = set()
             Installer._required_by[req_].add(str(dist.as_requirement()))
-
 
 def _fix_file_links(links):
     for link in links:
@@ -1518,10 +1496,8 @@ def _fix_file_links(links):
                 link += '/'
         yield link
 
-
 def _final_version(parsed_version):
     return not parsed_version.is_prerelease
-
 
 def redo_pyc(egg):
     if not os.path.isdir(egg):
@@ -1531,8 +1507,8 @@ def redo_pyc(egg):
             if not filename.endswith('.py'):
                 continue
             filepath = os.path.join(dirpath, filename)
-            if not (os.path.exists(filepath + 'c')
-                    or os.path.exists(filepath + 'o')):
+            if not (os.path.exists(filepath+'c')
+                    or os.path.exists(filepath+'o')):
                 # If it wasn't compiled, it may not be compilable
                 continue
 
@@ -1540,8 +1516,8 @@ def redo_pyc(egg):
 
             # Remove old files.
             for suffix in 'co':
-                if os.path.exists(filepath + suffix):
-                    os.remove(filepath + suffix)
+                if os.path.exists(filepath+suffix):
+                    os.remove(filepath+suffix)
 
             # Compile under current optimization
             try:
@@ -1556,7 +1532,6 @@ def redo_pyc(egg):
                 args.extend(['-m', 'py_compile', filepath])
 
                 call_subprocess(args)
-
 
 def _constrained_requirement(constraint, requirement):
     if constraint[0] not in '<>':
@@ -1578,15 +1553,14 @@ def _constrained_requirement(constraint, requirement):
     if requirement.specs:
         return pkg_resources.Requirement.parse(
             str(requirement) + ',' + constraint
-        )
+            )
     else:
         return pkg_resources.Requirement.parse(
             str(requirement) + ' ' + constraint
-        )
-
+            )
 
 class IncompatibleConstraintError(zc.buildout.UserError):
     """A specified version is incompatible with a given requirement.
     """
 
-IncompatibleVersionError = IncompatibleConstraintError  # Backward compatibility
+IncompatibleVersionError = IncompatibleConstraintError # Backward compatibility

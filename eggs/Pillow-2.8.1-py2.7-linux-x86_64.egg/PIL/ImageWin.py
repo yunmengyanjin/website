@@ -27,7 +27,6 @@ class HDC:
     :py:meth:`~PIL.ImageWin.Dib.draw` and :py:meth:`~PIL.ImageWin.Dib.expose`
     methods.
     """
-
     def __init__(self, dc):
         self.dc = dc
 
@@ -41,7 +40,6 @@ class HWND:
     :py:meth:`~PIL.ImageWin.Dib.draw` and :py:meth:`~PIL.ImageWin.Dib.expose`
     methods, instead of a DC.
     """
-
     def __init__(self, wnd):
         self.wnd = wnd
 
@@ -213,7 +211,7 @@ class Window:
     def __init__(self, title="PIL", width=None, height=None):
         self.hwnd = Image.core.createwindow(
             title, self.__dispatcher, width or 0, height or 0
-        )
+            )
 
     def __dispatcher(self, action, *args):
         return getattr(self, "ui_handle_" + action)(*args)

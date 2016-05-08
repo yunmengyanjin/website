@@ -17,10 +17,9 @@ from .fr_department import DEPARTMENT_CHOICES_PER_REGION
 from .fr_region import REGION_CHOICES
 
 
-nin_re = re.compile(
-    r'^(?P<gender>[1278])(?P<year_of_birth>\d{2})(?P<month_of_birth>0[1-9]|1[0-2]|20)' +
-    '(?P<department_of_origin>\d{2}|2[AB])(?P<commune_of_origin>\d{3})(?P<person_unique_number>\d{3})' +
-    '(?P<control_key>\d{2})$')
+nin_re = re.compile(r'^(?P<gender>[1278])(?P<year_of_birth>\d{2})(?P<month_of_birth>0[1-9]|1[0-2]|20)' +
+                    '(?P<department_of_origin>\d{2}|2[AB])(?P<commune_of_origin>\d{3})(?P<person_unique_number>\d{3})' +
+                    '(?P<control_key>\d{2})$')
 
 
 class FRZipCodeField(RegexField):
@@ -79,7 +78,6 @@ class FRDepartmentSelect(Select):
     """
     A Select widget that uses a list of FR departments as its choices.
     """
-
     def __init__(self, attrs=None):
         choices = [
             (dep[0], '%s - %s' % (dep[0], dep[1]))
@@ -95,7 +93,6 @@ class FRRegionSelect(Select):
     """
     A Select widget that uses a list of FR Regions as its choices.
     """
-
     def __init__(self, attrs=None):
         choices = [
             (dep[0], '%s - %s' % (dep[0], dep[1]))
@@ -136,8 +133,9 @@ class FRNationalIdentificationNumber(CharField):
 
     .. versionadded:: 1.1
     """
-    default_error_messages = {'invalid': _(
-        'Enter a valid French French National Identification number.'), }
+    default_error_messages = {
+        'invalid': _('Enter a valid French French National Identification number.'),
+    }
 
     def clean(self, value):
         super(FRNationalIdentificationNumber, self).clean(value)
@@ -180,17 +178,9 @@ class FRNationalIdentificationNumber(CharField):
         if control_key > 97:
             raise ValidationError(self.error_messages['invalid'])
 
-        control_number = int(
-            gender +
-            year_of_birth +
-            month_of_birth +
-            department_of_origin.replace(
-                'A',
-                '0').replace(
-                'B',
-                '0') +
-            commune_of_origin +
-            person_unique_number)
+        control_number = int(gender + year_of_birth + month_of_birth +
+                             department_of_origin.replace('A', '0').replace('B', '0')
+                             + commune_of_origin + person_unique_number)
         if (97 - control_number % 97) == control_key:
             return value
         else:
@@ -201,7 +191,6 @@ class FRSIRENENumberMixin(object):
     """
     Abstract class for SIREN and SIRET numbers, from the SIRENE register
     """
-
     def clean(self, value):
         super(FRSIRENENumberMixin, self).clean(value)
         if value in EMPTY_VALUES:

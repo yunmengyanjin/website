@@ -52,7 +52,6 @@ class CommandParser(ArgumentParser):
     SystemExit in several occasions, as SystemExit is unacceptable when a
     command is called programmatically.
     """
-
     def __init__(self, cmd, **kwargs):
         self.cmd = cmd
         super(CommandParser, self).__init__(**kwargs)
@@ -306,86 +305,48 @@ class BaseCommand(object):
                           "is deprecated, use ArgumentParser instead",
                           RemovedInDjango20Warning)
             parser = OptionParser(prog=prog_name,
-                                  usage=self.usage(subcommand),
-                                  version=self.get_version())
-            parser.add_option(
-                '-v',
-                '--verbosity',
-                action='store',
-                dest='verbosity',
-                default='1',
-                type='choice',
-                choices=[
-                    '0',
-                    '1',
-                    '2',
-                    '3'],
+                                usage=self.usage(subcommand),
+                                version=self.get_version())
+            parser.add_option('-v', '--verbosity', action='store', dest='verbosity', default='1',
+                type='choice', choices=['0', '1', '2', '3'],
                 help='Verbosity level; 0=minimal output, 1=normal output, 2=verbose output, 3=very verbose output')
-            parser.add_option(
-                '--settings',
+            parser.add_option('--settings',
                 help=(
                     'The Python path to a settings module, e.g. '
                     '"myproject.settings.main". If this isn\'t provided, the '
-                    'DJANGO_SETTINGS_MODULE environment variable will be used.'),
+                    'DJANGO_SETTINGS_MODULE environment variable will be used.'
+                ),
             )
-            parser.add_option(
-                '--pythonpath',
+            parser.add_option('--pythonpath',
                 help='A directory to add to the Python path, e.g. "/home/djangoprojects/myproject".'),
             parser.add_option('--traceback', action='store_true',
-                              help='Raise on CommandError exceptions')
-            parser.add_option(
-                '--no-color',
-                action='store_true',
-                dest='no_color',
-                default=False,
+                help='Raise on CommandError exceptions')
+            parser.add_option('--no-color', action='store_true', dest='no_color', default=False,
                 help="Don't colorize the command output.")
             for opt in self.option_list:
                 parser.add_option(opt)
         else:
-            parser = CommandParser(
-                self,
-                prog="%s %s" %
-                (os.path.basename(prog_name),
-                 subcommand),
+            parser = CommandParser(self, prog="%s %s" % (os.path.basename(prog_name), subcommand),
                 description=self.help or None)
-            parser.add_argument(
-                '--version',
-                action='version',
-                version=self.get_version())
-            parser.add_argument(
-                '-v',
-                '--verbosity',
-                action='store',
-                dest='verbosity',
-                default='1',
-                type=int,
-                choices=[
-                    0,
-                    1,
-                    2,
-                    3],
+            parser.add_argument('--version', action='version', version=self.get_version())
+            parser.add_argument('-v', '--verbosity', action='store', dest='verbosity', default='1',
+                type=int, choices=[0, 1, 2, 3],
                 help='Verbosity level; 0=minimal output, 1=normal output, 2=verbose output, 3=very verbose output')
-            parser.add_argument(
-                '--settings',
+            parser.add_argument('--settings',
                 help=(
                     'The Python path to a settings module, e.g. '
                     '"myproject.settings.main". If this isn\'t provided, the '
-                    'DJANGO_SETTINGS_MODULE environment variable will be used.'),
+                    'DJANGO_SETTINGS_MODULE environment variable will be used.'
+                ),
             )
-            parser.add_argument(
-                '--pythonpath',
+            parser.add_argument('--pythonpath',
                 help='A directory to add to the Python path, e.g. "/home/djangoprojects/myproject".')
             parser.add_argument('--traceback', action='store_true',
-                                help='Raise on CommandError exceptions')
-            parser.add_argument(
-                '--no-color',
-                action='store_true',
-                dest='no_color',
-                default=False,
+                help='Raise on CommandError exceptions')
+            parser.add_argument('--no-color', action='store_true', dest='no_color', default=False,
                 help="Don't colorize the command output.")
             if self.args:
-                # Keep compatibility and always accept positional arguments,
-                # like optparse when args is set
+                # Keep compatibility and always accept positional arguments, like optparse when args is set
                 parser.add_argument('args', nargs='*')
             self.add_arguments(parser)
         return parser
@@ -452,8 +413,7 @@ class BaseCommand(object):
         if options.get('stdout'):
             self.stdout = OutputWrapper(options['stdout'])
         if options.get('stderr'):
-            self.stderr = OutputWrapper(
-                options.get('stderr'), self.stderr.style_func)
+            self.stderr = OutputWrapper(options.get('stderr'), self.stderr.style_func)
 
         saved_locale = None
         if not self.leave_locale_alone:
@@ -462,11 +422,10 @@ class BaseCommand(object):
             # (The final saying about whether the i18n machinery is active will be
             # found in the value of the USE_I18N setting)
             if not self.can_import_settings:
-                raise CommandError(
-                    "Incompatible values of 'leave_locale_alone' "
-                    "(%s) and 'can_import_settings' (%s) command "
-                    "options." %
-                    (self.leave_locale_alone, self.can_import_settings))
+                raise CommandError("Incompatible values of 'leave_locale_alone' "
+                                   "(%s) and 'can_import_settings' (%s) command "
+                                   "options." % (self.leave_locale_alone,
+                                                 self.can_import_settings))
             # Deactivate translations, because django-admin creates database
             # content like permissions, and those shouldn't contain any
             # translations.
@@ -476,8 +435,7 @@ class BaseCommand(object):
 
         try:
             if (self.requires_system_checks and
-                    # Remove at the end of deprecation for `skip_validation`.
-                    not options.get('skip_validation') and
+                    not options.get('skip_validation') and  # Remove at the end of deprecation for `skip_validation`.
                     not options.get('skip_checks')):
                 self.check()
             output = self.handle(*args, **options)
@@ -486,18 +444,12 @@ class BaseCommand(object):
                     # This needs to be imported here, because it relies on
                     # settings.
                     from django.db import connections, DEFAULT_DB_ALIAS
-                    connection = connections[
-                        options.get('database', DEFAULT_DB_ALIAS)]
+                    connection = connections[options.get('database', DEFAULT_DB_ALIAS)]
                     if connection.ops.start_transaction_sql():
-                        self.stdout.write(
-                            self.style.SQL_KEYWORD(
-                                connection.ops.start_transaction_sql()))
+                        self.stdout.write(self.style.SQL_KEYWORD(connection.ops.start_transaction_sql()))
                 self.stdout.write(output)
                 if self.output_transaction:
-                    self.stdout.write(
-                        '\n' +
-                        self.style.SQL_KEYWORD(
-                            connection.ops.end_transaction_sql()))
+                    self.stdout.write('\n' + self.style.SQL_KEYWORD(connection.ops.end_transaction_sql()))
         finally:
             if saved_locale is not None:
                 translation.activate(saved_locale)
@@ -510,9 +462,7 @@ class BaseCommand(object):
         else:
             app_configs = [app_config]
 
-        return self.check(
-            app_configs=app_configs,
-            display_num_errors=display_num_errors)
+        return self.check(app_configs=app_configs, display_num_errors=display_num_errors)
 
     def check(self, app_configs=None, tags=None, display_num_errors=False,
               include_deployment_checks=False):
@@ -532,14 +482,10 @@ class BaseCommand(object):
         visible_issue_count = 0  # excludes silenced warnings
 
         if all_issues:
-            debugs = [e for e in all_issues if e.level <
-                      checks.INFO and not e.is_silenced()]
-            infos = [e for e in all_issues if checks.INFO <=
-                     e.level < checks.WARNING and not e.is_silenced()]
-            warnings = [e for e in all_issues if checks.WARNING <=
-                        e.level < checks.ERROR and not e.is_silenced()]
-            errors = [e for e in all_issues if checks.ERROR <=
-                      e.level < checks.CRITICAL]
+            debugs = [e for e in all_issues if e.level < checks.INFO and not e.is_silenced()]
+            infos = [e for e in all_issues if checks.INFO <= e.level < checks.WARNING and not e.is_silenced()]
+            warnings = [e for e in all_issues if checks.WARNING <= e.level < checks.ERROR and not e.is_silenced()]
+            errors = [e for e in all_issues if checks.ERROR <= e.level < checks.CRITICAL]
             criticals = [e for e in all_issues if checks.CRITICAL <= e.level]
             sorted_issues = [
                 (criticals, 'CRITICALS'),
@@ -574,9 +520,7 @@ class BaseCommand(object):
             )
 
         if any(e.is_serious() and not e.is_silenced() for e in all_issues):
-            msg = self.style.ERROR(
-                "SystemCheckError: %s" %
-                header) + body + footer
+            msg = self.style.ERROR("SystemCheckError: %s" % header) + body + footer
             raise SystemCheckError(msg)
         else:
             msg = header + body + footer
@@ -593,8 +537,7 @@ class BaseCommand(object):
         this method.
 
         """
-        raise NotImplementedError(
-            'subclasses of BaseCommand must provide a handle() method')
+        raise NotImplementedError('subclasses of BaseCommand must provide a handle() method')
 
 
 class AppCommand(BaseCommand):
@@ -609,17 +552,14 @@ class AppCommand(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('args', metavar='app_label', nargs='+',
-                            help='One or more application label.')
+            help='One or more application label.')
 
     def handle(self, *app_labels, **options):
         from django.apps import apps
         try:
-            app_configs = [apps.get_app_config(
-                app_label) for app_label in app_labels]
+            app_configs = [apps.get_app_config(app_label) for app_label in app_labels]
         except (LookupError, ImportError) as e:
-            raise CommandError(
-                "%s. Are you sure your INSTALLED_APPS setting is correct?" %
-                e)
+            raise CommandError("%s. Are you sure your INSTALLED_APPS setting is correct?" % e)
         output = []
         for app_config in app_configs:
             app_output = self.handle_app_config(app_config, **options)
@@ -687,8 +627,7 @@ class LabelCommand(BaseCommand):
         string as given on the command line.
 
         """
-        raise NotImplementedError(
-            'subclasses of LabelCommand must provide a handle_label() method')
+        raise NotImplementedError('subclasses of LabelCommand must provide a handle_label() method')
 
 
 class NoArgsCommand(BaseCommand):
@@ -708,7 +647,8 @@ class NoArgsCommand(BaseCommand):
         warnings.warn(
             "NoArgsCommand class is deprecated and will be removed in Django 2.0. "
             "Use BaseCommand instead, which takes no arguments by default.",
-            RemovedInDjango20Warning)
+            RemovedInDjango20Warning
+        )
         super(NoArgsCommand, self).__init__()
 
     def handle(self, *args, **options):
@@ -721,5 +661,4 @@ class NoArgsCommand(BaseCommand):
         Perform this command's actions.
 
         """
-        raise NotImplementedError(
-            'subclasses of NoArgsCommand must provide a handle_noargs() method')
+        raise NotImplementedError('subclasses of NoArgsCommand must provide a handle_noargs() method')

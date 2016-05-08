@@ -17,10 +17,7 @@ from lfs.marketing.models import OrderRatingMail
 
 
 @permission_required("core.manage_shop")
-def manage_rating_mails(
-        request,
-        orders_sent=[],
-        template_name="manage/marketing/rating_mails.html"):
+def manage_rating_mails(request, orders_sent=[], template_name="manage/marketing/rating_mails.html"):
     """Displays the manage view for rating mails
     """
     return render_to_response(template_name, RequestContext(request, {}))
@@ -71,11 +68,7 @@ def send_rating_mails(request):
             })
 
             mail = EmailMultiAlternatives(
-                subject=subject,
-                body=text,
-                from_email=from_email,
-                to=to,
-                bcc=bcc)
+                subject=subject, body=text, from_email=from_email, to=to, bcc=bcc)
 
             order_items = []
             for order_item in order.items.all():
@@ -99,5 +92,7 @@ def send_rating_mails(request):
             mail.attach_alternative(html, "text/html")
             mail.send()
 
-        return render_to_response("manage/marketing/rating_mails.html", RequestContext(
-            request, {"display_orders_sent": True, "orders_sent": orders_sent}))
+        return render_to_response("manage/marketing/rating_mails.html", RequestContext(request, {
+            "display_orders_sent": True,
+            "orders_sent": orders_sent
+        }))

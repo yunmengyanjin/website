@@ -83,15 +83,11 @@ class AdminSite(object):
             model_or_iterable = [model_or_iterable]
         for model in model_or_iterable:
             if model._meta.abstract:
-                raise ImproperlyConfigured(
-                    'The model %s is abstract, so it '
-                    'cannot be registered with admin.' %
-                    model.__name__)
+                raise ImproperlyConfigured('The model %s is abstract, so it '
+                      'cannot be registered with admin.' % model.__name__)
 
             if model in self._registry:
-                raise AlreadyRegistered(
-                    'The model %s is already registered' %
-                    model.__name__)
+                raise AlreadyRegistered('The model %s is already registered' % model.__name__)
 
             # Ignore the registration if the model has been
             # swapped out.
@@ -103,8 +99,7 @@ class AdminSite(object):
                     # the created class appears to "live" in the wrong place,
                     # which causes issues later on.
                     options['__module__'] = __name__
-                    admin_class = type("%sAdmin" %
-                                       model.__name__, (admin_class,), options)
+                    admin_class = type("%sAdmin" % model.__name__, (admin_class,), options)
 
                 if admin_class is not ModelAdmin and settings.DEBUG:
                     system_check_errors.extend(admin_class.check(model))
@@ -122,9 +117,7 @@ class AdminSite(object):
             model_or_iterable = [model_or_iterable]
         for model in model_or_iterable:
             if model not in self._registry:
-                raise NotRegistered(
-                    'The model %s is not registered' %
-                    model.__name__)
+                raise NotRegistered('The model %s is not registered' % model.__name__)
             del self._registry[model]
 
     def is_registered(self, model):
@@ -227,8 +220,7 @@ class AdminSite(object):
         """
         def inner(request, *args, **kwargs):
             if not self.has_permission(request):
-                if request.path == reverse(
-                        'admin:logout', current_app=self.name):
+                if request.path == reverse('admin:logout', current_app=self.name):
                     index_path = reverse('admin:index', current_app=self.name)
                     return HttpResponseRedirect(index_path)
                 # Inner import to prevent django.contrib.admin (app) from
@@ -279,8 +271,9 @@ class AdminSite(object):
         # app_index
         valid_app_labels = []
         for model, model_admin in six.iteritems(self._registry):
-            urlpatterns += [url(r'^%s/%s/' % (model._meta.app_label,
-                                              model._meta.model_name), include(model_admin.urls)), ]
+            urlpatterns += [
+                url(r'^%s/%s/' % (model._meta.app_label, model._meta.model_name), include(model_admin.urls)),
+            ]
             if model._meta.app_label not in valid_app_labels:
                 valid_app_labels.append(model._meta.app_label)
 
@@ -331,8 +324,10 @@ class AdminSite(object):
         Displays the "success" page after a password change.
         """
         from django.contrib.auth.views import password_change_done
-        defaults = {'current_app': self.name, 'extra_context': dict(
-            self.each_context(request), **(extra_context or {})), }
+        defaults = {
+            'current_app': self.name,
+            'extra_context': dict(self.each_context(request), **(extra_context or {})),
+        }
         if self.password_change_done_template is not None:
             defaults['template_name'] = self.password_change_done_template
         return password_change_done(request, **defaults)
@@ -348,9 +343,7 @@ class AdminSite(object):
             from django.views.i18n import javascript_catalog
         else:
             from django.views.i18n import null_javascript_catalog as javascript_catalog
-        return javascript_catalog(
-            request, packages=[
-                'django.conf', 'django.contrib.admin'])
+        return javascript_catalog(request, packages=['django.conf', 'django.contrib.admin'])
 
     @never_cache
     def logout(self, request, extra_context=None):
@@ -360,8 +353,10 @@ class AdminSite(object):
         This should *not* assume the user is already logged in.
         """
         from django.contrib.auth.views import logout
-        defaults = {'current_app': self.name, 'extra_context': dict(
-            self.each_context(request), **(extra_context or {})), }
+        defaults = {
+            'current_app': self.name,
+            'extra_context': dict(self.each_context(request), **(extra_context or {})),
+        }
         if self.logout_template is not None:
             defaults['template_name'] = self.logout_template
         return logout(request, **defaults)
@@ -382,9 +377,9 @@ class AdminSite(object):
         # and django.contrib.admin.forms eventually imports User.
         from django.contrib.admin.forms import AdminAuthenticationForm
         context = dict(self.each_context(request),
-                       title=_('Log in'),
-                       app_path=request.get_full_path(),
-                       )
+            title=_('Log in'),
+            app_path=request.get_full_path(),
+        )
         if (REDIRECT_FIELD_NAME not in request.GET and
                 REDIRECT_FIELD_NAME not in request.POST):
             context[REDIRECT_FIELD_NAME] = request.get_full_path()
@@ -423,16 +418,12 @@ class AdminSite(object):
                     }
                     if perms.get('change', False):
                         try:
-                            model_dict['admin_url'] = reverse(
-                                'admin:%s_%s_changelist' %
-                                info, current_app=self.name)
+                            model_dict['admin_url'] = reverse('admin:%s_%s_changelist' % info, current_app=self.name)
                         except NoReverseMatch:
                             pass
                     if perms.get('add', False):
                         try:
-                            model_dict['add_url'] = reverse(
-                                'admin:%s_%s_add' %
-                                info, current_app=self.name)
+                            model_dict['add_url'] = reverse('admin:%s_%s_add' % info, current_app=self.name)
                         except NoReverseMatch:
                             pass
                     if app_label in app_dict:
@@ -443,8 +434,7 @@ class AdminSite(object):
                             'app_label': app_label,
                             'app_url': reverse(
                                 'admin:app_list',
-                                kwargs={
-                                    'app_label': app_label},
+                                kwargs={'app_label': app_label},
                                 current_app=self.name,
                             ),
                             'has_module_perms': has_module_perms,
@@ -493,16 +483,12 @@ class AdminSite(object):
                     }
                     if perms.get('change'):
                         try:
-                            model_dict['admin_url'] = reverse(
-                                'admin:%s_%s_changelist' %
-                                info, current_app=self.name)
+                            model_dict['admin_url'] = reverse('admin:%s_%s_changelist' % info, current_app=self.name)
                         except NoReverseMatch:
                             pass
                     if perms.get('add'):
                         try:
-                            model_dict['add_url'] = reverse(
-                                'admin:%s_%s_add' %
-                                info, current_app=self.name)
+                            model_dict['add_url'] = reverse('admin:%s_%s_add' % info, current_app=self.name)
                         except NoReverseMatch:
                             pass
                     if app_dict:
@@ -523,10 +509,10 @@ class AdminSite(object):
         # Sort the models alphabetically within each app.
         app_dict['models'].sort(key=lambda x: x['name'])
         context = dict(self.each_context(request),
-                       title=_('%(app)s administration') % {'app': app_name},
-                       app_list=[app_dict],
-                       app_label=app_label,
-                       )
+            title=_('%(app)s administration') % {'app': app_name},
+            app_list=[app_dict],
+            app_label=app_label,
+        )
         context.update(extra_context or {})
 
         request.current_app = self.name

@@ -40,9 +40,7 @@ def file_download(request, language=None, file_id=None):
     """Delivers files to the browser.
     """
     download_file = lfs_get_object_or_404(File, pk=file_id)
-    response = HttpResponse(
-        download_file.file,
-        content_type='application/binary')
+    response = HttpResponse(download_file.file, content_type='application/binary')
     response['Content-Disposition'] = 'attachment; filename=%s' % download_file.title
 
     return response
@@ -64,13 +62,7 @@ def select_variant(request):
     return HttpResponse(result, content_type='application/json')
 
 
-def calculate_packing(
-        request,
-        id,
-        quantity=None,
-        with_properties=False,
-        as_string=False,
-        template_name="lfs/catalog/packing_result.html"):
+def calculate_packing(request, id, quantity=None, with_properties=False, as_string=False, template_name="lfs/catalog/packing_result.html"):
     """Calculates the actual amount of pieces to buy on base on packing
     information.
     """
@@ -80,8 +72,7 @@ def calculate_packing(
         try:
             quantity = request.POST.get("quantity")
             if isinstance(quantity, unicode):
-                # atof() on unicode string fails in some environments, like
-                # Czech
+                # atof() on unicode string fails in some environments, like Czech
                 quantity = quantity.encode("utf-8")
             quantity = locale.atof(quantity)
         except (AttributeError, TypeError, ValueError):
@@ -92,8 +83,7 @@ def calculate_packing(
     try:
         packs = math.ceil(quantity / packing_amount)
         real_quantity = packs * packing_amount
-        price = product.get_price_gross(
-            request, with_properties=with_properties)
+        price = product.get_price_gross(request, with_properties=with_properties)
         price += _calculate_property_price(request)
         price *= real_quantity
     except TypeError:
@@ -120,19 +110,17 @@ def calculate_packing(
 
 
 def calculate_price(request, id):
-    """Calculates the price of the product on base of chosen properties after
+    """Calculates the price of the product on base of choosen properties after
     a customer has selected a property on product view.
     """
     product = Product.objects.get(pk=id)
     property_price = _calculate_property_price(request)
 
     if product.for_sale:
-        for_sale_standard_price = product.get_standard_price(
-            request, with_properties=False)
+        for_sale_standard_price = product.get_standard_price(request, with_properties=False)
         for_sale_standard_price += property_price
 
-        for_sale_price = product.get_for_sale_price(
-            request, with_properties=False)
+        for_sale_price = product.get_for_sale_price(request, with_properties=False)
         for_sale_price += property_price
     else:
         for_sale_standard_price = 0
@@ -142,8 +130,7 @@ def calculate_price(request, id):
     price += property_price
 
     if product.get_active_packing_unit():
-        packing_result = calculate_packing(
-            request, id, with_properties=True, as_string=True)
+        packing_result = calculate_packing(request, id, with_properties=True, as_string=True)
     else:
         packing_result = ""
 
@@ -176,7 +163,7 @@ def select_variant_from_properties(request):
     variant = product.get_variant(options)
 
     if variant is None:
-        msg = _(u"The chosen combination of properties is not deliverable.")
+        msg = _(u"The choosen combination of properties is not deliverable.")
         variant = product.get_default_variant()
     else:
         msg = _(u"The product has been changed according to your selection.")
@@ -203,26 +190,16 @@ def set_number_filter(request):
 
     key = '{0}_{1}'.format(property_group_id, property_id)
 
-    product_filter["number-filter"][key] = {
-        'property_id': property_id,
-        'property_group_id': property_group_id,
-        'value': (
-            pmin,
-            pmax)}
+    product_filter["number-filter"][key] = {'property_id': property_id,
+                                            'property_group_id': property_group_id,
+                                            'value': (pmin, pmax)}
     request.session["product-filter"] = product_filter
 
     url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
 
 
-def set_filter(
-        request,
-        category_slug,
-        property_group_id,
-        property_id,
-        value=None,
-        min=None,
-        max=None):
+def set_filter(request, category_slug, property_group_id, property_id, value=None, min=None, max=None):
     """Saves the given filter to session. Redirects to the category with given
     slug.
     """
@@ -244,10 +221,9 @@ def set_filter(
         else:
             del product_filter["select-filter"][key]
     else:
-        product_filter["select-filter"][key] = {
-            'value': value,
-            'property_id': property_id,
-            'property_group_id': property_group_id}
+        product_filter["select-filter"][key] = {'value': value,
+                                                'property_id': property_id,
+                                                'property_group_id': property_group_id}
 
     if not product_filter.get("select-filter"):
         del product_filter["select-filter"]
@@ -321,12 +297,10 @@ def reset_filter(request, category_slug, property_group_id, property_id):
     """
     if "product-filter" in request.session:
         key = '{0}_{1}'.format(property_group_id, property_id)
-        select_filter = request.session[
-            "product-filter"].get('select-filter', {})
+        select_filter = request.session["product-filter"].get('select-filter', {})
         if key in select_filter:
             del select_filter[key]
-            request.session[
-                "product-filter"] = request.session["product-filter"]
+            request.session["product-filter"] = request.session["product-filter"]
 
     url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
@@ -336,8 +310,7 @@ def reset_manufacturer_filter(request, category_slug, manufacturer_id):
     if "manufacturer-filter" in request.session:
         if int(manufacturer_id) in request.session["manufacturer-filter"]:
             request.session["manufacturer-filter"].remove(int(manufacturer_id))
-            request.session[
-                "manufacturer-filter"] = request.session["manufacturer-filter"]
+            request.session["manufacturer-filter"] = request.session["manufacturer-filter"]
 
     url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
@@ -351,11 +324,7 @@ def reset_all_manufacturer_filter(request, category_slug):
     return HttpResponseRedirect(url)
 
 
-def reset_number_filter(
-        request,
-        category_slug,
-        property_group_id,
-        property_id):
+def reset_number_filter(request, category_slug, property_group_id, property_id):
     """Resets product filter with given property id. Redirects to the category
     with given slug.
     """
@@ -405,10 +374,7 @@ def set_sorting(request):
     return HttpResponseRedirect(request.META.get("HTTP_REFERER", '/'))
 
 
-def category_view(
-        request,
-        slug,
-        template_name="lfs/catalog/category_base.html"):
+def category_view(request, slug, template_name="lfs/catalog/category_base.html"):
     """
     """
     start = request.REQUEST.get("start", 1)
@@ -438,17 +404,12 @@ def category_view(
     }))
 
 
-def category_categories(
-        request,
-        slug,
-        start=0,
-        template_name="lfs/catalog/categories/category/default.html"):
+def category_categories(request, slug, start=0, template_name="lfs/catalog/categories/category/default.html"):
     """Displays the child categories of the category with passed slug.
 
     This view is called if the user chooses a template that is situated in settings.CATEGORY_PATH ".
     """
-    cache_key = "%s-category-categories-2-%s" % (
-        settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
+    cache_key = "%s-category-categories-2-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
 
     result = cache.get(cache_key)
     if result is not None:
@@ -471,7 +432,7 @@ def category_categories(
         categories.append(row)
     render_template = category.get_template_name()
 
-    if render_template is not None:
+    if render_template != None:
         template_name = render_template
 
     result_html = render_to_string(template_name, RequestContext(request, {
@@ -479,22 +440,13 @@ def category_categories(
         "categories": categories,
     }))
 
-    result = {
-        'pagination_data': {
-            'current_page': 1,
-            'total_pages': 1,
-            'getparam': 'start'},
-        'html': result_html}
+    result = {'pagination_data': {'current_page': 1, 'total_pages': 1, 'getparam': 'start'}, 'html': result_html}
 
     cache.set(cache_key, result)
     return result
 
 
-def category_products(
-        request,
-        slug,
-        start=1,
-        template_name="lfs/catalog/categories/product/default.html"):
+def category_products(request, slug, start=1, template_name="lfs/catalog/categories/product/default.html"):
     """Displays the products of the category with passed slug.
 
     This view is called if the user chooses a template that is situated in settings.PRODUCT_PATH ".
@@ -518,10 +470,8 @@ def category_products(
 
     product_filter = request.session.get("product-filter", {})
 
-    cache_key = "%s-category-products-2-%s" % (
-        settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
-    sub_cache_key = "%s-2-start-%s-sorting-%s" % (
-        settings.CACHE_MIDDLEWARE_KEY_PREFIX, start, sorting)
+    cache_key = "%s-category-products-2-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
+    sub_cache_key = "%s-2-start-%s-sorting-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, start, sorting)
 
     filter_key = ["%s-%s" % (i[0], i[1]) for i in product_filter.items()]
     if filter_key:
@@ -600,14 +550,11 @@ def category_products(
     amount_of_products = all_products.count()
 
     # Calculate urls
-    pagination_data = lfs_pagination(
-        request, current_page, url=category.get_absolute_url())
+    pagination_data = lfs_pagination(request, current_page, url=category.get_absolute_url())
 
-    pagination_data['total_text'] = ungettext(
-        '%(count)d product',
-        '%(count)d products',
-        amount_of_products) % {
-        'count': amount_of_products}
+    pagination_data['total_text'] = ungettext('%(count)d product',
+                                              '%(count)d products',
+                                              amount_of_products) % {'count': amount_of_products}
 
     render_template = category.get_template_name()
     if render_template is not None:
@@ -619,9 +566,7 @@ def category_products(
         "amount_of_products": amount_of_products,
         "pagination": pagination_data
     }
-    result_html = render_to_string(
-        template_name, RequestContext(
-            request, template_data))
+    result_html = render_to_string(template_name, RequestContext(request, template_data))
 
     result = {'pagination_data': pagination_data, 'html': result_html}
 
@@ -662,10 +607,7 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
     return result
 
 
-def product_inline(
-        request,
-        product,
-        template_name="lfs/catalog/products/product_inline.html"):
+def product_inline(request, product, template_name="lfs/catalog/products/product_inline.html"):
     """
     Part of the product view, which displays the actual data of the product.
 
@@ -674,10 +616,9 @@ def product_inline(
     """
     pid = product.get_parent().pk
     properties_version = get_cache_group_id('global-properties-version')
-    group_id = '%s-%s' % (properties_version,
-                          get_cache_group_id('properties-%s' % pid))
-    cache_key = "%s-%s-product-inline-%s-%s" % (
-        settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, request.user.is_superuser, product.id)
+    group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
+    cache_key = "%s-%s-product-inline-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id,
+                                                request.user.is_superuser, product.id)
     result = cache.get(cache_key)
     if result is not None:
         return result
@@ -706,11 +647,8 @@ def product_inline(
             prop = property_dict['property']
             options = []
             try:
-                ppv = ProductPropertyValue.objects.get(
-                    product=product,
-                    property_group=property_group,
-                    property=prop,
-                    type=PROPERTY_VALUE_TYPE_DEFAULT)
+                ppv = ProductPropertyValue.objects.get(product=product, property_group=property_group,
+                                                       property=prop, type=PROPERTY_VALUE_TYPE_DEFAULT)
                 ppv_value = ppv.value
             except ProductPropertyValue.DoesNotExist:
                 ppv = None
@@ -794,7 +732,7 @@ def product_form_dispatcher(request):
 
             return lfs.core.utils.set_message_cookie(
                 variant.get_absolute_url(),
-                msg=_(u"The chosen combination of properties is not deliverable.")
+                msg=_(u"The choosen combination of properties is not deliverable.")
             )
 
         return HttpResponseRedirect(variant.get_absolute_url())
@@ -811,8 +749,7 @@ def _calculate_property_price(request):
                 property_group_id, property_id = map(int, key.split('-')[1:])
                 prop = Property.objects.get(pk=property_id)
                 if prop.is_select_field:
-                    po = PropertyOption.objects.get(
-                        property=property, pk=option_id)
+                    po = PropertyOption.objects.get(property=property, pk=option_id)
                     if prop.add_price:
                         po_price = float(po.price)
                         property_price += po_price

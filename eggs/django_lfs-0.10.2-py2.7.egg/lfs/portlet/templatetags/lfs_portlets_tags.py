@@ -30,12 +30,11 @@ def lfs_portlet_slot(context, slot_name):
     request = context.get("request")
 
     instance = context.get("category") or \
-        context.get("product") or \
-        context.get("page") or \
-        lfs.core.utils.get_default_shop(request)
+               context.get("product") or \
+               context.get("page") or \
+               lfs.core.utils.get_default_shop(request)
 
-    cache_key = "%s-lfs-portlet-slot-%s-%s-%s" % (
-        settings.CACHE_MIDDLEWARE_KEY_PREFIX, slot_name, instance.__class__.__name__, instance.id)
+    cache_key = "%s-lfs-portlet-slot-%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slot_name, instance.__class__.__name__, instance.id)
     temp = cache.get(cache_key)
 
     if temp is None:
@@ -58,8 +57,7 @@ def lfs_portlet_slot(context, slot_name):
             if portlets.utils.is_blocked(instance, slot):
                 break
 
-            # If the instance has no get_parent_for_portlets, there are no
-            # portlets
+            # If the instance has no get_parent_for_portlets, there are no portlets
             try:
                 instance = instance.get_parent_for_portlets()
             except AttributeError:

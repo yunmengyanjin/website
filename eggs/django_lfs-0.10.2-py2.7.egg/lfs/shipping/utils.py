@@ -31,8 +31,7 @@ def get_product_delivery_time(request, product, for_cart=False):
     """
     # TODO: Need a reasonable chaching here
     if for_cart:
-        cache_key = "%s-shipping-delivery-time-cart-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, request.user.id)
+        cache_key = "%s-shipping-delivery-time-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, request.user.id)
     else:
         cache_key = "%s-shipping-delivery-time" % settings.CACHE_MIDDLEWARE_KEY_PREFIX
 
@@ -75,15 +74,14 @@ def get_product_delivery_time(request, product, for_cart=False):
             # For the product we take the standard shipping method, which is the
             # first valid shipping method at the moment.
             try:
-                shipping_method = get_first_valid_shipping_method(
-                    request, product)
+                shipping_method = get_first_valid_shipping_method(request, product)
                 delivery_time = shipping_method.delivery_time
             except AttributeError:
                 delivery_time = None
 
     if delivery_time is None:
         delivery_time = lfs.core.utils.get_default_shop(request).delivery_time or \
-            DeliveryTime(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
+                        DeliveryTime(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
 
     # Calculate the total delivery time if the product is not on stock.
     if (product.stock_amount <= 0) and (product.order_time):
@@ -117,8 +115,7 @@ def update_to_valid_shipping_method(request, customer, save=False):
     valid_sms = get_valid_shipping_methods(request)
 
     if customer.selected_shipping_method not in valid_sms:
-        customer.selected_shipping_method = get_default_shipping_method(
-            request)
+        customer.selected_shipping_method = get_default_shipping_method(request)
         if save:
             customer.save()
 
@@ -137,8 +134,7 @@ def get_first_valid_shipping_method(request, product=None):
     """Returns the valid shipping method with the highest priority.
     """
     active_shipping_methods = ShippingMethod.objects.filter(active=True)
-    return criteria_utils.get_first_valid(
-        request, active_shipping_methods, product)
+    return criteria_utils.get_first_valid(request, active_shipping_methods, product)
 
 
 def get_default_shipping_method(request):
@@ -154,7 +150,7 @@ def get_default_shipping_method(request):
 def get_selected_shipping_method(request):
     """Returns the selected shipping method for the passed request.
 
-    This could either be an explicitly selected shipping method of the current
+    This could either be an explicitely selected shipping method of the current
     user or the default shipping method.
     """
     customer = customer_utils.get_customer(request)
@@ -167,7 +163,7 @@ def get_selected_shipping_method(request):
 def get_selected_shipping_country(request):
     """Returns the selected shipping country for the passed request.
 
-    This could either be an explicitly selected country of the current
+    This could either be an explicitely selected country of the current
     user or the default country of the shop.
     """
     customer = customer_utils.get_customer(request)

@@ -43,15 +43,13 @@ def login(request, template_name="lfs/checkout/login.html"):
     The form's post request goes to lfs.customer.views.login where all the logic
     happens - see there for more.
     """
-    # If the user is already authenticate we don't want to show this view at
-    # all
+    # If the user is already authenticate we don't want to show this view at all
     if request.user.is_authenticated():
         return HttpResponseRedirect(reverse("lfs_checkout"))
 
     shop = lfs.core.utils.get_default_shop(request)
 
-    # If only anonymous checkout allowed we don't want to show this view at
-    # all.
+    # If only anonymous checkout allowed we don't want to show this view at all.
     if shop.checkout_type == CHECKOUT_TYPE_ANON:
         return HttpResponseRedirect(reverse("lfs_checkout"))
 
@@ -66,8 +64,8 @@ def login(request, template_name="lfs/checkout/login.html"):
             from django.contrib.auth import login
             login(request, login_form.get_user())
 
-            return lfs.core.utils.set_message_cookie(
-                reverse("lfs_checkout"), msg=_(u"You have been logged in."))
+            return lfs.core.utils.set_message_cookie(reverse("lfs_checkout"),
+                msg=_(u"You have been logged in."))
 
     elif request.POST.get("action") == "register":
         register_form = RegisterForm(data=request.POST)
@@ -77,9 +75,7 @@ def login(request, template_name="lfs/checkout/login.html"):
 
             # Create user
             user = User.objects.create_user(
-                username=create_unique_username(email),
-                email=email,
-                password=password)
+                username=create_unique_username(email), email=email, password=password)
 
             # Notify
             lfs.core.signals.customer_added.send(sender=user)
@@ -91,8 +87,7 @@ def login(request, template_name="lfs/checkout/login.html"):
             from django.contrib.auth import login
             login(request, user)
 
-            return lfs.core.utils.set_message_cookie(
-                reverse("lfs_checkout"),
+            return lfs.core.utils.set_message_cookie(reverse("lfs_checkout"),
                 msg=_(u"You have been registered and logged in."))
 
     return render_to_response(template_name, RequestContext(request, {
@@ -118,9 +113,7 @@ def checkout_dispatcher(request):
         return HttpResponseRedirect(reverse("lfs_checkout_login"))
 
 
-def cart_inline(
-        request,
-        template_name="lfs/checkout/checkout_cart_inline.html"):
+def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html"):
     """Displays the cart items of the checkout page.
 
     Factored out to be reusable for the starting request (which renders the
@@ -130,25 +123,19 @@ def cart_inline(
     cart = cart_utils.get_cart(request)
 
     # Shipping
-    selected_shipping_method = lfs.shipping.utils.get_selected_shipping_method(
-        request)
-    shipping_costs = lfs.shipping.utils.get_shipping_costs(
-        request, selected_shipping_method)
+    selected_shipping_method = lfs.shipping.utils.get_selected_shipping_method(request)
+    shipping_costs = lfs.shipping.utils.get_shipping_costs(request, selected_shipping_method)
 
     # Payment
-    selected_payment_method = lfs.payment.utils.get_selected_payment_method(
-        request)
-    payment_costs = lfs.payment.utils.get_payment_costs(
-        request, selected_payment_method)
+    selected_payment_method = lfs.payment.utils.get_selected_payment_method(request)
+    payment_costs = lfs.payment.utils.get_payment_costs(request, selected_payment_method)
 
     # Cart costs
     cart_price = 0
     cart_tax = 0
     if cart is not None:
-        cart_price = cart.get_price_gross(
-            request) + shipping_costs["price_gross"] + payment_costs["price"]
-        cart_tax = cart.get_tax(request) + \
-            shipping_costs["tax"] + payment_costs["tax"]
+        cart_price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
+        cart_tax = cart.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
 
     discounts = lfs.discounts.utils.get_valid_discounts(request)
     for discount in discounts:
@@ -163,16 +150,13 @@ def cart_inline(
     voucher_message = MESSAGES[6]
     if cart is not None:
         try:
-            voucher_number = lfs.voucher.utils.get_current_voucher_number(
-                request)
+            voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
             voucher = Voucher.objects.get(number=voucher_number)
         except Voucher.DoesNotExist:
             pass
         else:
-            lfs.voucher.utils.set_current_voucher_number(
-                request, voucher_number)
-            is_voucher_effective, voucher_message = voucher.is_effective(
-                request, cart)
+            lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
+            is_voucher_effective, voucher_message = voucher.is_effective(request, cart)
             if is_voucher_effective:
                 display_voucher = True
                 voucher_value = voucher.get_price_gross(request, cart)
@@ -221,9 +205,7 @@ def cart_inline(
     }))
 
 
-def one_page_checkout(
-        request,
-        template_name="lfs/checkout/one_page_checkout.html"):
+def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.html"):
     """
     One page checkout form.
     """
@@ -250,50 +232,33 @@ def one_page_checkout(
 
     if request.method == "POST":
         checkout_form = OnePageCheckoutForm(data=request.POST)
-        iam = AddressManagement(
-            customer,
-            invoice_address,
-            "invoice",
-            request.POST,
-            initial=initial_address)
-        sam = AddressManagement(
-            customer,
-            shipping_address,
-            "shipping",
-            request.POST,
-            initial=initial_address)
-        bank_account_form = BankAccountForm(
-            instance=bank_account, data=request.POST)
-        credit_card_form = CreditCardForm(
-            instance=credit_card, data=request.POST)
+        iam = AddressManagement(customer, invoice_address, "invoice", request.POST, initial=initial_address)
+        sam = AddressManagement(customer, shipping_address, "shipping", request.POST, initial=initial_address)
+        bank_account_form = BankAccountForm(instance=bank_account, data=request.POST)
+        credit_card_form = CreditCardForm(instance=credit_card, data=request.POST)
 
         if shop.confirm_toc and ("confirm_toc" not in request.POST):
             toc = False
             if checkout_form.errors is None:
                 checkout_form._errors = {}
-            checkout_form.errors["confirm_toc"] = _(
-                u"Please confirm our terms and conditions")
+            checkout_form.errors["confirm_toc"] = _(u"Please confirm our terms and conditions")
         else:
             toc = True
 
-        if checkout_form.is_valid() and bank_account_form.is_valid(
-        ) and iam.is_valid() and sam.is_valid() and toc:
+        if checkout_form.is_valid() and bank_account_form.is_valid() and iam.is_valid() and sam.is_valid() and toc:
             if CHECKOUT_NOT_REQUIRED_ADDRESS == 'shipping':
                 iam.save()
                 if request.POST.get("no_shipping", "") == "":
                     # If the shipping address is given then save it.
                     sam.save()
                 else:
-                    # If the shipping address is not given, the invoice address
-                    # is copied.
+                    # If the shipping address is not given, the invoice address is copied.
                     if customer.selected_invoice_address:
                         if customer.selected_shipping_address:
-                            # it might be possible that shipping and invoice
-                            # addresses are same object
+                            # it might be possible that shipping and invoice addresses are same object
                             if customer.selected_shipping_address.pk != customer.selected_invoice_address.pk:
                                 customer.selected_shipping_address.delete()
-                        shipping_address = deepcopy(
-                            customer.selected_invoice_address)
+                        shipping_address = deepcopy(customer.selected_invoice_address)
                         shipping_address.id = None
                         shipping_address.pk = None
                         shipping_address.save()
@@ -305,12 +270,10 @@ def one_page_checkout(
                 else:
                     if customer.selected_shipping_address:
                         if customer.selected_invoice_address:
-                            # it might be possible that shipping and invoice
-                            # addresses are same object
+                            # it might be possible that shipping and invoice addresses are same object
                             if customer.selected_invoice_address.pk != customer.selected_shipping_address.pk:
                                 customer.selected_invoice_address.delete()
-                        invoice_address = deepcopy(
-                            customer.selected_shipping_address)
+                        invoice_address = deepcopy(customer.selected_shipping_address)
                         invoice_address.id = None
                         invoice_address.pk = None
                         invoice_address.save()
@@ -318,17 +281,16 @@ def one_page_checkout(
             customer.sync_selected_to_default_addresses()
 
             # Save payment method
-            customer.selected_payment_method_id = request.POST.get(
-                "payment_method")
+            customer.selected_payment_method_id = request.POST.get("payment_method")
 
             # Save bank account
-            if customer.selected_payment_method_id and int(
-                    customer.selected_payment_method_id) == lfs.payment.settings.PM_BANK:
+            if customer.selected_payment_method_id and \
+               int(customer.selected_payment_method_id) == lfs.payment.settings.PM_BANK:
                 customer.selected_bank_account = bank_account_form.save()
 
             # Save credit card
-            if customer.selected_payment_method_id and int(
-                    customer.selected_payment_method_id) == lfs.payment.settings.PM_CREDIT_CARD:
+            if customer.selected_payment_method_id and \
+               int(customer.selected_payment_method_id) == lfs.payment.settings.PM_CREDIT_CARD:
                 customer.selected_credit_card = credit_card_form.save()
 
             customer.save()
@@ -337,43 +299,28 @@ def one_page_checkout(
             result = lfs.payment.utils.process_payment(request)
 
             if result["accepted"]:
-                return HttpResponseRedirect(result.get(
-                    "next_url", reverse("lfs_thank_you")))
+                return HttpResponseRedirect(result.get("next_url", reverse("lfs_thank_you")))
             else:
                 if "message" in result:
-                    checkout_form._errors[
-                        result.get("message_location")] = result.get("message")
+                    checkout_form._errors[result.get("message_location")] = result.get("message")
 
     else:
         checkout_form = OnePageCheckoutForm()
-        iam = AddressManagement(
-            customer,
-            invoice_address,
-            "invoice",
-            initial=initial_address)
-        sam = AddressManagement(
-            customer,
-            shipping_address,
-            "shipping",
-            initial=initial_address)
+        iam = AddressManagement(customer, invoice_address, "invoice", initial=initial_address)
+        sam = AddressManagement(customer, shipping_address, "shipping", initial=initial_address)
         bank_account_form = BankAccountForm(instance=bank_account)
         credit_card_form = CreditCardForm(instance=credit_card)
 
     # Payment
     try:
         selected_payment_method_id = request.POST.get("payment_method")
-        selected_payment_method = PaymentMethod.objects.get(
-            pk=selected_payment_method_id)
+        selected_payment_method = PaymentMethod.objects.get(pk=selected_payment_method_id)
     except PaymentMethod.DoesNotExist:
-        selected_payment_method = lfs.payment.utils.get_selected_payment_method(
-            request)
+        selected_payment_method = lfs.payment.utils.get_selected_payment_method(request)
 
-    valid_payment_methods = lfs.payment.utils.get_valid_payment_methods(
-        request)
-    display_bank_account = any(
-        [pm.type == lfs.payment.settings.PM_BANK for pm in valid_payment_methods])
-    display_credit_card = any(
-        [pm.type == lfs.payment.settings.PM_CREDIT_CARD for pm in valid_payment_methods])
+    valid_payment_methods = lfs.payment.utils.get_valid_payment_methods(request)
+    display_bank_account = any([pm.type == lfs.payment.settings.PM_BANK for pm in valid_payment_methods])
+    display_credit_card = any([pm.type == lfs.payment.settings.PM_CREDIT_CARD for pm in valid_payment_methods])
 
     return render_to_response(template_name, RequestContext(request, {
         "checkout_form": checkout_form,
@@ -392,9 +339,7 @@ def one_page_checkout(
     }))
 
 
-def empty_page_checkout(
-        request,
-        template_name="lfs/checkout/empty_page_checkout.html"):
+def empty_page_checkout(request, template_name="lfs/checkout/empty_page_checkout.html"):
     """
     """
     return render_to_response(template_name, RequestContext(request, {
@@ -413,10 +358,7 @@ def thank_you(request, template_name="lfs/checkout/thank_you_page.html"):
     }))
 
 
-def payment_inline(
-        request,
-        form,
-        template_name="lfs/checkout/payment_inline.html"):
+def payment_inline(request, form, template_name="lfs/checkout/payment_inline.html"):
     """Displays the selectable payment methods of the checkout page.
 
     Factored out to be reusable for the starting request (which renders the
@@ -426,10 +368,8 @@ def payment_inline(
     Passing the form to be able to display payment forms within the several
     payment methods, e.g. credit card form.
     """
-    selected_payment_method = lfs.payment.utils.get_selected_payment_method(
-        request)
-    valid_payment_methods = lfs.payment.utils.get_valid_payment_methods(
-        request)
+    selected_payment_method = lfs.payment.utils.get_selected_payment_method(request)
+    valid_payment_methods = lfs.payment.utils.get_valid_payment_methods(request)
 
     return render_to_string(template_name, RequestContext(request, {
         "payment_methods": valid_payment_methods,
@@ -438,17 +378,14 @@ def payment_inline(
     }))
 
 
-def shipping_inline(
-        request,
-        template_name="lfs/checkout/shipping_inline.html"):
+def shipping_inline(request, template_name="lfs/checkout/shipping_inline.html"):
     """Displays the selectable shipping methods of the checkout page.
 
     Factored out to be reusable for the starting request (which renders the
     whole checkout page and subsequent ajax requests which refresh the
     selectable shipping methods.
     """
-    selected_shipping_method = lfs.shipping.utils.get_selected_shipping_method(
-        request)
+    selected_shipping_method = lfs.shipping.utils.get_selected_shipping_method(request)
     shipping_methods = lfs.shipping.utils.get_valid_shipping_methods(request)
 
     return render_to_string(template_name, RequestContext(request, {
@@ -533,8 +470,7 @@ def changed_shipping_country(request):
 def _save_country(request, customer):
     """
     """
-    # Update country for address that is marked as 'same as invoice' or 'same
-    # as shipping'
+    # Update country for address that is marked as 'same as invoice' or 'same as shipping'
     if CHECKOUT_NOT_REQUIRED_ADDRESS == 'shipping':
         country_iso = request.POST.get("shipping-country", None)
 
@@ -551,13 +487,11 @@ def _save_country(request, customer):
 
             customer.sync_selected_to_default_shipping_address()
 
-            lfs.shipping.utils.update_to_valid_shipping_method(
-                request, customer)
+            lfs.shipping.utils.update_to_valid_shipping_method(request, customer)
             lfs.payment.utils.update_to_valid_payment_method(request, customer)
             customer.save()
     else:
-        # update invoice address if 'same as shipping' address option is set
-        # and shipping address was changed
+        # update invoice address if 'same as shipping' address option is set and shipping address was changed
         if request.POST.get("no_invoice") == "on":
             country_iso = request.POST.get("shipping-country", None)
             if country_iso is not None:
@@ -566,7 +500,6 @@ def _save_country(request, customer):
                     customer.selected_invoice_address.country = country
                     customer.selected_invoice_address.save()
             customer.sync_selected_to_default_invoice_address()
-
 
 def _save_customer(request, customer):
     """

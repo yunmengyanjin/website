@@ -89,7 +89,6 @@ class WSGIServer(simple_server.WSGIServer, object):
 
 # Inheriting from object required on Python 2.
 class ServerHandler(simple_server.ServerHandler, object):
-
     def handle_error(self):
         # Ignore broken pipe errors, otherwise pass on
         if not is_broken_pipe_error():
@@ -131,7 +130,7 @@ class WSGIRequestHandler(simple_server.WSGIRequestHandler, object):
             # 0x16 = Handshake, 0x03 = SSL 3.0 or TLS 1.x
             if args[0].startswith(str('\x16\x03')):
                 msg = ("You're accessing the development server over HTTPS, "
-                       "but it only supports HTTP.\n")
+                    "but it only supports HTTP.\n")
             msg = self.style.HTTP_BAD_REQUEST(msg)
         else:
             # Any 5XX, or any other response
@@ -186,11 +185,7 @@ class WSGIRequestHandler(simple_server.WSGIRequestHandler, object):
 def run(addr, port, wsgi_handler, ipv6=False, threading=False):
     server_address = (addr, port)
     if threading:
-        httpd_cls = type(
-            str('WSGIServer'),
-            (socketserver.ThreadingMixIn,
-             WSGIServer),
-            {})
+        httpd_cls = type(str('WSGIServer'), (socketserver.ThreadingMixIn, WSGIServer), {})
     else:
         httpd_cls = WSGIServer
     httpd = httpd_cls(server_address, WSGIRequestHandler, ipv6=ipv6)

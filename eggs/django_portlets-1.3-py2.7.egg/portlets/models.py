@@ -160,8 +160,7 @@ class Slot(models.Model):
         """
         ct = ContentType.objects.get_for_model(obj)
         try:
-            PortletBlocking.objects.get(
-                slot=self, content_type=ct.id, content_id=obj.id)
+            PortletBlocking.objects.get(slot=self, content_type=ct.id, content_id=obj.id)
         except PortletBlocking.DoesNotExist:
             return False
         else:

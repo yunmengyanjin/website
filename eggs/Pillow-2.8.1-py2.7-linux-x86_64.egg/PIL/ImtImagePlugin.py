@@ -55,9 +55,9 @@ class ImtImageFile(ImageFile.ImageFile):
             if s == b'\x0C':
 
                 # image data begins
-                self.tile = [("raw", (0, 0) + self.size,
-                              self.fp.tell(),
-                              (self.mode, 0, 1))]
+                self.tile = [("raw", (0, 0)+self.size,
+                             self.fp.tell(),
+                             (self.mode, 0, 1))]
 
                 break
 

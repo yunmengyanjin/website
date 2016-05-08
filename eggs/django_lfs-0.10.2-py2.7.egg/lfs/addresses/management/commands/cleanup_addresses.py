@@ -11,10 +11,7 @@ class Command(BaseCommand):
         from lfs.addresses.models import BaseAddress
         cnt = 0
         ten_days_ago = datetime.date.today() - datetime.timedelta(days=10)
-        for address in BaseAddress.objects.filter(
-                order__isnull=True,
-                customer__isnull=True,
-                created__lt=ten_days_ago):
+        for address in BaseAddress.objects.filter(order__isnull=True, customer__isnull=True, created__lt=ten_days_ago):
             address.delete()
             cnt += 1
         print "Removed %s addresses" % cnt

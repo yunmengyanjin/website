@@ -18,9 +18,7 @@ from django.utils import six, tree
 # PathInfo is used when converting lookups (fk__somecol). The contents
 # describe the relation in Model terms (model Options and Fields for both
 # sides of the relation. The join_field is the field backing the relation.
-PathInfo = namedtuple(
-    'PathInfo',
-    'from_opts to_opts target_fields join_field m2m direct')
+PathInfo = namedtuple('PathInfo', 'from_opts to_opts target_fields join_field m2m direct')
 
 
 class InvalidQuery(Exception):
@@ -35,7 +33,6 @@ class QueryWrapper(object):
     A type that indicates the contents are an SQL fragment and the associate
     parameters. Can be used to pass opaque data to a where-clause, for example.
     """
-
     def __init__(self, sql, params):
         self.data = sql, list(params)
 
@@ -54,12 +51,7 @@ class Q(tree.Node):
     default = AND
 
     def __init__(self, *args, **kwargs):
-        super(
-            Q,
-            self).__init__(
-            children=list(args) +
-            list(
-                six.iteritems(kwargs)))
+        super(Q, self).__init__(children=list(args) + list(six.iteritems(kwargs)))
 
     def _combine(self, other, conn):
         if not isinstance(other, Q):
@@ -92,27 +84,19 @@ class Q(tree.Node):
                 clone.children.append(child)
         return clone
 
-    def resolve_expression(
-            self,
-            query=None,
-            allow_joins=True,
-            reuse=None,
-            summarize=False,
-            for_save=False):
+    def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
         clause, _ = query._add_q(self, reuse, allow_joins=allow_joins)
         return clause
 
     @classmethod
     def _refs_aggregate(cls, obj, existing_aggregates):
         if not isinstance(obj, tree.Node):
-            aggregate, aggregate_lookups = refs_aggregate(
-                obj[0].split(LOOKUP_SEP), existing_aggregates)
+            aggregate, aggregate_lookups = refs_aggregate(obj[0].split(LOOKUP_SEP), existing_aggregates)
             if not aggregate and hasattr(obj[1], 'refs_aggregate'):
                 return obj[1].refs_aggregate(existing_aggregates)
             return aggregate, aggregate_lookups
         for c in obj.children:
-            aggregate, aggregate_lookups = cls._refs_aggregate(
-                c, existing_aggregates)
+            aggregate, aggregate_lookups = cls._refs_aggregate(c, existing_aggregates)
             if aggregate:
                 return aggregate, aggregate_lookups
         return False, ()
@@ -129,7 +113,6 @@ class DeferredAttribute(object):
     A wrapper for a deferred-loading field. When the value is read from this
     object the first time, the query is executed.
     """
-
     def __init__(self, field_name, model):
         self.field_name = field_name
 
@@ -181,12 +164,7 @@ class DeferredAttribute(object):
         return None
 
 
-def select_related_descend(
-        field,
-        restricted,
-        requested,
-        load_fields,
-        reverse=False):
+def select_related_descend(field, restricted, requested, load_fields, reverse=False):
     """
     Returns True if this field should be used to descend deeper for
     select_related() purposes. Used by both the query construction code
@@ -277,7 +255,6 @@ def refs_aggregate(lookup_parts, aggregates):
     """
     for n in range(len(lookup_parts) + 1):
         level_n_lookup = LOOKUP_SEP.join(lookup_parts[0:n])
-        if level_n_lookup in aggregates and aggregates[
-                level_n_lookup].contains_aggregate:
+        if level_n_lookup in aggregates and aggregates[level_n_lookup].contains_aggregate:
             return aggregates[level_n_lookup], lookup_parts[n:]
     return False, ()

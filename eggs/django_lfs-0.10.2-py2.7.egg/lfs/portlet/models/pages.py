@@ -29,15 +29,13 @@ class PagesPortlet(Portlet):
         cache_key = "%s-pages" % settings.CACHE_MIDDLEWARE_KEY_PREFIX
         pages = cache.get(cache_key)
         if pages is None:
-            pages = Page.objects.filter(
-                active=True, exclude_from_navigation=False)
+            pages = Page.objects.filter(active=True, exclude_from_navigation=False)
             cache.set(cache_key, pages)
 
-        return render_to_string("lfs/portlets/pages.html",
-                                RequestContext(request,
-                                               {"title": self.title,
-                                                "pages": pages,
-                                                }))
+        return render_to_string("lfs/portlets/pages.html", RequestContext(request, {
+            "title": self.title,
+            "pages": pages,
+        }))
 
     def form(self, **kwargs):
         return PagesForm(instance=self, **kwargs)

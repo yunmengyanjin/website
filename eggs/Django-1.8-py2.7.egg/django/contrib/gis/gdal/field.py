@@ -29,8 +29,7 @@ class Field(GDALBase):
         # Getting the pointer for this field.
         fld_ptr = capi.get_feat_field_defn(feat.ptr, index)
         if not fld_ptr:
-            raise GDALException(
-                'Cannot create OGR Field, invalid pointer given.')
+            raise GDALException('Cannot create OGR Field, invalid pointer given.')
         self.ptr = fld_ptr
 
         # Setting the class depending upon the OGR Field Type (OFT)
@@ -57,10 +56,7 @@ class Field(GDALBase):
     def as_string(self):
         "Retrieves the Field's value as a string."
         string = capi.get_field_as_string(self._feat.ptr, self._index)
-        return force_text(
-            string,
-            encoding=self._feat.encoding,
-            strings_only=True)
+        return force_text(string, encoding=self._feat.encoding, strings_only=True)
 
     def as_datetime(self):
         "Retrieves the Field's value as a tuple of date & time components."
@@ -71,18 +67,14 @@ class Field(GDALBase):
         if status:
             return (yy, mm, dd, hh, mn, ss, tz)
         else:
-            raise GDALException(
-                'Unable to retrieve date & time information from the field.')
+            raise GDALException('Unable to retrieve date & time information from the field.')
 
     # #### Field Properties ####
     @property
     def name(self):
         "Returns the name of this Field."
         name = capi.get_field_name(self.ptr)
-        return force_text(
-            name,
-            encoding=self._feat.encoding,
-            strings_only=True)
+        return force_text(name, encoding=self._feat.encoding, strings_only=True)
 
     @property
     def precision(self):
@@ -136,7 +128,6 @@ class OFTInteger(Field):
 
 
 class OFTReal(Field):
-
     @property
     def value(self):
         "Returns a float contained in this field."
@@ -158,7 +149,6 @@ class OFTBinary(Field):
 
 # OFTDate, OFTTime, OFTDateTime fields.
 class OFTDate(Field):
-
     @property
     def value(self):
         "Returns a Python `date` object for the OFTDate field."
@@ -170,7 +160,6 @@ class OFTDate(Field):
 
 
 class OFTDateTime(Field):
-
     @property
     def value(self):
         "Returns a Python `datetime` object for this OFTDateTime field."
@@ -180,19 +169,12 @@ class OFTDateTime(Field):
         #  100=GMT, 104=GMT+1, 80=GMT-5, etc.
         try:
             yy, mm, dd, hh, mn, ss, tz = self.as_datetime()
-            return datetime(
-                yy.value,
-                mm.value,
-                dd.value,
-                hh.value,
-                mn.value,
-                ss.value)
+            return datetime(yy.value, mm.value, dd.value, hh.value, mn.value, ss.value)
         except (ValueError, GDALException):
             return None
 
 
 class OFTTime(Field):
-
     @property
     def value(self):
         "Returns a Python `time` object for this OFTTime field."

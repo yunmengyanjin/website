@@ -35,7 +35,6 @@ def css_tag(href, **kwargs):
 
 class TestPrecompiler(object):
     """A filter whose output is always the string 'OUTPUT' """
-
     def __init__(self, content, attrs, filter_type=None, filename=None,
                  charset=None):
         pass
@@ -77,44 +76,35 @@ class CompressorTestCase(SimpleTestCase):
         assertEqual for splits, particularly ignoring the presence of
         a trailing newline on the content.
         """
-        mangle = lambda split: [
-            (x[0], x[1], x[2], x[3].rstrip()) for x in split]
+        mangle = lambda split: [(x[0], x[1], x[2], x[3].rstrip()) for x in split]
         self.assertEqual(mangle(a), mangle(b))
 
     def test_css_split(self):
         out = [
-            (SOURCE_FILE,
-             os.path.join(
-                 settings.COMPRESS_ROOT,
-                 'css',
-                 'one.css'),
-                'css/one.css',
-                '<link rel="stylesheet" href="/static/css/one.css" type="text/css" />',
-             ),
-            (SOURCE_HUNK,
-             'p { border:5px solid green;}',
-             None,
-             '<style type="text/css">p { border:5px solid green;}</style>',
-             ),
-            (SOURCE_FILE,
-             os.path.join(
-                 settings.COMPRESS_ROOT,
-                 'css',
-                 'two.css'),
+            (
+                SOURCE_FILE,
+                os.path.join(settings.COMPRESS_ROOT, 'css', 'one.css'),
+                'css/one.css', '<link rel="stylesheet" href="/static/css/one.css" type="text/css" />',
+            ),
+            (
+                SOURCE_HUNK,
+                'p { border:5px solid green;}',
+                None,
+                '<style type="text/css">p { border:5px solid green;}</style>',
+            ),
+            (
+                SOURCE_FILE,
+                os.path.join(settings.COMPRESS_ROOT, 'css', 'two.css'),
                 'css/two.css',
                 '<link rel="stylesheet" href="/static/css/two.css" type="text/css" />',
-             ),
+            ),
         ]
         split = self.css_node.split_contents()
-        split = [(x[0], x[1], x[2], self.css_node.parser.elem_str(x[3]))
-                 for x in split]
+        split = [(x[0], x[1], x[2], self.css_node.parser.elem_str(x[3])) for x in split]
         self.assertEqualSplits(split, out)
 
     def test_css_hunks(self):
-        out = [
-            'body { background:#990; }',
-            'p { border:5px solid green;}',
-            'body { color:#fff; }']
+        out = ['body { background:#990; }', 'p { border:5px solid green;}', 'body { color:#fff; }']
         self.assertEqual(out, list(self.css_node.hunks()))
 
     def test_css_output(self):
@@ -125,8 +115,8 @@ class CompressorTestCase(SimpleTestCase):
     def test_css_mtimes(self):
         is_date = re.compile(r'^\d{10}[\.\d]+$')
         for date in self.css_node.mtimes:
-            self.assertTrue(is_date.match(str(float(
-                date))), "mtimes is returning something that doesn't look like a date: %s" % date)
+            self.assertTrue(is_date.match(str(float(date))),
+                "mtimes is returning something that doesn't look like a date: %s" % date)
 
     def test_css_return_if_off(self):
         settings.COMPRESS_ENABLED = False
@@ -134,9 +124,7 @@ class CompressorTestCase(SimpleTestCase):
 
     def test_cachekey(self):
         is_cachekey = re.compile(r'\w{12}')
-        self.assertTrue(
-            is_cachekey.match(
-                self.css_node.cachekey),
+        self.assertTrue(is_cachekey.match(self.css_node.cachekey),
             "cachekey is returning something that doesn't look like r'\w{12}'")
 
     def test_css_return_if_on(self):
@@ -145,23 +133,21 @@ class CompressorTestCase(SimpleTestCase):
 
     def test_js_split(self):
         out = [
-            (SOURCE_FILE,
-             os.path.join(
-                 settings.COMPRESS_ROOT,
-                 'js',
-                 'one.js'),
+            (
+                SOURCE_FILE,
+                os.path.join(settings.COMPRESS_ROOT, 'js', 'one.js'),
                 'js/one.js',
                 '<script src="/static/js/one.js" type="text/javascript"></script>',
-             ),
-            (SOURCE_HUNK,
-             'obj.value = "value";',
-             None,
-             '<script type="text/javascript">obj.value = "value";</script>',
-             ),
+            ),
+            (
+                SOURCE_HUNK,
+                'obj.value = "value";',
+                None,
+                '<script type="text/javascript">obj.value = "value";</script>',
+            ),
         ]
         split = self.js_node.split_contents()
-        split = [(x[0], x[1], x[2], self.js_node.parser.elem_str(x[3]))
-                 for x in split]
+        split = [(x[0], x[1], x[2], self.js_node.parser.elem_str(x[3])) for x in split]
         self.assertEqualSplits(split, out)
 
     def test_js_hunks(self):
@@ -224,7 +210,6 @@ class CompressorTestCase(SimpleTestCase):
 
 
 class CssMediaTestCase(SimpleTestCase):
-
     def setUp(self):
         self.css = """\
 <link rel="stylesheet" href="/static/css/one.css" type="text/css" media="screen">
@@ -243,8 +228,7 @@ class CssMediaTestCase(SimpleTestCase):
         self.assertEqual(media, [l.get('media', None) for l in links])
 
     def test_avoid_reordering_css(self):
-        css = self.css + \
-            '<style type="text/css" media="print">p { border:10px solid red;}</style>'
+        css = self.css + '<style type="text/css" media="print">p { border:10px solid red;}</style>'
         css_node = CssCompressor(css)
         media = ['screen', 'print', 'all', None, 'print']
         if six.PY3:
@@ -253,15 +237,9 @@ class CssMediaTestCase(SimpleTestCase):
             links = make_soup(css_node.output()).findAll('link')
         self.assertEqual(media, [l.get('media', None) for l in links])
 
-    @override_settings(
-        COMPRESS_PRECOMPILERS=(
-            ('text/foobar',
-             'python %s {infile} {outfile}' %
-             os.path.join(
-                 test_dir,
-                 'precompiler.py')),
-        ),
-        COMPRESS_ENABLED=False)
+    @override_settings(COMPRESS_PRECOMPILERS=(
+        ('text/foobar', 'python %s {infile} {outfile}' % os.path.join(test_dir, 'precompiler.py')),
+    ), COMPRESS_ENABLED=False)
     def test_passthough_when_compress_disabled(self):
         css = """\
 <link rel="stylesheet" href="/static/css/one.css" type="text/css" media="screen">

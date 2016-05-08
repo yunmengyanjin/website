@@ -29,10 +29,7 @@ logger = logging.getLogger(__file__)
 
 
 @permission_required("core.manage_shop")
-def manage_manufacturer(
-        request,
-        manufacturer_id,
-        template_name="manage/manufacturers/manufacturer.html"):
+def manage_manufacturer(request, manufacturer_id, template_name="manage/manufacturers/manufacturer.html"):
     """The main view to display manufacturers.
     """
     manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
@@ -50,43 +47,27 @@ def manage_manufacturer(
             "klass": klass,
         })
 
-    return render_to_response(
-        template_name,
-        RequestContext(
-            request,
-            {
-                "categories": categories,
-                "manufacturer": manufacturer,
-                "manufacturer_id": manufacturer_id,
-                "selectable_manufacturers_inline": selectable_manufacturers_inline(
-                    request,
-                    manufacturer_id),
-                "manufacturer_data_inline": manufacturer_data_inline(
-                    request,
-                    manufacturer_id),
-                "seo": SEOView(Manufacturer).render(
-                    request,
-                    manufacturer),
-                "view": manufacturer_view(
-                    request,
-                    manufacturer_id),
-            }))
+    return render_to_response(template_name, RequestContext(request, {
+        "categories": categories,
+        "manufacturer": manufacturer,
+        "manufacturer_id": manufacturer_id,
+        "selectable_manufacturers_inline": selectable_manufacturers_inline(request, manufacturer_id),
+        "manufacturer_data_inline": manufacturer_data_inline(request, manufacturer_id),
+        "seo": SEOView(Manufacturer).render(request, manufacturer),
+        "view": manufacturer_view(request, manufacturer_id),
+    }))
 
 
 @permission_required("core.manage_shop")
-def no_manufacturers(
-        request,
-        template_name="manage/manufacturers/no_manufacturers.html"):
+def no_manufacturers(request, template_name="manage/manufacturers/no_manufacturers.html"):
     """Displays that there are no manufacturers.
     """
     return render_to_response(template_name, RequestContext(request, {}))
 
 
 # Parts
-def manufacturer_data_inline(
-        request,
-        manufacturer_id,
-        template_name="manage/manufacturers/manufacturer_data_inline.html"):
+def manufacturer_data_inline(request, manufacturer_id,
+                             template_name="manage/manufacturers/manufacturer_data_inline.html"):
     """Displays the data form of the current manufacturer.
     """
     manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
@@ -101,10 +82,7 @@ def manufacturer_data_inline(
 
 
 @permission_required("core.manage_shop")
-def manufacturer_view(
-        request,
-        manufacturer_id,
-        template_name="manage/manufacturers/view.html"):
+def manufacturer_view(request, manufacturer_id, template_name="manage/manufacturers/view.html"):
     """Displays the view data for the manufacturer with passed manufacturer id.
 
     This is used as a part of the whole category form.
@@ -136,10 +114,8 @@ def manufacturer_view(
         return view_html
 
 
-def selectable_manufacturers_inline(
-        request,
-        manufacturer_id,
-        template_name="manage/manufacturers/selectable_manufacturers_inline.html"):
+def selectable_manufacturers_inline(request, manufacturer_id,
+    template_name="manage/manufacturers/selectable_manufacturers_inline.html"):
     """Displays all selectable manufacturers.
     """
     return render_to_string(template_name, RequestContext(request, {
@@ -149,23 +125,15 @@ def selectable_manufacturers_inline(
 
 
 @permission_required("core.manage_shop")
-def manufacturer_inline(
-        request,
-        manufacturer_id,
-        category_id,
-        template_name="manage/manufacturers/manufacturer_inline.html"):
+def manufacturer_inline(request, manufacturer_id, category_id,
+    template_name="manage/manufacturers/manufacturer_inline.html"):
     """Returns categories and products for given manufacturer id and category id.
     """
     manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
     selected_products = manufacturer.products.all()
 
     products = []
-    for product in Product.objects.filter(
-            sub_type__in=[
-                STANDARD_PRODUCT,
-                PRODUCT_WITH_VARIANTS],
-            categories__in=[category_id],
-            active=True):
+    for product in Product.objects.filter(sub_type__in=[STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS], categories__in=[category_id], active=True):
 
         if product.is_standard():
             type = "P"
@@ -204,9 +172,7 @@ def manufacturer_inline(
 
 
 @permission_required("core.manage_shop")
-def add_manufacturer(
-        request,
-        template_name="manage/manufacturers/add_manufacturer.html"):
+def add_manufacturer(request, template_name="manage/manufacturers/add_manufacturer.html"):
     """Form and logic to add a manufacturer.
     """
     if request.method == "POST":
@@ -214,19 +180,16 @@ def add_manufacturer(
         if form.is_valid():
             new_manufacturer = form.save()
             return HttpResponseRedirect(
-                reverse(
-                    "lfs_manage_manufacturer", kwargs={
-                        "manufacturer_id": new_manufacturer.id}))
+                reverse("lfs_manage_manufacturer", kwargs={"manufacturer_id": new_manufacturer.id}))
 
     else:
         form = ManufacturerAddForm()
 
-    return render_to_response(
-        template_name, RequestContext(
-            request, {
-                "form": form, "selectable_manufacturers_inline": selectable_manufacturers_inline(
-                    request, 0), "came_from": request.REQUEST.get(
-                    "came_from", reverse("lfs_manufacturer_dispatcher")), }))
+    return render_to_response(template_name, RequestContext(request, {
+        "form": form,
+        "selectable_manufacturers_inline": selectable_manufacturers_inline(request, 0),
+        "came_from": request.REQUEST.get("came_from", reverse("lfs_manufacturer_dispatcher")),
+    }))
 
 
 # Actions
@@ -240,9 +203,7 @@ def manufacturer_dispatcher(request):
         return HttpResponseRedirect(reverse("lfs_manage_no_manufacturers"))
     else:
         return HttpResponseRedirect(
-            reverse(
-                "lfs_manage_manufacturer", kwargs={
-                    "manufacturer_id": manufacturer.id}))
+            reverse("lfs_manage_manufacturer", kwargs={"manufacturer_id": manufacturer.id}))
 
 
 @permission_required("core.manage_shop")
@@ -340,19 +301,11 @@ def update_data(request, manufacturer_id):
         try:
             manufacturer.image.delete()
         except OSError as e:
-            logger.error(
-                'Error while trying to delete manufacturer image: %s' %
-                e)
+            logger.error('Error while trying to delete manufacturer image: %s' % e)
 
     html = (
-        ("#data",
-         manufacturer_data_inline(
-             request,
-             manufacturer.pk)),
-        ("#selectable-manufacturers",
-         selectable_manufacturers_inline(
-             request,
-             manufacturer_id)),
+        ("#data", manufacturer_data_inline(request, manufacturer.pk)),
+        ("#selectable-manufacturers", selectable_manufacturers_inline(request, manufacturer_id)),
     )
 
     result = json.dumps({

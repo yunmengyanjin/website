@@ -33,9 +33,9 @@ i32 = _binary.i32le
 
 MODES = {
     # map imagetype/depth to rawmode
-    (1, 8): "P",
-    (3, 1): "1",
-    (3, 8): "L",
+    (1, 8):  "P",
+    (3, 1):  "1",
+    (3, 8):  "L",
     (2, 16): "BGR;5",
     (2, 24): "BGR",
     (2, 32): "BGRA",
@@ -108,23 +108,23 @@ class TgaImageFile(ImageFile.ImageFile):
             start, size, mapdepth = i16(s[3:]), i16(s[5:]), i16(s[7:])
             if mapdepth == 16:
                 self.palette = ImagePalette.raw(
-                    "BGR;16", b"\0" * 2 * start + self.fp.read(2 * size))
+                    "BGR;16", b"\0"*2*start + self.fp.read(2*size))
             elif mapdepth == 24:
                 self.palette = ImagePalette.raw(
-                    "BGR", b"\0" * 3 * start + self.fp.read(3 * size))
+                    "BGR", b"\0"*3*start + self.fp.read(3*size))
             elif mapdepth == 32:
                 self.palette = ImagePalette.raw(
-                    "BGRA", b"\0" * 4 * start + self.fp.read(4 * size))
+                    "BGRA", b"\0"*4*start + self.fp.read(4*size))
 
         # setup tile descriptor
         try:
             rawmode = MODES[(imagetype & 7, depth)]
             if imagetype & 8:
                 # compressed
-                self.tile = [("tga_rle", (0, 0) + self.size,
+                self.tile = [("tga_rle", (0, 0)+self.size,
                               self.fp.tell(), (rawmode, orientation, depth))]
             else:
-                self.tile = [("raw", (0, 0) + self.size,
+                self.tile = [("raw", (0, 0)+self.size,
                               self.fp.tell(), (rawmode, 0, orientation))]
         except KeyError:
             pass  # cannot decode

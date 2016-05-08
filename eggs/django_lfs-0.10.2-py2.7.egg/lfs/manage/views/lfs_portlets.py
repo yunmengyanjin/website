@@ -22,10 +22,7 @@ from lfs.core.utils import LazyEncoder
 
 
 @permission_required("core.manage_shop")
-def portlets_inline(
-        request,
-        obj,
-        template_name="manage/portlets/portlets_inline.html"):
+def portlets_inline(request, obj, template_name="manage/portlets/portlets_inline.html"):
     """Displays the assigned portlets for given object.
     """
     ct = ContentType.objects.get_for_model(obj)
@@ -57,10 +54,8 @@ def update_portlets(request, object_type_id, object_id):
     blocked_slots = request.POST.getlist("block_slot")
 
     # Delete all slots that were NOT checked
-    PortletBlocking.objects.filter(
-        content_type_id=object_type_id,
-        content_id=object_id).exclude(
-        slot_id__in=blocked_slots).delete()
+    PortletBlocking.objects.filter(content_type_id=object_type_id,
+                                   content_id=object_id).exclude(slot_id__in=blocked_slots).delete()
 
     for slot in Slot.objects.filter(id__in=blocked_slots):
         PortletBlocking.objects.get_or_create(slot=slot,
@@ -76,8 +71,7 @@ def update_portlets(request, object_type_id, object_id):
 
 
 @permission_required("core.manage_shop")
-def add_portlet(request, object_type_id, object_id,
-                template_name="manage/portlets/portlet_add.html"):
+def add_portlet(request, object_type_id, object_id, template_name="manage/portlets/portlet_add.html"):
     """Form and logic to add a new portlet to the object with given type and id.
     """
     # Get content type to which the portlet should be added
@@ -111,8 +105,7 @@ def add_portlet(request, object_type_id, object_id,
                     cls=LazyEncoder
                 )
             else:
-                html = [["#portlet-form-inline",
-                         render_to_string('manage/lfs_form.html', {'form': form})]]
+                html = [["#portlet-form-inline", render_to_string('manage/lfs_form.html', {'form': form})]]
 
                 result = json.dumps({
                     "html": html,
@@ -126,8 +119,7 @@ def add_portlet(request, object_type_id, object_id,
             pass
     else:
         try:
-            portlet_ct = ContentType.objects.filter(
-                model=portlet_type.lower())[0]
+            portlet_ct = ContentType.objects.filter(model=portlet_type.lower())[0]
             mc = portlet_ct.model_class()
             form = mc().form(prefix="portlet")
             result = render_to_string(template_name, {
@@ -167,10 +159,7 @@ def delete_portlet(request, portletassignment_id):
 
 
 @permission_required("core.manage_shop")
-def edit_portlet(
-        request,
-        portletassignment_id,
-        template_name="manage/portlets/portlet_edit.html"):
+def edit_portlet(request, portletassignment_id, template_name="manage/portlets/portlet_edit.html"):
     """Form and logic to edit the portlet of the given portlet assignment.
     """
     try:
@@ -196,8 +185,7 @@ def edit_portlet(
                 cls=LazyEncoder
             )
         else:
-            html = [["#portlet-form-inline",
-                     render_to_string('manage/lfs_form.html', {'form': form})]]
+            html = [["#portlet-form-inline", render_to_string('manage/lfs_form.html', {'form': form})]]
 
             result = json.dumps({
                 "html": html,
@@ -276,7 +264,6 @@ def update_portlet_positions(pa):
 
         None (as this is not called from outside)
     """
-    for i, pa in enumerate(PortletAssignment.objects.filter(
-            content_type=pa.content_type, content_id=pa.content_id, slot=pa.slot)):
+    for i, pa in enumerate(PortletAssignment.objects.filter(content_type=pa.content_type, content_id=pa.content_id, slot=pa.slot)):
         pa.position = (i + 1) * 10
         pa.save()

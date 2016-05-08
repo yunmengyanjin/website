@@ -37,7 +37,6 @@ class DecompressionBombWarning(RuntimeWarning):
 
 class _imaging_not_installed:
     # module placeholder
-
     def __getattr__(self, id):
         raise ImportError("The _imaging C module is not installed")
 
@@ -77,7 +76,7 @@ except ImportError as v:
             "The _imaging extension was built for another version "
             "of Python.",
             RuntimeWarning
-        )
+            )
     elif str(v).startswith("The _imaging extension"):
         warnings.warn(str(v), RuntimeWarning)
     elif "Symbol not found: _PyUnicodeUCS2_FromString" in str(v):
@@ -85,13 +84,13 @@ except ImportError as v:
             "The _imaging extension was built for Python with UCS2 support; "
             "recompile PIL or build Python --without-wide-unicode. ",
             RuntimeWarning
-        )
+            )
     elif "Symbol not found: _PyUnicodeUCS4_FromString" in str(v):
         warnings.warn(
             "The _imaging extension was built for Python with UCS4 support; "
             "recompile PIL or build Python --with-wide-unicode. ",
             RuntimeWarning
-        )
+            )
     # Fail here anyway. Don't let people run with a mostly broken Pillow.
     # see docs/porting-pil-to-pillow.rst
     raise
@@ -274,7 +273,7 @@ def _conv_type_shape(im):
     if extra is None:
         return shape, typ
     else:
-        return shape + (extra,), typ
+        return shape+(extra,), typ
 
 
 MODES = sorted(_MODEINFO.keys())
@@ -445,7 +444,6 @@ def coerce_e(value):
 
 
 class _E:
-
     def __init__(self, data):
         self.data = data
 
@@ -565,7 +563,7 @@ class Image:
         import tempfile
         suffix = ''
         if format:
-            suffix = '.' + format
+            suffix = '.'+format
         if not file:
             f, file = tempfile.mkstemp(suffix)
             os.close(f)
@@ -600,7 +598,7 @@ class Image:
             self.__class__.__module__, self.__class__.__name__,
             self.mode, self.size[0], self.size[1],
             id(self)
-        )
+            )
 
     def _repr_png_(self):
         """ iPython display hook support
@@ -711,7 +709,7 @@ class Image:
             ("#define %s_width %d\n" % (name, self.size[0])).encode('ascii'),
             ("#define %s_height %d\n" % (name, self.size[1])).encode('ascii'),
             ("static char %s_bits[] = {\n" % name).encode('ascii'), data, b"};"
-        ])
+            ])
 
     def frombytes(self, data, decoder_name="raw", *args):
         """
@@ -987,7 +985,7 @@ class Image:
             if self.mode != "RGB" and self.mode != "L":
                 raise ValueError(
                     "only RGB or L mode images can be quantized to a palette"
-                )
+                    )
             im = self.im.convert("P", 1, palette.im)
             return self._makeself(im)
 
@@ -1264,7 +1262,7 @@ class Image:
             warnings.warn(
                 "'offset' is deprecated; use 'ImageChops.offset' instead",
                 DeprecationWarning, stacklevel=2
-            )
+                )
         from PIL import ImageChops
         return ImageChops.offset(self, xoffset, yoffset)
 
@@ -1327,8 +1325,8 @@ class Image:
                 # FIXME: use self.size here?
                 raise ValueError(
                     "cannot determine region size; use 4-item box"
-                )
-            box = box + (box[0] + size[0], box[1] + size[1])
+                    )
+            box = box + (box[0]+size[0], box[1]+size[1])
 
         if isStringType(im):
             from PIL import ImageColor
@@ -1587,11 +1585,11 @@ class Image:
             matrix = [
                 math.cos(angle), math.sin(angle), 0.0,
                 -math.sin(angle), math.cos(angle), 0.0
-            ]
+                ]
 
             def transform(x, y, matrix=matrix):
                 (a, b, c, d, e, f) = matrix
-                return a * x + b * y + c, d * x + e * y + f
+                return a*x + b*y + c, d*x + e*y + f
 
             # calculate output size
             w, h = self.size
@@ -1856,7 +1854,7 @@ class Image:
             for box, quad in data:
                 im.__transformer(box, self, QUAD, quad, resample, fill)
         else:
-            im.__transformer((0, 0) + size, self, method, data, resample, fill)
+            im.__transformer((0, 0)+size, self, method, data, resample, fill)
 
         return im
 
@@ -1865,8 +1863,8 @@ class Image:
 
         # FIXME: this should be turned into a lazy operation (?)
 
-        w = box[2] - box[0]
-        h = box[3] - box[1]
+        w = box[2]-box[0]
+        h = box[3]-box[1]
 
         if method == AFFINE:
             # change argument order to match implementation
@@ -1878,7 +1876,7 @@ class Image:
             xs = float(x1 - x0) / w
             ys = float(y1 - y0) / h
             method = AFFINE
-            data = (x0 + xs / 2, xs, 0, y0 + ys / 2, 0, ys)
+            data = (x0 + xs/2, xs, 0, y0 + ys/2, 0, ys)
         elif method == PERSPECTIVE:
             # change argument order to match implementation
             data = (data[2], data[0], data[1],
@@ -1894,10 +1892,10 @@ class Image:
             x0, y0 = nw
             As = 1.0 / w
             At = 1.0 / h
-            data = (x0, (ne[0] - x0) * As, (sw[0] - x0) * At,
-                    (se[0] - sw[0] - ne[0] + x0) * As * At,
-                    y0, (ne[1] - y0) * As, (sw[1] - y0) * At,
-                    (se[1] - sw[1] - ne[1] + y0) * As * At)
+            data = (x0, (ne[0]-x0)*As, (sw[0]-x0)*At,
+                    (se[0]-sw[0]-ne[0]+x0)*As*At,
+                    y0, (ne[1]-y0)*As, (sw[1]-y0)*At,
+                    (se[1]-sw[1]-ne[1]+y0)*As*At)
         else:
             raise ValueError("unknown transformation method")
 
@@ -1954,7 +1952,7 @@ class _ImageCrop(Image):
             y1 = y0
 
         self.mode = im.mode
-        self.size = x1 - x0, y1 - y0
+        self.size = x1-x0, y1-y0
 
         self.__crop = x0, y0, x1, y1
 
@@ -2130,7 +2128,7 @@ def frombuffer(mode, size, data, decoder_name="raw", *args):
             im = new(mode, (1, 1))
             im = im._new(
                 core.map_buffer(data, size, decoder_name, None, 0, args)
-            )
+                )
             im.readonly = 1
             return im
 
@@ -2202,7 +2200,7 @@ _fromarray_typemap = {
     ((1, 1), ">f8"): ("F", "F;64BF"),
     ((1, 1, 3), "|u1"): ("RGB", "RGB"),
     ((1, 1, 4), "|u1"): ("RGBA", "RGBA"),
-}
+    }
 
 # shortcuts
 _fromarray_typemap[((1, 1), _ENDIAN + "i4")] = ("I", "I")

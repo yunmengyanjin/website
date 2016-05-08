@@ -2,7 +2,6 @@ from django.db.models import Lookup, Transform
 
 
 class PostgresSimpleLookup(Lookup):
-
     def as_sql(self, qn, connection):
         lhs, lhs_params = self.process_lhs(qn, connection)
         rhs, rhs_params = self.process_rhs(qn, connection)
@@ -11,7 +10,6 @@ class PostgresSimpleLookup(Lookup):
 
 
 class FunctionTransform(Transform):
-
     def as_sql(self, qn, connection):
         lhs, params = qn.compile(self.lhs)
         return "%s(%s)" % (self.function, lhs), params

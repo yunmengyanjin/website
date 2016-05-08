@@ -1,7 +1,7 @@
 # The Python Imaging Library.
 # $Id$
 
-# Optional color management support, based on Kevin Cazabon's PyCMS
+# Optional color managment support, based on Kevin Cazabon's PyCMS
 # library.
 
 # History:
@@ -914,7 +914,7 @@ def isIntentSupported(profile, intent, direction):
 
         see the pyCMS documentation for details on rendering intents and what
             they do.
-    :param direction: Integer specifying if the profile is to be used for input,
+    :param direction: Integer specifing if the profile is to be used for input,
         output, or proof
 
             INPUT  = 0 (or use ImageCms.DIRECTION_INPUT)

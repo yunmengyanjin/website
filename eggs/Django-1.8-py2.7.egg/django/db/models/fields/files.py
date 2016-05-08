@@ -17,7 +17,6 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class FieldFile(File):
-
     def __init__(self, instance, field, name):
         super(FieldFile, self).__init__(None, name)
         self.instance = instance
@@ -44,9 +43,7 @@ class FieldFile(File):
 
     def _require_file(self):
         if not self:
-            raise ValueError(
-                "The '%s' attribute has no file associated with it." %
-                self.field.name)
+            raise ValueError("The '%s' attribute has no file associated with it." % self.field.name)
 
     def _get_file(self):
         self._require_file()
@@ -94,8 +91,7 @@ class FieldFile(File):
 
         args, varargs, varkw, defaults = getargspec(self.storage.save)
         if 'max_length' in args:
-            self.name = self.storage.save(
-                name, content, max_length=self.field.max_length)
+            self.name = self.storage.save(name, content, max_length=self.field.max_length)
         else:
             warnings.warn(
                 'Backwards compatibility for storage backends without '
@@ -154,11 +150,7 @@ class FieldFile(File):
         # it's attached to in order to work properly, but the only necessary
         # data to be pickled is the file's name itself. Everything else will
         # be restored later, by FileDescriptor below.
-        return {
-            'name': self.name,
-            'closed': False,
-            '_committed': True,
-            '_file': None}
+        return {'name': self.name, 'closed': False, '_committed': True, '_file': None}
 
 
 class FileDescriptor(object):
@@ -176,7 +168,6 @@ class FileDescriptor(object):
         ...     instance.file = File(f)
 
     """
-
     def __init__(self, field):
         self.field = field
 
@@ -223,8 +214,7 @@ class FileDescriptor(object):
 
         # Finally, because of the (some would say boneheaded) way pickle works,
         # the underlying FieldFile might not actually itself have an associated
-        # file. So we need to reset the details of the FieldFile in those
-        # cases.
+        # file. So we need to reset the details of the FieldFile in those cases.
         elif isinstance(file, FieldFile) and not hasattr(file, 'field'):
             file.instance = instance
             file.field = self.field
@@ -248,13 +238,7 @@ class FileField(Field):
 
     description = _("File")
 
-    def __init__(
-            self,
-            verbose_name=None,
-            name=None,
-            upload_to='',
-            storage=None,
-            **kwargs):
+    def __init__(self, verbose_name=None, name=None, upload_to='', storage=None, **kwargs):
         self._primary_key_set_explicitly = 'primary_key' in kwargs
         self._unique_set_explicitly = 'unique' in kwargs
 
@@ -276,12 +260,12 @@ class FileField(Field):
         if self._unique_set_explicitly:
             return [
                 checks.Error(
-                    "'unique' is not a valid argument for a %s." %
-                    self.__class__.__name__,
+                    "'unique' is not a valid argument for a %s." % self.__class__.__name__,
                     hint=None,
                     obj=self,
                     id='fields.E200',
-                )]
+                )
+            ]
         else:
             return []
 
@@ -289,12 +273,12 @@ class FileField(Field):
         if self._primary_key_set_explicitly:
             return [
                 checks.Error(
-                    "'primary_key' is not a valid argument for a %s." %
-                    self.__class__.__name__,
+                    "'primary_key' is not a valid argument for a %s." % self.__class__.__name__,
                     hint=None,
                     obj=self,
                     id='fields.E201',
-                )]
+                )
+            ]
         else:
             return []
 
@@ -318,8 +302,7 @@ class FileField(Field):
     def get_prep_value(self, value):
         "Returns field's value prepared for saving into a database."
         value = super(FileField, self).get_prep_value(value)
-        # Need to convert File objects provided via a form to unicode for
-        # database insertion
+        # Need to convert File objects provided via a form to unicode for database insertion
         if value is None:
             return None
         return six.text_type(value)
@@ -337,21 +320,13 @@ class FileField(Field):
         setattr(cls, self.name, self.descriptor_class(self))
 
     def get_directory_name(self):
-        return os.path.normpath(
-            force_text(
-                datetime.datetime.now().strftime(
-                    force_str(
-                        self.upload_to))))
+        return os.path.normpath(force_text(datetime.datetime.now().strftime(force_str(self.upload_to))))
 
     def get_filename(self, filename):
-        return os.path.normpath(
-            self.storage.get_valid_name(
-                os.path.basename(filename)))
+        return os.path.normpath(self.storage.get_valid_name(os.path.basename(filename)))
 
     def generate_filename(self, instance, filename):
-        return os.path.join(
-            self.get_directory_name(),
-            self.get_filename(filename))
+        return os.path.join(self.get_directory_name(), self.get_filename(filename))
 
     def save_form_data(self, instance, data):
         # Important: None means "no change", other false value means "clear"
@@ -366,15 +341,12 @@ class FileField(Field):
             setattr(instance, self.name, data)
 
     def formfield(self, **kwargs):
-        defaults = {
-            'form_class': forms.FileField,
-            'max_length': self.max_length}
+        defaults = {'form_class': forms.FileField, 'max_length': self.max_length}
         # If a file has been provided previously, then the form doesn't require
         # that a new file is provided this time.
         # The code to mark the form field as not required is used by
         # form_for_instance, but can probably be removed once form_for_instance
-        # is gone. ModelForm uses a different method to check for an existing
-        # file.
+        # is gone. ModelForm uses a different method to check for an existing file.
         if 'initial' in kwargs:
             defaults['required'] = False
         defaults.update(kwargs)
@@ -386,7 +358,6 @@ class ImageFileDescriptor(FileDescriptor):
     Just like the FileDescriptor, but for ImageFields. The only difference is
     assigning the width/height to the width_field/height_field, if appropriate.
     """
-
     def __set__(self, instance, value):
         previous_file = instance.__dict__.get(self.field.name)
         super(ImageFileDescriptor, self).__set__(instance, value)
@@ -405,7 +376,6 @@ class ImageFileDescriptor(FileDescriptor):
 
 
 class ImageFieldFile(ImageFile, FieldFile):
-
     def delete(self, save=True):
         # Clear the image dimensions cache
         if hasattr(self, '_dimensions_cache'):
@@ -419,7 +389,7 @@ class ImageField(FileField):
     description = _("Image")
 
     def __init__(self, verbose_name=None, name=None, width_field=None,
-                 height_field=None, **kwargs):
+            height_field=None, **kwargs):
         self.width_field, self.height_field = width_field, height_field
         super(ImageField, self).__init__(verbose_name, name, **kwargs)
 

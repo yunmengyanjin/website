@@ -14,13 +14,11 @@ logger = logging.getLogger('django.db.backends')
 
 
 class CursorWrapper(object):
-
     def __init__(self, cursor, db):
         self.cursor = cursor
         self.db = db
 
-    WRAP_ERROR_ATTRS = frozenset(
-        ['fetchone', 'fetchmany', 'fetchall', 'nextset'])
+    WRAP_ERROR_ATTRS = frozenset(['fetchone', 'fetchmany', 'fetchall', 'nextset'])
 
     def __getattr__(self, attr):
         cursor_attr = getattr(self.cursor, attr)
@@ -87,10 +85,9 @@ class CursorDebugWrapper(CursorWrapper):
                 'sql': sql,
                 'time': "%.3f" % duration,
             })
-            logger.debug(
-                '(%.3f) %s; args=%s' %
-                (duration, sql, params), extra={
-                    'duration': duration, 'sql': sql, 'params': params})
+            logger.debug('(%.3f) %s; args=%s' % (duration, sql, params),
+                extra={'duration': duration, 'sql': sql, 'params': params}
+            )
 
     def executemany(self, sql, param_list):
         start = time()
@@ -107,10 +104,9 @@ class CursorDebugWrapper(CursorWrapper):
                 'sql': '%s times: %s' % (times, sql),
                 'time': "%.3f" % duration,
             })
-            logger.debug(
-                '(%.3f) %s; args=%s' %
-                (duration, sql, param_list), extra={
-                    'duration': duration, 'sql': sql, 'params': param_list})
+            logger.debug('(%.3f) %s; args=%s' % (duration, sql, param_list),
+                extra={'duration': duration, 'sql': sql, 'params': param_list}
+            )
 
 
 ###############################################
@@ -118,8 +114,7 @@ class CursorDebugWrapper(CursorWrapper):
 ###############################################
 
 def typecast_date(s):
-    # returns None if s is null
-    return datetime.date(*map(int, s.split('-'))) if s else None
+    return datetime.date(*map(int, s.split('-'))) if s else None  # returns None if s is null
 
 
 def typecast_time(s):  # does NOT store time zone information
@@ -130,8 +125,7 @@ def typecast_time(s):  # does NOT store time zone information
         seconds, microseconds = seconds.split('.')
     else:
         microseconds = '0'
-    return datetime.time(int(hour), int(minutes), int(
-        seconds), int(float('.' + microseconds) * 1000000))
+    return datetime.time(int(hour), int(minutes), int(seconds), int(float('.' + microseconds) * 1000000))
 
 
 def typecast_timestamp(s):  # does NOT store time zone information
@@ -161,8 +155,8 @@ def typecast_timestamp(s):  # does NOT store time zone information
         microseconds = '0'
     tzinfo = utc if settings.USE_TZ else None
     return datetime.datetime(int(dates[0]), int(dates[1]), int(dates[2]),
-                             int(times[0]), int(times[1]), int(seconds),
-                             int((microseconds + '000000')[:6]), tzinfo)
+        int(times[0]), int(times[1]), int(seconds),
+        int((microseconds + '000000')[:6]), tzinfo)
 
 
 def typecast_decimal(s):
@@ -203,9 +197,7 @@ def format_number(value, max_digits, decimal_places):
         if max_digits is not None:
             context.prec = max_digits
         if decimal_places is not None:
-            value = value.quantize(
-                decimal.Decimal(".1") ** decimal_places,
-                context=context)
+            value = value.quantize(decimal.Decimal(".1") ** decimal_places, context=context)
         else:
             context.traps[decimal.Rounded] = 1
             value = context.create_decimal(value)

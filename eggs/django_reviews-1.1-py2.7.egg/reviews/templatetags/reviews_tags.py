@@ -8,9 +8,7 @@ from reviews import utils as reviews_utils
 register = template.Library()
 
 
-@register.inclusion_tag(
-    'reviews/reviews_for_instance.html',
-    takes_context=True)
+@register.inclusion_tag('reviews/reviews_for_instance.html', takes_context=True)
 def reviews_for_instance(context, instance):
     """
     """
@@ -28,9 +26,7 @@ def reviews_for_instance(context, instance):
     }
 
 
-@register.inclusion_tag(
-    'reviews/average_for_instance.html',
-    takes_context=True)
+@register.inclusion_tag('reviews/average_for_instance.html', takes_context=True)
 def average_for_instance(context, instance):
     """
     """

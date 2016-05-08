@@ -12,17 +12,14 @@
 #
 
 from __future__ import print_function
-import getopt
-import os
-import sys
+import getopt, os, sys
 
 VERSION = "pilprint 0.3/2003-05-05"
 
 from PIL import Image
 from PIL import PSDraw
 
-letter = (1.0 * 72, 1.0 * 72, 7.5 * 72, 10.0 * 72)
-
+letter = ( 1.0*72, 1.0*72, 7.5*72, 10.0*72 )
 
 def description(file, image):
     title = os.path.splitext(os.path.split(file)[1])[0]
@@ -46,8 +43,8 @@ except getopt.error as v:
     print(v)
     sys.exit(1)
 
-printer = None  # print to stdout
-monochrome = 1  # reduce file size for most common case
+printer = None # print to stdout
+monochrome = 1 # reduce file size for most common case
 
 for o, a in opt:
     if o == "-d":
@@ -85,9 +82,9 @@ for file in argv:
 
         ps.begin_document()
         ps.setfont("Helvetica-Narrow-Bold", 18)
-        ps.text((letter[0], letter[3] + 24), title)
+        ps.text((letter[0], letter[3]+24), title)
         ps.setfont("Helvetica-Narrow-Bold", 8)
-        ps.text((letter[0], letter[1] - 30), VERSION)
+        ps.text((letter[0], letter[1]-30), VERSION)
         ps.image(letter, im)
         ps.end_document()
 

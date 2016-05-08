@@ -50,25 +50,19 @@ class ErrorDict(dict):
 
     The dictionary keys are the field names, and the values are the errors.
     """
-
     def as_data(self):
         return {f: e.as_data() for f, e in self.items()}
 
     def as_json(self, escape_html=False):
-        return json.dumps({f: e.get_json_data(escape_html)
-                           for f, e in self.items()})
+        return json.dumps({f: e.get_json_data(escape_html) for f, e in self.items()})
 
     def as_ul(self):
         if not self:
             return ''
         return format_html(
             '<ul class="errorlist">{}</ul>',
-            format_html_join(
-                '',
-                '<li>{}{}</li>',
-                ((k,
-                  force_text(v)) for k,
-                 v in self.items())))
+            format_html_join('', '<li>{}{}</li>', ((k, force_text(v)) for k, v in self.items()))
+        )
 
     def as_text(self):
         output = []
@@ -87,7 +81,6 @@ class ErrorList(UserList, list):
     """
     A collection of errors that knows how to display itself in various formats.
     """
-
     def __init__(self, initlist=None, error_class=None):
         super(ErrorList, self).__init__(initlist)
 

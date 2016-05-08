@@ -7,7 +7,6 @@ from django.utils.http import cookie_date
 
 
 class SessionMiddleware(object):
-
     def __init__(self):
         engine = import_module(settings.SESSION_ENGINE)
         self.SessionStore = engine.SessionStore
@@ -30,8 +29,7 @@ class SessionMiddleware(object):
             pass
         else:
             # First check if we need to delete this cookie.
-            # The session should be deleted only if the session is entirely
-            # empty
+            # The session should be deleted only if the session is entirely empty
             if settings.SESSION_COOKIE_NAME in request.COOKIES and empty:
                 response.delete_cookie(settings.SESSION_COOKIE_NAME)
             else:
@@ -49,13 +47,10 @@ class SessionMiddleware(object):
                     # Skip session save for 500 responses, refs #3881.
                     if response.status_code != 500:
                         request.session.save()
-                        response.set_cookie(
-                            settings.SESSION_COOKIE_NAME,
-                            request.session.session_key,
-                            max_age=max_age,
-                            expires=expires,
-                            domain=settings.SESSION_COOKIE_DOMAIN,
-                            path=settings.SESSION_COOKIE_PATH,
-                            secure=settings.SESSION_COOKIE_SECURE or None,
-                            httponly=settings.SESSION_COOKIE_HTTPONLY or None)
+                        response.set_cookie(settings.SESSION_COOKIE_NAME,
+                                request.session.session_key, max_age=max_age,
+                                expires=expires, domain=settings.SESSION_COOKIE_DOMAIN,
+                                path=settings.SESSION_COOKIE_PATH,
+                                secure=settings.SESSION_COOKIE_SECURE or None,
+                                httponly=settings.SESSION_COOKIE_HTTPONLY or None)
         return response

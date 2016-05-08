@@ -17,14 +17,9 @@ class UYDepartmentSelect(Select):
     """
     A Select widget that uses a list of Uruguayan departments as its choices.
     """
-
     def __init__(self, attrs=None):
         from .uy_departments import DEPARTMENT_CHOICES
-        super(
-            UYDepartmentSelect,
-            self).__init__(
-            attrs,
-            choices=DEPARTMENT_CHOICES)
+        super(UYDepartmentSelect, self).__init__(attrs, choices=DEPARTMENT_CHOICES)
 
 
 class UYCIField(RegexField):
@@ -38,12 +33,8 @@ class UYCIField(RegexField):
     }
 
     def __init__(self, *args, **kwargs):
-        super(
-            UYCIField,
-            self).__init__(
-            r'(?P<num>(\d{6,7}|(\d\.)?\d{3}\.\d{3}))-?(?P<val>\d)',
-            *args,
-            **kwargs)
+        super(UYCIField, self).__init__(r'(?P<num>(\d{6,7}|(\d\.)?\d{3}\.\d{3}))-?(?P<val>\d)',
+                                        *args, **kwargs)
 
     def clean(self, value):
         """
@@ -66,7 +57,6 @@ class UYCIField(RegexField):
         validation_digit = int(match.group('val'))
 
         if not validation_digit == get_validation_digit(number):
-            raise ValidationError(
-                self.error_messages['invalid_validation_digit'])
+            raise ValidationError(self.error_messages['invalid_validation_digit'])
 
         return value

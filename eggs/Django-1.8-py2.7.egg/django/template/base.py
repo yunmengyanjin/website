@@ -105,7 +105,7 @@ SINGLE_BRACE_START = '{'
 SINGLE_BRACE_END = '}'
 
 ALLOWED_VARIABLE_CHARS = ('abcdefghijklmnopqrstuvwxyz'
-                          'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.')
+                         'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.')
 
 # what to report as the origin for templates that come from non-loader sources
 # (e.g. strings)
@@ -113,15 +113,10 @@ UNKNOWN_SOURCE = '<unknown source>'
 
 # match a variable or block tag and capture the entire tag, including start/end
 # delimiters
-tag_re = (
-    re.compile(
-        '(%s.*?%s|%s.*?%s|%s.*?%s)' %
-        (re.escape(BLOCK_TAG_START),
-         re.escape(BLOCK_TAG_END),
-         re.escape(VARIABLE_TAG_START),
-         re.escape(VARIABLE_TAG_END),
-         re.escape(COMMENT_TAG_START),
-         re.escape(COMMENT_TAG_END))))
+tag_re = (re.compile('(%s.*?%s|%s.*?%s|%s.*?%s)' %
+          (re.escape(BLOCK_TAG_START), re.escape(BLOCK_TAG_END),
+           re.escape(VARIABLE_TAG_START), re.escape(VARIABLE_TAG_END),
+           re.escape(COMMENT_TAG_START), re.escape(COMMENT_TAG_END))))
 
 # global dictionary of libraries that have been loaded using get_library
 libraries = {}
@@ -149,8 +144,7 @@ class VariableDoesNotExist(Exception):
         self.params = params
 
     def __str__(self):
-        return self.msg % tuple(force_text(p, errors='replace')
-                                for p in self.params)
+        return self.msg % tuple(force_text(p, errors='replace') for p in self.params)
 
 
 class InvalidTemplateLibrary(Exception):
@@ -158,20 +152,17 @@ class InvalidTemplateLibrary(Exception):
 
 
 class Origin(object):
-
     def __init__(self, name):
         self.name = name
 
     def reload(self):
-        raise NotImplementedError(
-            'subclasses of Origin must provide a reload() method')
+        raise NotImplementedError('subclasses of Origin must provide a reload() method')
 
     def __str__(self):
         return self.name
 
 
 class StringOrigin(Origin):
-
     def __init__(self, source):
         super(StringOrigin, self).__init__(UNKNOWN_SOURCE)
         self.source = source
@@ -181,7 +172,6 @@ class StringOrigin(Origin):
 
 
 class Template(object):
-
     def __init__(self, template_string, origin=None, name=None, engine=None):
         try:
             template_string = force_text(template_string)
@@ -224,7 +214,6 @@ class Template(object):
 
 
 class Token(object):
-
     def __init__(self, token_type, contents):
         # token_type must be TOKEN_TEXT, TOKEN_VAR, TOKEN_BLOCK or
         # TOKEN_COMMENT.
@@ -253,7 +242,6 @@ class Token(object):
 
 
 class Lexer(object):
-
     def __init__(self, template_string, origin):
         self.template_string = template_string
         self.origin = origin
@@ -306,7 +294,6 @@ class Lexer(object):
 
 
 class Parser(object):
-
     def __init__(self, tokens):
         self.tokens = tokens
         self.tags = {}
@@ -403,8 +390,8 @@ class Parser(object):
 
     def invalid_block_tag(self, token, command, parse_until=None):
         if parse_until:
-            raise self.error(token, "Invalid block tag: '%s', expected %s" % (
-                command, get_text_list(["'%s'" % p for p in parse_until])))
+            raise self.error(token, "Invalid block tag: '%s', expected %s" %
+                (command, get_text_list(["'%s'" % p for p in parse_until])))
         raise self.error(token, "Invalid block tag: '%s'" % command)
 
     def unclosed_block_tag(self, parse_until):
@@ -451,7 +438,6 @@ class TokenParser(object):
     The parser's "tagname" instance-variable stores the name of the tag that
     the filter was called with.
     """
-
     def __init__(self, subject):
         self.subject = subject
         self.pointer = 0
@@ -462,8 +448,7 @@ class TokenParser(object):
         """
         Overload this method to do the actual parsing and return the result.
         """
-        raise NotImplementedError(
-            'subclasses of Tokenparser must provide a top() method')
+        raise NotImplementedError('subclasses of Tokenparser must provide a top() method')
 
     def more(self):
         """
@@ -519,8 +504,7 @@ class TokenParser(object):
                     while i < len(subject) and subject[i] != c:
                         i += 1
                     if i >= len(subject):
-                        raise TemplateSyntaxError(
-                            "Searching for value. "
+                        raise TemplateSyntaxError("Searching for value. "
                             "Unexpected end of string in column %d: %s" %
                             (i, subject))
                 i += 1
@@ -613,7 +597,6 @@ class FilterExpression(object):
         >>> fe.var
         <Variable: 'variable'>
     """
-
     def __init__(self, token, parser):
         self.token = token
         matches = filter_re.finditer(token)
@@ -791,12 +774,10 @@ class Variable(object):
             except ValueError:
                 # Otherwise we'll set self.lookups so that resolve() knows we're
                 # dealing with a bonafide variable
-                if var.find(VARIABLE_ATTRIBUTE_SEPARATOR +
-                            '_') > -1 or var[0] == '_':
-                    raise TemplateSyntaxError(
-                        "Variables and attributes may "
-                        "not begin with underscores: '%s'" %
-                        var)
+                if var.find(VARIABLE_ATTRIBUTE_SEPARATOR + '_') > -1 or var[0] == '_':
+                    raise TemplateSyntaxError("Variables and attributes may "
+                                              "not begin with underscores: '%s'" %
+                                              var)
                 self.lookups = tuple(var.split(VARIABLE_ATTRIBUTE_SEPARATOR))
 
     def resolve(self, context):
@@ -838,28 +819,24 @@ class Variable(object):
                     # numpy < 1.9 and 1.9+ respectively
                 except (TypeError, AttributeError, KeyError, ValueError, IndexError):
                     try:  # attribute lookup
-                        # Don't return class attributes if the class is the
-                        # context:
-                        if isinstance(
-                                current, BaseContext) and getattr(
-                                type(current), bit):
+                        # Don't return class attributes if the class is the context:
+                        if isinstance(current, BaseContext) and getattr(type(current), bit):
                             raise AttributeError
                         current = getattr(current, bit)
                     except (TypeError, AttributeError) as e:
                         # Reraise an AttributeError raised by a @property
-                        if (isinstance(e, AttributeError) and not isinstance(
-                                current, BaseContext) and bit in dir(current)):
+                        if (isinstance(e, AttributeError) and
+                                not isinstance(current, BaseContext) and bit in dir(current)):
                             raise
                         try:  # list-index lookup
                             current = current[int(bit)]
                         except (IndexError,  # list index out of range
                                 ValueError,  # invalid literal for int()
-                                KeyError,
-                                # current is a dict without `int(bit)` key
+                                KeyError,    # current is a dict without `int(bit)` key
                                 TypeError):  # unsubscriptable object
-                            raise VariableDoesNotExist(
-                                "Failed lookup for key "
-                                "[%s] in %r", (bit, current))  # missing attribute
+                            raise VariableDoesNotExist("Failed lookup for key "
+                                                       "[%s] in %r",
+                                                       (bit, current))  # missing attribute
                 if callable(current):
                     if getattr(current, 'do_not_call_in_templates', False):
                         pass
@@ -941,13 +918,12 @@ class NodeList(list):
 
 
 class TextNode(Node):
-
     def __init__(self, s):
         self.s = s
 
     def __repr__(self):
         return force_str("<Text Node: '%s'>" % self.s[:25], 'ascii',
-                         errors='replace')
+                errors='replace')
 
     def render(self, context):
         return self.s
@@ -970,7 +946,6 @@ def render_value_in_context(value, context):
 
 
 class VariableNode(Node):
-
     def __init__(self, filter_expression):
         self.filter_expression = filter_expression
 
@@ -1136,13 +1111,11 @@ class TagHelperNode(Node):
         resolved_args = [var.resolve(context) for var in self.args]
         if self.takes_context:
             resolved_args = [context] + resolved_args
-        resolved_kwargs = {k: v.resolve(context)
-                           for k, v in self.kwargs.items()}
+        resolved_kwargs = {k: v.resolve(context) for k, v in self.kwargs.items()}
         return resolved_args, resolved_kwargs
 
 
 class Library(object):
-
     def __init__(self):
         self.filters = {}
         self.tags = {}
@@ -1165,8 +1138,7 @@ class Library(object):
             self.tags[name] = compile_function
             return compile_function
         else:
-            raise InvalidTemplateLibrary(
-                "Unsupported arguments to "
+            raise InvalidTemplateLibrary("Unsupported arguments to "
                 "Library.tag: (%r, %r)", (name, compile_function))
 
     def tag_function(self, func):
@@ -1205,8 +1177,7 @@ class Library(object):
             filter_func._filter_name = name
             return filter_func
         else:
-            raise InvalidTemplateLibrary(
-                "Unsupported arguments to "
+            raise InvalidTemplateLibrary("Unsupported arguments to "
                 "Library.filter: (%r, %r)", (name, filter_func))
 
     def filter_function(self, func, **flags):
@@ -1220,24 +1191,15 @@ class Library(object):
             class SimpleNode(TagHelperNode):
 
                 def render(self, context):
-                    resolved_args, resolved_kwargs = self.get_resolved_arguments(
-                        context)
+                    resolved_args, resolved_kwargs = self.get_resolved_arguments(context)
                     return func(*resolved_args, **resolved_kwargs)
 
-            function_name = (
-                name or getattr(
-                    func,
-                    '_decorated_function',
-                    func).__name__)
-            compile_func = partial(
-                generic_tag_compiler,
-                params=params,
-                varargs=varargs,
-                varkw=varkw,
-                defaults=defaults,
-                name=function_name,
-                takes_context=takes_context,
-                node_class=SimpleNode)
+            function_name = (name or
+                getattr(func, '_decorated_function', func).__name__)
+            compile_func = partial(generic_tag_compiler,
+                params=params, varargs=varargs, varkw=varkw,
+                defaults=defaults, name=function_name,
+                takes_context=takes_context, node_class=SimpleNode)
             compile_func.__doc__ = func.__doc__
             self.tag(function_name, compile_func)
             return func
@@ -1249,36 +1211,24 @@ class Library(object):
             # @register.simple_tag
             return dec(func)
         else:
-            raise TemplateSyntaxError(
-                "Invalid arguments provided to simple_tag")
+            raise TemplateSyntaxError("Invalid arguments provided to simple_tag")
 
     def assignment_tag(self, func=None, takes_context=None, name=None):
         def dec(func):
             params, varargs, varkw, defaults = getargspec(func)
 
             class AssignmentNode(TagHelperNode):
-
                 def __init__(self, takes_context, args, kwargs, target_var):
-                    super(
-                        AssignmentNode,
-                        self).__init__(
-                        takes_context,
-                        args,
-                        kwargs)
+                    super(AssignmentNode, self).__init__(takes_context, args, kwargs)
                     self.target_var = target_var
 
                 def render(self, context):
-                    resolved_args, resolved_kwargs = self.get_resolved_arguments(
-                        context)
-                    context[self.target_var] = func(
-                        *resolved_args, **resolved_kwargs)
+                    resolved_args, resolved_kwargs = self.get_resolved_arguments(context)
+                    context[self.target_var] = func(*resolved_args, **resolved_kwargs)
                     return ''
 
-            function_name = (
-                name or getattr(
-                    func,
-                    '_decorated_function',
-                    func).__name__)
+            function_name = (name or
+                getattr(func, '_decorated_function', func).__name__)
 
             def compile_func(parser, token):
                 bits = token.split_contents()[1:]
@@ -1288,8 +1238,8 @@ class Library(object):
                         "second last argument must be 'as'" % function_name)
                 target_var = bits[-1]
                 bits = bits[:-2]
-                args, kwargs = parse_bits(
-                    parser, bits, params, varargs, varkw, defaults, takes_context, function_name)
+                args, kwargs = parse_bits(parser, bits, params,
+                    varargs, varkw, defaults, takes_context, function_name)
                 return AssignmentNode(takes_context, args, kwargs, target_var)
 
             compile_func.__doc__ = func.__doc__
@@ -1303,8 +1253,7 @@ class Library(object):
             # @register.assignment_tag
             return dec(func)
         else:
-            raise TemplateSyntaxError(
-                "Invalid arguments provided to assignment_tag")
+            raise TemplateSyntaxError("Invalid arguments provided to assignment_tag")
 
     def inclusion_tag(self, file_name, takes_context=False, name=None):
         def dec(func):
@@ -1318,8 +1267,7 @@ class Library(object):
                     template object in render_context to avoid reparsing and
                     loading when used in a for loop.
                     """
-                    resolved_args, resolved_kwargs = self.get_resolved_arguments(
-                        context)
+                    resolved_args, resolved_kwargs = self.get_resolved_arguments(context)
                     _dict = func(*resolved_args, **resolved_kwargs)
 
                     t = context.render_context.get(self)
@@ -1329,8 +1277,7 @@ class Library(object):
                         elif isinstance(getattr(file_name, 'template', None), Template):
                             t = file_name.template
                         elif not isinstance(file_name, six.string_types) and is_iterable(file_name):
-                            t = context.template.engine.select_template(
-                                file_name)
+                            t = context.template.engine.select_template(file_name)
                         else:
                             t = context.template.engine.get_template(file_name)
                         context.render_context[self] = t
@@ -1344,20 +1291,12 @@ class Library(object):
                         new_context['csrf_token'] = csrf_token
                     return t.render(new_context)
 
-            function_name = (
-                name or getattr(
-                    func,
-                    '_decorated_function',
-                    func).__name__)
-            compile_func = partial(
-                generic_tag_compiler,
-                params=params,
-                varargs=varargs,
-                varkw=varkw,
-                defaults=defaults,
-                name=function_name,
-                takes_context=takes_context,
-                node_class=InclusionNode)
+            function_name = (name or
+                getattr(func, '_decorated_function', func).__name__)
+            compile_func = partial(generic_tag_compiler,
+                params=params, varargs=varargs, varkw=varkw,
+                defaults=defaults, name=function_name,
+                takes_context=takes_context, node_class=InclusionNode)
             compile_func.__doc__ = func.__doc__
             self.tag(function_name, compile_func)
             return func

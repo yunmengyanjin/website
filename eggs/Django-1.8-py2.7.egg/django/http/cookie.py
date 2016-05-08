@@ -7,10 +7,8 @@ from django.utils.encoding import force_str
 from django.utils.six.moves import http_cookies
 
 # Some versions of Python 2.7 and later won't need this encoding bug fix:
-_cookie_encodes_correctly = http_cookies.SimpleCookie(
-).value_encode(';') == (';', '"\\073"')
-# See ticket #13007, http://bugs.python.org/issue2193 and
-# http://trac.edgewall.org/ticket/2256
+_cookie_encodes_correctly = http_cookies.SimpleCookie().value_encode(';') == (';', '"\\073"')
+# See ticket #13007, http://bugs.python.org/issue2193 and http://trac.edgewall.org/ticket/2256
 _tc = http_cookies.SimpleCookie()
 try:
     _tc.load(str('foo:bar=1'))
@@ -36,8 +34,7 @@ else:
                 # Apply the fix from http://bugs.python.org/issue22775 where
                 # it's not fixed in Python itself
                 if isinstance(value, Morsel):
-                    # allow assignment of constructed Morsels (e.g. for
-                    # pickling)
+                    # allow assignment of constructed Morsels (e.g. for pickling)
                     dict.__setitem__(self, key, value)
                 else:
                     super(SimpleCookie, self).__setitem__(key, value)

@@ -21,14 +21,11 @@ from lfs.core.utils import LazyEncoder
 # Parts
 @permission_required("core.manage_shop")
 def manage_related_products(
-        request,
-        product_id,
-        template_name="manage/product/related_products.html"):
+    request, product_id, template_name="manage/product/related_products.html"):
     """
     """
     product = Product.objects.get(pk=product_id)
-    inline = manage_related_products_inline(
-        request, product_id, as_string=True)
+    inline = manage_related_products_inline(request, product_id, as_string=True)
 
     # amount options
     amount_options = []
@@ -47,10 +44,7 @@ def manage_related_products(
 
 @permission_required("core.manage_shop")
 def manage_related_products_inline(
-        request,
-        product_id,
-        as_string=False,
-        template_name="manage/product/related_products_inline.html"):
+    request, product_id, as_string=False, template_name="manage/product/related_products_inline.html"):
     """View which shows all related products for the product with the passed id.
     """
     product = Product.objects.get(pk=product_id)
@@ -72,7 +66,7 @@ def manage_related_products_inline(
         page = r.get("page", s.get("related_products", 1))
         filter_ = r.get("filter", s.get("filter"))
         category_filter = r.get("related_products_category_filter",
-                                s.get("related_products_category_filter"))
+                          s.get("related_products_category_filter"))
     else:
         page = r.get("page", 1)
         filter_ = r.get("filter")
@@ -84,20 +78,16 @@ def manage_related_products_inline(
     s["related_products_category_filter"] = category_filter
 
     try:
-        s["related-products-amount"] = int(
-            r.get(
-                "related-products-amount",
-                s.get("related-products-amount")))
+        s["related-products-amount"] = int(r.get("related-products-amount",
+                                      s.get("related-products-amount")))
     except TypeError:
         s["related-products-amount"] = 25
 
     filters = Q()
     if filter_:
         filters &= (Q(name__icontains=filter_) | Q(sku__icontains=filter_))
-        filters |= (Q(sub_type=VARIANT) & Q(active_sku=False)
-                    & Q(parent__sku__icontains=filter_))
-        filters |= (Q(sub_type=VARIANT) & Q(active_name=False)
-                    & Q(parent__name__icontains=filter_))
+        filters |= (Q(sub_type=VARIANT) & Q(active_sku=False) & Q(parent__sku__icontains=filter_))
+        filters |= (Q(sub_type=VARIANT) & Q(active_name=False) & Q(parent__name__icontains=filter_))
 
     if category_filter:
         if category_filter == "None":
@@ -111,8 +101,7 @@ def manage_related_products_inline(
             categories.extend(category.get_all_children())
             filters &= Q(categories__in=categories)
 
-    products = Product.objects.filter(filters).exclude(
-        pk__in=related_products_ids).exclude(pk=product.pk)
+    products = Product.objects.filter(filters).exclude(pk__in=related_products_ids).exclude(pk=product.pk)
     paginator = Paginator(products, s["related-products-amount"])
 
     total = products.count()
@@ -166,8 +155,7 @@ def add_related_products(request, product_id):
         # for more
         parent_product.save()
 
-    html = [["#related-products-inline",
-             manage_related_products_inline(request, product_id, as_string=True)]]
+    html = [["#related-products-inline", manage_related_products_inline(request, product_id, as_string=True)]]
 
     result = json.dumps({
         "html": html,
@@ -195,8 +183,7 @@ def remove_related_products(request, product_id):
         # for more
         parent_product.save()
 
-    html = [["#related-products-inline",
-             manage_related_products_inline(request, product_id, as_string=True)]]
+    html = [["#related-products-inline", manage_related_products_inline(request, product_id, as_string=True)]]
 
     result = json.dumps({
         "html": html,
@@ -217,8 +204,7 @@ def update_related_products(request, product_id):
         product.active_related_products = False
     product.save()
 
-    html = [["#related-products-inline",
-             manage_related_products_inline(request, product_id, as_string=True)]]
+    html = [["#related-products-inline", manage_related_products_inline(request, product_id, as_string=True)]]
 
     result = json.dumps({
         "html": html,

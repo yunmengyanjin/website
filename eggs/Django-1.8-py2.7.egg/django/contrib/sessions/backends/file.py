@@ -19,7 +19,6 @@ class SessionStore(SessionBase):
     """
     Implements a file based session store.
     """
-
     def __init__(self, session_key=None):
         self.storage_path = type(self)._get_storage_path()
         self.file_prefix = settings.SESSION_COOKIE_NAME
@@ -39,8 +38,7 @@ class SessionStore(SessionBase):
                 raise ImproperlyConfigured(
                     "The session storage path %r doesn't exist. Please set your"
                     " SESSION_FILE_PATH setting to an existing directory in which"
-                    " Django can store session data." %
-                    storage_path)
+                    " Django can store session data." % storage_path)
 
             cls._storage_path = storage_path
             return storage_path
@@ -86,7 +84,7 @@ class SessionStore(SessionBase):
                 except (EOFError, SuspiciousOperation) as e:
                     if isinstance(e, SuspiciousOperation):
                         logger = logging.getLogger('django.security.%s' %
-                                                   e.__class__.__name__)
+                                e.__class__.__name__)
                         logger.warning(force_text(e))
                     self.create()
 
@@ -152,14 +150,12 @@ class SessionStore(SessionBase):
         dir, prefix = os.path.split(session_file_name)
 
         try:
-            output_file_fd, output_file_name = tempfile.mkstemp(
-                dir=dir, prefix=prefix + '_out_')
+            output_file_fd, output_file_name = tempfile.mkstemp(dir=dir,
+                prefix=prefix + '_out_')
             renamed = False
             try:
                 try:
-                    os.write(
-                        output_file_fd,
-                        self.encode(session_data).encode())
+                    os.write(output_file_fd, self.encode(session_data).encode())
                 finally:
                     os.close(output_file_fd)
 

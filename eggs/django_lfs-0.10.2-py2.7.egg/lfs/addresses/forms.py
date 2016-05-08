@@ -24,15 +24,7 @@ class AddressBaseForm(forms.ModelForm):
     fields_after_postal = None
 
     class Meta:
-        exclude = (
-            "customer",
-            "order",
-            "line1",
-            "line2",
-            "zip_code",
-            "city",
-            "state",
-            "country")
+        exclude = ("customer", "order", "line1", "line2", "zip_code", "city", "state", "country")
 
     def get_fields_before_postal(self):
         """
@@ -76,8 +68,7 @@ class InvoiceAddressForm(AddressBaseForm):
 
     def __init__(self, *args, **kwargs):
         super(InvoiceAddressForm, self).__init__(*args, **kwargs)
-        self.fields[
-            "company_name"].required = settings.INVOICE_COMPANY_NAME_REQUIRED
+        self.fields["company_name"].required = settings.INVOICE_COMPANY_NAME_REQUIRED
         self.fields["phone"].required = settings.INVOICE_PHONE_REQUIRED
         self.fields["email"].required = settings.INVOICE_EMAIL_REQUIRED
 
@@ -86,10 +77,8 @@ class ShippingAddressForm(InvoiceAddressForm):
     """
     Default form for LFS' shipping addresses.
     """
-
     def __init__(self, *args, **kwargs):
         super(ShippingAddressForm, self).__init__(*args, **kwargs)
-        self.fields[
-            "company_name"].required = settings.SHIPPING_COMPANY_NAME_REQUIRED
+        self.fields["company_name"].required = settings.SHIPPING_COMPANY_NAME_REQUIRED
         self.fields["phone"].required = settings.SHIPPING_PHONE_REQUIRED
         self.fields["email"].required = settings.SHIPPING_EMAIL_REQUIRED

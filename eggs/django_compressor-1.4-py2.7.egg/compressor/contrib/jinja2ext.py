@@ -34,12 +34,7 @@ class CompressorExtension(CompressorMixin, Extension):
         # Skip the kind if used in the endblock, by using the kind in the
         # endblock the templates are slightly more readable.
         parser.stream.skip_if('name:' + kindarg.value)
-        return nodes.CallBlock(
-            self.call_method(
-                '_compress_normal',
-                args),
-            [],
-            [],
+        return nodes.CallBlock(self.call_method('_compress_normal', args), [], [],
             body).set_lineno(lineno)
 
     def _compress_forced(self, kind, mode, caller):

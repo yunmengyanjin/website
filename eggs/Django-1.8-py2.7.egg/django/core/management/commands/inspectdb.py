@@ -16,12 +16,8 @@ class Command(BaseCommand):
     db_module = 'django.db'
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            '--database',
-            action='store',
-            dest='database',
-            default=DEFAULT_DB_ALIAS,
-            help='Nominates a database to '
+        parser.add_argument('--database', action='store', dest='database',
+            default=DEFAULT_DB_ALIAS, help='Nominates a database to '
             'introspect. Defaults to using the "default" database.')
 
     def handle(self, **options):
@@ -29,16 +25,14 @@ class Command(BaseCommand):
             for line in self.handle_inspection(options):
                 self.stdout.write("%s\n" % line)
         except NotImplementedError:
-            raise CommandError(
-                "Database inspection isn't supported for the currently selected database backend.")
+            raise CommandError("Database inspection isn't supported for the currently selected database backend.")
 
     def handle_inspection(self, options):
         connection = connections[options['database']]
         # 'table_name_filter' is a stealth option
         table_name_filter = options.get('table_name_filter')
 
-        table2model = lambda table_name: re.sub(
-            r'[^a-zA-Z0-9]', '', table_name.title())
+        table2model = lambda table_name: re.sub(r'[^a-zA-Z0-9]', '', table_name.title())
         strip_prefix = lambda s: s[1:] if s.startswith("u'") else s
 
         with connection.cursor() as cursor:
@@ -59,8 +53,7 @@ class Command(BaseCommand):
             yield 'from %s import models' % self.db_module
             known_models = []
             for table_name in connection.introspection.table_names(cursor):
-                if table_name_filter is not None and callable(
-                        table_name_filter):
+                if table_name_filter is not None and callable(table_name_filter):
                     if not table_name_filter(table_name):
                         continue
                 yield ''
@@ -68,27 +61,21 @@ class Command(BaseCommand):
                 yield 'class %s(models.Model):' % table2model(table_name)
                 known_models.append(table2model(table_name))
                 try:
-                    relations = connection.introspection.get_relations(
-                        cursor, table_name)
+                    relations = connection.introspection.get_relations(cursor, table_name)
                 except NotImplementedError:
                     relations = {}
                 try:
-                    indexes = connection.introspection.get_indexes(
-                        cursor, table_name)
+                    indexes = connection.introspection.get_indexes(cursor, table_name)
                 except NotImplementedError:
                     indexes = {}
                 try:
-                    constraints = connection.introspection.get_constraints(
-                        cursor, table_name)
+                    constraints = connection.introspection.get_constraints(cursor, table_name)
                 except NotImplementedError:
                     constraints = {}
                 used_column_names = []  # Holds column names used in the table so far
-                for row in connection.introspection.get_table_description(
-                        cursor, table_name):
-                    # Holds Field notes, to be displayed in a Python comment.
-                    comment_notes = []
-                    # Holds Field parameters such as 'db_column'.
-                    extra_params = OrderedDict()
+                for row in connection.introspection.get_table_description(cursor, table_name):
+                    comment_notes = []  # Holds Field notes, to be displayed in a Python comment.
+                    extra_params = OrderedDict()  # Holds Field parameters such as 'db_column'.
                     column_name = row[0]
                     is_relation = column_name in relations
 
@@ -107,8 +94,7 @@ class Command(BaseCommand):
                             extra_params['unique'] = True
 
                     if is_relation:
-                        rel_to = "self" if relations[column_name][
-                            1] == table_name else table2model(relations[column_name][1])
+                        rel_to = "self" if relations[column_name][1] == table_name else table2model(relations[column_name][1])
                         if rel_to in known_models:
                             field_type = 'ForeignKey(%s' % rel_to
                         else:
@@ -116,8 +102,7 @@ class Command(BaseCommand):
                     else:
                         # Calling `get_field_type` to get the field type string and any
                         # additional parameters and notes.
-                        field_type, field_params, field_notes = self.get_field_type(
-                            connection, table_name, row)
+                        field_type, field_params, field_notes = self.get_field_type(connection, table_name, row)
                         extra_params.update(field_params)
                         comment_notes.extend(field_notes)
 
@@ -125,8 +110,7 @@ class Command(BaseCommand):
 
                     # Don't output 'id = meta.AutoField(primary_key=True)', because
                     # that's assumed if it doesn't exist.
-                    if att_name == 'id' and extra_params == {
-                            'primary_key': True}:
+                    if att_name == 'id' and extra_params == {'primary_key': True}:
                         if field_type == 'AutoField(':
                             continue
                         elif field_type == 'IntegerField(' and not connection.features.can_introspect_autofield:
@@ -179,17 +163,14 @@ class Command(BaseCommand):
 
         new_name, num_repl = re.subn(r'\W', '_', new_name)
         if num_repl > 0:
-            field_notes.append(
-                'Field renamed to remove unsuitable characters.')
+            field_notes.append('Field renamed to remove unsuitable characters.')
 
         if new_name.find('__') >= 0:
             while new_name.find('__') >= 0:
                 new_name = new_name.replace('__', '_')
             if col_name.lower().find('__') >= 0:
-                # Only add the comment if the double underscore was in the
-                # original name
-                field_notes.append(
-                    "Field renamed because it contained more than one '_' in a row.")
+                # Only add the comment if the double underscore was in the original name
+                field_notes.append("Field renamed because it contained more than one '_' in a row.")
 
         if new_name.startswith('_'):
             new_name = 'field%s' % new_name
@@ -201,13 +182,11 @@ class Command(BaseCommand):
 
         if keyword.iskeyword(new_name):
             new_name += '_field'
-            field_notes.append(
-                'Field renamed because it was a Python reserved word.')
+            field_notes.append('Field renamed because it was a Python reserved word.')
 
         if new_name[0].isdigit():
             new_name = 'number_%s' % new_name
-            field_notes.append(
-                "Field renamed because it wasn't a valid Python identifier.")
+            field_notes.append("Field renamed because it wasn't a valid Python identifier.")
 
         if new_name in used_column_names:
             num = 0
@@ -238,7 +217,7 @@ class Command(BaseCommand):
 
         # This is a hook for data_types_reverse to return a tuple of
         # (field_type, field_params_dict).
-        if isinstance(field_type, tuple):
+        if type(field_type) is tuple:
             field_type, new_params = field_type
             field_params.update(new_params)
 
@@ -251,10 +230,8 @@ class Command(BaseCommand):
                 field_notes.append(
                     'max_digits and decimal_places have been guessed, as this '
                     'database handles decimal fields as float')
-                field_params['max_digits'] = row[
-                    4] if row[4] is not None else 10
-                field_params['decimal_places'] = row[
-                    5] if row[5] is not None else 5
+                field_params['max_digits'] = row[4] if row[4] is not None else 10
+                field_params['decimal_places'] = row[5] if row[5] is not None else 5
             else:
                 field_params['max_digits'] = row[4]
                 field_params['decimal_places'] = row[5]

@@ -33,18 +33,16 @@ class CartPortlet(Portlet):
             price = None
         else:
             cart_amount_of_items = cart.get_amount_of_items()
-            amount_of_items_locale = locale.format(
-                "%.2f", cart_amount_of_items)
+            amount_of_items_locale = locale.format("%.2f", cart_amount_of_items)
             amount_of_items_int = int(cart_amount_of_items)
             price = cart.get_price_gross(request, total=True)
 
-        return render_to_string("lfs/portlets/cart.html",
-                                RequestContext(request,
-                                               {"title": self.title,
-                                                "amount_of_items_locale": amount_of_items_locale,
-                                                "amount_of_items_int": amount_of_items_int,
-                                                "price": price,
-                                                }))
+        return render_to_string("lfs/portlets/cart.html", RequestContext(request, {
+            "title": self.title,
+            "amount_of_items_locale": amount_of_items_locale,
+            "amount_of_items_int": amount_of_items_int,
+            "price": price,
+        }))
 
     def form(self, **kwargs):
         return CartPortletForm(instance=self, **kwargs)

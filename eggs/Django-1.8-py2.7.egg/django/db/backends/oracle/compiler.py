@@ -2,7 +2,6 @@ from django.db.models.sql import compiler
 
 
 class SQLCompiler(compiler.SQLCompiler):
-
     def as_sql(self, with_limits=True, with_col_aliases=False, subquery=False):
         """
         Creates the SQL for this query. Returns the SQL string and list
@@ -40,8 +39,8 @@ class SQLCompiler(compiler.SQLCompiler):
                 high_where = 'WHERE ROWNUM <= %d' % (self.query.high_mark,)
             sql = (
                 'SELECT * FROM (SELECT "_SUB".*, ROWNUM AS "_RN" FROM (%s) '
-                '"_SUB" %s) WHERE "_RN" > %d' %
-                (sql, high_where, self.query.low_mark))
+                '"_SUB" %s) WHERE "_RN" > %d' % (sql, high_where, self.query.low_mark)
+            )
 
         return sql, params
 

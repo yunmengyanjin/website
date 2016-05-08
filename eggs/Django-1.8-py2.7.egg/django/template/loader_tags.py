@@ -17,7 +17,6 @@ class ExtendsError(Exception):
 
 
 class BlockContext(object):
-
     def __init__(self):
         # Dictionary of FIFO queues.
         self.blocks = defaultdict(list)
@@ -43,7 +42,6 @@ class BlockContext(object):
 
 
 class BlockNode(Node):
-
     def __init__(self, name, nodelist, parent=None):
         self.name, self.nodelist, self.parent = name, nodelist, parent
 
@@ -60,8 +58,7 @@ class BlockNode(Node):
                 push = block = block_context.pop(self.name)
                 if block is None:
                     block = self
-                # Create new block so we can store context without
-                # thread-safety issues.
+                # Create new block so we can store context without thread-safety issues.
                 block = type(self)(block.name, block.nodelist)
                 block.context = context
                 context['block'] = block
@@ -74,11 +71,11 @@ class BlockNode(Node):
         if not hasattr(self, 'context'):
             raise TemplateSyntaxError(
                 "'%s' object has no attribute 'context'. Did you use "
-                "{{ block.super }} in a base template?" %
-                self.__class__.__name__)
+                "{{ block.super }} in a base template?" % self.__class__.__name__
+            )
         render_context = self.context.render_context
-        if (BLOCK_CONTEXT_KEY in render_context and render_context[
-                BLOCK_CONTEXT_KEY].get_block(self.name) is not None):
+        if (BLOCK_CONTEXT_KEY in render_context and
+                render_context[BLOCK_CONTEXT_KEY].get_block(self.name) is not None):
             return mark_safe(self.render(self.context))
         return ''
 
@@ -90,8 +87,7 @@ class ExtendsNode(Node):
         self.nodelist = nodelist
         self.parent_name = parent_name
         self.template_dirs = template_dirs
-        self.blocks = {
-            n.name: n for n in nodelist.get_nodes_by_type(BlockNode)}
+        self.blocks = {n.name: n for n in nodelist.get_nodes_by_type(BlockNode)}
 
     def __repr__(self):
         return '<ExtendsNode: extends %s>' % self.parent_name.token
@@ -129,8 +125,8 @@ class ExtendsNode(Node):
             # The ExtendsNode has to be the first non-text node.
             if not isinstance(node, TextNode):
                 if not isinstance(node, ExtendsNode):
-                    blocks = {
-                        n.name: n for n in compiled_parent.nodelist.get_nodes_by_type(BlockNode)}
+                    blocks = {n.name: n for n in
+                              compiled_parent.nodelist.get_nodes_by_type(BlockNode)}
                     block_context.add_blocks(blocks)
                 break
 
@@ -140,7 +136,6 @@ class ExtendsNode(Node):
 
 
 class IncludeNode(Node):
-
     def __init__(self, template, *args, **kwargs):
         self.template = template
         self.extra_context = kwargs.pop('extra_context', {})
@@ -173,8 +168,7 @@ def do_block(parser, token):
     """
     Define a block that can be overridden by child templates.
     """
-    # token.split_contents() isn't useful here because this tag doesn't accept
-    # variable as arguments
+    # token.split_contents() isn't useful here because this tag doesn't accept variable as arguments
     bits = token.contents.split()
     if len(bits) != 2:
         raise TemplateSyntaxError("'%s' tag takes only one argument" % bits[0])
@@ -183,9 +177,7 @@ def do_block(parser, token):
     # check for duplication.
     try:
         if block_name in parser.__loaded_blocks:
-            raise TemplateSyntaxError(
-                "'%s' tag with name '%s' appears more than once" %
-                (bits[0], block_name))
+            raise TemplateSyntaxError("'%s' tag with name '%s' appears more than once" % (bits[0], block_name))
         parser.__loaded_blocks.append(block_name)
     except AttributeError:  # parser.__loaded_blocks isn't a list yet
         parser.__loaded_blocks = [block_name]
@@ -217,9 +209,7 @@ def do_extends(parser, token):
     parent_name = parser.compile_filter(bits[1])
     nodelist = parser.parse()
     if nodelist.get_nodes_by_type(ExtendsNode):
-        raise TemplateSyntaxError(
-            "'%s' cannot appear more than once in the same template" %
-            bits[0])
+        raise TemplateSyntaxError("'%s' cannot appear more than once in the same template" % bits[0])
     return ExtendsNode(nodelist, parent_name)
 
 

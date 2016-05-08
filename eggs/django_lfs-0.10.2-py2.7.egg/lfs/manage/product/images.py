@@ -23,8 +23,7 @@ logger = logging.getLogger("default")
 
 
 @permission_required("core.manage_shop")
-def manage_images(request, product_id, as_string=False,
-                  template_name="manage/product/images.html"):
+def manage_images(request, product_id, as_string=False, template_name="manage/product/images.html"):
     """
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
@@ -45,15 +44,10 @@ def manage_images(request, product_id, as_string=False,
 
 
 @permission_required("core.manage_shop")
-def list_images(request, product_id, as_string=False,
-                template_name="manage/product/images-list.html"):
+def list_images(request, product_id, as_string=False, template_name="manage/product/images-list.html"):
     """
     """
-    result = manage_images(
-        request,
-        product_id,
-        as_string=True,
-        template_name=template_name)
+    result = manage_images(request, product_id, as_string=True, template_name=template_name)
 
     if as_string:
         return result
@@ -77,7 +71,7 @@ def add_image(request, product_id):
             image = Image(content=product, title=file_content.name)
             try:
                 image.image.save(file_content.name, file_content, save=True)
-            except Exception as e:
+            except Exception, e:
                 logger.info("Upload image: %s %s" % (file_content.name, e))
                 continue
 
@@ -88,8 +82,7 @@ def add_image(request, product_id):
 
     product_changed.send(product, request=request)
 
-    result = json.dumps(
-        {"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
+    result = json.dumps({"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
     return HttpResponse(result, content_type='application/json')
 
 

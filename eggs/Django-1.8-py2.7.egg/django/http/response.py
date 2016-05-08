@@ -84,8 +84,7 @@ REASON_PHRASES = {
 }
 
 
-_charset_from_content_type_re = re.compile(
-    r';\s*charset=(?P<charset>[^\s;]+)', re.I)
+_charset_from_content_type_re = re.compile(r';\s*charset=(?P<charset>[^\s;]+)', re.I)
 
 
 class BadHeaderError(ValueError):
@@ -103,12 +102,7 @@ class HttpResponseBase(six.Iterator):
     status_code = 200
     reason_phrase = None        # Use default reason phrase for status code.
 
-    def __init__(
-            self,
-            content_type=None,
-            status=None,
-            reason=None,
-            charset=None):
+    def __init__(self, content_type=None, status=None, reason=None, charset=None):
         # _headers is a mapping of the lower-case name to the original case of
         # the header (required for working with legacy systems) and the header
         # value. Both the name of the header and its value are ASCII strings.
@@ -174,9 +168,7 @@ class HttpResponseBase(six.Iterator):
             value = str(value)
         if ((isinstance(value, bytes) and (b'\n' in value or b'\r' in value)) or
                 isinstance(value, six.text_type) and ('\n' in value or '\r' in value)):
-            raise BadHeaderError(
-                "Header values can't contain newlines (got %r)" %
-                value)
+            raise BadHeaderError("Header values can't contain newlines (got %r)" % value)
         try:
             if six.PY3:
                 if isinstance(value, str):
@@ -195,11 +187,7 @@ class HttpResponseBase(six.Iterator):
         except UnicodeError as e:
             if mime_encode:
                 # Wrapping in str() is a workaround for #12422 under Python 2.
-                value = str(
-                    Header(
-                        value,
-                        'utf-8',
-                        maxlinelen=sys.maxsize).encode())
+                value = str(Header(value, 'utf-8', maxlinelen=sys.maxsize).encode())
             else:
                 e.reason += ', HTTP response headers must be in %s format' % charset
                 raise
@@ -310,8 +298,7 @@ class HttpResponseBase(six.Iterator):
     # See http://docs.python.org/lib/bltin-file-objects.html
 
     # The WSGI server must call this method upon completion of the request.
-    # See
-    # http://blog.dscpl.com.au/2012/10/obligations-for-calling-close-on.html
+    # See http://blog.dscpl.com.au/2012/10/obligations-for-calling-close-on.html
     def close(self):
         for closable in self._closable_objects:
             try:
@@ -322,17 +309,13 @@ class HttpResponseBase(six.Iterator):
         signals.request_finished.send(sender=self._handler_class)
 
     def write(self, content):
-        raise IOError(
-            "This %s instance is not writable" %
-            self.__class__.__name__)
+        raise IOError("This %s instance is not writable" % self.__class__.__name__)
 
     def flush(self):
         pass
 
     def tell(self):
-        raise IOError(
-            "This %s instance cannot tell its position" %
-            self.__class__.__name__)
+        raise IOError("This %s instance cannot tell its position" % self.__class__.__name__)
 
     # These methods partially implement a stream-like object interface.
     # See https://docs.python.org/library/io.html#io.IOBase
@@ -341,9 +324,7 @@ class HttpResponseBase(six.Iterator):
         return False
 
     def writelines(self, lines):
-        raise IOError(
-            "This %s instance is not writable" %
-            self.__class__.__name__)
+        raise IOError("This %s instance is not writable" % self.__class__.__name__)
 
 
 class HttpResponse(HttpResponseBase):
@@ -376,9 +357,7 @@ class HttpResponse(HttpResponseBase):
     @content.setter
     def content(self, value):
         # Consume iterators upon assignment to allow repeated iteration.
-        if hasattr(
-                value, '__iter__') and not isinstance(
-                value, (bytes, six.string_types)):
+        if hasattr(value, '__iter__') and not isinstance(value, (bytes, six.string_types)):
             if hasattr(value, 'close'):
                 self._closable_objects.append(value)
             value = b''.join(self.make_bytes(chunk) for chunk in value)
@@ -426,10 +405,8 @@ class StreamingHttpResponse(HttpResponseBase):
 
     @property
     def content(self):
-        raise AttributeError(
-            "This %s instance has no `content` attribute. "
-            "Use `streaming_content` instead." %
-            self.__class__.__name__)
+        raise AttributeError("This %s instance has no `content` attribute. "
+            "Use `streaming_content` instead." % self.__class__.__name__)
 
     @property
     def streaming_content(self):
@@ -476,9 +453,7 @@ class HttpResponseRedirectBase(HttpResponse):
     def __init__(self, redirect_to, *args, **kwargs):
         parsed = urlparse(force_text(redirect_to))
         if parsed.scheme and parsed.scheme not in self.allowed_schemes:
-            raise DisallowedRedirect(
-                "Unsafe redirect to URL with protocol '%s'" %
-                parsed.scheme)
+            raise DisallowedRedirect("Unsafe redirect to URL with protocol '%s'" % parsed.scheme)
         super(HttpResponseRedirectBase, self).__init__(*args, **kwargs)
         self['Location'] = iri_to_uri(redirect_to)
 
@@ -503,8 +478,7 @@ class HttpResponseNotModified(HttpResponse):
     @HttpResponse.content.setter
     def content(self, value):
         if value:
-            raise AttributeError(
-                "You cannot set content to a 304 (Not Modified) response")
+            raise AttributeError("You cannot set content to a 304 (Not Modified) response")
         self._container = []
 
 
@@ -556,7 +530,7 @@ class JsonResponse(HttpResponse):
     def __init__(self, data, encoder=DjangoJSONEncoder, safe=True, **kwargs):
         if safe and not isinstance(data, dict):
             raise TypeError('In order to allow non-dict objects to be '
-                            'serialized set the safe parameter to False')
+                'serialized set the safe parameter to False')
         kwargs.setdefault('content_type', 'application/json')
         data = json.dumps(data, cls=encoder)
         super(JsonResponse, self).__init__(content=data, **kwargs)

@@ -79,8 +79,7 @@ def get_format_modules(lang=None, reverse=False):
     """
     if lang is None:
         lang = get_language()
-    modules = _format_modules_cache.setdefault(lang, list(
-        iter_format_modules(lang, settings.FORMAT_MODULE_PATH)))
+    modules = _format_modules_cache.setdefault(lang, list(iter_format_modules(lang, settings.FORMAT_MODULE_PATH)))
     if reverse:
         return list(reversed(modules))
     return modules
@@ -134,11 +133,7 @@ def date_format(value, format=None, use_l10n=None):
     If use_l10n is provided and is not None, that will force the value to
     be localized (or not), overriding the value of settings.USE_L10N.
     """
-    return dateformat.format(
-        value,
-        get_format(
-            format or 'DATE_FORMAT',
-            use_l10n=use_l10n))
+    return dateformat.format(value, get_format(format or 'DATE_FORMAT', use_l10n=use_l10n))
 
 
 def time_format(value, format=None, use_l10n=None):
@@ -148,15 +143,10 @@ def time_format(value, format=None, use_l10n=None):
     If use_l10n is provided and is not None, that will force the value to
     be localized (or not), overriding the value of settings.USE_L10N.
     """
-    return dateformat.time_format(value, get_format(
-        format or 'TIME_FORMAT', use_l10n=use_l10n))
+    return dateformat.time_format(value, get_format(format or 'TIME_FORMAT', use_l10n=use_l10n))
 
 
-def number_format(
-        value,
-        decimal_pos=None,
-        use_l10n=None,
-        force_grouping=False):
+def number_format(value, decimal_pos=None, use_l10n=None, force_grouping=False):
     """
     Formats a numeric value using localization settings
 
@@ -233,17 +223,12 @@ def sanitize_separators(value):
             parts.append(decimals)
         if settings.USE_THOUSAND_SEPARATOR:
             thousand_sep = get_format('THOUSAND_SEPARATOR')
-            if thousand_sep == '.' and value.count(
-                    '.') == 1 and len(value.split('.')[-1]) != 3:
-                # Special case where we suspect a dot meant decimal separator
-                # (see #22171)
+            if thousand_sep == '.' and value.count('.') == 1 and len(value.split('.')[-1]) != 3:
+                # Special case where we suspect a dot meant decimal separator (see #22171)
                 pass
             else:
                 for replacement in {
-                    thousand_sep,
-                    unicodedata.normalize(
-                        'NFKD',
-                        thousand_sep)}:
+                        thousand_sep, unicodedata.normalize('NFKD', thousand_sep)}:
                     value = value.replace(replacement, '')
         parts.append(value)
         value = '.'.join(reversed(parts))

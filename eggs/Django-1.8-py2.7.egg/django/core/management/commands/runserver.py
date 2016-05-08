@@ -32,25 +32,12 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('addrport', nargs='?',
-                            help='Optional port number, or ipaddr:port')
-        parser.add_argument(
-            '--ipv6',
-            '-6',
-            action='store_true',
-            dest='use_ipv6',
-            default=False,
+            help='Optional port number, or ipaddr:port')
+        parser.add_argument('--ipv6', '-6', action='store_true', dest='use_ipv6', default=False,
             help='Tells Django to use an IPv6 address.')
-        parser.add_argument(
-            '--nothreading',
-            action='store_false',
-            dest='use_threading',
-            default=True,
+        parser.add_argument('--nothreading', action='store_false', dest='use_threading', default=True,
             help='Tells Django to NOT use threading.')
-        parser.add_argument(
-            '--noreload',
-            action='store_false',
-            dest='use_reloader',
-            default=True,
+        parser.add_argument('--noreload', action='store_false', dest='use_reloader', default=True,
             help='Tells Django to NOT use the auto-reloader.')
 
     def execute(self, *args, **options):
@@ -71,8 +58,7 @@ class Command(BaseCommand):
         from django.conf import settings
 
         if not settings.DEBUG and not settings.ALLOWED_HOSTS:
-            raise CommandError(
-                'You must set settings.ALLOWED_HOSTS if DEBUG is False.')
+            raise CommandError('You must set settings.ALLOWED_HOSTS if DEBUG is False.')
 
         self.use_ipv6 = options.get('use_ipv6')
         if self.use_ipv6 and not socket.has_ipv6:
@@ -84,24 +70,18 @@ class Command(BaseCommand):
         else:
             m = re.match(naiveip_re, options['addrport'])
             if m is None:
-                raise CommandError(
-                    '"%s" is not a valid port number '
-                    'or address:port pair.' %
-                    options['addrport'])
+                raise CommandError('"%s" is not a valid port number '
+                                   'or address:port pair.' % options['addrport'])
             self.addr, _ipv4, _ipv6, _fqdn, self.port = m.groups()
             if not self.port.isdigit():
-                raise CommandError(
-                    "%r is not a valid port number." %
-                    self.port)
+                raise CommandError("%r is not a valid port number." % self.port)
             if self.addr:
                 if _ipv6:
                     self.addr = self.addr[1:-1]
                     self.use_ipv6 = True
                     self._raw_ipv6 = True
                 elif self.use_ipv6 and not _fqdn:
-                    raise CommandError(
-                        '"%s" is not a valid IPv6 address.' %
-                        self.addr)
+                    raise CommandError('"%s" is not a valid IPv6 address.' % self.addr)
         if not self.addr:
             self.addr = '::1' if self.use_ipv6 else '127.0.0.1'
             self._raw_ipv6 = bool(self.use_ipv6)
@@ -187,8 +167,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.NOTICE(
                 "\nYou have unapplied migrations; your app may not work properly until they are applied."
             ))
-            self.stdout.write(self.style.NOTICE(
-                "Run 'python manage.py migrate' to apply them.\n"))
+            self.stdout.write(self.style.NOTICE("Run 'python manage.py migrate' to apply them.\n"))
 
 # Kept for backward compatibility
 BaseRunserverCommand = Command

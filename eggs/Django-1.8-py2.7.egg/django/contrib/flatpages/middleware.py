@@ -4,11 +4,9 @@ from django.http import Http404
 
 
 class FlatpageFallbackMiddleware(object):
-
     def process_response(self, request, response):
         if response.status_code != 404:
-            # No need to check for a flatpage for non-404 responses.
-            return response
+            return response  # No need to check for a flatpage for non-404 responses.
         try:
             return flatpage(request, request.path_info)
         # Return the original response if any errors happened. Because this

@@ -5,17 +5,12 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 
 class FlatpageForm(forms.ModelForm):
-    url = forms.RegexField(
-        label=_("URL"),
-        max_length=100,
-        regex=r'^[-\w/\.~]+$',
-        help_text=_(
-            "Example: '/about/contact/'. Make sure to have leading"
-            " and trailing slashes."),
+    url = forms.RegexField(label=_("URL"), max_length=100, regex=r'^[-\w/\.~]+$',
+        help_text=_("Example: '/about/contact/'. Make sure to have leading"
+                    " and trailing slashes."),
         error_messages={
-            "invalid": _(
-                "This value must contain only letters, numbers,"
-                " dots, underscores, dashes, slashes or tildes."),
+            "invalid": _("This value must contain only letters, numbers,"
+                         " dots, underscores, dashes, slashes or tildes."),
         },
     )
 
@@ -53,9 +48,7 @@ class FlatpageForm(forms.ModelForm):
                     raise forms.ValidationError(
                         _('Flatpage with url %(url)s already exists for site %(site)s'),
                         code='duplicate_url',
-                        params={
-                            'url': url,
-                            'site': site},
+                        params={'url': url, 'site': site},
                     )
 
         return super(FlatpageForm, self).clean()

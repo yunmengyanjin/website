@@ -47,10 +47,7 @@ def reviews(request, template_name="manage/reviews/reviews.html"):
 
 
 # Parts
-def review_inline(
-        request,
-        review_id,
-        template_name="manage/reviews/review_inline.html"):
+def review_inline(request, review_id, template_name="manage/reviews/review_inline.html"):
     """Displays review with provided review id.
     """
     review_filters = request.session.get("review-filters", {})
@@ -63,9 +60,7 @@ def review_inline(
     }))
 
 
-def reviews_inline(
-        request,
-        template_name="manage/reviews/reviews_inline.html"):
+def reviews_inline(request, template_name="manage/reviews/reviews_inline.html"):
     """Renders the reviews section of the reviews overview view.
     """
     review_filters = request.session.get("review-filters", {})
@@ -88,10 +83,7 @@ def reviews_inline(
     }))
 
 
-def review_filters_inline(
-        request,
-        review_id,
-        template_name="manage/reviews/review_filters_inline.html"):
+def review_filters_inline(request, review_id, template_name="manage/reviews/review_filters_inline.html"):
     """Renders the filter section of the review view.
     """
     review_filters = request.session.get("review-filters", {})
@@ -104,9 +96,7 @@ def review_filters_inline(
     }))
 
 
-def reviews_filters_inline(
-        request,
-        template_name="manage/reviews/reviews_filters_inline.html"):
+def reviews_filters_inline(request, template_name="manage/reviews/reviews_filters_inline.html"):
     """Renders the reviews filters section of the reviews overview view.
     """
     review_filters = request.session.get("review-filters", {})
@@ -127,10 +117,7 @@ def reviews_filters_inline(
     }))
 
 
-def selectable_reviews_inline(
-        request,
-        review_id,
-        template_name="manage/reviews/selectable_reviews_inline.html"):
+def selectable_reviews_inline(request, review_id, template_name="manage/reviews/selectable_reviews_inline.html"):
     """Display selectable reviews.
     """
     review_filters = request.session.get("review-filters", {})
@@ -173,14 +160,8 @@ def set_selectable_reviews_page(request):
     review_id = request.GET.get("review-id", 1)
 
     html = (
-        ("#selectable-reviews",
-         selectable_reviews_inline(
-             request,
-             review_id)),
-        ("#selectable-reviews-inline",
-         selectable_reviews_inline(
-             request,
-             review_id)),
+        ("#selectable-reviews", selectable_reviews_inline(request, review_id)),
+        ("#selectable-reviews-inline", selectable_reviews_inline(request, review_id)),
     )
 
     result = json.dumps({
@@ -207,14 +188,8 @@ def set_ordering(request, ordering):
     if request.REQUEST.get("came-from") == "review":
         review_id = request.REQUEST.get("review-id")
         html = (
-            ("#selectable-reviews-inline",
-             selectable_reviews_inline(
-                 request,
-                 review_id)),
-            ("#review-inline",
-             review_inline(
-                 request,
-                 review_id)),
+            ("#selectable-reviews-inline", selectable_reviews_inline(request, review_id)),
+            ("#review-inline", review_inline(request, review_id)),
         )
     else:
         html = (("#reviews-inline", reviews_inline(request)),)
@@ -249,14 +224,8 @@ def set_review_filters(request):
     if request.REQUEST.get("came-from") == "review":
         review_id = request.REQUEST.get("review-id")
         html = (
-            ("#selectable-reviews-inline",
-             selectable_reviews_inline(
-                 request,
-                 review_id)),
-            ("#review-inline",
-             review_inline(
-                 request,
-                 review_id)),
+            ("#selectable-reviews-inline", selectable_reviews_inline(request, review_id)),
+            ("#review-inline", review_inline(request, review_id)),
         )
     else:
         html = (
@@ -317,20 +286,14 @@ def delete_review(request, review_id):
         review.delete()
 
     try:
-        ordering = "%s%s" % (request.session.get(
-            "review-ordering-order",
-            ""),
-            request.session.get(
-            "review-ordering",
-            "id"))
+        ordering = "%s%s" % (request.session.get("review-ordering-order", ""), request.session.get("review-ordering", "id"))
         review = Review.objects.all().order_by(ordering)[0]
     except IndexError:
         url = reverse("lfs_manage_reviews")
     else:
         url = reverse("lfs_manage_review", kwargs={"review_id": review.id})
 
-    return lfs.core.utils.set_message_cookie(
-        url, _(u"Review has been deleted."))
+    return lfs.core.utils.set_message_cookie(url, _(u"Review has been deleted."))
 
 
 @permission_required("core.manage_shop")
@@ -346,14 +309,8 @@ def set_review_state(request, review_id):
         review.save()
 
     html = (
-        ("#selectable-reviews-inline",
-         selectable_reviews_inline(
-             request,
-             review_id)),
-        ("#review-inline",
-         review_inline(
-             request,
-             review_id)),
+        ("#selectable-reviews-inline", selectable_reviews_inline(request, review_id)),
+        ("#review-inline", review_inline(request, review_id)),
     )
 
     msg = _(u"Review state has been set")
@@ -387,20 +344,11 @@ def _get_filtered_reviews(request, review_filters):
     if review_ordering == "product":
         reviews = list(reviews)
         if review_ordering_order == "-":
-            reviews.sort(
-                lambda b,
-                a: cmp(
-                    a.content.get_name(),
-                    b.content.get_name()))
+            reviews.sort(lambda b, a: cmp(a.content.get_name(), b.content.get_name()))
         else:
-            reviews.sort(
-                lambda a,
-                b: cmp(
-                    a.content.get_name(),
-                    b.content.get_name()))
+            reviews.sort(lambda a, b: cmp(a.content.get_name(), b.content.get_name()))
 
     else:
-        reviews = reviews.order_by("%s%s" %
-                                   (review_ordering_order, review_ordering))
+        reviews = reviews.order_by("%s%s" % (review_ordering_order, review_ordering))
 
     return reviews

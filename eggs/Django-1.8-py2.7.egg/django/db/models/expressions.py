@@ -37,8 +37,7 @@ class Combinable(object):
         if not hasattr(other, 'resolve_expression'):
             # everything must be resolvable to an expression
             if isinstance(other, datetime.timedelta):
-                other = DurationValue(
-                    other, output_field=fields.DurationField())
+                other = DurationValue(other, output_field=fields.DurationField())
             else:
                 other = Value(other)
 
@@ -131,8 +130,7 @@ class BaseExpression(object):
         self._output_field = output_field
 
     def get_db_converters(self, connection):
-        return [self.convert_value] + \
-            self.output_field.get_db_converters(connection)
+        return [self.convert_value] + self.output_field.get_db_converters(connection)
 
     def get_source_expressions(self):
         return []
@@ -182,13 +180,7 @@ class BaseExpression(object):
                 return True
         return False
 
-    def resolve_expression(
-            self,
-            query=None,
-            allow_joins=True,
-            reuse=None,
-            summarize=False,
-            for_save=False):
+    def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
         """
         Provides the chance to do any preprocessing or validation before being
         added to the query.
@@ -227,8 +219,7 @@ class BaseExpression(object):
         Returns the output type of this expressions.
         """
         if self._output_field_or_none is None:
-            raise FieldError(
-                "Cannot resolve expression type, unknown output_field")
+            raise FieldError("Cannot resolve expression type, unknown output_field")
         return self._output_field_or_none
 
     @cached_property
@@ -267,8 +258,7 @@ class BaseExpression(object):
                 for source in sources:
                     if self._output_field is None:
                         self._output_field = source
-                    if source is not None and not isinstance(
-                            self._output_field, source.__class__):
+                    if source is not None and not isinstance(self._output_field, source.__class__):
                         raise FieldError(
                             "Expression contains mixed types. You must set output_field")
 
@@ -388,10 +378,8 @@ class CombinedExpression(Expression):
             rhs_output = None
         if (not connection.features.has_native_duration_field and
                 ((lhs_output and lhs_output.get_internal_type() == 'DurationField')
-                 or (rhs_output and rhs_output.get_internal_type() == 'DurationField'))):
-            return DurationExpression(
-                self.lhs, self.connector, self.rhs).as_sql(
-                compiler, connection)
+                or (rhs_output and rhs_output.get_internal_type() == 'DurationField'))):
+            return DurationExpression(self.lhs, self.connector, self.rhs).as_sql(compiler, connection)
         expressions = []
         expression_params = []
         sql, params = compiler.compile(self.lhs)
@@ -405,24 +393,15 @@ class CombinedExpression(Expression):
         sql = connection.ops.combine_expression(self.connector, expressions)
         return expression_wrapper % sql, expression_params
 
-    def resolve_expression(
-            self,
-            query=None,
-            allow_joins=True,
-            reuse=None,
-            summarize=False,
-            for_save=False):
+    def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
         c = self.copy()
         c.is_summary = summarize
-        c.lhs = c.lhs.resolve_expression(
-            query, allow_joins, reuse, summarize, for_save)
-        c.rhs = c.rhs.resolve_expression(
-            query, allow_joins, reuse, summarize, for_save)
+        c.lhs = c.lhs.resolve_expression(query, allow_joins, reuse, summarize, for_save)
+        c.rhs = c.rhs.resolve_expression(query, allow_joins, reuse, summarize, for_save)
         return c
 
 
 class DurationExpression(CombinedExpression):
-
     def compile(self, side, compiler, connection):
         if not isinstance(side, DurationValue):
             try:
@@ -432,8 +411,7 @@ class DurationExpression(CombinedExpression):
             else:
                 if output.get_internal_type() == 'DurationField':
                     sql, params = compiler.compile(side)
-                    return connection.ops.format_for_duration_arithmetic(
-                        sql), params
+                    return connection.ops.format_for_duration_arithmetic(sql), params
         return compiler.compile(side)
 
     def as_sql(self, compiler, connection):
@@ -448,8 +426,7 @@ class DurationExpression(CombinedExpression):
         expression_params.extend(params)
         # order of precedence
         expression_wrapper = '(%s)'
-        sql = connection.ops.combine_duration_expression(
-            self.connector, expressions)
+        sql = connection.ops.combine_duration_expression(self.connector, expressions)
         return expression_wrapper % sql, expression_params
 
 
@@ -457,7 +434,6 @@ class F(Combinable):
     """
     An object capable of resolving references to existing query objects.
     """
-
     def __init__(self, name):
         """
         Arguments:
@@ -468,13 +444,7 @@ class F(Combinable):
     def __repr__(self):
         return "{}({})".format(self.__class__.__name__, self.name)
 
-    def resolve_expression(
-            self,
-            query=None,
-            allow_joins=True,
-            reuse=None,
-            summarize=False,
-            for_save=False):
+    def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
         return query.resolve_ref(self.name, allow_joins, reuse, summarize)
 
     def refs_aggregate(self, existing_aggregates):
@@ -502,10 +472,8 @@ class Func(Expression):
         self.extra = extra
 
     def __repr__(self):
-        args = self.arg_joiner.join(str(arg)
-                                    for arg in self.source_expressions)
-        extra = ', '.join(str(key) + '=' + str(val)
-                          for key, val in self.extra.items())
+        args = self.arg_joiner.join(str(arg) for arg in self.source_expressions)
+        extra = ', '.join(str(key) + '=' + str(val) for key, val in self.extra.items())
         if extra:
             return "{}({}, {})".format(self.__class__.__name__, args, extra)
         return "{}({})".format(self.__class__.__name__, args)
@@ -516,18 +484,11 @@ class Func(Expression):
     def set_source_expressions(self, exprs):
         self.source_expressions = exprs
 
-    def resolve_expression(
-            self,
-            query=None,
-            allow_joins=True,
-            reuse=None,
-            summarize=False,
-            for_save=False):
+    def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
         c = self.copy()
         c.is_summary = summarize
         for pos, arg in enumerate(c.source_expressions):
-            c.source_expressions[pos] = arg.resolve_expression(
-                query, allow_joins, reuse, summarize, for_save)
+            c.source_expressions[pos] = arg.resolve_expression(query, allow_joins, reuse, summarize, for_save)
         return c
 
     def as_sql(self, compiler, connection, function=None, template=None):
@@ -542,8 +503,7 @@ class Func(Expression):
             self.extra['function'] = self.extra.get('function', self.function)
         else:
             self.extra['function'] = function
-        self.extra['expressions'] = self.extra[
-            'field'] = self.arg_joiner.join(sql_parts)
+        self.extra['expressions'] = self.extra['field'] = self.arg_joiner.join(sql_parts)
         template = template or self.extra.get('template', self.template)
         return template % self.extra, params
 
@@ -558,7 +518,6 @@ class Value(Expression):
     """
     Represents a wrapped value as a node within an expression
     """
-
     def __init__(self, value, output_field=None):
         """
         Arguments:
@@ -580,11 +539,9 @@ class Value(Expression):
         # check _output_field to avoid triggering an exception
         if self._output_field is not None:
             if self.for_save:
-                val = self.output_field.get_db_prep_save(
-                    val, connection=connection)
+                val = self.output_field.get_db_prep_save(val, connection=connection)
             else:
-                val = self.output_field.get_db_prep_value(
-                    val, connection=connection)
+                val = self.output_field.get_db_prep_value(val, connection=connection)
         if val is None:
             # cx_Oracle does not always convert None to the appropriate
             # NULL type (like in case expressions using numbers), so we
@@ -592,21 +549,8 @@ class Value(Expression):
             return 'NULL', []
         return '%s', [val]
 
-    def resolve_expression(
-            self,
-            query=None,
-            allow_joins=True,
-            reuse=None,
-            summarize=False,
-            for_save=False):
-        c = super(
-            Value,
-            self).resolve_expression(
-            query,
-            allow_joins,
-            reuse,
-            summarize,
-            for_save)
+    def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
+        c = super(Value, self).resolve_expression(query, allow_joins, reuse, summarize, for_save)
         c.for_save = for_save
         return c
 
@@ -615,7 +559,6 @@ class Value(Expression):
 
 
 class DurationValue(Value):
-
     def as_sql(self, compiler, connection):
         connection.ops.check_expression_support(self)
         if (connection.features.has_native_duration_field and
@@ -625,7 +568,6 @@ class DurationValue(Value):
 
 
 class RawSQL(Expression):
-
     def __init__(self, sql, params, output_field=None):
         if output_field is None:
             output_field = fields.Field()
@@ -633,8 +575,7 @@ class RawSQL(Expression):
         super(RawSQL, self).__init__(output_field=output_field)
 
     def __repr__(self):
-        return "{}({}, {})".format(
-            self.__class__.__name__, self.sql, self.params)
+        return "{}({}, {})".format(self.__class__.__name__, self.sql, self.params)
 
     def as_sql(self, compiler, connection):
         return '(%s)' % self.sql, self.params
@@ -644,7 +585,6 @@ class RawSQL(Expression):
 
 
 class Random(Expression):
-
     def __init__(self):
         super(Random, self).__init__(output_field=fields.FloatField())
 
@@ -656,7 +596,6 @@ class Random(Expression):
 
 
 class Col(Expression):
-
     def __init__(self, alias, target, output_field=None):
         if output_field is None:
             output_field = target
@@ -672,12 +611,7 @@ class Col(Expression):
         return "%s.%s" % (qn(self.alias), qn(self.target.column)), []
 
     def relabeled_clone(self, relabels):
-        return self.__class__(
-            relabels.get(
-                self.alias,
-                self.alias),
-            self.target,
-            self.output_field)
+        return self.__class__(relabels.get(self.alias, self.alias), self.target, self.output_field)
 
     def get_group_by_cols(self):
         return [self]
@@ -694,14 +628,12 @@ class Ref(Expression):
     Reference to column alias of the query. For example, Ref('sum_cost') in
     qs.annotate(sum_cost=Sum('cost')) query.
     """
-
     def __init__(self, refs, source):
         super(Ref, self).__init__()
         self.refs, self.source = refs, source
 
     def __repr__(self):
-        return "{}({}, {})".format(
-            self.__class__.__name__, self.refs, self.source)
+        return "{}({}, {})".format(self.__class__.__name__, self.refs, self.source)
 
     def get_source_expressions(self):
         return [self.source]
@@ -709,13 +641,7 @@ class Ref(Expression):
     def set_source_expressions(self, exprs):
         self.source, = exprs
 
-    def resolve_expression(
-            self,
-            query=None,
-            allow_joins=True,
-            reuse=None,
-            summarize=False,
-            for_save=False):
+    def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
         # The sub-expression `source` has already been resolved, as this is
         # just a reference to the name of `source`.
         return self
@@ -760,8 +686,7 @@ class When(Expression):
         if lookups and condition is None:
             condition, lookups = Q(**lookups), None
         if condition is None or not isinstance(condition, Q) or lookups:
-            raise TypeError(
-                "__init__() takes either a Q object or lookups as keyword arguments")
+            raise TypeError("__init__() takes either a Q object or lookups as keyword arguments")
         super(When, self).__init__(output_field=None)
         self.condition = condition
         self.result = self._parse_expressions(then)[0]
@@ -782,19 +707,11 @@ class When(Expression):
         # We're only interested in the fields of the result expressions.
         return [self.result._output_field_or_none]
 
-    def resolve_expression(
-            self,
-            query=None,
-            allow_joins=True,
-            reuse=None,
-            summarize=False,
-            for_save=False):
+    def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
         c = self.copy()
         c.is_summary = summarize
-        c.condition = c.condition.resolve_expression(
-            query, allow_joins, reuse, summarize, False)
-        c.result = c.result.resolve_expression(
-            query, allow_joins, reuse, summarize, for_save)
+        c.condition = c.condition.resolve_expression(query, allow_joins, reuse, summarize, False)
+        c.result = c.result.resolve_expression(query, allow_joins, reuse, summarize, for_save)
         return c
 
     def as_sql(self, compiler, connection, template=None):
@@ -843,8 +760,7 @@ class Case(Expression):
         self.default = self._parse_expressions(default)[0]
 
     def __str__(self):
-        return "CASE %s, ELSE %r" % (', '.join(str(c)
-                                               for c in self.cases), self.default)
+        return "CASE %s, ELSE %r" % (', '.join(str(c) for c in self.cases), self.default)
 
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, self)
@@ -856,20 +772,12 @@ class Case(Expression):
         self.cases = exprs[:-1]
         self.default = exprs[-1]
 
-    def resolve_expression(
-            self,
-            query=None,
-            allow_joins=True,
-            reuse=None,
-            summarize=False,
-            for_save=False):
+    def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
         c = self.copy()
         c.is_summary = summarize
         for pos, case in enumerate(c.cases):
-            c.cases[pos] = case.resolve_expression(
-                query, allow_joins, reuse, summarize, for_save)
-        c.default = c.default.resolve_expression(
-            query, allow_joins, reuse, summarize, for_save)
+            c.cases[pos] = case.resolve_expression(query, allow_joins, reuse, summarize, for_save)
+        c.default = c.default.resolve_expression(query, allow_joins, reuse, summarize, for_save)
         return c
 
     def as_sql(self, compiler, connection, template=None, extra=None):
@@ -898,7 +806,6 @@ class Date(Expression):
     """
     Add a date selection column.
     """
-
     def __init__(self, lookup, lookup_type):
         super(Date, self).__init__(output_field=fields.DateField())
         self.lookup = lookup
@@ -906,10 +813,7 @@ class Date(Expression):
         self.lookup_type = lookup_type
 
     def __repr__(self):
-        return "{}({}, {})".format(
-            self.__class__.__name__,
-            self.lookup,
-            self.lookup_type)
+        return "{}({}, {})".format(self.__class__.__name__, self.lookup, self.lookup_type)
 
     def get_source_expressions(self):
         return [self.col]
@@ -917,19 +821,11 @@ class Date(Expression):
     def set_source_expressions(self, exprs):
         self.col, = exprs
 
-    def resolve_expression(
-            self,
-            query=None,
-            allow_joins=True,
-            reuse=None,
-            summarize=False,
-            for_save=False):
+    def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
         copy = self.copy()
-        copy.col = query.resolve_ref(
-            self.lookup, allow_joins, reuse, summarize)
+        copy.col = query.resolve_ref(self.lookup, allow_joins, reuse, summarize)
         field = copy.col.output_field
-        assert isinstance(
-            field, fields.DateField), "%r isn't a DateField." % field.name
+        assert isinstance(field, fields.DateField), "%r isn't a DateField." % field.name
         if settings.USE_TZ:
             assert not isinstance(field, fields.DateTimeField), (
                 "%r is a DateTimeField, not a DateField." % field.name
@@ -957,7 +853,6 @@ class DateTime(Expression):
     """
     Add a datetime selection column.
     """
-
     def __init__(self, lookup, lookup_type, tzinfo):
         super(DateTime, self).__init__(output_field=fields.DateTimeField())
         self.lookup = lookup
@@ -971,10 +866,7 @@ class DateTime(Expression):
 
     def __repr__(self):
         return "{}({}, {}, {})".format(
-            self.__class__.__name__,
-            self.lookup,
-            self.lookup_type,
-            self.tzinfo)
+            self.__class__.__name__, self.lookup, self.lookup_type, self.tzinfo)
 
     def get_source_expressions(self):
         return [self.col]
@@ -982,16 +874,9 @@ class DateTime(Expression):
     def set_source_expressions(self, exprs):
         self.col, = exprs
 
-    def resolve_expression(
-            self,
-            query=None,
-            allow_joins=True,
-            reuse=None,
-            summarize=False,
-            for_save=False):
+    def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
         copy = self.copy()
-        copy.col = query.resolve_ref(
-            self.lookup, allow_joins, reuse, summarize)
+        copy.col = query.resolve_ref(self.lookup, allow_joins, reuse, summarize)
         field = copy.col.output_field
         assert isinstance(field, fields.DateTimeField), (
             "%r isn't a DateTimeField." % field.name
@@ -1001,8 +886,7 @@ class DateTime(Expression):
     def as_sql(self, compiler, connection):
         sql, params = self.col.as_sql(compiler, connection)
         assert not(params)
-        return connection.ops.datetime_trunc_sql(
-            self.lookup_type, sql, self.tzname)
+        return connection.ops.datetime_trunc_sql(self.lookup_type, sql, self.tzname)
 
     def copy(self):
         copy = super(DateTime, self).copy()
@@ -1016,7 +900,8 @@ class DateTime(Expression):
             if value is None:
                 raise ValueError(
                     "Database returned an invalid value in QuerySet.datetimes(). "
-                    "Are time zone definitions for your database and pytz installed?")
+                    "Are time zone definitions for your database and pytz installed?"
+                )
             value = value.replace(tzinfo=None)
             value = timezone.make_aware(value, self.tzinfo)
         return value

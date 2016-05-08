@@ -78,7 +78,8 @@ def sitemap(request, sitemaps, section=None,
         lastmod = site.latest_lastmod
         response['Last-Modified'] = http_date(
             timegm(
-                lastmod.utctimetuple() if isinstance(
-                    lastmod,
-                    datetime.datetime) else lastmod.timetuple()))
+                lastmod.utctimetuple() if isinstance(lastmod, datetime.datetime)
+                else lastmod.timetuple()
+            )
+        )
     return response

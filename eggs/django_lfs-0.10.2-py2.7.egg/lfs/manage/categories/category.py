@@ -37,7 +37,6 @@ class CategoryAddForm(ModelForm):
 class CategoryForm(ModelForm):
     """Process form to edit a category.
     """
-
     def __init__(self, *args, **kwargs):
         super(CategoryForm, self).__init__(*args, **kwargs)
         self.fields["image"].widget = LFSImageInput()
@@ -58,18 +57,13 @@ def manage_categories(request):
     except IndexError:
         url = reverse("lfs_manage_no_categories")
     else:
-        url = reverse(
-            "lfs_manage_category", kwargs={
-                "category_id": category.id})
+        url = reverse("lfs_manage_category", kwargs={"category_id": category.id})
 
     return HttpResponseRedirect(url)
 
 
 @permission_required("core.manage_shop")
-def manage_category(
-        request,
-        category_id,
-        template_name="manage/category/manage_category.html"):
+def manage_category(request, category_id, template_name="manage/category/manage_category.html"):
     """Displays the form to manage the category with given category id.
     """
     category = Category.objects.get(pk=category_id)
@@ -86,11 +80,7 @@ def manage_category(
 
 
 @permission_required("core.manage_shop")
-def category_data(
-        request,
-        category_id,
-        form=None,
-        template_name="manage/category/data.html"):
+def category_data(request, category_id, form=None, template_name="manage/category/data.html"):
     """Displays the core data for the category_id with passed category_id.
 
     This is used as a part of the whole category form.
@@ -121,18 +111,12 @@ def category_by_id(request, category_id):
 
 # Actions
 @permission_required("core.manage_shop")
-def edit_category_data(
-        request,
-        category_id,
-        template_name="manage/category/data.html"):
+def edit_category_data(request, category_id, template_name="manage/category/data.html"):
     """Updates the category data.
     """
     category = Category.objects.get(pk=category_id)
 
-    form = CategoryForm(
-        instance=category,
-        data=request.POST,
-        files=request.FILES)
+    form = CategoryForm(instance=category, data=request.POST, files=request.FILES)
     if form.is_valid():
         form.save()
         message = _(u"Category data have been saved.")
@@ -150,17 +134,14 @@ def edit_category_data(
 
     result = json.dumps({
         "message": message,
-        "html": html,
+        "html" : html,
     }, cls=LazyEncoder)
 
     return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
-def add_category(
-        request,
-        category_id="",
-        template_name="manage/category/add_category.html"):
+def add_category(request, category_id="", template_name="manage/category/add_category.html"):
     """Provides an add form and adds a new category to category with given id.
     """
     if category_id == "":
@@ -183,18 +164,16 @@ def add_category(
 
             # Update positions
             manage_utils.update_category_positions(parent)
-            url = reverse(
-                "lfs_manage_category", kwargs={
-                    "category_id": new_category.id})
+            url = reverse("lfs_manage_category", kwargs={"category_id": new_category.id})
             return HttpResponseRedirect(url)
     else:
         form = CategoryAddForm(initial={"parent": category_id})
 
-    return render_to_response(
-        template_name, RequestContext(
-            request, {
-                "category": parent, "form": form, "came_from": request.REQUEST.get(
-                    "came_from", reverse("lfs_manage_categories")), }))
+    return render_to_response(template_name, RequestContext(request, {
+        "category": parent,
+        "form": form,
+        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_categories")),
+    }))
 
 
 @permission_required("core.manage_shop")
@@ -262,8 +241,5 @@ def _category_choices_children(categories, category, context, level=1):
     """
     for category in category.category_set.all():
         if context != category:
-            categories.append(
-                (category.id, "%s %s" %
-                 ("-" * level * 5, category.name)))
-            _category_choices_children(
-                categories, category, context, level + 1)
+            categories.append((category.id, "%s %s" % ("-" * level * 5, category.name)))
+            _category_choices_children(categories, category, context, level + 1)

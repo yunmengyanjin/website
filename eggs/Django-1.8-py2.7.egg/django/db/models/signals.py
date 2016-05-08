@@ -26,13 +26,9 @@ class ModelSignal(Signal):
             pass
         else:
             for receiver, weak, dispatch_uid in receivers:
-                super(
-                    ModelSignal,
-                    self).connect(
-                    receiver,
-                    sender=sender,
-                    weak=weak,
-                    dispatch_uid=dispatch_uid)
+                super(ModelSignal, self).connect(
+                    receiver, sender=sender, weak=weak, dispatch_uid=dispatch_uid
+                )
 
     def connect(self, receiver, sender=None, weak=True, dispatch_uid=None):
         if isinstance(sender, six.string_types):
@@ -54,77 +50,23 @@ class ModelSignal(Signal):
             receiver, sender=sender, weak=weak, dispatch_uid=dispatch_uid
         )
 
-pre_init = ModelSignal(
-    providing_args=[
-        "instance",
-        "args",
-        "kwargs"],
-    use_caching=True)
+pre_init = ModelSignal(providing_args=["instance", "args", "kwargs"], use_caching=True)
 post_init = ModelSignal(providing_args=["instance"], use_caching=True)
 
-pre_save = ModelSignal(
-    providing_args=[
-        "instance",
-        "raw",
-        "using",
-        "update_fields"],
-    use_caching=True)
-post_save = ModelSignal(
-    providing_args=[
-        "instance",
-        "raw",
-        "created",
-        "using",
-        "update_fields"],
-    use_caching=True)
+pre_save = ModelSignal(providing_args=["instance", "raw", "using", "update_fields"],
+                       use_caching=True)
+post_save = ModelSignal(providing_args=["instance", "raw", "created", "using", "update_fields"], use_caching=True)
 
-pre_delete = ModelSignal(
-    providing_args=[
-        "instance",
-        "using"],
-    use_caching=True)
-post_delete = ModelSignal(
-    providing_args=[
-        "instance",
-        "using"],
-    use_caching=True)
+pre_delete = ModelSignal(providing_args=["instance", "using"], use_caching=True)
+post_delete = ModelSignal(providing_args=["instance", "using"], use_caching=True)
 
 m2m_changed = ModelSignal(
-    providing_args=[
-        "action",
-        "instance",
-        "reverse",
-        "model",
-        "pk_set",
-        "using"],
+    providing_args=["action", "instance", "reverse", "model", "pk_set", "using"],
     use_caching=True,
 )
 
-pre_migrate = Signal(
-    providing_args=[
-        "app_config",
-        "verbosity",
-        "interactive",
-        "using"])
-post_migrate = Signal(
-    providing_args=[
-        "app_config",
-        "verbosity",
-        "interactive",
-        "using"])
+pre_migrate = Signal(providing_args=["app_config", "verbosity", "interactive", "using"])
+post_migrate = Signal(providing_args=["app_config", "verbosity", "interactive", "using"])
 
-pre_syncdb = Signal(
-    providing_args=[
-        "app",
-        "create_models",
-        "verbosity",
-        "interactive",
-        "db"])
-post_syncdb = Signal(
-    providing_args=[
-        "class",
-        "app",
-        "created_models",
-        "verbosity",
-        "interactive",
-        "db"])
+pre_syncdb = Signal(providing_args=["app", "create_models", "verbosity", "interactive", "db"])
+post_syncdb = Signal(providing_args=["class", "app", "created_models", "verbosity", "interactive", "db"])

@@ -30,15 +30,9 @@ class DateField(forms.DateField):
     """
     A date input field which uses non-US date input formats by default.
     """
-
     def __init__(self, input_formats=None, *args, **kwargs):
         input_formats = input_formats or DEFAULT_DATE_INPUT_FORMATS
-        super(
-            DateField,
-            self).__init__(
-            input_formats=input_formats,
-            *args,
-            **kwargs)
+        super(DateField, self).__init__(input_formats=input_formats, *args, **kwargs)
 
 
 class DateTimeField(forms.DateTimeField):
@@ -46,15 +40,9 @@ class DateTimeField(forms.DateTimeField):
     A date and time input field which uses non-US date and time input formats
     by default.
     """
-
     def __init__(self, input_formats=None, *args, **kwargs):
         input_formats = input_formats or DEFAULT_DATETIME_INPUT_FORMATS
-        super(
-            DateTimeField,
-            self).__init__(
-            input_formats=input_formats,
-            *args,
-            **kwargs)
+        super(DateTimeField, self).__init__(input_formats=input_formats, *args, **kwargs)
 
 
 class SplitDateTimeField(forms.SplitDateTimeField):
@@ -62,21 +50,10 @@ class SplitDateTimeField(forms.SplitDateTimeField):
     Split date and time input fields which use non-US date and time input
     formats by default.
     """
-
-    def __init__(
-            self,
-            input_date_formats=None,
-            input_time_formats=None,
-            *args,
-            **kwargs):
+    def __init__(self, input_date_formats=None, input_time_formats=None, *args, **kwargs):
         input_date_formats = input_date_formats or DEFAULT_DATE_INPUT_FORMATS
-        super(
-            SplitDateTimeField,
-            self).__init__(
-            input_date_formats=input_date_formats,
-            input_time_formats=input_time_formats,
-            *args,
-            **kwargs)
+        super(SplitDateTimeField, self).__init__(input_date_formats=input_date_formats,
+                                                 input_time_formats=input_time_formats, *args, **kwargs)
 
 
 class IBANFormField(forms.CharField):
@@ -107,19 +84,10 @@ class IBANFormField(forms.CharField):
 
     .. versionadded:: 1.1
     """
-
-    def __init__(
-            self,
-            use_nordea_extensions=False,
-            include_countries=None,
-            *args,
-            **kwargs):
+    def __init__(self, use_nordea_extensions=False, include_countries=None, *args, **kwargs):
         kwargs.setdefault('min_length', IBAN_MIN_LENGTH)
         kwargs.setdefault('max_length', 34)
-        self.default_validators = [
-            IBANValidator(
-                use_nordea_extensions,
-                include_countries)]
+        self.default_validators = [IBANValidator(use_nordea_extensions, include_countries)]
         super(IBANFormField, self).__init__(*args, **kwargs)
 
     def to_python(self, value):
@@ -134,8 +102,7 @@ class IBANFormField(forms.CharField):
             return value
         grouping = 4
         value = value.upper().replace(' ', '').replace('-', '')
-        return ' '.join(value[i:i + grouping]
-                        for i in range(0, len(value), grouping))
+        return ' '.join(value[i:i + grouping] for i in range(0, len(value), grouping))
 
 
 class BICFormField(forms.CharField):

@@ -110,22 +110,14 @@ def logout(request, next_page=None,
     return TemplateResponse(request, template_name, context)
 
 
-def logout_then_login(
-        request,
-        login_url=None,
-        current_app=None,
-        extra_context=None):
+def logout_then_login(request, login_url=None, current_app=None, extra_context=None):
     """
     Logs out the user if they are logged in. Then redirects to the log-in page.
     """
     if not login_url:
         login_url = settings.LOGIN_URL
     login_url = resolve_url(login_url)
-    return logout(
-        request,
-        login_url,
-        current_app=current_app,
-        extra_context=extra_context)
+    return logout(request, login_url, current_app=current_app, extra_context=extra_context)
 
 
 def redirect_to_login(next, login_url=None,
@@ -152,19 +144,17 @@ def redirect_to_login(next, login_url=None,
 # - password_reset_complete shows a success message for the above
 
 @csrf_protect
-def password_reset(
-        request,
-        is_admin_site=False,
-        template_name='registration/password_reset_form.html',
-        email_template_name='registration/password_reset_email.html',
-        subject_template_name='registration/password_reset_subject.txt',
-        password_reset_form=PasswordResetForm,
-        token_generator=default_token_generator,
-        post_reset_redirect=None,
-        from_email=None,
-        current_app=None,
-        extra_context=None,
-        html_email_template_name=None):
+def password_reset(request, is_admin_site=False,
+                   template_name='registration/password_reset_form.html',
+                   email_template_name='registration/password_reset_email.html',
+                   subject_template_name='registration/password_reset_subject.txt',
+                   password_reset_form=PasswordResetForm,
+                   token_generator=default_token_generator,
+                   post_reset_redirect=None,
+                   from_email=None,
+                   current_app=None,
+                   extra_context=None,
+                   html_email_template_name=None):
     if post_reset_redirect is None:
         post_reset_redirect = reverse('password_reset_done')
     else:
@@ -224,16 +214,12 @@ def password_reset_done(request,
 # Doesn't need csrf_protect since no-one can guess the URL
 @sensitive_post_parameters()
 @never_cache
-def password_reset_confirm(
-        request,
-        uidb64=None,
-        token=None,
-        template_name='registration/password_reset_confirm.html',
-        token_generator=default_token_generator,
-        set_password_form=SetPasswordForm,
-        post_reset_redirect=None,
-        current_app=None,
-        extra_context=None):
+def password_reset_confirm(request, uidb64=None, token=None,
+                           template_name='registration/password_reset_confirm.html',
+                           token_generator=default_token_generator,
+                           set_password_form=SetPasswordForm,
+                           post_reset_redirect=None,
+                           current_app=None, extra_context=None):
     """
     View that checks the hash in a password reset link and presents a
     form for entering a new password.
@@ -279,11 +265,9 @@ def password_reset_confirm(
     return TemplateResponse(request, template_name, context)
 
 
-def password_reset_complete(
-        request,
-        template_name='registration/password_reset_complete.html',
-        current_app=None,
-        extra_context=None):
+def password_reset_complete(request,
+                            template_name='registration/password_reset_complete.html',
+                            current_app=None, extra_context=None):
     context = {
         'login_url': resolve_url(settings.LOGIN_URL),
         'title': _('Password reset complete'),
@@ -335,11 +319,9 @@ def password_change(request,
 
 
 @login_required
-def password_change_done(
-        request,
-        template_name='registration/password_change_done.html',
-        current_app=None,
-        extra_context=None):
+def password_change_done(request,
+                         template_name='registration/password_change_done.html',
+                         current_app=None, extra_context=None):
     context = {
         'title': _('Password change successful'),
     }

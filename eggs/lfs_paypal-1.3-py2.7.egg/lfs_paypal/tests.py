@@ -67,7 +67,6 @@ class PayPalPaymentTestCase(TestCase):
     def test_successful_order_transaction_created(self):
         """Tests we have a transaction associated with an order after payment
         """
-
         def fake_postback(self, test=True):
             """Perform a Fake PayPal IPN Postback request."""
             return 'VERIFIED'
@@ -93,10 +92,7 @@ class PayPalPaymentTestCase(TestCase):
             zip_code="bills zip",
             country=country)
 
-        order = Order(
-            invoice_address=invoice_address,
-            shipping_address=shipping_address,
-            uuid=self.uuid)
+        order = Order(invoice_address=invoice_address, shipping_address=shipping_address, uuid=self.uuid)
         self.assertEqual(order.state, SUBMITTED)
         order.save()
         self.assertEqual(len(PayPalIPN.objects.all()), 0)
@@ -114,7 +110,6 @@ class PayPalPaymentTestCase(TestCase):
     def test_failed_order_transaction_created(self):
         """Tests a failed paypal transaction
         """
-
         def fake_postback(self, test=True):
             """Perform a Fake PayPal IPN Postback request."""
             return 'INVALID'
@@ -139,10 +134,7 @@ class PayPalPaymentTestCase(TestCase):
             state="bills state",
             zip_code="bills zip",
             country=country)
-        order = Order(
-            invoice_address=invoice_address,
-            shipping_address=shipping_address,
-            uuid=self.uuid)
+        order = Order(invoice_address=invoice_address, shipping_address=shipping_address, uuid=self.uuid)
 
         self.assertEqual(order.state, SUBMITTED)
         order.save()
@@ -162,9 +154,8 @@ class PayPalPaymentTestCase(TestCase):
         self.assertEqual(order.state, PAYMENT_FAILED)
 
     def test_succesful_order_with_flagged_payment_invalid_receiver_email(self):
-        """Tests a successful paypal transaction that is flagged with an invalide receiver email
+        """Tests a succesful paypal transaction that is flagged with an invalide receiver email
         """
-
         def fake_postback(self, test=True):
             """Perform a Fake PayPal IPN Postback request."""
             return 'VERIFIED'
@@ -188,17 +179,13 @@ class PayPalPaymentTestCase(TestCase):
             state="bills state",
             zip_code="bills zip",
             country=country)
-        order = Order(
-            invoice_address=invoice_address,
-            shipping_address=shipping_address,
-            uuid=self.uuid)
+        order = Order(invoice_address=invoice_address, shipping_address=shipping_address, uuid=self.uuid)
         self.assertEqual(order.state, SUBMITTED)
         order.save()
         self.assertEqual(len(PayPalIPN.objects.all()), 0)
         self.assertEqual(len(PayPalOrderTransaction.objects.all()), 0)
         post_params = self.IPN_POST_PARAMS
-        incorrect_receiver_email_update = {
-            "receiver_email": "incorrect_email@someotherbusiness.com"}
+        incorrect_receiver_email_update = {"receiver_email": "incorrect_email@someotherbusiness.com"}
         post_params.update(incorrect_receiver_email_update)
         response = self.client.post(reverse('paypal-ipn'), post_params)
         self.assertEqual(response.status_code, 200)
@@ -207,9 +194,7 @@ class PayPalPaymentTestCase(TestCase):
         ipn_obj = PayPalIPN.objects.all()[0]
         self.assertEqual(ipn_obj.payment_status, ST_PP_COMPLETED)
         self.assertEqual(ipn_obj.flag, True)
-        self.assertEqual(
-            ipn_obj.flag_info,
-            u'Invalid receiver_email. (incorrect_email@someotherbusiness.com)')
+        self.assertEqual(ipn_obj.flag_info, u'Invalid receiver_email. (incorrect_email@someotherbusiness.com)')
         order = Order.objects.all()[0]
         self.assertEqual(order.state, PAYMENT_FLAGGED)
 
@@ -233,10 +218,7 @@ class PayPalPaymentTestCase(TestCase):
             state="bills state",
             zip_code="bills zip",
             country=country)
-        order = Order(
-            invoice_address=invoice_address,
-            shipping_address=shipping_address,
-            uuid=self.uuid)
+        order = Order(invoice_address=invoice_address, shipping_address=shipping_address, uuid=self.uuid)
         self.assertEqual(order.state, SUBMITTED)
         pm = PaymentMethod.objects.create(
             active=True,

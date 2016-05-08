@@ -14,7 +14,6 @@ class MergeDict(object):
     If a key appears in more than one of the given dictionaries, only the
     first occurrence will be used.
     """
-
     def __init__(self, *dicts):
         warnings.warn('`MergeDict` is deprecated, use `dict.update()` '
                       'instead.', RemovedInDjango19Warning, 2)
@@ -238,8 +237,7 @@ class SortedDict(dict):
         Replaces the normal dict.__repr__ with a version that returns the keys
         in their sorted order.
         """
-        return '{%s}' % ', '.join('%r: %r' % (k, v)
-                                  for k, v in six.iteritems(self))
+        return '{%s}' % ', '.join('%r: %r' % (k, v) for k, v in six.iteritems(self))
 
     def clear(self):
         super(SortedDict, self).clear()
@@ -253,8 +251,7 @@ class OrderedSet(object):
     """
 
     def __init__(self, iterable=None):
-        self.dict = OrderedDict(((x, None)
-                                 for x in iterable) if iterable else [])
+        self.dict = OrderedDict(((x, None) for x in iterable) if iterable else [])
 
     def add(self, item):
         self.dict[item] = None
@@ -307,7 +304,6 @@ class MultiValueDict(dict):
     which returns a list for every key, even though most Web forms submit
     single name-value pairs.
     """
-
     def __init__(self, key_to_list_mapping=()):
         super(MultiValueDict, self).__init__(key_to_list_mapping)
 
@@ -452,9 +448,7 @@ class MultiValueDict(dict):
         Also accepts keyword args.
         """
         if len(args) > 1:
-            raise TypeError(
-                "update expected at most 1 arguments, got %d" %
-                len(args))
+            raise TypeError("update expected at most 1 arguments, got %d" % len(args))
         if args:
             other_dict = args[0]
             if isinstance(other_dict, MultiValueDict):
@@ -465,8 +459,7 @@ class MultiValueDict(dict):
                     for key, value in other_dict.items():
                         self.setlistdefault(key).append(value)
                 except TypeError:
-                    raise ValueError(
-                        "MultiValueDict.update() takes either a MultiValueDict or dictionary")
+                    raise ValueError("MultiValueDict.update() takes either a MultiValueDict or dictionary")
         for key, value in six.iteritems(kwargs):
             self.setlistdefault(key).append(value)
 
@@ -531,7 +524,6 @@ class DictWrapper(dict):
     Used by the SQL construction code to ensure that values are correctly
     quoted before being used.
     """
-
     def __init__(self, data, func, prefix):
         super(DictWrapper, self).__init__(data)
         self.func = func

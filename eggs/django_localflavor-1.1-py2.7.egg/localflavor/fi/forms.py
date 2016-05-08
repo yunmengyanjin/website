@@ -24,28 +24,16 @@ class FIZipCodeField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            FIZipCodeField,
-            self).__init__(
-            r'^\d{5}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(FIZipCodeField, self).__init__(r'^\d{5}$',
+                                             max_length, min_length, *args, **kwargs)
 
 
 class FIMunicipalitySelect(Select):
     """
     A Select widget that uses a list of Finnish municipalities as its choices.
     """
-
     def __init__(self, attrs=None):
-        super(
-            FIMunicipalitySelect,
-            self).__init__(
-            attrs,
-            choices=MUNICIPALITY_CHOICES)
+        super(FIMunicipalitySelect, self).__init__(attrs, choices=MUNICIPALITY_CHOICES)
 
 
 class FISocialSecurityNumber(Field):

@@ -24,7 +24,6 @@ class FilterBase(object):
     Subclasses should implement `input` and/or `output` methods which must
     return a string (unicode under python 2) or raise a NotImplementedError.
     """
-
     def __init__(self, content, filter_type=None, filename=None, verbose=0,
                  charset=None):
         self.type = filter_type

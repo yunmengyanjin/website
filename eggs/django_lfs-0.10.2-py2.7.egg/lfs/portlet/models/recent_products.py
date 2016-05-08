@@ -45,14 +45,10 @@ class RecentProductsPortlet(Portlet):
                 product = product.get_default_variant()
             products.append(product)
 
-        return render_to_string(
-            "lfs/portlets/recent_products.html",
-            RequestContext(
-                request,
-                {
-                    "title": self.title,
-                    "products": products,
-                }))
+        return render_to_string("lfs/portlets/recent_products.html", RequestContext(request, {
+            "title": self.title,
+            "products": products,
+        }))
 
     def form(self, **kwargs):
         return RecentProductsForm(instance=self, **kwargs)

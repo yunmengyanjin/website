@@ -17,7 +17,6 @@ class ManufacturerAddForm(ModelForm):
 class ManufacturerDataForm(ModelForm):
     """Form to manage selection data.
     """
-
     def __init__(self, *args, **kwargs):
         super(ManufacturerDataForm, self).__init__(*args, **kwargs)
         self.fields["image"].widget = LFSImageInput()

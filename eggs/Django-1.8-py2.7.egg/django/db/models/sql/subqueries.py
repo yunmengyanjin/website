@@ -101,19 +101,14 @@ class UpdateQuery(Query):
             self.related_updates = {}
 
     def clone(self, klass=None, **kwargs):
-        return super(
-            UpdateQuery,
-            self).clone(
-            klass,
-            related_updates=self.related_updates.copy(),
-            **kwargs)
+        return super(UpdateQuery, self).clone(klass,
+                related_updates=self.related_updates.copy(), **kwargs)
 
     def update_batch(self, pk_list, values, using):
         self.add_update_values(values)
         for offset in range(0, len(pk_list), GET_ITERATOR_CHUNK_SIZE):
             self.where = self.where_class()
-            self.add_q(
-                Q(pk__in=pk_list[offset: offset + GET_ITERATOR_CHUNK_SIZE]))
+            self.add_q(Q(pk__in=pk_list[offset: offset + GET_ITERATOR_CHUNK_SIZE]))
             self.get_compiler(using).execute_sql(NO_RESULTS)
 
     def add_update_values(self, values):
@@ -125,8 +120,7 @@ class UpdateQuery(Query):
         values_seq = []
         for name, val in six.iteritems(values):
             field = self.get_meta().get_field(name)
-            direct = not (
-                field.auto_created and not field.concrete) or not field.concrete
+            direct = not (field.auto_created and not field.concrete) or not field.concrete
             model = field.model._meta.concrete_model
             if not direct or (field.is_relation and field.many_to_many):
                 raise FieldError(

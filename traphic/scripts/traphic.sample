@@ -1,4 +1,0 @@
-# The .traphic file in the base git repo tells phace where to get
-# the Phabricator conduit credentials.
-arcrc="/path/to/phobot.arcrc"
-phUrl="https://your.phabricator.com"

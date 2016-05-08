@@ -22,8 +22,7 @@ ORDER_STATES = [
     (PAYMENT_FLAGGED, _(u"Payment Flagged")),
 ]
 
-# use numbers above 20 for custom order states to avoid conflicts if new
-# base states are added to LFS core!
+# use numbers above 20 for custom order states to avoid conflicts if new base states are added to LFS core!
 LFS_EXTRA_ORDER_STATES = getattr(settings, 'LFS_EXTRA_ORDER_STATES', [])
 if LFS_EXTRA_ORDER_STATES:
     ORDER_STATES.extend(LFS_EXTRA_ORDER_STATES)

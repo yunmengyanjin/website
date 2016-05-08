@@ -19,9 +19,7 @@ class Manufacturer(models.Model):
 
     short_description = models.TextField(_(u"Short description"), blank=True)
     description = models.TextField(_(u"Description"), blank=True)
-    image = ImageWithThumbsField(
-        _(u"Image"), upload_to="images", blank=True, null=True, sizes=(
-            (60, 60), (100, 100), (200, 200), (400, 400)))
+    image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=((60, 60), (100, 100), (200, 200), (400, 400)))
     position = models.IntegerField(_(u"Position"), default=1000)
 
     active_formats = models.BooleanField(_(u"Active formats"), default=False)
@@ -29,10 +27,7 @@ class Manufacturer(models.Model):
     product_rows = models.IntegerField(_(u"Product rows"), default=3)
     product_cols = models.IntegerField(_(u"Product cols"), default=3)
 
-    meta_title = models.CharField(
-        _(u"Meta title"),
-        max_length=100,
-        default="<name>")
+    meta_title = models.CharField(_(u"Meta title"), max_length=100, default="<name>")
     meta_keywords = models.TextField(_(u"Meta keywords"), blank=True)
     meta_description = models.TextField(_(u"Meta description"), blank=True)
 
@@ -50,7 +45,7 @@ class Manufacturer(models.Model):
     def get_format_info(self):
         """Returns format information.
         """
-        if self.active_formats:
+        if self.active_formats == True:
             return {
                 "product_cols": self.product_cols,
                 "product_rows": self.product_rows
@@ -106,15 +101,12 @@ class Manufacturer(models.Model):
         """
         from lfs.catalog.settings import VARIANT
 
-        cache_key = "%s-manufacturer-all-products-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        cache_key = "%s-manufacturer-all-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         products = cache.get(cache_key)
         if products is not None:
             return products
 
-        products = self.products.filter(
-            active=True).exclude(
-            sub_type=VARIANT).distinct()
+        products = self.products.filter(active=True).exclude(sub_type=VARIANT).distinct()
 
         cache.set(cache_key, products)
         return products
@@ -136,13 +128,9 @@ class Manufacturer(models.Model):
             temp = []
             for f in filters:
                 if not isinstance(f[1], (list, tuple)):
-                    temp.append(
-                        "property_id='%s' AND value='%s'" %
-                        (f[0], f[1]))
+                    temp.append("property_id='%s' AND value='%s'" % (f[0], f[1]))
                 else:
-                    temp.append(
-                        "property_id='%s' AND value_as_float BETWEEN '%s' AND '%s'" %
-                        (f[0], f[1][0], f[1][1]))
+                    temp.append("property_id='%s' AND value_as_float BETWEEN '%s' AND '%s'" % (f[0], f[1][0], f[1][1]))
 
             fstr = " OR ".join(temp)
 
@@ -192,8 +180,7 @@ class Manufacturer(models.Model):
 
             # As we factored out the ids of all matching products now, we get the
             # product instances in the correct order
-            products = Product.objects.filter(
-                pk__in=matched_product_ids).distinct()
+            products = Product.objects.filter(pk__in=matched_product_ids).distinct()
 
         if price_filter:
             matched_product_ids = []
@@ -202,10 +189,7 @@ class Manufacturer(models.Model):
             variants = Product.objects.filter(parent__in=products)
 
             # Filter the variants by price
-            variants = variants.filter(
-                effective_price__range=[
-                    price_filter["min"],
-                    price_filter["max"]])
+            variants = variants.filter(effective_price__range=[price_filter["min"], price_filter["max"]])
 
             # Get the parent ids of the variants as the "product with variants"
             # should be displayed and not the variants.
@@ -223,10 +207,7 @@ class Manufacturer(models.Model):
                 matched_product_ids.extend(parent_ids)
 
             # Filter the products
-            products = products.filter(
-                effective_price__range=[
-                    price_filter["min"],
-                    price_filter["max"]])
+            products = products.filter(effective_price__range=[price_filter["min"], price_filter["max"]])
 
             # Merge the results
             matched_product_ids.extend(products.values_list('pk', flat=True))

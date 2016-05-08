@@ -11,8 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from .tr_provinces import PROVINCE_CHOICES
 
 
-phone_digits_re = re.compile(
-    r'^(\+90|0)? ?(([1-9]\d{2})|\([1-9]\d{2}\)) ?([2-9]\d{2} ?\d{2} ?\d{2})$')
+phone_digits_re = re.compile(r'^(\+90|0)? ?(([1-9]\d{2})|\([1-9]\d{2}\)) ?([2-9]\d{2} ?\d{2} ?\d{2})$')
 
 
 class TRPostalCodeField(RegexField):
@@ -25,15 +24,8 @@ class TRPostalCodeField(RegexField):
     }
 
     def __init__(self, max_length=5, min_length=5, *args, **kwargs):
-        super(
-            TRPostalCodeField,
-            self).__init__(
-            r'^\d{5}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(TRPostalCodeField, self).__init__(r'^\d{5}$',
+                                                max_length, min_length, *args, **kwargs)
 
     def clean(self, value):
         value = super(TRPostalCodeField, self).clean(value)
@@ -116,6 +108,5 @@ class TRProvinceSelect(Select):
     """
     A Select widget that uses a list of provinces in Turkey as its choices.
     """
-
     def __init__(self, attrs=None):
         super(TRProvinceSelect, self).__init__(attrs, choices=PROVINCE_CHOICES)

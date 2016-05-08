@@ -89,7 +89,7 @@ def get_max_age(response):
     if not response.has_header('Cache-Control'):
         return
     cc = dict(_to_tuple(el) for el in
-              cc_delim_re.split(response['Cache-Control']))
+        cc_delim_re.split(response['Cache-Control']))
     if 'max-age' in cc:
         try:
             return int(cc['max-age'])
@@ -180,8 +180,7 @@ def _i18n_cache_key_suffix(request, cache_key):
         # User-defined tzinfo classes may return absolutely anything.
         # Hence this paranoid conversion to create a valid cache key.
         tz_name = force_text(get_current_timezone_name(), errors='ignore')
-        cache_key += '.%s' % tz_name.encode('ascii',
-                                            'ignore').decode('ascii').replace(' ', '_')
+        cache_key += '.%s' % tz_name.encode('ascii', 'ignore').decode('ascii').replace(' ', '_')
     return cache_key
 
 
@@ -228,12 +227,7 @@ def get_cache_key(request, key_prefix=None, method='GET', cache=None):
         return None
 
 
-def learn_cache_key(
-        request,
-        response,
-        cache_timeout=None,
-        key_prefix=None,
-        cache=None):
+def learn_cache_key(request, response, cache_timeout=None, key_prefix=None, cache=None):
     """
     Learns what headers to take into account for some request URL from the
     response object. It stores those headers in a global URL registry so that
@@ -267,8 +261,7 @@ def learn_cache_key(
             headerlist.append('HTTP_' + header)
         headerlist.sort()
         cache.set(cache_key, headerlist, cache_timeout)
-        return _generate_cache_key(
-            request, request.method, headerlist, key_prefix)
+        return _generate_cache_key(request, request.method, headerlist, key_prefix)
     else:
         # if there is no Vary header, we still need a cache key
         # for the request.build_absolute_uri()

@@ -47,17 +47,14 @@ class Layer(GDALBase):
             # number of features because the beginning and ending feature IDs
             # are not guaranteed to be 0 and len(layer)-1, respectively.
             if index < 0:
-                raise OGRIndexError(
-                    'Negative indices are not allowed on OGR Layers.')
+                raise OGRIndexError('Negative indices are not allowed on OGR Layers.')
             return self._make_feature(index)
         elif isinstance(index, slice):
             # A slice was given
             start, stop, stride = index.indices(self.num_feat)
-            return [self._make_feature(fid)
-                    for fid in range(start, stop, stride)]
+            return [self._make_feature(fid) for fid in range(start, stop, stride)]
         else:
-            raise TypeError(
-                'Integers and slices may only be used when indexing OGR Layers.')
+            raise TypeError('Integers and slices may only be used when indexing OGR Layers.')
 
     def __iter__(self):
         "Iterates over each Feature in the Layer."
@@ -140,15 +137,9 @@ class Layer(GDALBase):
         Returns a list of string names corresponding to each of the Fields
         available in this Layer.
         """
-        return [
-            force_text(
-                capi.get_field_name(
-                    capi.get_field_defn(
-                        self._ldefn,
-                        i)),
-                self._ds.encoding,
-                strings_only=True) for i in range(
-                self.num_fields)]
+        return [force_text(capi.get_field_name(capi.get_field_defn(self._ldefn, i)),
+                           self._ds.encoding, strings_only=True)
+                for i in range(self.num_fields)]
 
     @property
     def field_types(self):
@@ -158,13 +149,8 @@ class Layer(GDALBase):
         an OGR layer that had an integer, a floating-point, and string
         fields.
         """
-        return [
-            OGRFieldTypes[
-                capi.get_field_type(
-                    capi.get_field_defn(
-                        self._ldefn,
-                        i))] for i in range(
-                self.num_fields)]
+        return [OGRFieldTypes[capi.get_field_type(capi.get_field_defn(self._ldefn, i))]
+                for i in range(self.num_fields)]
 
     @property
     def field_widths(self):
@@ -180,10 +166,7 @@ class Layer(GDALBase):
 
     def _get_spatial_filter(self):
         try:
-            return OGRGeometry(
-                geom_api.clone_geom(
-                    capi.get_spatial_filter(
-                        self.ptr)))
+            return OGRGeometry(geom_api.clone_geom(capi.get_spatial_filter(self.ptr)))
         except GDALException:
             return None
 
@@ -192,8 +175,7 @@ class Layer(GDALBase):
             capi.set_spatial_filter(self.ptr, filter.ptr)
         elif isinstance(filter, (tuple, list)):
             if not len(filter) == 4:
-                raise ValueError(
-                    'Spatial filter list/tuple must have 4 elements.')
+                raise ValueError('Spatial filter list/tuple must have 4 elements.')
             # Map c_double onto params -- if a bad type is passed in it
             # will be caught here.
             xmin, ymin, xmax, ymax = map(c_double, filter)
@@ -201,8 +183,7 @@ class Layer(GDALBase):
         elif filter is None:
             capi.set_spatial_filter(self.ptr, None)
         else:
-            raise TypeError(
-                'Spatial filter must be either an OGRGeometry instance, a 4-tuple, or None.')
+            raise TypeError('Spatial filter must be either an OGRGeometry instance, a 4-tuple, or None.')
 
     spatial_filter = property(_get_spatial_filter, _set_spatial_filter)
 

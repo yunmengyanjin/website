@@ -42,21 +42,17 @@ class Serializer(object):
         self.selected_fields = options.pop("fields", None)
         self.use_natural_keys = options.pop("use_natural_keys", False)
         if self.use_natural_keys:
-            warnings.warn(
-                "``use_natural_keys`` is deprecated; use ``use_natural_foreign_keys`` instead.",
+            warnings.warn("``use_natural_keys`` is deprecated; use ``use_natural_foreign_keys`` instead.",
                 RemovedInDjango19Warning)
-        self.use_natural_foreign_keys = options.pop(
-            'use_natural_foreign_keys', False) or self.use_natural_keys
-        self.use_natural_primary_keys = options.pop(
-            'use_natural_primary_keys', False)
+        self.use_natural_foreign_keys = options.pop('use_natural_foreign_keys', False) or self.use_natural_keys
+        self.use_natural_primary_keys = options.pop('use_natural_primary_keys', False)
 
         self.start_serialization()
         self.first = True
         for obj in queryset:
             self.start_object(obj)
             # Use the concrete parent class' _meta instead of the object's _meta
-            # This is to avoid local_fields problems for proxy models. Refs
-            # #17717.
+            # This is to avoid local_fields problems for proxy models. Refs #17717.
             concrete_model = obj._meta.concrete_model
             for field in concrete_model._meta.local_fields:
                 if field.serialize:
@@ -64,8 +60,7 @@ class Serializer(object):
                         if self.selected_fields is None or field.attname in self.selected_fields:
                             self.handle_field(obj, field)
                     else:
-                        if self.selected_fields is None or field.attname[
-                                :-3] in self.selected_fields:
+                        if self.selected_fields is None or field.attname[:-3] in self.selected_fields:
                             self.handle_fk_field(obj, field)
             for field in concrete_model._meta.many_to_many:
                 if field.serialize:
@@ -81,8 +76,7 @@ class Serializer(object):
         """
         Called when serializing of the queryset starts.
         """
-        raise NotImplementedError(
-            'subclasses of Serializer must provide a start_serialization() method')
+        raise NotImplementedError('subclasses of Serializer must provide a start_serialization() method')
 
     def end_serialization(self):
         """
@@ -94,8 +88,7 @@ class Serializer(object):
         """
         Called when serializing of an object starts.
         """
-        raise NotImplementedError(
-            'subclasses of Serializer must provide a start_object() method')
+        raise NotImplementedError('subclasses of Serializer must provide a start_object() method')
 
     def end_object(self, obj):
         """
@@ -107,22 +100,19 @@ class Serializer(object):
         """
         Called to handle each individual (non-relational) field on an object.
         """
-        raise NotImplementedError(
-            'subclasses of Serializer must provide an handle_field() method')
+        raise NotImplementedError('subclasses of Serializer must provide an handle_field() method')
 
     def handle_fk_field(self, obj, field):
         """
         Called to handle a ForeignKey field.
         """
-        raise NotImplementedError(
-            'subclasses of Serializer must provide an handle_fk_field() method')
+        raise NotImplementedError('subclasses of Serializer must provide an handle_fk_field() method')
 
     def handle_m2m_field(self, obj, field):
         """
         Called to handle a ManyToManyField.
         """
-        raise NotImplementedError(
-            'subclasses of Serializer must provide an handle_m2m_field() method')
+        raise NotImplementedError('subclasses of Serializer must provide an handle_m2m_field() method')
 
     def getvalue(self):
         """
@@ -153,8 +143,7 @@ class Deserializer(six.Iterator):
 
     def __next__(self):
         """Iteration iterface -- return the next item in the stream"""
-        raise NotImplementedError(
-            'subclasses of Deserializer must provide a __next__() method')
+        raise NotImplementedError('subclasses of Deserializer must provide a __next__() method')
 
 
 class DeserializedObject(object):
@@ -203,8 +192,7 @@ def build_instance(Model, data, db):
             hasattr(Model._default_manager, 'get_by_natural_key')):
         natural_key = obj.natural_key()
         try:
-            obj.pk = Model._default_manager.db_manager(
-                db).get_by_natural_key(*natural_key).pk
+            obj.pk = Model._default_manager.db_manager(db).get_by_natural_key(*natural_key).pk
         except Model.DoesNotExist:
             pass
     return obj

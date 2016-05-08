@@ -195,8 +195,7 @@ class TagsTestCase(TestCase):
         shop.ga_ecommerce_tracking = False
         shop.save()
 
-        template = Template(
-            """{% load lfs_tags %}{% google_analytics_tracking %}""")
+        template = Template("""{% load lfs_tags %}{% google_analytics_tracking %}""")
         content = template.render(Context())
         self.failIf(content.find("pageTracker") != -1)
 
@@ -231,8 +230,7 @@ class TagsTestCase(TestCase):
         request = rf.get('/')
         request.session = session
 
-        template = Template(
-            """{% load lfs_tags %}{% google_analytics_ecommerce %}""")
+        template = Template("""{% load lfs_tags %}{% google_analytics_ecommerce %}""")
         content = template.render(Context({"request": request}))
         self.failIf(content.find("pageTracker") != -1)
 
@@ -280,25 +278,13 @@ class TagsTestCase(TestCase):
         shop.use_international_currency_code = True
         shop.save()
 
-        self.assertEqual(
-            currency(
-                0.0,
-                None,
-                False),
-            '<span class="money">USD 0.00</span>')
-        self.assertEqual(
-            currency(
-                1.0,
-                None,
-                False),
-            '<span class="money">USD 1.00</span>')
+        self.assertEqual(currency(0.0, None, False), '<span class="money">USD 0.00</span>')
+        self.assertEqual(currency(1.0, None, False), '<span class="money">USD 1.00</span>')
 
-        self.assertEqual(currency(-1.0, None, False),
-                         '<span class="money negative">-USD 1.00</span>')
+        self.assertEqual(currency(-1.0, None, False), '<span class="money negative">-USD 1.00</span>')
 
 
 class ManageURLsTestCase(TestCase):
-
     def test_manage_urls_anonymous(self):
         """Tests that all manage urls cannot accessed by anonymous user.
         """

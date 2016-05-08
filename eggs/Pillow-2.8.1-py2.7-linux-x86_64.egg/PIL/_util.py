@@ -20,7 +20,6 @@ def isDirectory(f):
 
 
 class deferred_error(object):
-
     def __init__(self, ex):
         self.ex = ex
 

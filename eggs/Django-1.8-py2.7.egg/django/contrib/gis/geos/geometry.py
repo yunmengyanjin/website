@@ -63,12 +63,10 @@ class GEOSGeometry(GEOSBase, ListMixin):
             elif json_regex.match(geo_input):
                 # Handling GeoJSON input.
                 if not gdal.HAS_GDAL:
-                    raise ValueError(
-                        'Initializing geometry from JSON input requires GDAL.')
+                    raise ValueError('Initializing geometry from JSON input requires GDAL.')
                 g = wkb_r().read(gdal.OGRGeometry(geo_input).wkb)
             else:
-                raise ValueError(
-                    'String or unicode input unrecognized as WKT EWKT, and HEXEWKB.')
+                raise ValueError('String or unicode input unrecognized as WKT EWKT, and HEXEWKB.')
         elif isinstance(geo_input, GEOM_PTR):
             # When the input is a pointer to a geometry (GEOM_PTR).
             g = geo_input
@@ -79,16 +77,13 @@ class GEOSGeometry(GEOSBase, ListMixin):
             g = capi.geom_clone(geo_input.ptr)
         else:
             # Invalid geometry type.
-            raise TypeError(
-                'Improper geometry input type: %s' % str(
-                    type(geo_input)))
+            raise TypeError('Improper geometry input type: %s' % str(type(geo_input)))
 
         if g:
             # Setting the pointer object with a valid pointer.
             self.ptr = g
         else:
-            raise GEOSException(
-                'Could not initialize GEOS Geometry with given input.')
+            raise GEOSException('Could not initialize GEOS Geometry with given input.')
 
         # Post-initialization setup.
         self._post_init(srid)
@@ -338,8 +333,7 @@ class GEOSGeometry(GEOSBase, ListMixin):
         """
         if not isinstance(pattern, six.string_types) or len(pattern) > 9:
             raise GEOSException('invalid intersection matrix pattern')
-        return capi.geos_relatepattern(
-            self.ptr, other.ptr, force_bytes(pattern))
+        return capi.geos_relatepattern(self.ptr, other.ptr, force_bytes(pattern))
 
     def touches(self, other):
         """
@@ -414,8 +408,7 @@ class GEOSGeometry(GEOSBase, ListMixin):
         if gdal.HAS_GDAL:
             return self.ogr.json
         else:
-            raise GEOSException(
-                'GeoJSON output only supported when GDAL is installed.')
+            raise GEOSException('GeoJSON output only supported when GDAL is installed.')
     geojson = json
 
     @property
@@ -467,8 +460,7 @@ class GEOSGeometry(GEOSBase, ListMixin):
     def srs(self):
         "Returns the OSR SpatialReference for SRID of this Geometry."
         if not gdal.HAS_GDAL:
-            raise GEOSException(
-                'GDAL required to return a SpatialReference object.')
+            raise GEOSException('GDAL required to return a SpatialReference object.')
         if self.srid:
             try:
                 return gdal.SpatialReference(self.srid)
@@ -500,12 +492,10 @@ class GEOSGeometry(GEOSBase, ListMixin):
                 return
 
         if (srid is None) or (srid < 0):
-            raise GEOSException(
-                "Calling transform() with no SRID set is not supported")
+            raise GEOSException("Calling transform() with no SRID set is not supported")
 
         if not gdal.HAS_GDAL:
-            raise GEOSException(
-                "GDAL library is not available to transform() geometry.")
+            raise GEOSException("GDAL library is not available to transform() geometry.")
 
         # Creating an OGR Geometry, which is then transformed.
         g = self.ogr
@@ -575,17 +565,13 @@ class GEOSGeometry(GEOSBase, ListMixin):
 
     def interpolate(self, distance):
         if not isinstance(self, (LineString, MultiLineString)):
-            raise TypeError(
-                'interpolate only works on LineString and MultiLineString geometries')
+            raise TypeError('interpolate only works on LineString and MultiLineString geometries')
         return self._topology(capi.geos_interpolate(self.ptr, distance))
 
     def interpolate_normalized(self, distance):
         if not isinstance(self, (LineString, MultiLineString)):
-            raise TypeError(
-                'interpolate only works on LineString and MultiLineString geometries')
-        return self._topology(
-            capi.geos_interpolate_normalized(
-                self.ptr, distance))
+            raise TypeError('interpolate only works on LineString and MultiLineString geometries')
+        return self._topology(capi.geos_interpolate_normalized(self.ptr, distance))
 
     def intersection(self, other):
         "Returns a Geometry representing the points shared by this Geometry and other."
@@ -600,16 +586,14 @@ class GEOSGeometry(GEOSBase, ListMixin):
         if not isinstance(point, Point):
             raise TypeError('locate_point argument must be a Point')
         if not isinstance(self, (LineString, MultiLineString)):
-            raise TypeError(
-                'locate_point only works on LineString and MultiLineString geometries')
+            raise TypeError('locate_point only works on LineString and MultiLineString geometries')
         return capi.geos_project(self.ptr, point.ptr)
 
     def project_normalized(self, point):
         if not isinstance(point, Point):
             raise TypeError('locate_point argument must be a Point')
         if not isinstance(self, (LineString, MultiLineString)):
-            raise TypeError(
-                'locate_point only works on LineString and MultiLineString geometries')
+            raise TypeError('locate_point only works on LineString and MultiLineString geometries')
         return capi.geos_project_normalized(self.ptr, point.ptr)
 
     def relate(self, other):
@@ -629,9 +613,7 @@ class GEOSGeometry(GEOSBase, ListMixin):
         input. This is significantly slower.
         """
         if preserve_topology:
-            return self._topology(
-                capi.geos_preservesimplify(
-                    self.ptr, tolerance))
+            return self._topology(capi.geos_preservesimplify(self.ptr, tolerance))
         else:
             return self._topology(capi.geos_simplify(self.ptr, tolerance))
 

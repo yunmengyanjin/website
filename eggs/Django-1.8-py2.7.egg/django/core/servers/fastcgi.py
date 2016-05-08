@@ -106,14 +106,10 @@ def runfastcgi(argset=[], **kwargs):
         import flup  # NOQA
     except ImportError as e:
         sys.stderr.write("ERROR: %s\n" % e)
-        sys.stderr.write(
-            "  Unable to load the flup package.  In order to run django\n")
-        sys.stderr.write(
-            "  as a FastCGI application, you will need to get flup from\n")
-        sys.stderr.write(
-            "  http://www.saddi.com/software/flup/   If you've already\n")
-        sys.stderr.write(
-            "  installed flup, then make sure you have it in your PYTHONPATH.\n")
+        sys.stderr.write("  Unable to load the flup package.  In order to run django\n")
+        sys.stderr.write("  as a FastCGI application, you will need to get flup from\n")
+        sys.stderr.write("  http://www.saddi.com/software/flup/   If you've already\n")
+        sys.stderr.write("  installed flup, then make sure you have it in your PYTHONPATH.\n")
         return False
 
     flup_module = 'server.' + options['protocol']

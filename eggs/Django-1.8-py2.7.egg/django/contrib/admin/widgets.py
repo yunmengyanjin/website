@@ -45,28 +45,16 @@ class FilteredSelectMultiple(forms.SelectMultiple):
         attrs['class'] = 'selectfilter'
         if self.is_stacked:
             attrs['class'] += 'stacked'
-        output = [
-            super(
-                FilteredSelectMultiple,
-                self).render(
-                name,
-                value,
-                attrs,
-                choices)]
-        output.append(
-            '<script type="text/javascript">addEvent(window, "load", function(e) {')
+        output = [super(FilteredSelectMultiple, self).render(name, value, attrs, choices)]
+        output.append('<script type="text/javascript">addEvent(window, "load", function(e) {')
         # TODO: "id_" is hard-coded here. This should instead use the correct
         # API to determine the ID dynamically.
-        output.append(
-            'SelectFilter.init("id_%s", "%s", %s, "%s"); });</script>\n' %
-            (name, self.verbose_name.replace(
-                '"', '\\"'), int(
-                self.is_stacked), static('admin/')))
+        output.append('SelectFilter.init("id_%s", "%s", %s, "%s"); });</script>\n'
+            % (name, self.verbose_name.replace('"', '\\"'), int(self.is_stacked), static('admin/')))
         return mark_safe(''.join(output))
 
 
 class AdminDateWidget(forms.DateInput):
-
     @property
     def media(self):
         js = ["calendar.js", "admin/DateTimeShortcuts.js"]
@@ -80,7 +68,6 @@ class AdminDateWidget(forms.DateInput):
 
 
 class AdminTimeWidget(forms.TimeInput):
-
     @property
     def media(self):
         js = ["calendar.js", "admin/DateTimeShortcuts.js"]
@@ -97,7 +84,6 @@ class AdminSplitDateTime(forms.SplitDateTimeWidget):
     """
     A SplitDateTime Widget that has some admin-specific styling.
     """
-
     def __init__(self, attrs=None):
         widgets = [AdminDateWidget, AdminTimeWidget]
         # Note that we're calling MultiWidget, not SplitDateTimeWidget, because
@@ -111,7 +97,6 @@ class AdminSplitDateTime(forms.SplitDateTimeWidget):
 
 
 class AdminRadioFieldRenderer(RadioFieldRenderer):
-
     def render(self):
         """Outputs a <ul> for this set of radio fields."""
         return format_html('<ul{}>\n{}\n</ul>',
@@ -126,7 +111,7 @@ class AdminRadioSelect(forms.RadioSelect):
 
 class AdminFileWidget(forms.ClearableFileInput):
     template_with_initial = ('<p class="file-upload">%s</p>'
-                             % forms.ClearableFileInput.template_with_initial)
+                            % forms.ClearableFileInput.template_with_initial)
     template_with_clear = ('<span class="clearable-file-input">%s</span>'
                            % forms.ClearableFileInput.template_with_clear)
 
@@ -159,7 +144,6 @@ class ForeignKeyRawIdWidget(forms.TextInput):
     A Widget for displaying ForeignKeys in the "raw_id" interface rather than
     in a <select> box.
     """
-
     def __init__(self, rel, admin_site, attrs=None, using=None):
         self.rel = rel
         self.admin_site = admin_site
@@ -183,25 +167,16 @@ class ForeignKeyRawIdWidget(forms.TextInput):
 
             params = self.url_parameters()
             if params:
-                url = '?' + '&amp;'.join('%s=%s' % (k, v)
-                                         for k, v in params.items())
+                url = '?' + '&amp;'.join('%s=%s' % (k, v) for k, v in params.items())
             else:
                 url = ''
             if "class" not in attrs:
-                # The JavaScript code looks for this hook.
-                attrs['class'] = 'vForeignKeyRawIdAdminField'
+                attrs['class'] = 'vForeignKeyRawIdAdminField'  # The JavaScript code looks for this hook.
             # TODO: "lookup_id_" is hard-coded here. This should instead use
             # the correct API to determine the ID dynamically.
-            extra.append(
-                '<a href="%s%s" class="related-lookup" id="lookup_id_%s" title="%s"></a>' %
+            extra.append('<a href="%s%s" class="related-lookup" id="lookup_id_%s" title="%s"></a>' %
                 (related_url, url, name, _('Lookup')))
-        output = [
-            super(
-                ForeignKeyRawIdWidget,
-                self).render(
-                name,
-                value,
-                attrs)] + extra
+        output = [super(ForeignKeyRawIdWidget, self).render(name, value, attrs)] + extra
         if value:
             output.append(self.label_for_value(value))
         return mark_safe(''.join(output))
@@ -221,10 +196,8 @@ class ForeignKeyRawIdWidget(forms.TextInput):
     def label_for_value(self, value):
         key = self.rel.get_related_field().name
         try:
-            obj = self.rel.to._default_manager.using(
-                self.db).get(**{key: value})
-            return '&nbsp;<strong>%s</strong>' % escape(
-                Truncator(obj).words(14, truncate='...'))
+            obj = self.rel.to._default_manager.using(self.db).get(**{key: value})
+            return '&nbsp;<strong>%s</strong>' % escape(Truncator(obj).words(14, truncate='...'))
         except (ValueError, self.rel.to.DoesNotExist):
             return ''
 
@@ -234,7 +207,6 @@ class ManyToManyRawIdWidget(ForeignKeyRawIdWidget):
     A Widget for displaying ManyToMany ids in the "raw_id" interface rather than
     in a <select multiple> box.
     """
-
     def render(self, name, value, attrs=None):
         if attrs is None:
             attrs = {}
@@ -281,12 +253,10 @@ class RelatedFieldWidgetWrapper(forms.Widget):
         # XXX: The UX does not support multiple selected values.
         multiple = getattr(widget, 'allow_multiple_selected', False)
         self.can_change_related = not multiple and can_change_related
-        # XXX: The deletion UX can be confusing when dealing with cascading
-        # deletion.
+        # XXX: The deletion UX can be confusing when dealing with cascading deletion.
         cascade = getattr(rel, 'on_delete', None) is CASCADE
         self.can_delete_related = not multiple and not cascade and can_delete_related
-        # so we can check if the related object is registered with this
-        # AdminSite
+        # so we can check if the related object is registered with this AdminSite
         self.admin_site = admin_site
 
     def __deepcopy__(self, memo):
@@ -325,8 +295,7 @@ class RelatedFieldWidgetWrapper(forms.Widget):
             'model': rel_opts.verbose_name,
         }
         if self.can_change_related:
-            change_related_template_url = self.get_related_url(
-                info, 'change', '__fk__')
+            change_related_template_url = self.get_related_url(info, 'change', '__fk__')
             context.update(
                 can_change_related=True,
                 change_related_template_url=change_related_template_url,
@@ -338,8 +307,7 @@ class RelatedFieldWidgetWrapper(forms.Widget):
                 add_related_url=add_related_url,
             )
         if self.can_delete_related:
-            delete_related_template_url = self.get_related_url(
-                info, 'delete', '__fk__')
+            delete_related_template_url = self.get_related_url(info, 'delete', '__fk__')
             context.update(
                 can_delete_related=True,
                 delete_related_template_url=delete_related_template_url,
@@ -359,7 +327,6 @@ class RelatedFieldWidgetWrapper(forms.Widget):
 
 
 class AdminTextareaWidget(forms.Textarea):
-
     def __init__(self, attrs=None):
         final_attrs = {'class': 'vLargeTextField'}
         if attrs is not None:
@@ -368,7 +335,6 @@ class AdminTextareaWidget(forms.Textarea):
 
 
 class AdminTextInputWidget(forms.TextInput):
-
     def __init__(self, attrs=None):
         final_attrs = {'class': 'vTextField'}
         if attrs is not None:
@@ -377,7 +343,6 @@ class AdminTextInputWidget(forms.TextInput):
 
 
 class AdminEmailInputWidget(forms.EmailInput):
-
     def __init__(self, attrs=None):
         final_attrs = {'class': 'vTextField'}
         if attrs is not None:
@@ -386,7 +351,6 @@ class AdminEmailInputWidget(forms.EmailInput):
 
 
 class AdminURLFieldWidget(forms.URLInput):
-
     def __init__(self, attrs=None):
         final_attrs = {'class': 'vURLField'}
         if attrs is not None:
@@ -421,12 +385,8 @@ class AdminBigIntegerFieldWidget(AdminIntegerFieldWidget):
 
 
 class AdminCommaSeparatedIntegerFieldWidget(forms.TextInput):
-
     def __init__(self, attrs=None):
         final_attrs = {'class': 'vCommaSeparatedIntegerField'}
         if attrs is not None:
             final_attrs.update(attrs)
-        super(
-            AdminCommaSeparatedIntegerFieldWidget,
-            self).__init__(
-            attrs=final_attrs)
+        super(AdminCommaSeparatedIntegerFieldWidget, self).__init__(attrs=final_attrs)

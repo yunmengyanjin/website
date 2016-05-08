@@ -43,10 +43,7 @@ def cart_view(request, cart_id, template_name="manage/cart/cart.html"):
 
 
 # Parts
-def cart_filters_inline(
-        request,
-        cart_id,
-        template_name="manage/cart/cart_filters_inline.html"):
+def cart_filters_inline(request, cart_id, template_name="manage/cart/cart_filters_inline.html"):
     """Renders the filters section of the cart view.
     """
     cart = lfs_get_object_or_404(Cart, pk=cart_id)
@@ -59,9 +56,7 @@ def cart_filters_inline(
     }))
 
 
-def carts_filters_inline(
-        request,
-        template_name="manage/cart/carts_filters_inline.html"):
+def carts_filters_inline(request, template_name="manage/cart/carts_filters_inline.html"):
     """Displays the filters part of the carts overview.
     """
     cart_filters = request.session.get("cart-filters", {})
@@ -130,10 +125,7 @@ def carts_inline(request, template_name="manage/cart/carts_inline.html"):
 
 
 @permission_required("core.manage_shop")
-def cart_inline(
-        request,
-        cart_id,
-        template_name="manage/cart/cart_inline.html"):
+def cart_inline(request, cart_id, template_name="manage/cart/cart_inline.html"):
     """Displays cart with provided cart id.
     """
     cart = lfs_get_object_or_404(Cart, pk=cart_id)
@@ -161,10 +153,7 @@ def cart_inline(
 
 
 @permission_required("core.manage_shop")
-def selectable_carts_inline(
-        request,
-        cart_id,
-        template_name="manage/cart/selectable_carts_inline.html"):
+def selectable_carts_inline(request, cart_id, template_name="manage/cart/selectable_carts_inline.html"):
     """Displays selectable carts section within cart view.
     """
     cart_filters = request.session.get("cart-filters", {})
@@ -306,14 +295,8 @@ def reset_cart_filters(request):
     if request.REQUEST.get("came-from") == "cart":
         cart_id = request.REQUEST.get("cart-id")
         html = (
-            ("#selectable-carts-inline",
-             selectable_carts_inline(
-                 request,
-                 cart_id)),
-            ("#cart-inline",
-             cart_inline(
-                 request,
-                 cart_id)),
+            ("#selectable-carts-inline", selectable_carts_inline(request, cart_id)),
+            ("#cart-inline", cart_inline(request, cart_id)),
         )
     else:
         html = (("#carts-inline", carts_inline(request)),)

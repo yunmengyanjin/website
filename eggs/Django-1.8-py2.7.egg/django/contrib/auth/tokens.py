@@ -11,14 +11,12 @@ class PasswordResetTokenGenerator(object):
     Strategy object used to generate and check tokens for the password
     reset mechanism.
     """
-
     def make_token(self, user):
         """
         Returns a token that can be used once to do a password reset
         for the given user.
         """
-        return self._make_token_with_timestamp(
-            user, self._num_days(self._today()))
+        return self._make_token_with_timestamp(user, self._num_days(self._today()))
 
     def check_token(self, user, token):
         """
@@ -36,14 +34,11 @@ class PasswordResetTokenGenerator(object):
             return False
 
         # Check that the timestamp/uid has not been tampered with
-        if not constant_time_compare(
-            self._make_token_with_timestamp(
-                user, ts), token):
+        if not constant_time_compare(self._make_token_with_timestamp(user, ts), token):
             return False
 
         # Check the timestamp is within limit
-        if (self._num_days(self._today()) -
-                ts) > settings.PASSWORD_RESET_TIMEOUT_DAYS:
+        if (self._num_days(self._today()) - ts) > settings.PASSWORD_RESET_TIMEOUT_DAYS:
             return False
 
         return True
@@ -62,11 +57,10 @@ class PasswordResetTokenGenerator(object):
         key_salt = "django.contrib.auth.tokens.PasswordResetTokenGenerator"
 
         # Ensure results are consistent across DB backends
-        login_timestamp = '' if user.last_login is None else user.last_login.replace(
-            microsecond=0, tzinfo=None)
+        login_timestamp = '' if user.last_login is None else user.last_login.replace(microsecond=0, tzinfo=None)
 
         value = (six.text_type(user.pk) + user.password +
-                 six.text_type(login_timestamp) + six.text_type(timestamp))
+                six.text_type(login_timestamp) + six.text_type(timestamp))
         hash = salted_hmac(key_salt, value).hexdigest()[::2]
         return "%s-%s" % (ts_b36, hash)
 

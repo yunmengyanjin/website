@@ -28,12 +28,7 @@ class BaseGeometryWidget(Widget):
 
     def __init__(self, attrs=None):
         self.attrs = {}
-        for key in (
-                'geom_type',
-                'map_srid',
-                'map_width',
-                'map_height',
-                'display_raw'):
+        for key in ('geom_type', 'map_srid', 'map_width', 'map_height', 'display_raw'):
             self.attrs[key] = getattr(self, key)
         if attrs:
             self.attrs.update(attrs)
@@ -66,8 +61,9 @@ class BaseGeometryWidget(Widget):
                     value = ogr
                 except gdal.GDALException as err:
                     logger.error(
-                        "Error transforming geometry from srid '%s' to srid '%s' (%s)" %
-                        (value.srid, self.map_srid, err))
+                        "Error transforming geometry from srid '%s' to srid '%s' (%s)" % (
+                            value.srid, self.map_srid, err)
+                    )
 
         context = self.build_attrs(
             attrs,

@@ -37,30 +37,26 @@ class ListFilter(object):
         """
         Returns True if some choices would be output for this filter.
         """
-        raise NotImplementedError(
-            'subclasses of ListFilter must provide a has_output() method')
+        raise NotImplementedError('subclasses of ListFilter must provide a has_output() method')
 
     def choices(self, cl):
         """
         Returns choices ready to be output in the template.
         """
-        raise NotImplementedError(
-            'subclasses of ListFilter must provide a choices() method')
+        raise NotImplementedError('subclasses of ListFilter must provide a choices() method')
 
     def queryset(self, request, queryset):
         """
         Returns the filtered queryset.
         """
-        raise NotImplementedError(
-            'subclasses of ListFilter must provide a queryset() method')
+        raise NotImplementedError('subclasses of ListFilter must provide a queryset() method')
 
     def expected_parameters(self):
         """
         Returns the list of parameter names that are expected from the
         request's query string and that will be used by this filter.
         """
-        raise NotImplementedError(
-            'subclasses of ListFilter must provide an expected_parameters() method')
+        raise NotImplementedError('subclasses of ListFilter must provide an expected_parameters() method')
 
 
 class SimpleListFilter(ListFilter):
@@ -162,11 +158,10 @@ class FieldListFilter(ListFilter):
             if not test(field):
                 continue
             return list_filter_class(field, request, params,
-                                     model, model_admin, field_path=field_path)
+                model, model_admin, field_path=field_path)
 
 
 class RelatedFieldListFilter(FieldListFilter):
-
     def __init__(self, field, request, params, model, model_admin, field_path):
         other_model = get_model_from_relation(field)
         if hasattr(field, 'rel'):
@@ -206,7 +201,7 @@ class RelatedFieldListFilter(FieldListFilter):
         yield {
             'selected': self.lookup_val is None and not self.lookup_val_isnull,
             'query_string': cl.get_query_string({},
-                                                [self.lookup_kwarg, self.lookup_kwarg_isnull]),
+                [self.lookup_kwarg, self.lookup_kwarg_isnull]),
             'display': _('All'),
         }
         for pk_val, val in self.lookup_choices:
@@ -217,18 +212,9 @@ class RelatedFieldListFilter(FieldListFilter):
                 }, [self.lookup_kwarg_isnull]),
                 'display': val,
             }
-        if (
-            isinstance(
-                self.field,
-                ForeignObjectRel) and (
-                self.field.field.null or isinstance(
-                self.field.field,
-                ManyToManyField)) or hasattr(
-                    self.field,
-                    'rel') and (
-                        self.field.null or isinstance(
-                            self.field,
-                            ManyToManyField))):
+        if (isinstance(self.field, ForeignObjectRel) and
+                (self.field.field.null or isinstance(self.field.field, ManyToManyField)) or
+                hasattr(self.field, 'rel') and (self.field.null or isinstance(self.field, ManyToManyField))):
             yield {
                 'selected': bool(self.lookup_val_isnull),
                 'query_string': cl.get_query_string({
@@ -243,21 +229,13 @@ FieldListFilter.register(lambda f: (
 
 
 class BooleanFieldListFilter(FieldListFilter):
-
     def __init__(self, field, request, params, model, model_admin, field_path):
         self.lookup_kwarg = '%s__exact' % field_path
         self.lookup_kwarg2 = '%s__isnull' % field_path
         self.lookup_val = request.GET.get(self.lookup_kwarg, None)
         self.lookup_val2 = request.GET.get(self.lookup_kwarg2, None)
-        super(
-            BooleanFieldListFilter,
-            self).__init__(
-            field,
-            request,
-            params,
-            model,
-            model_admin,
-            field_path)
+        super(BooleanFieldListFilter, self).__init__(field,
+            request, params, model, model_admin, field_path)
 
     def expected_parameters(self):
         return [self.lookup_kwarg, self.lookup_kwarg2]
@@ -283,16 +261,11 @@ class BooleanFieldListFilter(FieldListFilter):
                 'display': _('Unknown'),
             }
 
-FieldListFilter.register(
-    lambda f: isinstance(
-        f,
-        (models.BooleanField,
-         models.NullBooleanField)),
-    BooleanFieldListFilter)
+FieldListFilter.register(lambda f: isinstance(f,
+    (models.BooleanField, models.NullBooleanField)), BooleanFieldListFilter)
 
 
 class ChoicesFieldListFilter(FieldListFilter):
-
     def __init__(self, field, request, params, model, model_admin, field_path):
         self.lookup_kwarg = '%s__exact' % field_path
         self.lookup_val = request.GET.get(self.lookup_kwarg)
@@ -320,7 +293,6 @@ FieldListFilter.register(lambda f: bool(f.choices), ChoicesFieldListFilter)
 
 
 class DateFieldListFilter(FieldListFilter):
-
     def __init__(self, field, request, params, model, model_admin, field_path):
         self.field_generic = '%s__' % field_path
         self.date_params = {k: v for k, v in params.items()
@@ -387,7 +359,6 @@ FieldListFilter.register(
 # if a field is eligible to use the BooleanFieldListFilter, that'd be much
 # more appropriate, and the AllValuesFieldListFilter won't get used for it.
 class AllValuesFieldListFilter(FieldListFilter):
-
     def __init__(self, field, request, params, model, model_admin, field_path):
         self.lookup_kwarg = field_path
         self.lookup_kwarg_isnull = '%s__isnull' % field_path
@@ -421,9 +392,9 @@ class AllValuesFieldListFilter(FieldListFilter):
         from django.contrib.admin.views.main import EMPTY_CHANGELIST_VALUE
         yield {
             'selected': (self.lookup_val is None
-                         and self.lookup_val_isnull is None),
+                and self.lookup_val_isnull is None),
             'query_string': cl.get_query_string({},
-                                                [self.lookup_kwarg, self.lookup_kwarg_isnull]),
+                [self.lookup_kwarg, self.lookup_kwarg_isnull]),
             'display': _('All'),
         }
         include_none = False
@@ -452,13 +423,6 @@ FieldListFilter.register(lambda f: True, AllValuesFieldListFilter)
 
 
 class RelatedOnlyFieldListFilter(RelatedFieldListFilter):
-
     def field_choices(self, field, request, model_admin):
-        limit_choices_to = {
-            'pk__in': set(
-                model_admin.get_queryset(request).values_list(
-                    field.name,
-                    flat=True))}
-        return field.get_choices(
-            include_blank=False,
-            limit_choices_to=limit_choices_to)
+        limit_choices_to = {'pk__in': set(model_admin.get_queryset(request).values_list(field.name, flat=True))}
+        return field.get_choices(include_blank=False, limit_choices_to=limit_choices_to)

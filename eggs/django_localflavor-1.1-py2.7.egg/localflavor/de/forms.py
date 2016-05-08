@@ -14,8 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 from .de_states import STATE_CHOICES
 
 
-id_re = re.compile(
-    r"^(?P<residence>\d{10})(?P<origin>\w{1,3})[-\ ]?(?P<birthday>\d{7})[-\ ]?(?P<validity>\d{7})[-\ ]?(?P<checksum>\d{1})$")
+id_re = re.compile(r"^(?P<residence>\d{10})(?P<origin>\w{1,3})[-\ ]?(?P<birthday>\d{7})[-\ ]?(?P<validity>\d{7})[-\ ]?(?P<checksum>\d{1})$")
 
 
 class DEZipCodeField(RegexField):
@@ -28,22 +27,14 @@ class DEZipCodeField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            DEZipCodeField,
-            self).__init__(
-            r'^\d{5}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(DEZipCodeField, self).__init__(r'^\d{5}$',
+                                             max_length, min_length, *args, **kwargs)
 
 
 class DEStateSelect(Select):
     """
     A Select widget that uses a list of DE states as its choices.
     """
-
     def __init__(self, attrs=None):
         super(DEStateSelect, self).__init__(attrs, choices=STATE_CHOICES)
 
@@ -60,8 +51,9 @@ class DEIdentityCardNumberField(Field):
 
     Algorithm is documented at http://de.wikipedia.org/wiki/Personalausweis
     """
-    default_error_messages = {'invalid': _(
-        'Enter a valid German identity card number in XXXXXXXXXXX-XXXXXXX-XXXXXXX-X format.'), }
+    default_error_messages = {
+        'invalid': _('Enter a valid German identity card number in XXXXXXXXXXX-XXXXXXX-XXXXXXX-X format.'),
+    }
 
     def has_valid_checksum(self, number):
         given_number, given_checksum = number[:-1], number[-1]
@@ -92,8 +84,7 @@ class DEIdentityCardNumberField(Field):
 
         gd = match.groupdict()
         residence, origin = gd['residence'], gd['origin']
-        birthday, validity, checksum = gd[
-            'birthday'], gd['validity'], gd['checksum']
+        birthday, validity, checksum = gd['birthday'], gd['validity'], gd['checksum']
 
         if residence == '0000000000' or birthday == '0000000' or validity == '0000000':
             raise ValidationError(self.error_messages['invalid'])
@@ -105,5 +96,4 @@ class DEIdentityCardNumberField(Field):
                 not self.has_valid_checksum(all_digits)):
             raise ValidationError(self.error_messages['invalid'])
 
-        return '%s%s-%s-%s-%s' % (residence, origin,
-                                  birthday, validity, checksum)
+        return '%s%s-%s-%s-%s' % (residence, origin, birthday, validity, checksum)

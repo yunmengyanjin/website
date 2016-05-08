@@ -45,8 +45,7 @@ def _clean_credentials(credentials):
 
     Not comprehensive - intended for user_login_failed signal
     """
-    SENSITIVE_CREDENTIALS = re.compile(
-        'api|token|key|secret|password|signature', re.I)
+    SENSITIVE_CREDENTIALS = re.compile('api|token|key|secret|password|signature', re.I)
     CLEANSED_SUBSTITUTE = '********************'
     for key in credentials:
         if SENSITIVE_CREDENTIALS.search(key):
@@ -68,15 +67,13 @@ def authenticate(**credentials):
         try:
             inspect.getcallargs(backend.authenticate, **credentials)
         except TypeError:
-            # This backend doesn't accept these credentials as arguments. Try
-            # the next one.
+            # This backend doesn't accept these credentials as arguments. Try the next one.
             continue
 
         try:
             user = backend.authenticate(**credentials)
         except PermissionDenied:
-            # This backend says to stop in our tracks - this user should not be
-            # allowed in at all.
+            # This backend says to stop in our tracks - this user should not be allowed in at all.
             return None
         if user is None:
             continue
@@ -86,7 +83,7 @@ def authenticate(**credentials):
 
     # The credentials supplied are invalid to all backends, fire signal
     user_login_failed.send(sender=__name__,
-                           credentials=_clean_credentials(credentials))
+            credentials=_clean_credentials(credentials))
 
 
 def login(request, user):
@@ -152,12 +149,11 @@ def get_user_model():
     try:
         return django_apps.get_model(settings.AUTH_USER_MODEL)
     except ValueError:
-        raise ImproperlyConfigured(
-            "AUTH_USER_MODEL must be of the form 'app_label.model_name'")
+        raise ImproperlyConfigured("AUTH_USER_MODEL must be of the form 'app_label.model_name'")
     except LookupError:
         raise ImproperlyConfigured(
-            "AUTH_USER_MODEL refers to model '%s' that has not been installed" %
-            settings.AUTH_USER_MODEL)
+            "AUTH_USER_MODEL refers to model '%s' that has not been installed" % settings.AUTH_USER_MODEL
+        )
 
 
 def get_user(request):

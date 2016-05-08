@@ -13,27 +13,15 @@ class Command(BaseCommand):
     help = "Deprecated - use 'migrate' instead."
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            '--noinput',
-            action='store_false',
-            dest='interactive',
-            default=True,
+        parser.add_argument('--noinput', action='store_false', dest='interactive', default=True,
             help='Tells Django to NOT prompt the user for input of any kind.')
-        parser.add_argument(
-            '--no-initial-data',
-            action='store_false',
-            dest='load_initial_data',
-            default=True,
+        parser.add_argument('--no-initial-data', action='store_false', dest='load_initial_data', default=True,
             help='Tells Django not to load any initial data after database synchronization.')
-        parser.add_argument(
-            '--database',
-            default=DEFAULT_DB_ALIAS,
+        parser.add_argument('--database', default=DEFAULT_DB_ALIAS,
             help='Nominates a database to synchronize. Defaults to the "default" database.')
 
     def handle(self, **options):
-        warnings.warn(
-            "The syncdb command will be removed in Django 1.9",
-            RemovedInDjango19Warning)
+        warnings.warn("The syncdb command will be removed in Django 1.9", RemovedInDjango19Warning)
         call_command("migrate", **options)
 
         try:
@@ -44,18 +32,14 @@ class Command(BaseCommand):
         UserModel = get_user_model()
 
         if not UserModel._default_manager.exists() and options.get('interactive'):
-            msg = (
-                "\nYou have installed Django's auth system, and "
+            msg = ("\nYou have installed Django's auth system, and "
                 "don't have any superusers defined.\nWould you like to create one "
                 "now? (yes/no): ")
             confirm = input(msg)
-            while True:
+            while 1:
                 if confirm not in ('yes', 'no'):
                     confirm = input('Please enter either "yes" or "no": ')
                     continue
                 if confirm == 'yes':
-                    call_command(
-                        "createsuperuser",
-                        interactive=True,
-                        database=options['database'])
+                    call_command("createsuperuser", interactive=True, database=options['database'])
                 break

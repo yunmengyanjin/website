@@ -57,11 +57,7 @@ def no_actions(request, template_name="manage/actions/no_actions.html"):
 
 
 # Parts
-def data(
-        request,
-        action,
-        form=None,
-        template_name="manage/actions/data_tab.html"):
+def data(request, action, form=None, template_name="manage/actions/data_tab.html"):
     """Provides a form to edit the action with the passed id.
     """
     if form is None:
@@ -75,10 +71,7 @@ def data(
     }))
 
 
-def navigation(
-        request,
-        action,
-        template_name="manage/actions/navigation.html"):
+def navigation(request, action, template_name="manage/actions/navigation.html"):
     """
     """
     return render_to_string(template_name, RequestContext(request, {

@@ -28,12 +28,7 @@ from django.utils.http import urlencode
 from django.utils.itercompat import is_iterable
 from django.utils.six.moves.urllib.parse import urlparse, urlsplit
 
-__all__ = (
-    'Client',
-    'RedirectCycleError',
-    'RequestFactory',
-    'encode_file',
-    'encode_multipart')
+__all__ = ('Client', 'RedirectCycleError', 'RequestFactory', 'encode_file', 'encode_multipart')
 
 
 BOUNDARY = 'BoUnDaRyStRiNg'
@@ -45,7 +40,6 @@ class RedirectCycleError(Exception):
     """
     The test client has been asked to follow a redirect loop.
     """
-
     def __init__(self, message, last_response):
         super(RedirectCycleError, self).__init__(message)
         self.last_response = last_response
@@ -59,7 +53,6 @@ class FakePayload(object):
     length. This makes sure that views can't do anything under the test client
     that wouldn't work in Real Life.
     """
-
     def __init__(self, content=None):
         self.__content = BytesIO()
         self.__len = 0
@@ -105,7 +98,6 @@ class ClientHandler(BaseHandler):
     interface to compose requests, but returns the raw HttpResponse object with
     the originating WSGIRequest attached to its ``wsgi_request`` attribute.
     """
-
     def __init__(self, enforce_csrf_checks=True, *args, **kwargs):
         self.enforce_csrf_checks = enforce_csrf_checks
         super(ClientHandler, self).__init__(*args, **kwargs)
@@ -145,13 +137,7 @@ class ClientHandler(BaseHandler):
         return response
 
 
-def store_rendered_templates(
-        store,
-        signal,
-        sender,
-        template,
-        context,
-        **kwargs):
+def store_rendered_templates(store, signal, sender, template, context, **kwargs):
     """
     Stores templates and contexts that are rendered.
 
@@ -245,7 +231,6 @@ class RequestFactory(object):
     Once you have a request object you can pass it to any view function,
     just as if that view had been hooked up using a URLconf.
     """
-
     def __init__(self, **defaults):
         self.defaults = defaults
         self.cookies = SimpleCookie()
@@ -384,8 +369,7 @@ class RequestFactory(object):
                 'wsgi.input': FakePayload(data),
             })
         r.update(extra)
-        # If QUERY_STRING is absent or empty, we want to extract it from the
-        # URL.
+        # If QUERY_STRING is absent or empty, we want to extract it from the URL.
         if not r.get('QUERY_STRING'):
             query_string = force_bytes(parsed[4])
             # WSGI requires latin-1 encoded strings. See get_path_info().
@@ -413,7 +397,6 @@ class Client(RequestFactory):
     contexts and templates produced by a view, rather than the
     HTML rendered to the end-user.
     """
-
     def __init__(self, enforce_csrf_checks=False, **defaults):
         super(Client, self).__init__(**defaults)
         self.handler = ClientHandler(enforce_csrf_checks)
@@ -456,12 +439,9 @@ class Client(RequestFactory):
         data = {}
         on_template_render = curry(store_rendered_templates, data)
         signal_uid = "template-render-%s" % id(request)
-        signals.template_rendered.connect(
-            on_template_render, dispatch_uid=signal_uid)
+        signals.template_rendered.connect(on_template_render, dispatch_uid=signal_uid)
         # Capture exceptions created by the handler.
-        got_request_exception.connect(
-            self.store_exc_info,
-            dispatch_uid="request-exception")
+        got_request_exception.connect(self.store_exc_info, dispatch_uid="request-exception")
         try:
 
             try:
@@ -596,13 +576,7 @@ class Client(RequestFactory):
         """
         Send a TRACE request to the server.
         """
-        response = super(
-            Client,
-            self).trace(
-            path,
-            data=data,
-            secure=secure,
-            **extra)
+        response = super(Client, self).trace(path, data=data, secure=secure, **extra)
         if follow:
             response = self._handle_redirects(response, **extra)
         return response
@@ -684,23 +658,17 @@ class Client(RequestFactory):
             if url.port:
                 extra['SERVER_PORT'] = str(url.port)
 
-            response = self.get(
-                url.path, QueryDict(
-                    url.query), follow=False, **extra)
+            response = self.get(url.path, QueryDict(url.query), follow=False, **extra)
             response.redirect_chain = redirect_chain
 
             if redirect_chain[-1] in redirect_chain[:-1]:
                 # Check that we're not redirecting to somewhere we've already
                 # been to, to prevent loops.
-                raise RedirectCycleError(
-                    "Redirect loop detected.",
-                    last_response=response)
+                raise RedirectCycleError("Redirect loop detected.", last_response=response)
             if len(redirect_chain) > 20:
                 # Such a lengthy chain likely also means a loop, but one with
                 # a growing path, changing view, or changing query argument;
-                # 20 is the value of "network.http.redirection-limit" from
-                # Firefox.
-                raise RedirectCycleError(
-                    "Too many redirects.", last_response=response)
+                # 20 is the value of "network.http.redirection-limit" from Firefox.
+                raise RedirectCycleError("Too many redirects.", last_response=response)
 
         return response

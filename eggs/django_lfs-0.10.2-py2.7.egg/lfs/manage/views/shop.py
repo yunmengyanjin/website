@@ -24,7 +24,6 @@ from lfs.manage.seo.views import SEOView
 
 
 class ShopSEOView(SEOView):
-
     def form_valid(self, form):
         res = super(ShopSEOView, self).form_valid(form)
         shop_changed.send(form.instance)
@@ -34,26 +33,15 @@ class ShopSEOView(SEOView):
 class ShopDataForm(ModelForm):
     """Form to edit shop data.
     """
-
     def __init__(self, *args, **kwargs):
         super(ShopDataForm, self).__init__(*args, **kwargs)
         self.fields["image"].widget = LFSImageInput()
 
     class Meta:
         model = Shop
-        fields = (
-            "name",
-            "shop_owner",
-            "from_email",
-            "notification_emails",
-            "description",
-            "image",
-            "static_block",
-            "checkout_type",
-            "confirm_toc",
-            "google_analytics_id",
-            "ga_site_tracking",
-            "ga_ecommerce_tracking")
+        fields = ("name", "shop_owner", "from_email", "notification_emails",
+            "description", "image", "static_block", "checkout_type", "confirm_toc",
+            "google_analytics_id", "ga_site_tracking", "ga_ecommerce_tracking")
 
 
 class ShopDefaultValuesForm(ModelForm):
@@ -61,16 +49,8 @@ class ShopDefaultValuesForm(ModelForm):
     """
     class Meta:
         model = Shop
-        fields = (
-            "price_calculator",
-            "product_cols",
-            "product_rows",
-            "category_cols",
-            "default_country",
-            "invoice_countries",
-            "shipping_countries",
-            "use_international_currency_code",
-            "delivery_time")
+        fields = ("price_calculator", "product_cols", "product_rows", "category_cols",
+            "default_country", "invoice_countries", "shipping_countries", "use_international_currency_code", "delivery_time")
 
 
 @permission_required("core.manage_shop")
@@ -109,11 +89,7 @@ def data_tab(request, shop, form, template_name="manage/shop/data_tab.html"):
     }))
 
 
-def order_numbers_tab(
-        request,
-        shop,
-        form,
-        template_name="manage/order_numbers/order_numbers_tab.html"):
+def order_numbers_tab(request, shop, form, template_name="manage/order_numbers/order_numbers_tab.html"):
     """Renders the ordern number tab of the shop.
     """
     return render_to_string(template_name, RequestContext(request, {
@@ -122,11 +98,7 @@ def order_numbers_tab(
     }))
 
 
-def default_values_tab(
-        request,
-        shop,
-        form,
-        template_name="manage/shop/default_values_tab.html"):
+def default_values_tab(request, shop, form, template_name="manage/shop/default_values_tab.html"):
     """Renders the default value tab of the shop.
     """
     return render_to_string(template_name, RequestContext(request, {

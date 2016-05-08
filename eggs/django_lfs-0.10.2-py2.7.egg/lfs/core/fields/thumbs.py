@@ -55,7 +55,6 @@ class ImageWithThumbsFieldFile(ImageFieldFile):
     """
     See ImageWithThumbsField for usage example
     """
-
     def __init__(self, *args, **kwargs):
         super(ImageWithThumbsFieldFile, self).__init__(*args, **kwargs)
         self.sizes = self.field.sizes
@@ -87,9 +86,7 @@ class ImageWithThumbsFieldFile(ImageFieldFile):
                 thumb_name_ = self.storage.save(thumb_name, thumb_content)
 
                 if not thumb_name == thumb_name_:
-                    raise ValueError(
-                        'There is already a file named %s' %
-                        thumb_name)
+                    raise ValueError('There is already a file named %s' % thumb_name)
 
     def delete(self, save=True):
         name = self.name
@@ -149,15 +146,7 @@ class ImageWithThumbsField(ImageField):
     Add method to regenerate thubmnails
 
     """
-
-    def __init__(
-            self,
-            verbose_name=None,
-            name=None,
-            width_field=None,
-            height_field=None,
-            sizes=None,
-            **kwargs):
+    def __init__(self, verbose_name=None, name=None, width_field=None, height_field=None, sizes=None, **kwargs):
         super(ImageWithThumbsField, self).__init__(verbose_name=verbose_name,
                                                    name=name,
                                                    width_field=width_field,
@@ -168,13 +157,13 @@ class ImageWithThumbsField(ImageField):
 if 'south' in settings.INSTALLED_APPS:
     # south rules
     rules = [
-        (
-            (ImageWithThumbsField,),
-            [],
-            {
-                "sizes": ["sizes", {"default": None}]
-            },
-        )
+      (
+        (ImageWithThumbsField,),
+        [],
+        {
+            "sizes": ["sizes", {"default": None}]
+        },
+      )
     ]
     from south.modelsinspector import add_introspection_rules
     add_introspection_rules(rules, ["^lfs\.core\.fields\.thumbs"])

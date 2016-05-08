@@ -19,8 +19,7 @@ from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_noop as _
 
 UNUSABLE_PASSWORD_PREFIX = '!'  # This will never be a valid encoded hash
-# number of random chars to add after UNUSABLE_PASSWORD_PREFIX
-UNUSABLE_PASSWORD_SUFFIX_LENGTH = 40
+UNUSABLE_PASSWORD_SUFFIX_LENGTH = 40  # number of random chars to add after UNUSABLE_PASSWORD_PREFIX
 
 
 def is_password_usable(encoded):
@@ -68,8 +67,7 @@ def make_password(password, salt=None, hasher='default'):
     See ticket #20079 for more info.
     """
     if password is None:
-        return UNUSABLE_PASSWORD_PREFIX + \
-            get_random_string(UNUSABLE_PASSWORD_SUFFIX_LENGTH)
+        return UNUSABLE_PASSWORD_PREFIX + get_random_string(UNUSABLE_PASSWORD_SUFFIX_LENGTH)
     hasher = get_hasher(hasher)
 
     if not salt:
@@ -195,8 +193,7 @@ class BasePasswordHasher(object):
         """
         Checks if the given password is correct
         """
-        raise NotImplementedError(
-            'subclasses of BasePasswordHasher must provide a verify() method')
+        raise NotImplementedError('subclasses of BasePasswordHasher must provide a verify() method')
 
     def encode(self, password, salt):
         """
@@ -205,8 +202,7 @@ class BasePasswordHasher(object):
         The result is normally formatted as "algorithm$salt$hash" and
         must be fewer than 128 characters.
         """
-        raise NotImplementedError(
-            'subclasses of BasePasswordHasher must provide an encode() method')
+        raise NotImplementedError('subclasses of BasePasswordHasher must provide an encode() method')
 
     def safe_summary(self, encoded):
         """
@@ -215,8 +211,7 @@ class BasePasswordHasher(object):
         The result is a dictionary and will be used where the password field
         must be displayed to construct a safe representation of the password.
         """
-        raise NotImplementedError(
-            'subclasses of BasePasswordHasher must provide a safe_summary() method')
+        raise NotImplementedError('subclasses of BasePasswordHasher must provide a safe_summary() method')
 
     def must_update(self, encoded):
         return False
@@ -303,8 +298,7 @@ class BCryptSHA256PasswordHasher(BasePasswordHasher):
         if self.digest is not None:
             # We use binascii.hexlify here because Python3 decided that a hex encoded
             #   bytestring is somehow a unicode.
-            password = binascii.hexlify(
-                self.digest(force_bytes(password)).digest())
+            password = binascii.hexlify(self.digest(force_bytes(password)).digest())
         else:
             password = force_bytes(password)
 
@@ -321,8 +315,7 @@ class BCryptSHA256PasswordHasher(BasePasswordHasher):
         if self.digest is not None:
             # We use binascii.hexlify here because Python3 decided that a hex encoded
             #   bytestring is somehow a unicode.
-            password = binascii.hexlify(
-                self.digest(force_bytes(password)).digest())
+            password = binascii.hexlify(self.digest(force_bytes(password)).digest())
         else:
             password = force_bytes(password)
 
@@ -508,9 +501,7 @@ class CryptPasswordHasher(BasePasswordHasher):
         crypt = self._load_library()
         algorithm, salt, data = encoded.split('$', 2)
         assert algorithm == self.algorithm
-        return constant_time_compare(
-            data, crypt.crypt(
-                force_str(password), data))
+        return constant_time_compare(data, crypt.crypt(force_str(password), data))
 
     def safe_summary(self, encoded):
         algorithm, salt, data = encoded.split('$', 2)

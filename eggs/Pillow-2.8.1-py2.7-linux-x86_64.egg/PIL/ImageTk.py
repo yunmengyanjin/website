@@ -276,7 +276,6 @@ def getimage(photo):
 def _show(image, title):
 
     class UI(tkinter.Label):
-
         def __init__(self, master, im):
             if im.mode == "1":
                 self.image = BitmapImage(im, foreground="white", master=master)

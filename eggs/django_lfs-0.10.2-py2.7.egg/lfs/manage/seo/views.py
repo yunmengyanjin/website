@@ -21,25 +21,17 @@ from lfs.core.utils import LazyEncoder
 class SEOView(View):
     http_method_names = ['get', 'post']
     model_klass = None  # model that this view operates on
-    # SEO Form class (by default it's model form with fields:
-    # meta_[title|keywords|description])
-    form_klass = None
+    form_klass = None  # SEO Form class (by default it's model form with fields: meta_[title|keywords|description])
     template_name = None  # template used to render SEO form
 
     @staticmethod
     def get_unique_klass_name(model_klass):
-        klass_name = u'{0}_{1}'.format(
-            model_klass.__module__,
-            model_klass.__name__.lower())
+        klass_name = u'{0}_{1}'.format(model_klass.__module__, model_klass.__name__.lower())
         klass_name = klass_name.replace('.', '_')
         return klass_name
 
     @classmethod
-    def get_seo_urlpattern(
-            cls,
-            model_klass,
-            form_klass=None,
-            template_name='manage/seo/seo.html'):
+    def get_seo_urlpattern(cls, model_klass, form_klass=None, template_name='manage/seo/seo.html'):
         """Prepare urlpattern for seo tab and give it a name based on the model name to be unique
         """
         klass_name = cls.get_unique_klass_name(model_klass)
@@ -51,26 +43,15 @@ class SEOView(View):
                         url(r'^manage-seo/%s/(?P<id>\d*)/$' % klass_name,
                             permission_required("core.manage_shop")(view_obj),
                             name='lfs_manage_%s_seo' % klass_name),
-                        )
+                )
 
-    def __init__(
-            self,
-            model_klass,
-            form_klass=None,
-            template_name='manage/seo/seo.html',
-            *args,
-            **kwargs):
+    def __init__(self, model_klass, form_klass=None, template_name='manage/seo/seo.html', *args, **kwargs):
         super(SEOView, self).__init__(*args, **kwargs)
         form_k = form_klass if form_klass else self.form_klass
         if not form_k:
-            # if form_klass is not specified then prepare default model form
-            # for SEO management
-            form_k = modelform_factory(
-                model_klass,
-                fields=(
-                    "meta_title",
-                    "meta_keywords",
-                    "meta_description"))
+            # if form_klass is not specified then prepare default model form for SEO management
+            form_k = modelform_factory(model_klass,
+                                       fields=("meta_title", "meta_keywords", "meta_description"))
         self.form_klass = form_k
         self.model_klass = model_klass
         self.template_name = template_name
@@ -85,21 +66,21 @@ class SEOView(View):
         """
         if not form:
             form = self.form_klass(instance=obj)
-        return render_to_string(
-            self.template_name, RequestContext(
-                request, {
-                    "obj": obj, "urlname": self.urlname, "action_url": reverse(
-                        self.urlname, args=(
-                            obj.pk,)), "form": form}))
+        return render_to_string(self.template_name,
+                                RequestContext(request, {
+                                    "obj": obj,
+                                    "urlname": self.urlname,
+                                    "action_url": reverse(self.urlname, args=(obj.pk,)),
+                                    "form": form
+                                }))
 
     def render_to_response(self, form, message=''):
         """Prepare the output
         """
         seo_html = self.render(self.request, form.instance, form)
         return HttpResponse(json.dumps({"seo": seo_html,
-                                        "message": message},
-                                       cls=LazyEncoder),
-                            content_type='application/json')
+                                              "message": message
+                                             }, cls=LazyEncoder), content_type='application/json')
 
     def form_valid(self, form):
         """Handle successfull validation

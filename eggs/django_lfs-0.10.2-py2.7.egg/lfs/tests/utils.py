@@ -7,7 +7,6 @@ from django.contrib.sessions.backends.file import SessionStore
 from django.core.handlers.wsgi import WSGIRequest
 from django.test import Client
 
-
 class DummySession(object):
     """
     """
@@ -17,7 +16,6 @@ class DummySession(object):
 class DummyRequest(object):
     """
     """
-
     def __init__(self, method="POST", user=None):
         """
         """
@@ -44,7 +42,6 @@ class RequestFactory(Client):
     just as if that view had been hooked up using a URLconf.
 
     """
-
     def request(self, **request):
         """
         Similar to parent class, but returns the request object as soon as it

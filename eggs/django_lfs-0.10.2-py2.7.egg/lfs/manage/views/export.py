@@ -35,10 +35,7 @@ class ExportDataForm(ModelForm):
 
 
 @permission_required("core.manage_shop")
-def manage_export(
-        request,
-        export_id,
-        template_name="manage/export/export.html"):
+def manage_export(request, export_id, template_name="manage/export/export.html"):
     """The main view to display exports.
     """
     export = Export.objects.get(pk=export_id)
@@ -50,8 +47,7 @@ def manage_export(
         options = []
 
         try:
-            category_option = CategoryOption.objects.get(
-                export=export, category=category)
+            category_option = CategoryOption.objects.get(export=export, category=category)
         except CategoryOption.DoesNotExist:
             variants_option = None
         else:
@@ -87,7 +83,7 @@ def manage_export(
 
 # Parts
 def export_data_inline(request, export_id, form,
-                       template_name="manage/export/export_data_inline.html"):
+    template_name="manage/export/export_data_inline.html"):
     """Displays the data form of the current export.
     """
     return render_to_string(template_name, RequestContext(request, {
@@ -96,10 +92,8 @@ def export_data_inline(request, export_id, form,
     }))
 
 
-def selectable_exports_inline(
-        request,
-        export_id,
-        template_name="manage/export/selectable_exports_inline.html"):
+def selectable_exports_inline(request, export_id,
+    template_name="manage/export/selectable_exports_inline.html"):
     """Displays all selectable exports.
     """
     return render_to_string(template_name, RequestContext(request, {
@@ -110,19 +104,14 @@ def selectable_exports_inline(
 
 @permission_required("core.manage_shop")
 def export_inline(request, export_id, category_id,
-                  template_name="manage/export/export_inline.html"):
+    template_name="manage/export/export_inline.html"):
     """Returns categories and products for given export id and category id.
     """
     export = Export.objects.get(pk=export_id)
     selected_products = export.products.all()
 
     products = []
-    for product in Product.objects.filter(
-            sub_type__in=[
-                STANDARD_PRODUCT,
-                PRODUCT_WITH_VARIANTS],
-            categories__in=[category_id],
-            active=True):
+    for product in Product.objects.filter(sub_type__in=[STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS], categories__in=[category_id], active=True):
 
         if product.is_standard():
             type = "P"
@@ -143,8 +132,7 @@ def export_inline(request, export_id, category_id,
         options = []
 
         try:
-            category_option = CategoryOption.objects.get(
-                export=export, category=category)
+            category_option = CategoryOption.objects.get(export=export, category=category)
         except CategoryOption.DoesNotExist:
             variants_option = None
         else:
@@ -315,8 +303,7 @@ def update_category_variants_option(request, export_id, category_id):
         return HttpResponse("")
 
     try:
-        category_option = CategoryOption.objects.get(
-            export=export, category=category)
+        category_option = CategoryOption.objects.get(export=export, category=category)
     except CategoryOption.DoesNotExist:
         category_option = None
 
@@ -326,9 +313,7 @@ def update_category_variants_option(request, export_id, category_id):
     else:
         if category_option is None:
             CategoryOption.objects.create(
-                export=export,
-                category=category,
-                variants_option=variants_option)
+                export=export, category=category, variants_option=variants_option)
         else:
             category_option.variants_option = variants_option
             category_option.save()
@@ -349,15 +334,8 @@ def update_data(request, export_id):
     msg = _(u"Export data has been saved.")
 
     html = (
-        ("#data",
-         export_data_inline(
-             request,
-             export_id,
-             form)),
-        ("#selectable-exports-inline",
-         selectable_exports_inline(
-             request,
-             export_id)),
+        ("#data", export_data_inline(request, export_id, form)),
+        ("#selectable-exports-inline", selectable_exports_inline(request, export_id)),
     )
 
     result = json.dumps({

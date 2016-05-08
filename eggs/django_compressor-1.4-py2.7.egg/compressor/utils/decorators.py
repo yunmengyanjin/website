@@ -22,7 +22,6 @@ class cached_property(object):
               if value is not None:
                     print("Connection %r deleted" % (value, ))
     """
-
     def __init__(self, fget=None, fset=None, fdel=None, doc=None):
         self.__get = fget
         self.__set = fset

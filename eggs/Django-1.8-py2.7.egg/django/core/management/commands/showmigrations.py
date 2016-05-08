@@ -10,31 +10,15 @@ class Command(BaseCommand):
     help = "Shows all available migrations for the current project"
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            'app_labels',
-            nargs='*',
+        parser.add_argument('app_labels', nargs='*',
             help='App labels of applications to limit the output to.')
-        parser.add_argument(
-            '--database',
-            action='store',
-            dest='database',
-            default=DEFAULT_DB_ALIAS,
+        parser.add_argument('--database', action='store', dest='database', default=DEFAULT_DB_ALIAS,
             help='Nominates a database to synchronize. Defaults to the "default" database.')
 
         formats = parser.add_mutually_exclusive_group()
-        formats.add_argument(
-            '--list',
-            '-l',
-            action='store_const',
-            dest='format',
-            const='list',
+        formats.add_argument('--list', '-l', action='store_const', dest='format', const='list',
             help='Shows a list of all migrations and which are applied.')
-        formats.add_argument(
-            '--plan',
-            '-p',
-            action='store_const',
-            dest='format',
-            const='plan',
+        formats.add_argument('--plan', '-p', action='store_const', dest='format', const='plan',
             help='Shows all migrations in the order they will be applied.')
 
         parser.set_defaults(format='list')
@@ -66,9 +50,7 @@ class Command(BaseCommand):
                 if app_name not in loader.migrated_apps:
                     invalid_apps.append(app_name)
             if invalid_apps:
-                raise CommandError(
-                    "No migrations present for: %s" %
-                    (", ".join(invalid_apps)))
+                raise CommandError("No migrations present for: %s" % (", ".join(invalid_apps)))
         # Otherwise, show all apps in alphabetic order
         else:
             app_names = sorted(loader.migrated_apps)
@@ -83,8 +65,7 @@ class Command(BaseCommand):
                         # Give it a nice title if it's a squashed one
                         title = plan_node[1]
                         if graph.nodes[plan_node].replaces:
-                            title += " (%s squashed migrations)" % len(
-                                graph.nodes[plan_node].replaces)
+                            title += " (%s squashed migrations)" % len(graph.nodes[plan_node].replaces)
                         # Mark it as applied/unapplied
                         if plan_node in loader.applied_migrations:
                             self.stdout.write(" [X] %s" % title)
@@ -93,9 +74,7 @@ class Command(BaseCommand):
                         shown.add(plan_node)
             # If we didn't print anything, then a small message
             if not shown:
-                self.stdout.write(
-                    " (no migrations)",
-                    self.style.MIGRATE_FAILURE)
+                self.stdout.write(" (no migrations)", self.style.MIGRATE_FAILURE)
 
     def show_plan(self, connection):
         """
@@ -131,8 +110,7 @@ class Command(BaseCommand):
             deps = ""
             if self.verbosity >= 2:
                 deps = print_deps(migration)
-            if (migration.app_label,
-                    migration.name) in loader.applied_migrations:
+            if (migration.app_label, migration.name) in loader.applied_migrations:
                 self.stdout.write("[X]  %s%s" % (migration, deps))
             else:
                 self.stdout.write("[ ]  %s%s" % (migration, deps))

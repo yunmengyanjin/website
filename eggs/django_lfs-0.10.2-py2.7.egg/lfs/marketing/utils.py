@@ -99,8 +99,7 @@ def get_topseller_for_category(category, limit=5):
     """
     # TODO: Check Django 1.1's aggregation
 
-    cache_key = "%s-topseller-%s" % (
-        settings.CACHE_MIDDLEWARE_KEY_PREFIX, category.id)
+    cache_key = "%s-topseller-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, category.id)
     topseller = cache.get(cache_key)
     if topseller is not None:
         return topseller
@@ -111,12 +110,10 @@ def get_topseller_for_category(category, limit=5):
     category_ids = [c.id for c in categories]
 
     # Get all the most saled products for this categories
-    pss = ProductSales.objects.filter(
-        product__categories__in=category_ids).order_by("-sales")[:limit]
+    pss = ProductSales.objects.filter(product__categories__in=category_ids).order_by("-sales")[:limit]
 
     objects = [ps.product for ps in pss]
-    for explicit_ts in Topseller.objects.filter(
-            product__categories__in=category_ids):
+    for explicit_ts in Topseller.objects.filter(product__categories__in=category_ids):
 
         if explicit_ts.product.is_active():
             # Remove explicit_ts if it's already in the object list

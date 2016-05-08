@@ -11,7 +11,6 @@ class SessionStore(SessionBase):
     """
     Implements database session store.
     """
-
     def __init__(self, session_key=None):
         super(SessionStore, self).__init__(session_key)
 
@@ -25,7 +24,7 @@ class SessionStore(SessionBase):
         except (Session.DoesNotExist, SuspiciousOperation) as e:
             if isinstance(e, SuspiciousOperation):
                 logger = logging.getLogger('django.security.%s' %
-                                           e.__class__.__name__)
+                        e.__class__.__name__)
                 logger.warning(force_text(e))
             self.create()
             return {}

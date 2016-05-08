@@ -14,17 +14,11 @@ from django.utils.functional import cached_property
 
 class BaseMemcachedCacheMethods(RenameMethodsBase):
     renamed_methods = (
-        ('_get_memcache_timeout',
-         'get_backend_timeout',
-         RemovedInDjango19Warning),
+        ('_get_memcache_timeout', 'get_backend_timeout', RemovedInDjango19Warning),
     )
 
 
-class BaseMemcachedCache(
-    six.with_metaclass(
-        BaseMemcachedCacheMethods,
-        BaseCache)):
-
+class BaseMemcachedCache(six.with_metaclass(BaseMemcachedCacheMethods, BaseCache)):
     def __init__(self, server, params, library, value_not_found_exception):
         super(BaseMemcachedCache, self).__init__(params)
         if isinstance(server, six.string_types):
@@ -79,12 +73,7 @@ class BaseMemcachedCache(
 
     def make_key(self, key, version=None):
         # Python 2 memcache requires the key to be a byte string.
-        return force_str(
-            super(
-                BaseMemcachedCache,
-                self).make_key(
-                key,
-                version))
+        return force_str(super(BaseMemcachedCache, self).make_key(key, version))
 
     def add(self, key, value, timeout=DEFAULT_TIMEOUT, version=None):
         key = self.make_key(key, version=version)
@@ -100,8 +89,7 @@ class BaseMemcachedCache(
     def set(self, key, value, timeout=DEFAULT_TIMEOUT, version=None):
         key = self.make_key(key, version=version)
         if not self._cache.set(key, value, self.get_backend_timeout(timeout)):
-            # make sure the key doesn't keep its old value in case of failure
-            # to set (memcached's 1MB limit)
+            # make sure the key doesn't keep its old value in case of failure to set (memcached's 1MB limit)
             self._cache.delete(key)
 
     def delete(self, key, version=None):
@@ -175,37 +163,26 @@ class BaseMemcachedCache(
 
 class MemcachedCache(BaseMemcachedCache):
     "An implementation of a cache binding using python-memcached"
-
     def __init__(self, server, params):
         import memcache
-        super(
-            MemcachedCache,
-            self).__init__(
-            server,
-            params,
-            library=memcache,
-            value_not_found_exception=ValueError)
+        super(MemcachedCache, self).__init__(server, params,
+                                             library=memcache,
+                                             value_not_found_exception=ValueError)
 
     @property
     def _cache(self):
         if getattr(self, '_client', None) is None:
-            self._client = self._lib.Client(
-                self._servers, pickleProtocol=pickle.HIGHEST_PROTOCOL)
+            self._client = self._lib.Client(self._servers, pickleProtocol=pickle.HIGHEST_PROTOCOL)
         return self._client
 
 
 class PyLibMCCache(BaseMemcachedCache):
     "An implementation of a cache binding using pylibmc"
-
     def __init__(self, server, params):
         import pylibmc
-        super(
-            PyLibMCCache,
-            self).__init__(
-            server,
-            params,
-            library=pylibmc,
-            value_not_found_exception=pylibmc.NotFound)
+        super(PyLibMCCache, self).__init__(server, params,
+                                           library=pylibmc,
+                                           value_not_found_exception=pylibmc.NotFound)
 
     @cached_property
     def _cache(self):

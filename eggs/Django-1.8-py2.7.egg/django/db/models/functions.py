@@ -23,8 +23,8 @@ class Coalesce(Func):
             class ToNCLOB(Func):
                 function = 'TO_NCLOB'
 
-            expressions = [ToNCLOB(expression)
-                           for expression in self.get_source_expressions()]
+            expressions = [
+                ToNCLOB(expression) for expression in self.get_source_expressions()]
             self.set_source_expressions(expressions)
         return super(Coalesce, self).as_sql(compiler, connection)
 
@@ -51,10 +51,9 @@ class ConcatPair(Func):
         return super(ConcatPair, self).as_sql(compiler, connection)
 
     def coalesce(self):
-        # null on either side results in null for expression, wrap with
-        # coalesce
-        expressions = [Coalesce(expression, Value(''))
-                       for expression in self.get_source_expressions()]
+        # null on either side results in null for expression, wrap with coalesce
+        expressions = [
+            Coalesce(expression, Value('')) for expression in self.get_source_expressions()]
         self.set_source_expressions(expressions)
 
 
@@ -88,12 +87,7 @@ class Length(Func):
 
     def __init__(self, expression, **extra):
         output_field = extra.pop('output_field', IntegerField())
-        super(
-            Length,
-            self).__init__(
-            expression,
-            output_field=output_field,
-            **extra)
+        super(Length, self).__init__(expression, output_field=output_field, **extra)
 
     def as_mysql(self, compiler, connection):
         self.function = 'CHAR_LENGTH'

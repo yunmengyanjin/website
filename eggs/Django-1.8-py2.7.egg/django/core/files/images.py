@@ -13,7 +13,6 @@ class ImageFile(File):
     A mixin for use alongside django.core.files.base.File, which provides
     additional features for dealing with images.
     """
-
     def _get_width(self):
         return self._get_image_dimensions()[0]
     width = property(_get_width)
@@ -51,7 +50,7 @@ def get_image_dimensions(file_or_path, close=False):
         # and get the dimensions, but with some TIFF files Pillow needs to
         # parse the whole file.
         chunk_size = 1024
-        while True:
+        while 1:
             data = file.read(chunk_size)
             if not data:
                 break

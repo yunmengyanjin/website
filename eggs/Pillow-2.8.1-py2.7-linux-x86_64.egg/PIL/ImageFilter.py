@@ -43,7 +43,7 @@ class Kernel(Filter):
     def __init__(self, size, kernel, scale=None, offset=0):
         if scale is None:
             # default scale is sum of kernel
-            scale = reduce(lambda a, b: a + b, kernel)
+            scale = reduce(lambda a, b: a+b, kernel)
         if size[0] * size[1] != len(kernel):
             raise ValueError("not enough coefficients in kernel")
         self.filterargs = size, scale, offset, kernel
@@ -55,7 +55,6 @@ class Kernel(Filter):
 
 
 class BuiltinFilter(Kernel):
-
     def __init__(self):
         pass
 
@@ -79,7 +78,7 @@ class RankFilter(Filter):
     def filter(self, image):
         if image.mode == "P":
             raise ValueError("cannot filter palette images")
-        image = image.expand(self.size // 2, self.size // 2)
+        image = image.expand(self.size//2, self.size//2)
         return image.rankfilter(self.size, self.rank)
 
 
@@ -94,7 +93,7 @@ class MedianFilter(RankFilter):
 
     def __init__(self, size=3):
         self.size = size
-        self.rank = size * size // 2
+        self.rank = size*size//2
 
 
 class MinFilter(RankFilter):
@@ -122,7 +121,7 @@ class MaxFilter(RankFilter):
 
     def __init__(self, size=3):
         self.size = size
-        self.rank = size * size - 1
+        self.rank = size*size-1
 
 
 class ModeFilter(Filter):
@@ -185,30 +184,30 @@ class UnsharpMask(Filter):
 class BLUR(BuiltinFilter):
     name = "Blur"
     filterargs = (5, 5), 16, 0, (
-        1, 1, 1, 1, 1,
-        1, 0, 0, 0, 1,
-        1, 0, 0, 0, 1,
-        1, 0, 0, 0, 1,
-        1, 1, 1, 1, 1
-    )
+        1,  1,  1,  1,  1,
+        1,  0,  0,  0,  1,
+        1,  0,  0,  0,  1,
+        1,  0,  0,  0,  1,
+        1,  1,  1,  1,  1
+        )
 
 
 class CONTOUR(BuiltinFilter):
     name = "Contour"
     filterargs = (3, 3), 1, 255, (
         -1, -1, -1,
-        -1, 8, -1,
+        -1,  8, -1,
         -1, -1, -1
-    )
+        )
 
 
 class DETAIL(BuiltinFilter):
     name = "Detail"
     filterargs = (3, 3), 6, 0, (
-        0, -1, 0,
+        0, -1,  0,
         -1, 10, -1,
-        0, -1, 0
-    )
+        0, -1,  0
+        )
 
 
 class EDGE_ENHANCE(BuiltinFilter):
@@ -217,54 +216,54 @@ class EDGE_ENHANCE(BuiltinFilter):
         -1, -1, -1,
         -1, 10, -1,
         -1, -1, -1
-    )
+        )
 
 
 class EDGE_ENHANCE_MORE(BuiltinFilter):
     name = "Edge-enhance More"
     filterargs = (3, 3), 1, 0, (
         -1, -1, -1,
-        -1, 9, -1,
+        -1,  9, -1,
         -1, -1, -1
-    )
+        )
 
 
 class EMBOSS(BuiltinFilter):
     name = "Emboss"
     filterargs = (3, 3), 1, 128, (
-        -1, 0, 0,
-        0, 1, 0,
-        0, 0, 0
-    )
+        -1,  0,  0,
+        0,  1,  0,
+        0,  0,  0
+        )
 
 
 class FIND_EDGES(BuiltinFilter):
     name = "Find Edges"
     filterargs = (3, 3), 1, 0, (
         -1, -1, -1,
-        -1, 8, -1,
+        -1,  8, -1,
         -1, -1, -1
-    )
+        )
 
 
 class SMOOTH(BuiltinFilter):
     name = "Smooth"
     filterargs = (3, 3), 13, 0, (
-        1, 1, 1,
-        1, 5, 1,
-        1, 1, 1
-    )
+        1,  1,  1,
+        1,  5,  1,
+        1,  1,  1
+        )
 
 
 class SMOOTH_MORE(BuiltinFilter):
     name = "Smooth More"
     filterargs = (5, 5), 100, 0, (
-        1, 1, 1, 1, 1,
-        1, 5, 5, 5, 1,
-        1, 5, 44, 5, 1,
-        1, 5, 5, 5, 1,
-        1, 1, 1, 1, 1
-    )
+        1,  1,  1,  1,  1,
+        1,  5,  5,  5,  1,
+        1,  5, 44,  5,  1,
+        1,  5,  5,  5,  1,
+        1,  1,  1,  1,  1
+        )
 
 
 class SHARPEN(BuiltinFilter):
@@ -273,4 +272,4 @@ class SHARPEN(BuiltinFilter):
         -2, -2, -2,
         -2, 32, -2,
         -2, -2, -2
-    )
+        )

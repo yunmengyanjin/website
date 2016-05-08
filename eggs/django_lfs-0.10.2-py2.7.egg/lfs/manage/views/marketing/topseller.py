@@ -22,7 +22,7 @@ from lfs.marketing.models import Topseller
 
 @permission_required("core.manage_shop")
 def manage_topseller(
-        request, template_name="manage/marketing/topseller.html"):
+    request, template_name="manage/marketing/topseller.html"):
     """
     """
     inline = manage_topseller_inline(request, as_string=True)
@@ -43,9 +43,7 @@ def manage_topseller(
 
 @permission_required("core.manage_shop")
 def manage_topseller_inline(
-        request,
-        as_string=False,
-        template_name="manage/marketing/topseller_inline.html"):
+    request, as_string=False, template_name="manage/marketing/topseller_inline.html"):
     """
     """
     topseller = Topseller.objects.all()
@@ -66,7 +64,7 @@ def manage_topseller_inline(
         page = r.get("page", s.get("topseller_products_page", 1))
         filter_ = r.get("filter", s.get("filter"))
         category_filter = r.get("topseller_category_filter",
-                                s.get("topseller_category_filter"))
+                          s.get("topseller_category_filter"))
     else:
         page = r.get("page", 1)
         filter_ = r.get("filter")
@@ -79,7 +77,7 @@ def manage_topseller_inline(
 
     try:
         s["topseller-amount"] = int(r.get("topseller-amount",
-                                          s.get("topseller-amount")))
+                                      s.get("topseller-amount")))
     except TypeError:
         s["topseller-amount"] = 25
 
@@ -87,10 +85,8 @@ def manage_topseller_inline(
     if filter_:
         filters &= Q(name__icontains=filter_)
         filters |= Q(sku__icontains=filter_)
-        filters |= (Q(sub_type=VARIANT) & Q(active_sku=False)
-                    & Q(parent__sku__icontains=filter_))
-        filters |= (Q(sub_type=VARIANT) & Q(active_name=False)
-                    & Q(parent__name__icontains=filter_))
+        filters |= (Q(sub_type=VARIANT) & Q(active_sku=False) & Q(parent__sku__icontains=filter_))
+        filters |= (Q(sub_type=VARIANT) & Q(active_name=False) & Q(parent__name__icontains=filter_))
 
     if category_filter:
         if category_filter == "None":
@@ -144,8 +140,7 @@ def add_topseller(request):
         Topseller.objects.create(product_id=temp_id)
 
     _update_positions()
-    html = [["#topseller-inline",
-             manage_topseller_inline(request, as_string=True)]]
+    html = [["#topseller-inline", manage_topseller_inline(request, as_string=True)]]
     result = json.dumps({
         "html": html,
         "message": _(u"Topseller have been added.")
@@ -174,8 +169,7 @@ def update_topseller(request):
             _update_positions()
             topseller_changed.send(topseller)
 
-        html = [["#topseller-inline",
-                 manage_topseller_inline(request, as_string=True)]]
+        html = [["#topseller-inline", manage_topseller_inline(request, as_string=True)]]
         result = json.dumps({
             "html": html,
             "message": _(u"Topseller have been removed.")
@@ -196,8 +190,7 @@ def update_topseller(request):
             topseller.save()
 
         _update_positions()
-        html = [["#topseller-inline",
-                 manage_topseller_inline(request, as_string=True)]]
+        html = [["#topseller-inline", manage_topseller_inline(request, as_string=True)]]
         result = json.dumps({
             "html": html,
             "message": _(u"Topseller have been updated.")

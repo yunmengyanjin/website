@@ -95,7 +95,6 @@ class CAProvinceSelect(Select):
     A Select widget that uses a list of Canadian provinces and
     territories as its choices.
     """
-
     def __init__(self, attrs=None):
         # Load data in memory only when it is required, see also #17275
         from .ca_provinces import PROVINCE_CHOICES
@@ -114,8 +113,10 @@ class CASocialInsuranceNumberField(Field):
          See: http://en.wikipedia.org/wiki/Social_Insurance_Number
 
     """
-    default_error_messages = {'invalid': _(
-        'Enter a valid Canadian Social Insurance number in XXX-XXX-XXX format.'), }
+    default_error_messages = {
+        'invalid': _(
+            'Enter a valid Canadian Social Insurance number in XXX-XXX-XXX format.'),
+    }
 
     def clean(self, value):
         super(CASocialInsuranceNumberField, self).clean(value)

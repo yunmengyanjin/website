@@ -15,18 +15,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='PayPalOrderTransaction',
             fields=[
-                ('id',
-                 models.AutoField(
-                     verbose_name='ID',
-                     serialize=False,
-                     auto_created=True,
-                     primary_key=True)),
-                ('ipn',
-                 models.ManyToManyField(
-                     to='ipn.PayPalIPN')),
-                ('order',
-                 models.OneToOneField(
-                     to='order.Order')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('ipn', models.ManyToManyField(to='ipn.PayPalIPN')),
+                ('order', models.OneToOneField(to='order.Order')),
             ],
         ),
     ]

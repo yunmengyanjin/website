@@ -36,20 +36,7 @@ from django.utils.xmlutils import SimplerXMLGenerator
 def rfc2822_date(date):
     # We can't use strftime() because it produces locale-dependent results, so
     # we have to map english month and day names manually
-    months = (
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec',
-    )
+    months = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',)
     days = ('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun')
     # Support datetime objects older than 1900
     date = datetime_safe.new_datetime(date)
@@ -98,23 +85,9 @@ def get_tag_uri(url, date):
 
 class SyndicationFeed(object):
     "Base class for all syndication feeds. Subclasses should provide write()"
-
-    def __init__(
-            self,
-            title,
-            link,
-            description,
-            language=None,
-            author_email=None,
-            author_name=None,
-            author_link=None,
-            subtitle=None,
-            categories=None,
-            feed_url=None,
-            feed_copyright=None,
-            feed_guid=None,
-            ttl=None,
-            **kwargs):
+    def __init__(self, title, link, description, language=None, author_email=None,
+            author_name=None, author_link=None, subtitle=None, categories=None,
+            feed_url=None, feed_copyright=None, feed_guid=None, ttl=None, **kwargs):
         to_unicode = lambda s: force_text(s, strings_only=True)
         if categories:
             categories = [force_text(c) for c in categories]
@@ -139,24 +112,10 @@ class SyndicationFeed(object):
         self.feed.update(kwargs)
         self.items = []
 
-    def add_item(
-            self,
-            title,
-            link,
-            description,
-            author_email=None,
-            author_name=None,
-            author_link=None,
-            pubdate=None,
-            comments=None,
-            unique_id=None,
-            unique_id_is_permalink=None,
-            enclosure=None,
-            categories=(),
-            item_copyright=None,
-            ttl=None,
-            updateddate=None,
-            **kwargs):
+    def add_item(self, title, link, description, author_email=None,
+            author_name=None, author_link=None, pubdate=None, comments=None,
+            unique_id=None, unique_id_is_permalink=None, enclosure=None,
+            categories=(), item_copyright=None, ttl=None, updateddate=None, **kwargs):
         """
         Adds an item to the feed. All args are expected to be Python Unicode
         objects except pubdate and updateddate, which are datetime.datetime
@@ -222,8 +181,7 @@ class SyndicationFeed(object):
         Outputs the feed in the given encoding to outfile, which is a file-like
         object. Subclasses should override this.
         """
-        raise NotImplementedError(
-            'subclasses of SyndicationFeed must provide a write() method')
+        raise NotImplementedError('subclasses of SyndicationFeed must provide a write() method')
 
     def writeString(self, encoding):
         """
@@ -253,7 +211,6 @@ class SyndicationFeed(object):
 
 class Enclosure(object):
     "Represents an RSS enclosure"
-
     def __init__(self, url, length, mime_type):
         "All args are expected to be Python Unicode objects"
         self.length, self.mime_type = length, mime_type
@@ -288,18 +245,15 @@ class RssFeed(SyndicationFeed):
         handler.addQuickElement("link", self.feed['link'])
         handler.addQuickElement("description", self.feed['description'])
         if self.feed['feed_url'] is not None:
-            handler.addQuickElement(
-                "atom:link", None, {
-                    "rel": "self", "href": self.feed['feed_url']})
+            handler.addQuickElement("atom:link", None,
+                    {"rel": "self", "href": self.feed['feed_url']})
         if self.feed['language'] is not None:
             handler.addQuickElement("language", self.feed['language'])
         for cat in self.feed['categories']:
             handler.addQuickElement("category", cat)
         if self.feed['feed_copyright'] is not None:
             handler.addQuickElement("copyright", self.feed['feed_copyright'])
-        handler.addQuickElement(
-            "lastBuildDate", rfc2822_date(
-                self.latest_post_date()))
+        handler.addQuickElement("lastBuildDate", rfc2822_date(self.latest_post_date()))
         if self.feed['ttl'] is not None:
             handler.addQuickElement("ttl", self.feed['ttl'])
 
@@ -329,15 +283,13 @@ class Rss201rev2Feed(RssFeed):
 
         # Author information.
         if item["author_name"] and item["author_email"]:
-            handler.addQuickElement(
-                "author", "%s (%s)" %
+            handler.addQuickElement("author", "%s (%s)" %
                 (item['author_email'], item['author_name']))
         elif item["author_email"]:
             handler.addQuickElement("author", item["author_email"])
         elif item["author_name"]:
-            handler.addQuickElement(
-                "dc:creator", item["author_name"], {
-                    "xmlns:dc": "http://purl.org/dc/elements/1.1/"})
+            handler.addQuickElement("dc:creator", item["author_name"],
+                {"xmlns:dc": "http://purl.org/dc/elements/1.1/"})
 
         if item['pubdate'] is not None:
             handler.addQuickElement("pubDate", rfc2822_date(item['pubdate']))
@@ -354,11 +306,9 @@ class Rss201rev2Feed(RssFeed):
 
         # Enclosure.
         if item['enclosure'] is not None:
-            handler.addQuickElement("enclosure",
-                                    '',
-                                    {"url": item['enclosure'].url,
-                                     "length": item['enclosure'].length,
-                                        "type": item['enclosure'].mime_type})
+            handler.addQuickElement("enclosure", '',
+                {"url": item['enclosure'].url, "length": item['enclosure'].length,
+                    "type": item['enclosure'].mime_type})
 
         # Categories.
         for cat in item['categories']:
@@ -386,17 +336,11 @@ class Atom1Feed(SyndicationFeed):
 
     def add_root_elements(self, handler):
         handler.addQuickElement("title", self.feed['title'])
-        handler.addQuickElement(
-            "link", "", {
-                "rel": "alternate", "href": self.feed['link']})
+        handler.addQuickElement("link", "", {"rel": "alternate", "href": self.feed['link']})
         if self.feed['feed_url'] is not None:
-            handler.addQuickElement(
-                "link", "", {
-                    "rel": "self", "href": self.feed['feed_url']})
+            handler.addQuickElement("link", "", {"rel": "self", "href": self.feed['feed_url']})
         handler.addQuickElement("id", self.feed['id'])
-        handler.addQuickElement(
-            "updated", rfc3339_date(
-                self.latest_post_date()))
+        handler.addQuickElement("updated", rfc3339_date(self.latest_post_date()))
         if self.feed['author_name'] is not None:
             handler.startElement("author", {})
             handler.addQuickElement("name", self.feed['author_name'])
@@ -420,17 +364,13 @@ class Atom1Feed(SyndicationFeed):
 
     def add_item_elements(self, handler, item):
         handler.addQuickElement("title", item['title'])
-        handler.addQuickElement(
-            "link", "", {
-                "href": item['link'], "rel": "alternate"})
+        handler.addQuickElement("link", "", {"href": item['link'], "rel": "alternate"})
 
         if item['pubdate'] is not None:
             handler.addQuickElement('published', rfc3339_date(item['pubdate']))
 
         if item['updateddate'] is not None:
-            handler.addQuickElement(
-                'updated', rfc3339_date(
-                    item['updateddate']))
+            handler.addQuickElement('updated', rfc3339_date(item['updateddate']))
 
         # Author information.
         if item['author_name'] is not None:
@@ -451,17 +391,15 @@ class Atom1Feed(SyndicationFeed):
 
         # Summary.
         if item['description'] is not None:
-            handler.addQuickElement(
-                "summary", item['description'], {
-                    "type": "html"})
+            handler.addQuickElement("summary", item['description'], {"type": "html"})
 
         # Enclosure.
         if item['enclosure'] is not None:
             handler.addQuickElement("link", '',
-                                    {"rel": "enclosure",
-                                     "href": item['enclosure'].url,
-                                        "length": item['enclosure'].length,
-                                        "type": item['enclosure'].mime_type})
+                {"rel": "enclosure",
+                 "href": item['enclosure'].url,
+                 "length": item['enclosure'].length,
+                 "type": item['enclosure'].mime_type})
 
         # Categories.
         for cat in item['categories']:

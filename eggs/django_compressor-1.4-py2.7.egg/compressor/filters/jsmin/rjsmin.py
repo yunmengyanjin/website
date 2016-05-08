@@ -91,7 +91,7 @@ def _make_jsmin(python_only=False):
     try:
         xrange
     except NameError:
-        xrange = range  # pylint: disable = W0622
+        xrange = range # pylint: disable = W0622
 
     space_chars = r'[\000-\011\013\014\016-\040]'
 
@@ -139,13 +139,13 @@ def _make_jsmin(python_only=False):
                 last2 != first2 and chr(last2) or ''
             ) for first2, last2 in result])
 
-        return _re.sub(r'([\000-\040\047])',  # for better portability
-                       lambda m: '\\%03o' % ord(m.group(1)), (sequentize(result)
-                                                              .replace('\\', '\\\\')
-                                                              .replace('[', '\\[')
-                                                              .replace(']', '\\]')
-                                                              )
-                       )
+        return _re.sub(r'([\000-\040\047])', # for better portability
+            lambda m: '\\%03o' % ord(m.group(1)), (sequentize(result)
+                .replace('\\', '\\\\')
+                .replace('[', '\\[')
+                .replace(']', '\\]')
+            )
+        )
 
     def id_literal_(what):
         """ Make id_literal like char class """
@@ -177,14 +177,14 @@ def _make_jsmin(python_only=False):
         r'(%(dull)s+)'
         r'|(%(strings)s%(dull)s*)'
         r'|(?<=%(preregex1)s)'
-        r'%(space)s*(?:%(newline)s%(space)s*)*'
-        r'(%(regex)s%(dull)s*)'
+            r'%(space)s*(?:%(newline)s%(space)s*)*'
+            r'(%(regex)s%(dull)s*)'
         r'|(?<=%(preregex2)s)'
-        r'%(space)s*(?:%(newline)s%(space)s)*'
-        r'(%(regex)s%(dull)s*)'
+            r'%(space)s*(?:%(newline)s%(space)s)*'
+            r'(%(regex)s%(dull)s*)'
         r'|(?<=%(id_literal_close)s)'
-        r'%(space)s*(?:(%(newline)s)%(space)s*)+'
-        r'(?=%(id_literal_open)s)'
+            r'%(space)s*(?:(%(newline)s)%(space)s*)+'
+            r'(?=%(id_literal_open)s)'
         r'|(?<=%(id_literal)s)(%(space)s)+(?=%(id_literal)s)'
         r'|(?<=\+)(%(space)s)+(?=\+)'
         r'|(?<=-)(%(space)s)+(?=-)'
@@ -197,22 +197,15 @@ def _make_jsmin(python_only=False):
         """ Substitution callback """
         # pylint: disable = C0321, R0911
         groups = match.groups()
-        if groups[0]:
-            return groups[0]
-        elif groups[1]:
-            return groups[1]
-        elif groups[2]:
-            return groups[2]
-        elif groups[3]:
-            return groups[3]
-        elif groups[4]:
-            return '\n'
-        elif groups[5] or groups[6] or groups[7]:
-            return ' '
-        else:
-            return ''
+        if groups[0]: return groups[0]
+        elif groups[1]: return groups[1]
+        elif groups[2]: return groups[2]
+        elif groups[3]: return groups[3]
+        elif groups[4]: return '\n'
+        elif groups[5] or groups[6] or groups[7]: return ' '
+        else: return ''
 
-    def jsmin(script):  # pylint: disable = W0621
+    def jsmin(script): # pylint: disable = W0621
         r"""
         Minify javascript based on `jsmin.c by Douglas Crockford`_\.
 

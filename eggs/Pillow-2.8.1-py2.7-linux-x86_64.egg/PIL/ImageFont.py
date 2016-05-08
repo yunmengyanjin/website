@@ -40,7 +40,6 @@ except ImportError:
 
 class _imagingft_not_installed:
     # module placeholder
-
     def __getattr__(self, id):
         raise ImportError("The _imagingft C module is not installed")
 
@@ -102,7 +101,7 @@ class ImageFont:
             self.info.append(s)
 
         # read PILfont metrics
-        data = file.read(256 * 20)
+        data = file.read(256*20)
 
         # check image
         if image.mode not in ("1", "L"):
@@ -278,8 +277,7 @@ def truetype(font=None, size=10, index=0, encoding="", filename=None):
                 # According to the freedesktop spec, XDG_DATA_DIRS should
                 # default to /usr/share
                 lindirs = '/usr/share'
-            dirs += [os.path.join(lindir, "fonts")
-                     for lindir in lindirs.split(":")]
+            dirs += [os.path.join(lindir, "fonts") for lindir in lindirs.split(":")]
         elif sys.platform == 'darwin':
             dirs += ['/Library/Fonts', '/System/Library/Fonts',
                      os.path.expanduser('~/Library/Fonts')]
@@ -295,8 +293,7 @@ def truetype(font=None, size=10, index=0, encoding="", filename=None):
                     elif not ext and os.path.splitext(walkfilename)[0] == ttf_filename:
                         fontpath = os.path.join(walkroot, walkfilename)
                         if os.path.splitext(fontpath)[1] == '.ttf':
-                            return FreeTypeFont(
-                                fontpath, size, index, encoding)
+                            return FreeTypeFont(fontpath, size, index, encoding)
                         if not ext and first_font_with_a_different_extension is None:
                             first_font_with_a_different_extension = fontpath
         if first_font_with_a_different_extension:

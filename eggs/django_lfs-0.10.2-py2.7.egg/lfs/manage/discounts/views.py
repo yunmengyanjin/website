@@ -41,10 +41,7 @@ def manage_discounts(request):
 
 
 @permission_required("core.manage_shop")
-def manage_discount(
-        request,
-        id,
-        template_name="manage/discounts/discount.html"):
+def manage_discount(request, id, template_name="manage/discounts/discount.html"):
     """The main view to manage the discount with given id.
 
     This view collects the various parts of the discount form (data, criteria,
@@ -102,10 +99,7 @@ def discount_data(request, id, template_name="manage/discounts/data.html"):
 
 
 @permission_required("core.manage_shop")
-def discount_criteria(
-        request,
-        id,
-        template_name="manage/discounts/criteria.html"):
+def discount_criteria(request, id, template_name="manage/discounts/criteria.html"):
     """Returns the criteria of the discount with passed id as HTML.
 
     This view is used as a part within the manage discount view.
@@ -135,10 +129,7 @@ def add_discount(request, template_name="manage/discounts/add_discount.html"):
         if form.is_valid():
             new_discount = form.save()
             return lfs.core.utils.set_message_cookie(
-                url=reverse(
-                    "lfs_manage_discount",
-                    kwargs={
-                        "id": new_discount.id}),
+                url=reverse("lfs_manage_discount", kwargs={"id": new_discount.id}),
                 msg=_(u"Discount method has been added."),
             )
     else:
@@ -218,8 +209,7 @@ def assign_products(request, discount_id):
             product = Product.objects.get(pk=temp_id)
             discount.products.add(product)
 
-    html = [["#products-inline",
-             products_inline(request, discount_id, as_string=True)]]
+    html = [["#products-inline", products_inline(request, discount_id, as_string=True)]]
     result = json.dumps({
         "html": html,
         "message": _(u"Products have been assigned.")
@@ -240,8 +230,7 @@ def remove_products(request, discount_id):
             product = Product.objects.get(pk=temp_id)
             discount.products.remove(product)
 
-    html = [["#products-inline",
-             products_inline(request, discount_id, as_string=True)]]
+    html = [["#products-inline", products_inline(request, discount_id, as_string=True)]]
     result = json.dumps({
         "html": html,
         "message": _(u"Products have been removed.")
@@ -251,10 +240,7 @@ def remove_products(request, discount_id):
 
 
 @permission_required("core.manage_shop")
-def products_tab(
-        request,
-        discount_id,
-        template_name="manage/discounts/products.html"):
+def products_tab(request, discount_id, template_name="manage/discounts/products.html"):
     """Renders the products tab of the property groups management views.
     """
     discount = Discount.objects.get(pk=discount_id)
@@ -328,8 +314,7 @@ def products_inline(request, discount_id, as_string=False,
             pass
         else:
             # First we collect all sub categories and using the `in` operator
-            manufacturer = lfs_get_object_or_404(
-                Manufacturer, pk=manufacturer_filter)
+            manufacturer = lfs_get_object_or_404(Manufacturer, pk=manufacturer_filter)
             filters &= Q(manufacturer=manufacturer)
 
     products = Product.objects.select_related('parent').filter(filters)

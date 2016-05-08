@@ -14,8 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 phone_digits_re = re.compile(r'^(?:1-?)?(\d{3})[-\.]?(\d{3})[-\.]?(\d{4})$')
-ssn_re = re.compile(
-    r"^(?P<area>\d{3})[-\ ]?(?P<group>\d{2})[-\ ]?(?P<serial>\d{4})$")
+ssn_re = re.compile(r"^(?P<area>\d{3})[-\ ]?(?P<group>\d{2})[-\ ]?(?P<serial>\d{4})$")
 
 
 class USZipCodeField(RegexField):
@@ -37,15 +36,8 @@ class USZipCodeField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            USZipCodeField,
-            self).__init__(
-            r'^\d{5}(?:-\d{4})?$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(USZipCodeField, self).__init__(r'^\d{5}(?:-\d{4})?$',
+                                             max_length, min_length, *args, **kwargs)
 
     def to_python(self, value):
         value = super(USZipCodeField, self).to_python(value)
@@ -88,8 +80,9 @@ class USSocialSecurityNumberField(CharField):
 
     .. versionadded:: 1.1
     """
-    default_error_messages = {'invalid': _(
-        'Enter a valid U.S. Social Security number in XXX-XX-XXXX format.'), }
+    default_error_messages = {
+        'invalid': _('Enter a valid U.S. Social Security number in XXX-XX-XXXX format.'),
+    }
 
     def clean(self, value):
         super(USSocialSecurityNumberField, self).clean(value)
@@ -98,8 +91,7 @@ class USSocialSecurityNumberField(CharField):
         match = re.match(ssn_re, value)
         if not match:
             raise ValidationError(self.error_messages['invalid'])
-        area, group, serial = match.groupdict()['area'], match.groupdict()[
-            'group'], match.groupdict()['serial']
+        area, group, serial = match.groupdict()['area'], match.groupdict()['group'], match.groupdict()['serial']
 
         # First pass: no blocks of all zeroes.
         if area == '000' or group == '00' or serial == '0000':
@@ -145,7 +137,6 @@ class USStateSelect(Select):
     """
     A Select widget that uses a list of U.S. states/territories as its choices.
     """
-
     def __init__(self, attrs=None):
         from .us_states import STATE_CHOICES
         super(USStateSelect, self).__init__(attrs, choices=STATE_CHOICES)
@@ -162,7 +153,6 @@ class USPSSelect(Select):
         please use :class:`~localflavor.us.forms.USZipCodeField`.
 
     """
-
     def __init__(self, attrs=None):
         from .us_states import USPS_CHOICES
         super(USPSSelect, self).__init__(attrs, choices=USPS_CHOICES)

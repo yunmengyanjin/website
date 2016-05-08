@@ -14,11 +14,7 @@ class Command(BaseCommand):
     requires_system_checks = False
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            '--all',
-            action='store_true',
-            dest='all',
-            default=False,
+        parser.add_argument('--all', action='store_true', dest='all', default=False,
             help='Display all settings, regardless of their value. '
             'Default values are prefixed by "###".')
 
@@ -26,8 +22,7 @@ class Command(BaseCommand):
         # Inspired by Postfix's "postconf -n".
         from django.conf import settings, global_settings
 
-        # Because settings are imported lazily, we need to explicitly load
-        # them.
+        # Because settings are imported lazily, we need to explicitly load them.
         settings._setup()
 
         user_settings = module_to_dict(settings._wrapped)

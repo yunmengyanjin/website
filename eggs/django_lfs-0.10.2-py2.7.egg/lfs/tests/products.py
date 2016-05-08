@@ -13,7 +13,6 @@ from lfs.catalog.models import Category
 class ProductsTestCase(TestCase):
     """
     """
-
     def setUp(self):
         """
         """
@@ -34,10 +33,7 @@ class ProductsTestCase(TestCase):
         c11 = Category(name="Category 1-1", slug="category-1-1", parent=c1)
         c11.save()
 
-        c111 = Category(
-            name="Category 1-1-1",
-            slug="category-1-1-1",
-            parent=c11)
+        c111 = Category(name="Category 1-1-1", slug="category-1-1-1", parent=c11)
         c111.save()
 
         # Assign products
@@ -65,10 +61,6 @@ class ProductsTestCase(TestCase):
         """
         """
         product = Product.objects.get(slug="product-1")
-        category_slugs = [
-            c.slug for c in product.get_categories(
-                with_parents=True)]
+        category_slugs = [c.slug for c in product.get_categories(with_parents=True)]
 
-        self.assertEqual(
-            category_slugs, [
-                "category-1-1-1", "category-1-1", "category-1"])
+        self.assertEqual(category_slugs, ["category-1-1-1", "category-1-1", "category-1"])

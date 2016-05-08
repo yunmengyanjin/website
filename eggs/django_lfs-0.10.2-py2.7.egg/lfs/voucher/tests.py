@@ -23,7 +23,6 @@ from lfs.voucher.settings import PERCENTAGE
 class VoucherUtilsTestCase(TestCase):
     """
     """
-
     def test_create_vouchers_1(self):
         """Tests the default voucher options
         """
@@ -43,7 +42,7 @@ class VoucherUtilsTestCase(TestCase):
             number_suffix="XM",
             number_length=4,
             number_letters="abcdefghijklmnopqrstuvwxyz",
-        )
+            )
 
         number = lfs.voucher.utils.create_voucher_number()
         self.failUnless(len(number) == 8)
@@ -83,16 +82,8 @@ class VoucherTestCase(TestCase):
             limit=2,
         )
 
-        self.p1 = Product.objects.create(
-            name="Product 1",
-            slug="product-1",
-            price=10.0,
-            active=True)
-        self.p2 = Product.objects.create(
-            name="Product 2",
-            slug="product-2",
-            price=100.0,
-            active=True)
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0, active=True)
+        self.p2 = Product.objects.create(name="Product 2", slug="product-2", price=100.0, active=True)
 
         self.cart = Cart.objects.create()
         CartItem.objects.create(cart=self.cart, product=self.p1, amount=1)
@@ -216,11 +207,7 @@ class VoucherTestCase(TestCase):
         self.v1.active = True
         self.v1.used_amount = 1
         self.v1.effective_from = 0
-        self.assertEqual(
-            self.v1.is_effective(
-                self.request,
-                self.cart)[0],
-            True)
+        self.assertEqual(self.v1.is_effective(self.request, self.cart)[0], True)
 
         # start / end
         self.v1.start_date = datetime.date(current_year, 12, 31)
@@ -228,11 +215,7 @@ class VoucherTestCase(TestCase):
         self.v1.active = True
         self.v1.used_amount = 1
         self.v1.effective_from = 0
-        self.assertEqual(
-            self.v1.is_effective(
-                self.request,
-                self.cart)[0],
-            False)
+        self.assertEqual(self.v1.is_effective(self.request, self.cart)[0], False)
 
         # effective from
         self.v1.start_date = datetime.date(current_year, 1, 1)
@@ -240,11 +223,7 @@ class VoucherTestCase(TestCase):
         self.v1.active = True
         self.v1.used_amount = 1
         self.v1.effective_from = 1000
-        self.assertEqual(
-            self.v1.is_effective(
-                self.request,
-                self.cart)[0],
-            False)
+        self.assertEqual(self.v1.is_effective(self.request, self.cart)[0], False)
 
         # Used
         self.v1.start_date = datetime.date(current_year, 1, 1)
@@ -252,26 +231,14 @@ class VoucherTestCase(TestCase):
         self.v1.active = True
         self.v1.used_amount = 1
         self.v1.effective_from = 0
-        self.assertEqual(
-            self.v1.is_effective(
-                self.request,
-                self.cart)[0],
-            True)
+        self.assertEqual(self.v1.is_effective(self.request, self.cart)[0], True)
 
         self.v1.mark_as_used()
-        self.assertEqual(
-            self.v1.is_effective(
-                self.request,
-                self.cart)[0],
-            False)
+        self.assertEqual(self.v1.is_effective(self.request, self.cart)[0], False)
 
         # unlimited amount
         self.v1.limit = 0
-        self.assertEqual(
-            self.v1.is_effective(
-                self.request,
-                self.cart)[0],
-            True)
+        self.assertEqual(self.v1.is_effective(self.request, self.cart)[0], True)
 
         # Not active
         self.v1.start_date = datetime.date(current_year, 1, 1)
@@ -279,17 +246,12 @@ class VoucherTestCase(TestCase):
         self.v1.active = False
         self.v1.used_amount = 1
         self.v1.effective_from = 0
-        self.assertEqual(
-            self.v1.is_effective(
-                self.request,
-                self.cart)[0],
-            False)
+        self.assertEqual(self.v1.is_effective(self.request, self.cart)[0], False)
 
 
 class VoucherOptionsCase(TestCase):
     """
     """
-
     def tests_default_values(self):
         """
         """

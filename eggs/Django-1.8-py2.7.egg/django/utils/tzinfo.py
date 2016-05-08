@@ -24,7 +24,6 @@ warnings.warn(
 
 class FixedOffset(tzinfo):
     "Fixed offset in minutes east from UTC."
-
     def __init__(self, offset):
         warnings.warn(
             "django.utils.tzinfo.FixedOffset will be removed in Django 1.9. "
@@ -37,8 +36,7 @@ class FixedOffset(tzinfo):
             self.__offset = timedelta(minutes=offset)
 
         sign = '-' if offset < 0 else '+'
-        self.__name = "%s%02d%02d" % (
-            sign, abs(offset) / 60., abs(offset) % 60)
+        self.__name = "%s%02d%02d" % (sign, abs(offset) / 60., abs(offset) % 60)
 
     def __repr__(self):
         return self.__name
@@ -64,7 +62,6 @@ class FixedOffset(tzinfo):
 
 class LocalTimezone(tzinfo):
     "Proxy timezone information from time module."
-
     def __init__(self, dt):
         warnings.warn(
             "django.utils.tzinfo.LocalTimezone will be removed in Django 1.9. "
@@ -88,8 +85,7 @@ class LocalTimezone(tzinfo):
 
     def dst(self, dt):
         if self._isdst(dt):
-            return timedelta(seconds=-time.altzone) - \
-                timedelta(seconds=-time.timezone)
+            return timedelta(seconds=-time.altzone) - timedelta(seconds=-time.timezone)
         else:
             return timedelta(0)
 

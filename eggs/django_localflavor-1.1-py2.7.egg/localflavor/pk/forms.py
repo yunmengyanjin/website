@@ -27,13 +27,7 @@ class PKPostCodeField(RegexField):
     }
 
     def __init__(self, *args, **kwargs):
-        super(
-            PKPostCodeField,
-            self).__init__(
-            POSTCODE_DIGITS_RE,
-            *
-            args,
-            **kwargs)
+        super(PKPostCodeField, self).__init__(POSTCODE_DIGITS_RE, *args, **kwargs)
 
 
 class PKPhoneNumberField(CharField):
@@ -65,6 +59,5 @@ class PKStateSelect(Select):
     A Select widget that uses a list of Pakistani states/territories as its
     choices.
     """
-
     def __init__(self, attrs=None):
         super(PKStateSelect, self).__init__(attrs, choices=STATE_CHOICES)

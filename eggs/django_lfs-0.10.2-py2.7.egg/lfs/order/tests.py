@@ -222,9 +222,9 @@ class OrderTestCase(TestCase):
         cart = cart_utils.get_cart(self.request)
         self.assertEqual(cart, None)
 
-        # delivery time should of the selected shipping method should be saved
-        # with order
+        # delivery time should of the selected shipping method should be saved with order
         self.assertTrue(order.delivery_time is not None)
+
 
     def test_pay_link(self):
         """Tests empty pay link.
@@ -258,9 +258,7 @@ class OrderTestCase(TestCase):
         """Tests that OrderItems are not deleted when a product is deleted.
         """
         address = Address.objects.create()
-        order = Order.objects.create(
-            invoice_address=address,
-            shipping_address=address)
+        order = Order.objects.create(invoice_address=address, shipping_address=address)
         order_item_1 = OrderItem.objects.create(order=order, product=self.p1)
         self.p1.delete()
         OrderItem.objects.get(pk=order_item_1.id)

@@ -19,7 +19,6 @@ class CompressorFileStorage(FileSystemStorage):
     ``COMPRESS_URL``.
 
     """
-
     def __init__(self, location=None, base_url=None, *args, **kwargs):
         if location is None:
             location = settings.COMPRESS_ROOT
@@ -66,13 +65,8 @@ class GzipCompressorFileStorage(CompressorFileStorage):
     The standard compressor file system storage that gzips storage files
     additionally to the usual files.
     """
-
     def save(self, filename, content):
-        filename = super(
-            GzipCompressorFileStorage,
-            self).save(
-            filename,
-            content)
+        filename = super(GzipCompressorFileStorage, self).save(filename, content)
         orig_path = self.path(filename)
         compressed_path = '%s.gz' % orig_path
 
@@ -96,7 +90,6 @@ class GzipCompressorFileStorage(CompressorFileStorage):
 
 
 class DefaultStorage(LazyObject):
-
     def _setup(self):
         self._wrapped = get_storage_class(settings.COMPRESS_STORAGE)()
 

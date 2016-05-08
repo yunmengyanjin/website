@@ -32,15 +32,8 @@ class BRZipCodeField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            BRZipCodeField,
-            self).__init__(
-            r'^\d{5}-\d{3}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(BRZipCodeField, self).__init__(r'^\d{5}-\d{3}$',
+                                             max_length, min_length, *args, **kwargs)
 
 
 class BRPhoneNumberField(Field):
@@ -69,7 +62,6 @@ class BRStateSelect(Select):
     A Select widget that uses a list of Brazilian states/territories
     as its choices.
     """
-
     def __init__(self, attrs=None):
         super(BRStateSelect, self).__init__(attrs, choices=STATE_CHOICES)
 
@@ -80,8 +72,9 @@ class BRStateChoiceField(Field):
     A choice field that uses a list of Brazilian states as its choices.
     """
     widget = Select
-    default_error_messages = {'invalid': _(
-        'Select a valid brazilian state. That state is not one of the available states.'), }
+    default_error_messages = {
+        'invalid': _('Select a valid brazilian state. That state is not one of the available states.'),
+    }
 
     def __init__(self, required=True, widget=None, label=None,
                  initial=None, help_text=None):
@@ -123,14 +116,7 @@ class BRCPFField(CharField):
     }
 
     def __init__(self, max_length=14, min_length=11, *args, **kwargs):
-        super(
-            BRCPFField,
-            self).__init__(
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(BRCPFField, self).__init__(max_length, min_length, *args, **kwargs)
 
     def clean(self, value):
         """
@@ -152,11 +138,11 @@ class BRCPFField(CharField):
         orig_dv = value[-2:]
 
         new_1dv = sum([i * int(value[idx])
-                       for idx, i in enumerate(range(10, 1, -1))])
+                      for idx, i in enumerate(range(10, 1, -1))])
         new_1dv = DV_maker(new_1dv % 11)
         value = value[:-2] + str(new_1dv) + value[-1]
         new_2dv = sum([i * int(value[idx])
-                       for idx, i in enumerate(range(11, 1, -1))])
+                      for idx, i in enumerate(range(11, 1, -1))])
         new_2dv = DV_maker(new_2dv % 11)
         value = value[:-1] + str(new_2dv)
         if value[-2:] != orig_dv:
@@ -201,12 +187,10 @@ class BRCNPJField(Field):
             raise ValidationError(self.error_messages['max_digits'])
         orig_dv = value[-2:]
 
-        new_1dv = sum([i * int(value[idx]) for idx,
-                       i in enumerate(list(range(5, 1, -1)) + list(range(9, 1, -1)))])
+        new_1dv = sum([i * int(value[idx]) for idx, i in enumerate(list(range(5, 1, -1)) + list(range(9, 1, -1)))])
         new_1dv = DV_maker(new_1dv % 11)
         value = value[:-2] + str(new_1dv) + value[-1]
-        new_2dv = sum([i * int(value[idx]) for idx,
-                       i in enumerate(list(range(6, 1, -1)) + list(range(9, 1, -1)))])
+        new_2dv = sum([i * int(value[idx]) for idx, i in enumerate(list(range(6, 1, -1)) + list(range(9, 1, -1)))])
         new_2dv = DV_maker(new_2dv % 11)
         value = value[:-1] + str(new_2dv)
         if value[-2:] != orig_dv:

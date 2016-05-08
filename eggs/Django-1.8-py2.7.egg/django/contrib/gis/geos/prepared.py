@@ -42,30 +42,25 @@ class PreparedGeometry(GEOSBase):
 
     def crosses(self, other):
         if geos_version_info()['version'] < '3.3.0':
-            raise GEOSException(
-                "crosses on prepared geometries requires GEOS >= 3.3.0")
+            raise GEOSException("crosses on prepared geometries requires GEOS >= 3.3.0")
         return capi.prepared_crosses(self.ptr, other.ptr)
 
     def disjoint(self, other):
         if geos_version_info()['version'] < '3.3.0':
-            raise GEOSException(
-                "disjoint on prepared geometries requires GEOS >= 3.3.0")
+            raise GEOSException("disjoint on prepared geometries requires GEOS >= 3.3.0")
         return capi.prepared_disjoint(self.ptr, other.ptr)
 
     def overlaps(self, other):
         if geos_version_info()['version'] < '3.3.0':
-            raise GEOSException(
-                "overlaps on prepared geometries requires GEOS >= 3.3.0")
+            raise GEOSException("overlaps on prepared geometries requires GEOS >= 3.3.0")
         return capi.prepared_overlaps(self.ptr, other.ptr)
 
     def touches(self, other):
         if geos_version_info()['version'] < '3.3.0':
-            raise GEOSException(
-                "touches on prepared geometries requires GEOS >= 3.3.0")
+            raise GEOSException("touches on prepared geometries requires GEOS >= 3.3.0")
         return capi.prepared_touches(self.ptr, other.ptr)
 
     def within(self, other):
         if geos_version_info()['version'] < '3.3.0':
-            raise GEOSException(
-                "within on prepared geometries requires GEOS >= 3.3.0")
+            raise GEOSException("within on prepared geometries requires GEOS >= 3.3.0")
         return capi.prepared_within(self.ptr, other.ptr)

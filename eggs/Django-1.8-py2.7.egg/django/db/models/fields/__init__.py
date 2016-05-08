@@ -26,7 +26,7 @@ from django.utils.text import capfirst
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import (smart_text, force_text, force_bytes,
-                                   python_2_unicode_compatible)
+    python_2_unicode_compatible)
 from django.utils.ipv6 import clean_ipv6_address
 from django.utils import six
 from django.utils.itercompat import is_iterable
@@ -134,29 +134,12 @@ class Field(RegisterLookupMixin):
         }
     description = property(_description)
 
-    def __init__(
-            self,
-            verbose_name=None,
-            name=None,
-            primary_key=False,
-            max_length=None,
-            unique=False,
-            blank=False,
-            null=False,
-            db_index=False,
-            rel=None,
-            default=NOT_PROVIDED,
-            editable=True,
-            serialize=True,
-            unique_for_date=None,
-            unique_for_month=None,
-            unique_for_year=None,
-            choices=None,
-            help_text='',
-            db_column=None,
-            db_tablespace=None,
-            auto_created=False,
-            validators=[],
+    def __init__(self, verbose_name=None, name=None, primary_key=False,
+            max_length=None, unique=False, blank=False, null=False,
+            db_index=False, rel=None, default=NOT_PROVIDED, editable=True,
+            serialize=True, unique_for_date=None, unique_for_month=None,
+            unique_for_year=None, choices=None, help_text='', db_column=None,
+            db_tablespace=None, auto_created=False, validators=[],
             error_messages=None):
         self.name = name
         self.verbose_name = verbose_name  # May be set by set_attributes_from_name
@@ -254,7 +237,8 @@ class Field(RegisterLookupMixin):
                     hint=None,
                     obj=self,
                     id='fields.E003',
-                )]
+                )
+            ]
         else:
             return []
 
@@ -268,7 +252,8 @@ class Field(RegisterLookupMixin):
                         hint=None,
                         obj=self,
                         id='fields.E004',
-                    )]
+                    )
+                ]
             elif any(isinstance(choice, six.string_types) or
                      not is_iterable(choice) or len(choice) != 2
                      for choice in self.choices):
@@ -327,27 +312,25 @@ class Field(RegisterLookupMixin):
                     self.system_check_removed_details.get(
                         'msg',
                         '%s has been removed except for support in historical '
-                        'migrations.' %
-                        self.__class__.__name__),
+                        'migrations.' % self.__class__.__name__
+                    ),
                     hint=self.system_check_removed_details.get('hint'),
                     obj=self,
-                    id=self.system_check_removed_details.get(
-                        'id',
-                        'fields.EXXX'),
-                )]
+                    id=self.system_check_removed_details.get('id', 'fields.EXXX'),
+                )
+            ]
         elif self.system_check_deprecated_details is not None:
             return [
                 checks.Warning(
                     self.system_check_deprecated_details.get(
                         'msg',
-                        '%s has been deprecated.' %
-                        self.__class__.__name__),
+                        '%s has been deprecated.' % self.__class__.__name__
+                    ),
                     hint=self.system_check_deprecated_details.get('hint'),
                     obj=self,
-                    id=self.system_check_deprecated_details.get(
-                        'id',
-                        'fields.WXXX'),
-                )]
+                    id=self.system_check_deprecated_details.get('id', 'fields.WXXX'),
+                )
+            ]
         return []
 
     def get_col(self, alias, output_field=None):
@@ -446,17 +429,11 @@ class Field(RegisterLookupMixin):
         # Work out path - we shorten it for known Django core fields
         path = "%s.%s" % (self.__class__.__module__, self.__class__.__name__)
         if path.startswith("django.db.models.fields.related"):
-            path = path.replace(
-                "django.db.models.fields.related",
-                "django.db.models")
+            path = path.replace("django.db.models.fields.related", "django.db.models")
         if path.startswith("django.db.models.fields.files"):
-            path = path.replace(
-                "django.db.models.fields.files",
-                "django.db.models")
+            path = path.replace("django.db.models.fields.files", "django.db.models")
         if path.startswith("django.db.models.fields.proxy"):
-            path = path.replace(
-                "django.db.models.fields.proxy",
-                "django.db.models")
+            path = path.replace("django.db.models.fields.proxy", "django.db.models")
         if path.startswith("django.db.models.fields"):
             path = path.replace("django.db.models.fields", "django.db.models")
         # Return basic info - other fields should override this.
@@ -526,8 +503,8 @@ class Field(RegisterLookupMixin):
             # Deferred model will not be found from the app registry. This
             # could be fixed by reconstructing the deferred model on unpickle.
             raise RuntimeError("Fields of deferred models can't be reduced")
-        return _load_field, (self.model._meta.app_label,
-                             self.model._meta.object_name, self.name)
+        return _load_field, (self.model._meta.app_label, self.model._meta.object_name,
+                             self.name)
 
     def get_pk_value_on_save(self, instance):
         """
@@ -596,12 +573,10 @@ class Field(RegisterLookupMixin):
             )
 
         if value is None and not self.null:
-            raise exceptions.ValidationError(
-                self.error_messages['null'], code='null')
+            raise exceptions.ValidationError(self.error_messages['null'], code='null')
 
         if not self.blank and value in self.empty_values:
-            raise exceptions.ValidationError(
-                self.error_messages['blank'], code='blank')
+            raise exceptions.ValidationError(self.error_messages['blank'], code='blank')
 
     def clean(self, value, model_instance):
         """
@@ -649,8 +624,7 @@ class Field(RegisterLookupMixin):
         data = DictWrapper(self.__dict__, connection.ops.quote_name, "qn_")
         type_string = self.db_type(connection)
         try:
-            check_string = connection.data_type_check_constraints[
-                self.get_internal_type()] % data
+            check_string = connection.data_type_check_constraints[self.get_internal_type()] % data
         except KeyError:
             check_string = None
         return {
@@ -797,8 +771,7 @@ class Field(RegisterLookupMixin):
             return []
         elif lookup_type == 'year':
             if isinstance(self, DateTimeField):
-                return connection.ops.year_lookup_bounds_for_datetime_field(
-                    value)
+                return connection.ops.year_lookup_bounds_for_datetime_field(value)
             elif isinstance(self, DateField):
                 return connection.ops.year_lookup_bounds_for_date_field(value)
             else:
@@ -820,16 +793,12 @@ class Field(RegisterLookupMixin):
             if callable(self.default):
                 return self.default()
             return self.default
-        if (not self.empty_strings_allowed or (
-                self.null and not connection.features.interprets_empty_strings_as_nulls)):
+        if (not self.empty_strings_allowed or (self.null and
+                   not connection.features.interprets_empty_strings_as_nulls)):
             return None
         return ""
 
-    def get_choices(
-            self,
-            include_blank=True,
-            blank_choice=BLANK_CHOICE_DASH,
-            limit_choices_to=None):
+    def get_choices(self, include_blank=True, blank_choice=BLANK_CHOICE_DASH, limit_choices_to=None):
         """Returns choices with a default blank choices included, for use
         as SelectField choices for this field."""
         blank_defined = False
@@ -849,7 +818,7 @@ class Field(RegisterLookupMixin):
         limit_choices_to = limit_choices_to or self.get_limit_choices_to()
         if hasattr(self.rel, 'get_related_field'):
             lst = [(getattr(x, self.rel.get_related_field().attname),
-                    smart_text(x))
+                   smart_text(x))
                    for x in rel_model._default_manager.complex_filter(
                        limit_choices_to)]
         else:
@@ -1098,9 +1067,7 @@ class BooleanField(Field):
         # self.null instead of self.blank.
         if self.choices:
             include_blank = not (self.has_default() or 'initial' in kwargs)
-            defaults = {
-                'choices': self.get_choices(
-                    include_blank=include_blank)}
+            defaults = {'choices': self.get_choices(include_blank=include_blank)}
         else:
             defaults = {'form_class': forms.BooleanField}
         defaults.update(kwargs)
@@ -1195,10 +1162,8 @@ class DateTimeCheckMixin(object):
         # will trigger an Error
         mutually_exclusive_options = [self.auto_now_add, self.auto_now,
                                       self.has_default()]
-        enabled_options = [
-            option not in (
-                None,
-                False) for option in mutually_exclusive_options].count(True)
+        enabled_options = [option not in (None, False)
+                          for option in mutually_exclusive_options].count(True)
         if enabled_options > 1:
             return [
                 checks.Error(
@@ -1220,12 +1185,10 @@ class DateTimeCheckMixin(object):
 class DateField(DateTimeCheckMixin, Field):
     empty_strings_allowed = False
     default_error_messages = {
-        'invalid': _(
-            "'%(value)s' value has an invalid date format. It must be "
-            "in YYYY-MM-DD format."),
-        'invalid_date': _(
-            "'%(value)s' value has the correct format (YYYY-MM-DD) "
-            "but it is an invalid date."),
+        'invalid': _("'%(value)s' value has an invalid date format. It must be "
+                     "in YYYY-MM-DD format."),
+        'invalid_date': _("'%(value)s' value has the correct format (YYYY-MM-DD) "
+                          "but it is an invalid date."),
     }
     description = _("Date (without time)")
 
@@ -1336,22 +1299,16 @@ class DateField(DateTimeCheckMixin, Field):
         super(DateField, self).contribute_to_class(cls, name, **kwargs)
         if not self.null:
             setattr(cls, 'get_next_by_%s' % self.name,
-                    curry(cls._get_next_or_previous_by_FIELD, field=self,
-                          is_next=True))
+                curry(cls._get_next_or_previous_by_FIELD, field=self,
+                      is_next=True))
             setattr(cls, 'get_previous_by_%s' % self.name,
-                    curry(cls._get_next_or_previous_by_FIELD, field=self,
-                          is_next=False))
+                curry(cls._get_next_or_previous_by_FIELD, field=self,
+                      is_next=False))
 
     def get_prep_lookup(self, lookup_type, value):
         # For dates lookups, convert the value to an int
         # so the database backend always sees a consistent type.
-        if lookup_type in (
-                'month',
-                'day',
-                'week_day',
-                'hour',
-                'minute',
-                'second'):
+        if lookup_type in ('month', 'day', 'week_day', 'hour', 'minute', 'second'):
             return int(value)
         return super(DateField, self).get_prep_lookup(lookup_type, value)
 
@@ -1618,7 +1575,8 @@ class DecimalField(Field):
                     hint=None,
                     obj=self,
                     id='fields.E134',
-                )]
+                )
+            ]
         return []
 
     def deconstruct(self):
@@ -1665,8 +1623,8 @@ class DecimalField(Field):
         return utils.format_number(value, self.max_digits, self.decimal_places)
 
     def get_db_prep_save(self, value, connection):
-        return connection.ops.value_to_db_decimal(
-            self.to_python(value), self.max_digits, self.decimal_places)
+        return connection.ops.value_to_db_decimal(self.to_python(value),
+                self.max_digits, self.decimal_places)
 
     def get_prep_value(self, value):
         value = super(DecimalField, self).get_prep_value(value)
@@ -1728,8 +1686,7 @@ class DurationField(Field):
         converters = []
         if not connection.features.has_native_duration_field:
             converters.append(connection.ops.convert_durationfield_value)
-        return converters + super(DurationField,
-                                  self).get_db_converters(connection)
+        return converters + super(DurationField, self).get_db_converters(connection)
 
     def value_to_string(self, obj):
         val = self._get_val_from_obj(obj)
@@ -1771,16 +1728,8 @@ class EmailField(CharField):
 class FilePathField(Field):
     description = _("File path")
 
-    def __init__(
-            self,
-            verbose_name=None,
-            name=None,
-            path='',
-            match=None,
-            recursive=False,
-            allow_files=True,
-            allow_folders=False,
-            **kwargs):
+    def __init__(self, verbose_name=None, name=None, path='', match=None,
+                 recursive=False, allow_files=True, allow_folders=False, **kwargs):
         self.path, self.match, self.recursive = path, match, recursive
         self.allow_files, self.allow_folders = allow_files, allow_folders
         kwargs['max_length'] = kwargs.get('max_length', 100)
@@ -1799,7 +1748,8 @@ class FilePathField(Field):
                     hint=None,
                     obj=self,
                     id='fields.E140',
-                )]
+                )
+            ]
         return []
 
     def deconstruct(self):
@@ -1904,8 +1854,7 @@ class IntegerField(Field):
         # they're based on values retrieved from `connection`.
         range_validators = []
         internal_type = self.get_internal_type()
-        min_value, max_value = connection.ops.integer_field_range(
-            internal_type)
+        min_value, max_value = connection.ops.integer_field_range(internal_type)
         if min_value is not None:
             range_validators.append(validators.MinValueValidator(min_value))
         if max_value is not None:
@@ -2026,12 +1975,12 @@ class GenericIPAddressField(Field):
                     hint=None,
                     obj=self,
                     id='fields.E150',
-                )]
+                )
+            ]
         return []
 
     def deconstruct(self):
-        name, path, args, kwargs = super(
-            GenericIPAddressField, self).deconstruct()
+        name, path, args, kwargs = super(GenericIPAddressField, self).deconstruct()
         if self.unpack_ipv4 is not False:
             kwargs['unpack_ipv4'] = self.unpack_ipv4
         if self.protocol != "both":
@@ -2045,8 +1994,8 @@ class GenericIPAddressField(Field):
 
     def to_python(self, value):
         if value and ':' in value:
-            return clean_ipv6_address(
-                value, self.unpack_ipv4, self.error_messages['invalid'])
+            return clean_ipv6_address(value,
+                self.unpack_ipv4, self.error_messages['invalid'])
         return value
 
     def get_db_prep_value(self, value, connection, prepared=False):
@@ -2386,9 +2335,7 @@ class BinaryField(Field):
         kwargs['editable'] = False
         super(BinaryField, self).__init__(*args, **kwargs)
         if self.max_length is not None:
-            self.validators.append(
-                validators.MaxLengthValidator(
-                    self.max_length))
+            self.validators.append(validators.MaxLengthValidator(self.max_length))
 
     def deconstruct(self):
         name, path, args, kwargs = super(BinaryField, self).deconstruct()
@@ -2407,21 +2354,14 @@ class BinaryField(Field):
         return default
 
     def get_db_prep_value(self, value, connection, prepared=False):
-        value = super(
-            BinaryField,
-            self).get_db_prep_value(
-            value,
-            connection,
-            prepared)
+        value = super(BinaryField, self).get_db_prep_value(value, connection, prepared)
         if value is not None:
             return connection.Database.Binary(value)
         return value
 
     def value_to_string(self, obj):
         """Binary data is serialized as base64"""
-        return b64encode(
-            force_bytes(
-                self._get_val_from_obj(obj))).decode('ascii')
+        return b64encode(force_bytes(self._get_val_from_obj(obj))).decode('ascii')
 
     def to_python(self, value):
         # If it's a string, it should be base64-encoded data

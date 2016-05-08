@@ -29,7 +29,6 @@ class StaticFilesStorage(FileSystemStorage):
     The defaults for ``location`` and ``base_url`` are
     ``STATIC_ROOT`` and ``STATIC_URL``.
     """
-
     def __init__(self, location=None, base_url=None, *args, **kwargs):
         if location is None:
             location = settings.STATIC_ROOT
@@ -72,9 +71,7 @@ class HashedFilesMixin(object):
                 else:
                     template = self.default_template
                 compiled = re.compile(pattern, re.IGNORECASE)
-                self._patterns.setdefault(
-                    extension, []).append(
-                    (compiled, template))
+                self._patterns.setdefault(extension, []).append((compiled, template))
 
     def file_hash(self, name, content=None):
         """
@@ -326,9 +323,7 @@ class ManifestFilesMixin(HashedFilesMixin):
         self.save_manifest()
 
     def save_manifest(self):
-        payload = {
-            'paths': self.hashed_files,
-            'version': self.manifest_version}
+        payload = {'paths': self.hashed_files, 'version': self.manifest_version}
         if self.exists(self.manifest_name):
             self.delete(self.manifest_name)
         contents = json.dumps(payload).encode('utf-8')
@@ -339,7 +334,6 @@ class _MappingCache(object):
     """
     A small dict-like wrapper for a given cache backend instance.
     """
-
     def __init__(self, cache):
         self.cache = cache
 
@@ -366,7 +360,6 @@ class _MappingCache(object):
 
 
 class CachedFilesMixin(HashedFilesMixin):
-
     def __init__(self, *args, **kwargs):
         super(CachedFilesMixin, self).__init__(*args, **kwargs)
         try:
@@ -397,7 +390,6 @@ class ManifestStaticFilesStorage(ManifestFilesMixin, StaticFilesStorage):
 
 
 class ConfiguredStorage(LazyObject):
-
     def _setup(self):
         self._wrapped = get_storage_class(settings.STATICFILES_STORAGE)()
 

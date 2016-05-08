@@ -27,7 +27,7 @@ class ReviewAddForm(ModelForm):
         """
         """
         # For an anonymous user the name is required. Please note that the
-        # request has to be passed explicitly to the form object (see add_form)
+        # request has to be passed explicitely to the form object (see add_form)
         msg = _(u"This field is required")
 
         if self.request.user.is_anonymous():
@@ -41,8 +41,7 @@ class ReviewAddForm(ModelForm):
         return self.cleaned_data
 
 
-def add_form(request, content_type_id, content_id,
-             template_name="reviews/review_form.html"):
+def add_form(request, content_type_id, content_id, template_name="reviews/review_form.html"):
     """Displays the form to add a review. Dispatches the POST request of the
     form to save or reedit.
     """
@@ -85,6 +84,7 @@ def add_form(request, content_type_id, content_id,
 
 
 def reedit(request, template_name="reviews/review_form.html"):
+
     """Displays a form to edit a review. This is used if a reviewer re-edits
     a review after she has previewed it.
     """

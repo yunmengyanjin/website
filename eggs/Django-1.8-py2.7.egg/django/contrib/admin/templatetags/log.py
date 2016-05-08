@@ -5,7 +5,6 @@ register = template.Library()
 
 
 class AdminLogNode(template.Node):
-
     def __init__(self, limit, varname, user):
         self.limit, self.varname, self.user = limit, varname, user
 
@@ -14,8 +13,7 @@ class AdminLogNode(template.Node):
 
     def render(self, context):
         if self.user is None:
-            context[self.varname] = LogEntry.objects.all().select_related(
-                'content_type', 'user')[:self.limit]
+            context[self.varname] = LogEntry.objects.all().select_related('content_type', 'user')[:self.limit]
         else:
             user_id = self.user
             if not user_id.isdigit():
@@ -59,6 +57,4 @@ def get_admin_log(parser, token):
         if tokens[4] != 'for_user':
             raise template.TemplateSyntaxError(
                 "Fourth argument to 'get_admin_log' must be 'for_user'")
-    return AdminLogNode(
-        limit=tokens[1], varname=tokens[3], user=(
-            tokens[5] if len(tokens) > 5 else None))
+    return AdminLogNode(limit=tokens[1], varname=tokens[3], user=(tokens[5] if len(tokens) > 5 else None))

@@ -25,13 +25,8 @@ import logging
 logger = logging.getLogger("default")
 
 # views
-
-
 @permission_required("core.manage_shop")
-def images(
-        request,
-        as_string=False,
-        template_name="manage/images/images.html"):
+def images(request, as_string=False, template_name="manage/images/images.html"):
     """
     Display images management.
     """
@@ -62,11 +57,9 @@ def images(
     # Calculate urls
     pagination_data = lfs_pagination(request, current_page, url=request.path)
 
-    pagination_data['total_text'] = ungettext(
-        '%(count)d image',
-        '%(count)d images',
-        amount_of_images) % {
-        'count': amount_of_images}
+    pagination_data['total_text'] = ungettext('%(count)d image',
+                                              '%(count)d images',
+                                              amount_of_images) % {'count': amount_of_images}
 
     result = render_to_string(template_name, RequestContext(request, {
         "images": current_page.object_list,
@@ -113,22 +106,17 @@ def add_images(request):
             image = Image(title=file_content.name)
             try:
                 image.image.save(file_content.name, file_content, save=True)
-            except Exception as e:
+            except Exception, e:
                 image.delete()
-                logger.info(
-                    "Upload of image failed: %s %s" %
-                    (file_content.name, e))
+                logger.info("Upload of image failed: %s %s" % (file_content.name, e))
                 continue
 
-    result = json.dumps(
-        {"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
+    result = json.dumps({"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
     return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
-def imagebrowser(
-        request,
-        template_name="manage/images/filebrowser_images.html"):
+def imagebrowser(request, template_name="manage/images/filebrowser_images.html"):
     """
     Displays a browser for images.
     """
@@ -201,11 +189,9 @@ def imagebrowser(
     # Calculate urls
     pagination_data = lfs_pagination(request, current_page, url=request.path)
 
-    pagination_data['total_text'] = ungettext(
-        '%(count)d image',
-        '%(count)d images',
-        amount_of_images) % {
-        'count': amount_of_images}
+    pagination_data['total_text'] = ungettext('%(count)d image',
+                                              '%(count)d images',
+                                              amount_of_images) % {'count': amount_of_images}
 
     images = []
     for i, image in enumerate(current_page.object_list):

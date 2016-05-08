@@ -19,8 +19,7 @@ getLogger = logging.getLogger
 
 # Default logging for Django. This sends an email to the site admins on every
 # HTTP 500 error. Depending on DEBUG, all other log records are either sent to
-# the console (DEBUG=True) or discarded by mean of the NullHandler
-# (DEBUG=False).
+# the console (DEBUG=True) or discarded by mean of the NullHandler (DEBUG=False).
 DEFAULT_LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -109,8 +108,7 @@ class AdminEmailHandler(logging.Handler):
                 record.getMessage()
             )
             filter = get_exception_reporter_filter(request)
-            request_repr = '\n{}'.format(
-                force_text(filter.get_request_repr(request)))
+            request_repr = '\n{}'.format(force_text(filter.get_request_repr(request)))
         except Exception:
             subject = '%s: %s' % (
                 record.levelname,
@@ -128,19 +126,10 @@ class AdminEmailHandler(logging.Handler):
         message = "%s\n\nRequest repr(): %s" % (self.format(record), request_repr)
         reporter = ExceptionReporter(request, is_email=True, *exc_info)
         html_message = reporter.get_traceback_html() if self.include_html else None
-        self.send_mail(
-            subject,
-            message,
-            fail_silently=True,
-            html_message=html_message)
+        self.send_mail(subject, message, fail_silently=True, html_message=html_message)
 
     def send_mail(self, subject, message, *args, **kwargs):
-        mail.mail_admins(
-            subject,
-            message,
-            *args,
-            connection=self.connection(),
-            **kwargs)
+        mail.mail_admins(subject, message, *args, connection=self.connection(), **kwargs)
 
     def connection(self):
         return get_connection(backend=self.email_backend, fail_silently=True)
@@ -162,7 +151,6 @@ class CallbackFilter(logging.Filter):
     log a record.
 
     """
-
     def __init__(self, callback):
         self.callback = callback
 
@@ -173,12 +161,10 @@ class CallbackFilter(logging.Filter):
 
 
 class RequireDebugFalse(logging.Filter):
-
     def filter(self, record):
         return not settings.DEBUG
 
 
 class RequireDebugTrue(logging.Filter):
-
     def filter(self, record):
         return settings.DEBUG

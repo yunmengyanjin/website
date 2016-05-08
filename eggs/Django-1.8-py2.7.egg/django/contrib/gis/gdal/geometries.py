@@ -86,16 +86,9 @@ class OGRGeometry(GDALBase):
                     # OGR_G_CreateFromWkt doesn't work with LINEARRING WKT.
                     #  See http://trac.osgeo.org/gdal/ticket/1992.
                     g = capi.create_geom(OGRGeomType(wkt_m.group('type')).num)
-                    capi.import_wkt(
-                        g, byref(
-                            c_char_p(
-                                wkt_m.group('wkt').encode())))
+                    capi.import_wkt(g, byref(c_char_p(wkt_m.group('wkt').encode())))
                 else:
-                    g = capi.from_wkt(
-                        byref(
-                            c_char_p(
-                                wkt_m.group('wkt').encode())), None, byref(
-                            c_void_p()))
+                    g = capi.from_wkt(byref(c_char_p(wkt_m.group('wkt').encode())), None, byref(c_void_p()))
             elif json_m:
                 g = capi.from_json(geom_input.encode())
             else:
@@ -105,9 +98,7 @@ class OGRGeometry(GDALBase):
                 g = capi.create_geom(OGRGeomType(geom_input).num)
         elif isinstance(geom_input, six.memoryview):
             # WKB was passed in
-            g = capi.from_wkb(
-                bytes(geom_input), None, byref(
-                    c_void_p()), len(geom_input))
+            g = capi.from_wkb(bytes(geom_input), None, byref(c_void_p()), len(geom_input))
         elif isinstance(geom_input, OGRGeomType):
             # OGRGeomType was passed in, an empty geometry will be created.
             g = capi.create_geom(geom_input.num)
@@ -115,16 +106,12 @@ class OGRGeometry(GDALBase):
             # OGR pointer (c_void_p) was the input.
             g = geom_input
         else:
-            raise GDALException(
-                'Invalid input type for OGR Geometry construction: %s' %
-                type(geom_input))
+            raise GDALException('Invalid input type for OGR Geometry construction: %s' % type(geom_input))
 
         # Now checking the Geometry pointer before finishing initialization
         # by setting the pointer for the object.
         if not g:
-            raise GDALException(
-                'Cannot create OGR Geometry from input: %s' %
-                str(geom_input))
+            raise GDALException('Cannot create OGR Geometry from input: %s' % str(geom_input))
         self.ptr = g
 
         # Assigning the SpatialReference object to the geometry, if valid.
@@ -152,8 +139,7 @@ class OGRGeometry(GDALBase):
         wkb, srs = state
         ptr = capi.from_wkb(wkb, None, byref(c_void_p()), len(wkb))
         if not ptr:
-            raise GDALException(
-                'Invalid OGRGeometry loaded from pickled state.')
+            raise GDALException('Invalid OGRGeometry loaded from pickled state.')
         self.ptr = ptr
         self.srs = srs
 
@@ -287,9 +273,7 @@ class OGRGeometry(GDALBase):
             sr = SpatialReference(srs)
             srs_ptr = sr.ptr
         else:
-            raise TypeError(
-                'Cannot assign spatial reference with object of type: %s' %
-                type(srs))
+            raise TypeError('Cannot assign spatial reference with object of type: %s' % type(srs))
         capi.assign_srs(self.ptr, srs_ptr)
 
     srs = property(_get_srs, _set_srs)
@@ -352,8 +336,7 @@ class OGRGeometry(GDALBase):
         else:
             byteorder = 0  # wkbXDR
         sz = self.wkb_size
-        # Creating the unsigned character buffer, and passing it in by
-        # reference.
+        # Creating the unsigned character buffer, and passing it in by reference.
         buf = (c_ubyte * sz)()
         capi.to_wkb(self.ptr, byteorder, byref(buf))
         # Returning a buffer of the string at the pointer.
@@ -423,8 +406,7 @@ class OGRGeometry(GDALBase):
         """A generalized function for topology operations, takes a GDAL function and
         the other geometry to perform the operation on."""
         if not isinstance(other, OGRGeometry):
-            raise TypeError(
-                'Must use another OGRGeometry object for topology operations!')
+            raise TypeError('Must use another OGRGeometry object for topology operations!')
 
         # Returning the output of the given function with the other geometry's
         # pointer.
@@ -618,12 +600,7 @@ class Polygon(OGRGeometry):
         if index < 0 or index >= self.geom_count:
             raise OGRIndexError('index out of range: %s' % index)
         else:
-            return OGRGeometry(
-                capi.clone_geom(
-                    capi.get_geom_ref(
-                        self.ptr,
-                        index)),
-                self.srs)
+            return OGRGeometry(capi.clone_geom(capi.get_geom_ref(self.ptr, index)), self.srs)
 
     # Polygon Properties
     @property
@@ -662,12 +639,7 @@ class GeometryCollection(OGRGeometry):
         if index < 0 or index >= self.geom_count:
             raise OGRIndexError('index out of range: %s' % index)
         else:
-            return OGRGeometry(
-                capi.clone_geom(
-                    capi.get_geom_ref(
-                        self.ptr,
-                        index)),
-                self.srs)
+            return OGRGeometry(capi.clone_geom(capi.get_geom_ref(self.ptr, index)), self.srs)
 
     def __iter__(self):
         "Iterates over each Geometry."

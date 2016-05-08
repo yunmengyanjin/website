@@ -51,8 +51,7 @@ def get_reviews_for_instance(instance):
     """Returns active reviews for given instance.
     """
     ctype = ContentType.objects.get_for_model(instance)
-    return Review.objects.active().filter(
-        content_type=ctype.id, content_id=instance.id)
+    return Review.objects.active().filter(content_type=ctype.id, content_id=instance.id)
 
 
 def get_average_for_instance(instance):

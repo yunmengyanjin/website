@@ -111,7 +111,6 @@ class BaseDetailView(SingleObjectMixin, View):
     """
     A base view for displaying a single object
     """
-
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         context = self.get_context_data(object=self.object)
@@ -133,9 +132,7 @@ class SingleObjectTemplateResponseMixin(TemplateResponseMixin):
         * ``<app_label>/<model_name><template_name_suffix>.html``
         """
         try:
-            names = super(
-                SingleObjectTemplateResponseMixin,
-                self).get_template_names()
+            names = super(SingleObjectTemplateResponseMixin, self).get_template_names()
         except ImproperlyConfigured:
             # If template_name isn't specified, it's not a problem --
             # we just start with an empty list.

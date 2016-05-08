@@ -14,8 +14,7 @@ from __future__ import print_function
 
 VERSION = "0.4"
 
-import glob
-import sys
+import glob, sys
 
 # drivers
 from PIL import BdfFontFile

@@ -15,7 +15,6 @@ class Node(object):
     A single node in the migration graph. Contains direct links to adjacent
     nodes in either direction.
     """
-
     def __init__(self, key):
         self.key = key
         self.children = set()
@@ -108,12 +107,14 @@ class MigrationGraph(object):
     def add_dependency(self, migration, child, parent):
         if child not in self.nodes:
             raise NodeNotFoundError(
-                "Migration %s dependencies reference nonexistent child node %r" %
-                (migration, child), child)
+                "Migration %s dependencies reference nonexistent child node %r" % (migration, child),
+                child
+            )
         if parent not in self.nodes:
             raise NodeNotFoundError(
-                "Migration %s dependencies reference nonexistent parent node %r" %
-                (migration, parent), parent)
+                "Migration %s dependencies reference nonexistent parent node %r" % (migration, parent),
+                parent
+            )
         self.node_map[child].add_parent(self.node_map[parent])
         self.node_map[parent].add_child(self.node_map[child])
         self.clear_cache()
@@ -133,14 +134,9 @@ class MigrationGraph(object):
         a database.
         """
         if node not in self.nodes:
-            raise NodeNotFoundError(
-                "Node %r not a valid node" %
-                (node, ), node)
-        # Use parent.key instead of parent to speed up the frequent hashing in
-        # ensure_not_cyclic
-        self.ensure_not_cyclic(
-            node, lambda x: (
-                parent.key for parent in self.node_map[x].parents))
+            raise NodeNotFoundError("Node %r not a valid node" % (node, ), node)
+        # Use parent.key instead of parent to speed up the frequent hashing in ensure_not_cyclic
+        self.ensure_not_cyclic(node, lambda x: (parent.key for parent in self.node_map[x].parents))
         self.cached = True
         return self.node_map[node].ancestors()
 
@@ -152,14 +148,9 @@ class MigrationGraph(object):
         a database.
         """
         if node not in self.nodes:
-            raise NodeNotFoundError(
-                "Node %r not a valid node" %
-                (node, ), node)
-        # Use child.key instead of child to speed up the frequent hashing in
-        # ensure_not_cyclic
-        self.ensure_not_cyclic(
-            node, lambda x: (
-                child.key for child in self.node_map[x].children))
+            raise NodeNotFoundError("Node %r not a valid node" % (node, ), node)
+        # Use child.key instead of child to speed up the frequent hashing in ensure_not_cyclic
+        self.ensure_not_cyclic(node, lambda x: (child.key for child in self.node_map[x].children))
         self.cached = True
         return self.node_map[node].descendants()
 
@@ -170,8 +161,8 @@ class MigrationGraph(object):
         """
         roots = set()
         for node in self.nodes:
-            if (not any(key[0] == node[0] for key in self.node_map[
-                    node].parents) and (not app or app == node[0])):
+            if (not any(key[0] == node[0] for key in self.node_map[node].parents)
+                    and (not app or app == node[0])):
                 roots.add(node)
         return sorted(roots)
 
@@ -185,8 +176,8 @@ class MigrationGraph(object):
         """
         leaves = set()
         for node in self.nodes:
-            if (not any(key[0] == node[0] for key in self.node_map[
-                    node].children) and (not app or app == node[0])):
+            if (not any(key[0] == node[0] for key in self.node_map[node].children)
+                    and (not app or app == node[0])):
                 leaves.add(node)
         return sorted(leaves)
 
@@ -202,8 +193,7 @@ class MigrationGraph(object):
                 for node in get_children(top):
                     if node in stack:
                         cycle = stack[stack.index(node):]
-                        raise CircularDependencyError(
-                            ", ".join("%s.%s" % n for n in cycle))
+                        raise CircularDependencyError(", ".join("%s.%s" % n for n in cycle))
                     if node in todo:
                         stack.append(node)
                         todo.remove(node)
@@ -238,8 +228,7 @@ class MigrationGraph(object):
                     plan.append(migration)
         project_state = ProjectState(real_apps=real_apps)
         for node in plan:
-            project_state = self.nodes[node].mutate_state(
-                project_state, preserve=False)
+            project_state = self.nodes[node].mutate_state(project_state, preserve=False)
         return project_state
 
     def __contains__(self, node):

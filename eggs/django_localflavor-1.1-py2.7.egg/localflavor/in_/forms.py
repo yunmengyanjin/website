@@ -36,8 +36,7 @@ phone_digits_re = re.compile(r"""
     )
 )$""", re.VERBOSE)
 
-aadhaar_re = re.compile(
-    r"^(?P<part1>\d{4})[-\ ]?(?P<part2>\d{4})[-\ ]?(?P<part3>\d{4})$")
+aadhaar_re = re.compile(r"^(?P<part1>\d{4})[-\ ]?(?P<part2>\d{4})[-\ ]?(?P<part3>\d{4})$")
 
 
 class INZipCodeField(RegexField):
@@ -50,15 +49,8 @@ class INZipCodeField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            INZipCodeField,
-            self).__init__(
-            r'^\d{3}\s?\d{3}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(INZipCodeField, self).__init__(r'^\d{3}\s?\d{3}$',
+                                             max_length, min_length, *args, **kwargs)
 
     def clean(self, value):
         value = super(INZipCodeField, self).clean(value)
@@ -134,8 +126,7 @@ class INAadhaarNumberField(Field):
         match = re.match(aadhaar_re, value)
         if not match:
             raise ValidationError(self.error_messages['invalid'])
-        part1, part2, part3 = match.groupdict()['part1'], match.groupdict()[
-            'part2'], match.groupdict()['part3']
+        part1, part2, part3 = match.groupdict()['part1'], match.groupdict()['part2'], match.groupdict()['part3']
 
         # all the parts can't be zero
         if part1 == '0000' and part2 == '0000' and part3 == '0000':
@@ -155,7 +146,6 @@ class INStateSelect(Select):
        https://en.wikipedia.org/wiki/Telangana#Bifurcation_of_Andhra_Pradesh
 
     """
-
     def __init__(self, attrs=None):
         super(INStateSelect, self).__init__(attrs, choices=STATE_CHOICES)
 
@@ -170,8 +160,9 @@ class INPhoneNumberField(CharField):
     digits. The second string will start with numbers between 1 and 6. The
     separator is either a space or a hyphen.
     """
-    default_error_messages = {'invalid': _(
-        'Phone numbers must be in 02X-8X or 03X-7X or 04X-6X format.'), }
+    default_error_messages = {
+        'invalid': _('Phone numbers must be in 02X-8X or 03X-7X or 04X-6X format.'),
+    }
 
     def clean(self, value):
         value = super(INPhoneNumberField, self).clean(value)

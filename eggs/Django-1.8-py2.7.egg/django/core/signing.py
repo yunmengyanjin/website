@@ -86,7 +86,6 @@ class JSONSerializer(object):
     Simple wrapper around json to be used in signing.dumps and
     signing.loads.
     """
-
     def dumps(self, obj):
         return json.dumps(obj, separators=(',', ':')).encode('latin-1')
 
@@ -94,12 +93,7 @@ class JSONSerializer(object):
         return json.loads(data.decode('latin-1'))
 
 
-def dumps(
-        obj,
-        key=None,
-        salt='django.core.signing',
-        serializer=JSONSerializer,
-        compress=False):
+def dumps(obj, key=None, salt='django.core.signing', serializer=JSONSerializer, compress=False):
     """
     Returns URL-safe, sha1 signed base64 compressed JSON string. If key is
     None, settings.SECRET_KEY is used instead.
@@ -132,12 +126,7 @@ def dumps(
     return TimestampSigner(key, salt=salt).sign(base64d)
 
 
-def loads(
-        s,
-        key=None,
-        salt='django.core.signing',
-        serializer=JSONSerializer,
-        max_age=None):
+def loads(s, key=None, salt='django.core.signing', serializer=JSONSerializer, max_age=None):
     """
     Reverse of dumps(), raises BadSignature if signature fails.
 
@@ -145,12 +134,7 @@ def loads(
     """
     # TimestampSigner.unsign always returns unicode but base64 and zlib
     # compression operate on bytes.
-    base64d = force_bytes(
-        TimestampSigner(
-            key,
-            salt=salt).unsign(
-            s,
-            max_age=max_age))
+    base64d = force_bytes(TimestampSigner(key, salt=salt).unsign(s, max_age=max_age))
     decompress = False
     if base64d[:1] == b'.':
         # It's compressed; uncompress it first
@@ -168,10 +152,8 @@ class Signer(object):
         # Use of native strings in all versions of Python
         self.sep = force_str(sep)
         self.key = key or settings.SECRET_KEY
-        self.salt = force_str(
-            salt or '%s.%s' %
-            (self.__class__.__module__,
-             self.__class__.__name__))
+        self.salt = force_str(salt or
+            '%s.%s' % (self.__class__.__module__, self.__class__.__name__))
 
     def signature(self, value):
         signature = base64_hmac(self.salt + 'signer', value, self.key)

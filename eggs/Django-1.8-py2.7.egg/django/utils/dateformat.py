@@ -25,13 +25,11 @@ from django.utils.encoding import force_text
 from django.utils.timezone import get_default_timezone, is_aware, is_naive
 from django.utils.translation import ugettext as _
 
-re_formatchars = re.compile(
-    r'(?<!\\)([aAbBcdDeEfFgGhHiIjlLmMnNoOPrsStTUuwWyYzZ])')
+re_formatchars = re.compile(r'(?<!\\)([aAbBcdDeEfFgGhHiIjlLmMnNoOPrsStTUuwWyYzZ])')
 re_escaped = re.compile(r'\\(.)')
 
 
 class Formatter(object):
-
     def format(self, formatstr):
         pieces = []
         for i, piece in enumerate(re_formatchars.split(force_text(formatstr))):
@@ -307,9 +305,7 @@ class DateFormat(TimeFormat):
         weekday = self.data.weekday() + 1
         day_of_year = self.z()
         if day_of_year <= (8 - jan1_weekday) and jan1_weekday > 4:
-            if jan1_weekday == 5 or (
-                jan1_weekday == 6 and calendar.isleap(
-                    self.data.year - 1)):
+            if jan1_weekday == 5 or (jan1_weekday == 6 and calendar.isleap(self.data.year - 1)):
                 week_number = 53
             else:
                 week_number = 52

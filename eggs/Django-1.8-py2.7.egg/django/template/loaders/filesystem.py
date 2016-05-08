@@ -32,8 +32,7 @@ class Loader(BaseLoader):
 
     def load_template_source(self, template_name, template_dirs=None):
         tried = []
-        for filepath in self.get_template_sources(
-                template_name, template_dirs):
+        for filepath in self.get_template_sources(template_name, template_dirs):
             try:
                 with io.open(filepath, encoding=self.engine.file_charset) as fp:
                     return fp.read(), filepath
@@ -42,8 +41,7 @@ class Loader(BaseLoader):
         if tried:
             error_msg = "Tried %s" % tried
         else:
-            error_msg = (
-                "Your template directories configuration is empty. "
-                "Change it to point to at least one template directory.")
+            error_msg = ("Your template directories configuration is empty. "
+                         "Change it to point to at least one template directory.")
         raise TemplateDoesNotExist(error_msg)
     load_template_source.is_usable = True

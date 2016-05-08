@@ -14,9 +14,8 @@
 """Buildout package
 """
 
-
 class UserError(Exception):
-    """Errors made by a user
+    """Errors made by a user 
     """
 
     def __str__(self):

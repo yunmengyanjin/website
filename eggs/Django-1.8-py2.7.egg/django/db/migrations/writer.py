@@ -54,10 +54,8 @@ class OperationWriter(object):
                     self.feed('%s={' % _arg_name)
                     self.indent()
                     for key, value in _arg_value.items():
-                        key_string, key_imports = MigrationWriter.serialize(
-                            key)
-                        arg_string, arg_imports = MigrationWriter.serialize(
-                            value)
+                        key_string, key_imports = MigrationWriter.serialize(key)
+                        arg_string, arg_imports = MigrationWriter.serialize(value)
                         self.feed('%s: %s,' % (key_string, arg_string))
                         imports.update(key_imports)
                         imports.update(arg_imports)
@@ -67,8 +65,7 @@ class OperationWriter(object):
                     self.feed('%s=[' % _arg_name)
                     self.indent()
                     for item in _arg_value:
-                        arg_string, arg_imports = MigrationWriter.serialize(
-                            item)
+                        arg_string, arg_imports = MigrationWriter.serialize(item)
                         self.feed('%s,' % arg_string)
                         imports.update(arg_imports)
                     self.unindent()
@@ -146,29 +143,22 @@ class MigrationWriter(object):
         # Deconstruct operations
         operations = []
         for operation in self.migration.operations:
-            operation_string, operation_imports = OperationWriter(
-                operation).serialize()
+            operation_string, operation_imports = OperationWriter(operation).serialize()
             imports.update(operation_imports)
             operations.append(operation_string)
-        items["operations"] = "\n".join(
-            operations) + "\n" if operations else ""
+        items["operations"] = "\n".join(operations) + "\n" if operations else ""
 
         # Format dependencies and write out swappable dependencies right
         dependencies = []
         for dependency in self.migration.dependencies:
             if dependency[0] == "__setting__":
-                dependencies.append(
-                    "        migrations.swappable_dependency(settings.%s)," %
-                    dependency[1])
+                dependencies.append("        migrations.swappable_dependency(settings.%s)," % dependency[1])
                 imports.add("from django.conf import settings")
             else:
                 # No need to output bytestrings for dependencies
                 dependency = tuple(force_text(s) for s in dependency)
-                dependencies.append(
-                    "        %s," %
-                    self.serialize(dependency)[0])
-        items["dependencies"] = "\n".join(
-            dependencies) + "\n" if dependencies else ""
+                dependencies.append("        %s," % self.serialize(dependency)[0])
+        items["dependencies"] = "\n".join(dependencies) + "\n" if dependencies else ""
 
         # Format imports nicely, swapping imports of functions from migration files
         # for comments
@@ -185,11 +175,11 @@ class MigrationWriter(object):
                 "\n\n# Functions from the following migrations need manual "
                 "copying.\n# Move them and any dependencies into this file, "
                 "then update the\n# RunPython operations to refer to the local "
-                "versions:\n# %s") % "\n# ".join(migration_imports)
+                "versions:\n# %s"
+            ) % "\n# ".join(migration_imports)
         # If there's a replaces, make a string for it
         if self.migration.replaces:
-            items['replaces_str'] = "\n    replaces = %s\n" % self.serialize(
-                self.migration.replaces)[0]
+            items['replaces_str'] = "\n    replaces = %s\n" % self.serialize(self.migration.replaces)[0]
 
         return (MIGRATION_TEMPLATE % items).encode("utf8")
 
@@ -213,8 +203,7 @@ class MigrationWriter(object):
 
     @property
     def path(self):
-        migrations_package_name = MigrationLoader.migrations_module(
-            self.migration.app_label)
+        migrations_package_name = MigrationLoader.migrations_module(self.migration.app_label)
         # See if we can import the migrations module directly
         try:
             migrations_module = import_module(migrations_package_name)
@@ -227,14 +216,11 @@ class MigrationWriter(object):
             basedir = os.path.dirname(upath(migrations_module.__file__))
         except ImportError:
             app_config = apps.get_app_config(self.migration.app_label)
-            migrations_package_basename = migrations_package_name.split(
-                ".")[-1]
+            migrations_package_basename = migrations_package_name.split(".")[-1]
 
             # Alright, see if it's a direct submodule of the app
-            if '%s.%s' % (app_config.name,
-                          migrations_package_basename) == migrations_package_name:
-                basedir = os.path.join(
-                    app_config.path, migrations_package_basename)
+            if '%s.%s' % (app_config.name, migrations_package_basename) == migrations_package_name:
+                basedir = os.path.join(app_config.path, migrations_package_basename)
             else:
                 # In case of using MIGRATION_MODULES setting and the custom
                 # package doesn't exist, create one.
@@ -243,8 +229,7 @@ class MigrationWriter(object):
                 if not os.path.isdir(create_path):
                     os.makedirs(create_path)
                 for i in range(1, len(package_dirs) + 1):
-                    init_dir = os.path.join(
-                        upath(sys.path[0]), *package_dirs[:i])
+                    init_dir = os.path.join(upath(sys.path[0]), *package_dirs[:i])
                     init_path = os.path.join(init_dir, "__init__.py")
                     if not os.path.isfile(init_path):
                         open(init_path, "w").close()
@@ -318,8 +303,7 @@ class MigrationWriter(object):
                 imports.update(k_imports)
                 imports.update(v_imports)
                 strings.append((k_string, v_string))
-            return "{%s}" % (", ".join("%s: %s" % (k, v)
-                                       for k, v in strings)), imports
+            return "{%s}" % (", ".join("%s: %s" % (k, v) for k, v in strings)), imports
         # Datetimes
         elif isinstance(value, datetime.datetime):
             value_repr = cls.serialize_datetime(value)
@@ -341,8 +325,7 @@ class MigrationWriter(object):
             return value_repr, {"import datetime"}
         # Settings references
         elif isinstance(value, SettingsReference):
-            return "settings.%s" % value.setting_name, {
-                "from django.conf import settings"}
+            return "settings.%s" % value.setting_name, {"from django.conf import settings"}
         # Simple types
         elif isinstance(value, float):
             if math.isnan(value) or math.isinf(value):
@@ -382,8 +365,7 @@ class MigrationWriter(object):
                 if module == six.moves.builtins.__name__:
                     return value.__name__, set()
                 else:
-                    return "%s.%s" % (module, value.__name__), {
-                        "import %s" % module}
+                    return "%s.%s" % (module, value.__name__), {"import %s" % module}
         elif isinstance(value, models.manager.BaseManager):
             as_manager, manager_path, qs_path, args, kwargs = value.deconstruct()
             if as_manager:
@@ -397,35 +379,19 @@ class MigrationWriter(object):
         # Functions
         elif isinstance(value, (types.FunctionType, types.BuiltinFunctionType)):
             # @classmethod?
-            if getattr(
-                    value,
-                    "__self__",
-                    None) and isinstance(
-                    value.__self__,
-                    type):
+            if getattr(value, "__self__", None) and isinstance(value.__self__, type):
                 klass = value.__self__
                 module = klass.__module__
-                return "%s.%s.%s" % (module, klass.__name__, value.__name__), {
-                    "import %s" % module}
+                return "%s.%s.%s" % (module, klass.__name__, value.__name__), {"import %s" % module}
             # Further error checking
             if value.__name__ == '<lambda>':
                 raise ValueError("Cannot serialize function: lambda")
             if value.__module__ is None:
-                raise ValueError(
-                    "Cannot serialize function %r: No module" %
-                    value)
-            # Python 3 is a lot easier, and only uses this branch if it's not
-            # local.
-            if getattr(
-                    value,
-                    "__qualname__",
-                    None) and getattr(
-                    value,
-                    "__module__",
-                    None):
+                raise ValueError("Cannot serialize function %r: No module" % value)
+            # Python 3 is a lot easier, and only uses this branch if it's not local.
+            if getattr(value, "__qualname__", None) and getattr(value, "__module__", None):
                 if "<" not in value.__qualname__:  # Qualname can include <locals>
-                    return "%s.%s" % (value.__module__, value.__qualname__), {
-                        "import %s" % value.__module__}
+                    return "%s.%s" % (value.__module__, value.__qualname__), {"import %s" % value.__module__}
             # Python 2/fallback version
             module_name = value.__module__
             # Make sure it's actually there and not an unbound method
@@ -438,10 +404,9 @@ class MigrationWriter(object):
                     "declared and used in the same class body). Please move "
                     "the function into the main module body to use migrations.\n"
                     "For more information, see "
-                    "https://docs.djangoproject.com/en/%s/topics/migrations/#serializing-values" %
-                    (value.__name__, module_name, get_docs_version()))
-            return "%s.%s" % (module_name, value.__name__), {
-                "import %s" % module_name}
+                    "https://docs.djangoproject.com/en/%s/topics/migrations/#serializing-values"
+                    % (value.__name__, module_name, get_docs_version()))
+            return "%s.%s" % (module_name, value.__name__), {"import %s" % module_name}
         # Other iterables
         elif isinstance(value, collections.Iterable):
             imports = set()
@@ -470,8 +435,8 @@ class MigrationWriter(object):
             raise ValueError(
                 "Cannot serialize: %r\nThere are some values Django cannot serialize into "
                 "migration files.\nFor more, see https://docs.djangoproject.com/en/%s/"
-                "topics/migrations/#migration-serializing" %
-                (value, get_docs_version()))
+                "topics/migrations/#migration-serializing" % (value, get_docs_version())
+            )
 
 
 MIGRATION_TEMPLATE = """\

@@ -27,9 +27,7 @@ class GBPostcodeField(CharField):
     }
     outcode_pattern = '[A-PR-UWYZ]([0-9]{1,2}|([A-HIK-Y][0-9](|[0-9]|[ABEHMNPRVWXY]))|[0-9][A-HJKSTUW])'
     incode_pattern = '[0-9][ABD-HJLNP-UW-Z]{2}'
-    postcode_regex = re.compile(
-        r'^(GIR 0AA|%s %s)$' %
-        (outcode_pattern, incode_pattern))
+    postcode_regex = re.compile(r'^(GIR 0AA|%s %s)$' % (outcode_pattern, incode_pattern))
     space_regex = re.compile(r' *(%s)$' % incode_pattern)
 
     def clean(self, value):
@@ -48,7 +46,6 @@ class GBCountySelect(Select):
     """
     A Select widget that uses a list of UK Counties/Regions as its choices.
     """
-
     def __init__(self, attrs=None):
         super(GBCountySelect, self).__init__(attrs, choices=GB_REGION_CHOICES)
 
@@ -57,6 +54,5 @@ class GBNationSelect(Select):
     """
     A Select widget that uses a list of UK Nations as its choices.
     """
-
     def __init__(self, attrs=None):
         super(GBNationSelect, self).__init__(attrs, choices=GB_NATIONS_CHOICES)

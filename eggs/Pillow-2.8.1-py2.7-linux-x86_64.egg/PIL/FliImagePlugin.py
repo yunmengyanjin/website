@@ -82,7 +82,7 @@ class FliImageFile(ImageFile.ImageFile):
             elif i16(s[4:6]) == 4:
                 self._palette(palette, 0)
 
-        palette = [o8(r) + o8(g) + o8(b) for (r, g, b) in palette]
+        palette = [o8(r)+o8(g)+o8(b) for (r, g, b) in palette]
         self.palette = ImagePalette.raw("RGB", b"".join(palette))
 
         # set things up to decode first frame
@@ -104,8 +104,8 @@ class FliImageFile(ImageFile.ImageFile):
             s = self.fp.read(n * 3)
             for n in range(0, len(s), 3):
                 r = i8(s[n]) << shift
-                g = i8(s[n + 1]) << shift
-                b = i8(s[n + 2]) << shift
+                g = i8(s[n+1]) << shift
+                b = i8(s[n+2]) << shift
                 palette[i] = (r, g, b)
                 i += 1
 
@@ -126,7 +126,7 @@ class FliImageFile(ImageFile.ImageFile):
         framesize = i32(s)
 
         self.decodermaxblock = framesize
-        self.tile = [("fli", (0, 0) + self.size, self.__offset, None)]
+        self.tile = [("fli", (0, 0)+self.size, self.__offset, None)]
 
         self.__offset = self.__offset + framesize
 

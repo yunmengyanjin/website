@@ -16,17 +16,12 @@ class Page(models.Model):
     title = models.CharField(_(u"Title"), max_length=100)
     slug = models.SlugField(_(u"Slug"), unique=True, max_length=100)
     position = models.IntegerField(_(u"Position"), default=999)
-    exclude_from_navigation = models.BooleanField(
-        _(u"Exclude from navigation"), default=False)
+    exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
     short_text = models.TextField(_(u"Short text"), blank=True)
     body = models.TextField(_(u"Text"), blank=True)
     file = models.FileField(_(u"File"), blank=True, upload_to="files")
 
-    meta_title = models.CharField(
-        _(u"Meta title"),
-        blank=True,
-        default="<title>",
-        max_length=80)
+    meta_title = models.CharField(_(u"Meta title"), blank=True, default="<title>", max_length=80)
     meta_keywords = models.TextField(_(u"Meta keywords"), blank=True)
     meta_description = models.TextField(_(u"Meta description"), blank=True)
 

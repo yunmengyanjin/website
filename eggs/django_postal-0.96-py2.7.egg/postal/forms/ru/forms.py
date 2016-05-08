@@ -4,20 +4,11 @@ from localflavor.ru.forms import RUCountySelect, RURegionSelect, RUPostalCodeFie
 
 from postal.forms import PostalAddressForm
 
-
 class RUPostalAddressForm(PostalAddressForm):
     line1 = forms.CharField(label=_(u"Street"), max_length=100)
-    line2 = forms.CharField(
-        label=_(u"Area"),
-        required=False,
-        max_length=100,
-        widget=RURegionSelect)
+    line2 = forms.CharField(label=_(u"Area"), required=False, max_length=100, widget=RURegionSelect)
     city = forms.CharField(label=_(u"City"), max_length=100)
-    state = forms.CharField(
-        label=_(u"County"),
-        required=False,
-        max_length=100,
-        widget=RUCountySelect)
+    state = forms.CharField(label=_(u"County"), required=False, max_length=100, widget=RUCountySelect)
     code = RUPostalCodeField(label=_(u"Postal code"), required=False)
 
     def __init__(self, *args, **kwargs):

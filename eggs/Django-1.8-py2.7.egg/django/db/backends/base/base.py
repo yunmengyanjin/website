@@ -87,23 +87,19 @@ class BaseDatabaseWrapper(object):
 
     def get_connection_params(self):
         """Returns a dict of parameters suitable for get_new_connection."""
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseWrapper may require a get_connection_params() method')
+        raise NotImplementedError('subclasses of BaseDatabaseWrapper may require a get_connection_params() method')
 
     def get_new_connection(self, conn_params):
         """Opens a connection to the database."""
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseWrapper may require a get_new_connection() method')
+        raise NotImplementedError('subclasses of BaseDatabaseWrapper may require a get_new_connection() method')
 
     def init_connection_state(self):
         """Initializes the database connection settings."""
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseWrapper may require an init_connection_state() method')
+        raise NotImplementedError('subclasses of BaseDatabaseWrapper may require an init_connection_state() method')
 
     def create_cursor(self):
         """Creates a cursor. Assumes that a connection is established."""
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseWrapper may require a create_cursor() method')
+        raise NotImplementedError('subclasses of BaseDatabaseWrapper may require a create_cursor() method')
 
     # ##### Backend-specific methods for creating connections #####
 
@@ -279,8 +275,7 @@ class BaseDatabaseWrapper(object):
         """
         Backend-specific implementation to enable or disable autocommit.
         """
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseWrapper may require a _set_autocommit() method')
+        raise NotImplementedError('subclasses of BaseDatabaseWrapper may require a _set_autocommit() method')
 
     # ##### Generic transaction management methods #####
 
@@ -350,7 +345,7 @@ class BaseDatabaseWrapper(object):
         """
         Backends can implement as needed to temporarily disable foreign key
         constraint checking. Should return True if the constraints were
-        disabled and will need to be re-enabled.
+        disabled and will need to be reenabled.
         """
         return False
 
@@ -419,12 +414,11 @@ class BaseDatabaseWrapper(object):
         """
         if not (self.allow_thread_sharing
                 or self._thread_ident == thread.get_ident()):
-            raise DatabaseError(
-                "DatabaseWrapper objects created in a "
+            raise DatabaseError("DatabaseWrapper objects created in a "
                 "thread can only be used in that same thread. The object "
                 "with alias '%s' was created in thread id %s and this is "
-                "thread id %s." %
-                (self.alias, self._thread_ident, thread.get_ident()))
+                "thread id %s."
+                % (self.alias, self._thread_ident, thread.get_ident()))
 
     # ##### Miscellaneous #####
 

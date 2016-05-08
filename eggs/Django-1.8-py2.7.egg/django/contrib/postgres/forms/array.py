@@ -15,14 +15,7 @@ class SimpleArrayField(forms.CharField):
         'item_invalid': _('Item %(nth)s in the array did not validate: '),
     }
 
-    def __init__(
-            self,
-            base_field,
-            delimiter=',',
-            max_length=None,
-            min_length=None,
-            *args,
-            **kwargs):
+    def __init__(self, base_field, delimiter=',', max_length=None, min_length=None, *args, **kwargs):
         self.base_field = base_field
         self.delimiter = delimiter
         super(SimpleArrayField, self).__init__(*args, **kwargs)
@@ -35,8 +28,7 @@ class SimpleArrayField(forms.CharField):
 
     def prepare_value(self, value):
         if isinstance(value, list):
-            return self.delimiter.join(six.text_type(
-                self.base_field.prepare_value(v)) for v in value)
+            return self.delimiter.join(six.text_type(self.base_field.prepare_value(v)) for v in value)
         return value
 
     def to_python(self, value):
@@ -51,15 +43,11 @@ class SimpleArrayField(forms.CharField):
                 values.append(self.base_field.to_python(item))
             except ValidationError as e:
                 for error in e.error_list:
-                    errors.append(
-                        ValidationError(
-                            string_concat(
-                                self.error_messages['item_invalid'],
-                                error.message),
-                            code='item_invalid',
-                            params={
-                                'nth': i},
-                        ))
+                    errors.append(ValidationError(
+                        string_concat(self.error_messages['item_invalid'], error.message),
+                        code='item_invalid',
+                        params={'nth': i},
+                    ))
         if errors:
             raise ValidationError(errors)
         return values
@@ -72,15 +60,11 @@ class SimpleArrayField(forms.CharField):
                 self.base_field.validate(item)
             except ValidationError as e:
                 for error in e.error_list:
-                    errors.append(
-                        ValidationError(
-                            string_concat(
-                                self.error_messages['item_invalid'],
-                                error.message),
-                            code='item_invalid',
-                            params={
-                                'nth': i},
-                        ))
+                    errors.append(ValidationError(
+                        string_concat(self.error_messages['item_invalid'], error.message),
+                        code='item_invalid',
+                        params={'nth': i},
+                    ))
         if errors:
             raise ValidationError(errors)
 
@@ -92,15 +76,11 @@ class SimpleArrayField(forms.CharField):
                 self.base_field.run_validators(item)
             except ValidationError as e:
                 for error in e.error_list:
-                    errors.append(
-                        ValidationError(
-                            string_concat(
-                                self.error_messages['item_invalid'],
-                                error.message),
-                            code='item_invalid',
-                            params={
-                                'nth': i},
-                        ))
+                    errors.append(ValidationError(
+                        string_concat(self.error_messages['item_invalid'], error.message),
+                        code='item_invalid',
+                        params={'nth': i},
+                    ))
         if errors:
             raise ValidationError(errors)
 
@@ -117,11 +97,8 @@ class SplitArrayWidget(forms.Widget):
         return self.widget.is_hidden
 
     def value_from_datadict(self, data, files, name):
-        return [
-            self.widget.value_from_datadict(
-                data, files, '%s_%s' %
-                (name, index)) for index in range(
-                self.size)]
+        return [self.widget.value_from_datadict(data, files, '%s_%s' % (name, index))
+                for index in range(self.size)]
 
     def id_for_label(self, id_):
         # See the comment for RadioSelect.id_for_label()
@@ -143,13 +120,7 @@ class SplitArrayWidget(forms.Widget):
                 widget_value = None
             if id_:
                 final_attrs = dict(final_attrs, id='%s_%s' % (id_, i))
-            output.append(
-                self.widget.render(
-                    name +
-                    '_%s' %
-                    i,
-                    widget_value,
-                    final_attrs))
+            output.append(self.widget.render(name + '_%s' % i, widget_value, final_attrs))
         return mark_safe(self.format_output(output))
 
     def format_output(self, rendered_widgets):
@@ -174,12 +145,7 @@ class SplitArrayField(forms.Field):
         'item_invalid': _('Item %(nth)s in the array did not validate: '),
     }
 
-    def __init__(
-            self,
-            base_field,
-            size,
-            remove_trailing_nulls=False,
-            **kwargs):
+    def __init__(self, base_field, size, remove_trailing_nulls=False, **kwargs):
         self.base_field = base_field
         self.size = size
         self.remove_trailing_nulls = remove_trailing_nulls
@@ -199,15 +165,11 @@ class SplitArrayField(forms.Field):
                 cleaned_data.append(self.base_field.clean(item))
                 errors.append(None)
             except ValidationError as error:
-                errors.append(
-                    ValidationError(
-                        string_concat(
-                            self.error_messages['item_invalid'],
-                            error.message),
-                        code='item_invalid',
-                        params={
-                            'nth': i},
-                    ))
+                errors.append(ValidationError(
+                    string_concat(self.error_messages['item_invalid'], error.message),
+                    code='item_invalid',
+                    params={'nth': i},
+                ))
                 cleaned_data.append(None)
         if self.remove_trailing_nulls:
             null_index = None

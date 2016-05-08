@@ -110,7 +110,6 @@ class AppConf(six.with_metaclass(AppConfMetaClass)):
     An app setting object to be used for handling app setting defaults
     gracefully and providing a nice API for them.
     """
-
     def __init__(self, **kwargs):
         for name, value in six.iteritems(kwargs):
             setattr(self, name, value)

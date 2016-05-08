@@ -19,26 +19,16 @@ class PLProvinceSelect(Select):
     """
     A select widget with list of Polish administrative provinces as choices.
     """
-
     def __init__(self, attrs=None):
-        super(
-            PLProvinceSelect,
-            self).__init__(
-            attrs,
-            choices=VOIVODESHIP_CHOICES)
+        super(PLProvinceSelect, self).__init__(attrs, choices=VOIVODESHIP_CHOICES)
 
 
 class PLCountySelect(Select):
     """
     A select widget with list of Polish administrative units as choices.
     """
-
     def __init__(self, attrs=None):
-        super(
-            PLCountySelect,
-            self).__init__(
-            attrs,
-            choices=ADMINISTRATIVE_UNIT_CHOICES)
+        super(PLCountySelect, self).__init__(attrs, choices=ADMINISTRATIVE_UNIT_CHOICES)
 
 
 class PLPESELField(RegexField):
@@ -57,15 +47,8 @@ class PLPESELField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            PLPESELField,
-            self).__init__(
-            r'^\d{11}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(PLPESELField, self).__init__(r'^\d{11}$',
+                                           max_length, min_length, *args, **kwargs)
 
     def clean(self, value):
         super(PLPESELField, self).clean(value)
@@ -102,14 +85,9 @@ class PLNationalIDCardNumberField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            PLNationalIDCardNumberField,
-            self).__init__(
-            r'^[A-Za-z]{3}\d{6}$',
-            max_length,
-            min_length,
-            *args,
-            **kwargs)
+        super(PLNationalIDCardNumberField, self).__init__(r'^[A-Za-z]{3}\d{6}$',
+                                                          max_length, min_length,
+                                                          *args, **kwargs)
 
     def clean(self, value):
         super(PLNationalIDCardNumberField, self).clean(value)
@@ -160,14 +138,9 @@ class PLNIPField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            PLNIPField,
-            self).__init__(
-            r'^\d{3}-\d{3}-\d{2}-\d{2}$|^\d{3}-\d{2}-\d{2}-\d{3}$|^\d{10}$',
-            max_length,
-            min_length,
-            *args,
-            **kwargs)
+        super(PLNIPField, self).__init__(r'^\d{3}-\d{3}-\d{2}-\d{2}$|^\d{3}-\d{2}-\d{2}-\d{3}$|^\d{10}$',
+                                         max_length, min_length,
+                                         *args, **kwargs)
 
     def clean(self, value):
         super(PLNIPField, self).clean(value)
@@ -207,15 +180,8 @@ class PLREGONField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            PLREGONField,
-            self).__init__(
-            r'^\d{9,14}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(PLREGONField, self).__init__(r'^\d{9,14}$',
+                                           max_length, min_length, *args, **kwargs)
 
     def clean(self, value):
         super(PLREGONField, self).clean(value)
@@ -261,12 +227,5 @@ class PLPostalCodeField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            PLPostalCodeField,
-            self).__init__(
-            r'^\d{2}-\d{3}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(PLPostalCodeField, self).__init__(r'^\d{2}-\d{3}$',
+                                                max_length, min_length, *args, **kwargs)

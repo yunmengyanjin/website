@@ -38,10 +38,7 @@ def no_vouchers(request, template_name="manage/voucher/no_vouchers.html"):
 
 
 @permission_required("core.manage_shop")
-def voucher_group(
-        request,
-        id,
-        template_name="manage/voucher/voucher_group.html"):
+def voucher_group(request, id, template_name="manage/voucher/voucher_group.html"):
     """Main view to display a voucher group.
     """
     try:
@@ -59,10 +56,7 @@ def voucher_group(
 
 
 # Parts
-def navigation(
-        request,
-        voucher_group,
-        template_name="manage/voucher/navigation.html"):
+def navigation(request, voucher_group, template_name="manage/voucher/navigation.html"):
     """Displays the navigation.
     """
     return render_to_string(template_name, RequestContext(request, {
@@ -87,8 +81,7 @@ def data_tab(request, voucher_group, template_name="manage/voucher/data.html"):
     }))
 
 
-def vouchers_tab(request, voucher_group, deleted=False,
-                 template_name="manage/voucher/vouchers.html"):
+def vouchers_tab(request, voucher_group, deleted=False, template_name="manage/voucher/vouchers.html"):
     """Displays the vouchers tab
     """
     vouchers = voucher_group.vouchers.all()
@@ -102,17 +95,12 @@ def vouchers_tab(request, voucher_group, deleted=False,
     else:
         voucher_form = VoucherForm()
 
-    return render_to_string(template_name,
-                            RequestContext(request,
-                                           {"voucher_group": voucher_group,
-                                            "taxes": taxes,
-                                            "form": voucher_form,
-                                            "vouchers_inline": vouchers_inline(request,
-                                                                               voucher_group,
-                                                                               vouchers,
-                                                                               paginator,
-                                                                               page),
-                                            }))
+    return render_to_string(template_name, RequestContext(request, {
+        "voucher_group": voucher_group,
+        "taxes": taxes,
+        "form": voucher_form,
+        "vouchers_inline": vouchers_inline(request, voucher_group, vouchers, paginator, page),
+    }))
 
 
 def options_tab(request, template_name="manage/voucher/options.html"):
@@ -130,13 +118,7 @@ def options_tab(request, template_name="manage/voucher/options.html"):
     }))
 
 
-def vouchers_inline(
-        request,
-        voucher_group,
-        vouchers,
-        paginator,
-        page,
-        template_name="manage/voucher/vouchers_inline.html"):
+def vouchers_inline(request, voucher_group, vouchers, paginator, page, template_name="manage/voucher/vouchers_inline.html"):
     """Displays the pages of the vouchers
     """
     return render_to_string(template_name, RequestContext(request, {
@@ -159,13 +141,7 @@ def set_vouchers_page(request):
     page = paginator.page(request.REQUEST.get("page", 1))
 
     html = (
-        ("#vouchers-inline",
-         vouchers_inline(
-             request,
-             voucher_group,
-             vouchers,
-             paginator,
-             page)),
+        ("#vouchers-inline", vouchers_inline(request, voucher_group, vouchers, paginator, page)),
     )
 
     return HttpResponse(
@@ -182,9 +158,7 @@ def manage_vouchers(request):
     except IndexError:
         url = reverse("lfs_no_vouchers")
     else:
-        url = reverse(
-            "lfs_manage_voucher_group", kwargs={
-                "id": voucher_group.id})
+        url = reverse("lfs_manage_voucher_group", kwargs={"id": voucher_group.id})
 
     return HttpResponseRedirect(url)
 
@@ -207,14 +181,12 @@ def add_vouchers(request, group_id):
         for i in range(0, amount):
             number = lfs.voucher.utils.create_voucher_number()
             counter = 0
-            while Voucher.objects.filter(
-                    number=number).exists() and counter < 100:
+            while Voucher.objects.filter(number=number).exists() and counter < 100:
                 number = lfs.voucher.utils.create_voucher_number()
                 counter += 1
 
             if counter == 100:
-                msg = _(
-                    u"Unable to create unique Vouchers for the options specified.")
+                msg = _(u"Unable to create unique Vouchers for the options specified.")
                 break
 
             Voucher.objects.create(
@@ -243,8 +215,7 @@ def delete_vouchers(request, group_id):
     """Deletes checked vouchers.
     """
     voucher_group = VoucherGroup.objects.get(pk=group_id)
-    vouchers = Voucher.objects.filter(
-        pk__in=request.POST.getlist("voucher-ids"))
+    vouchers = Voucher.objects.filter(pk__in=request.POST.getlist("voucher-ids"))
 
     for voucher in vouchers:
         voucher.delete()
@@ -255,9 +226,7 @@ def delete_vouchers(request, group_id):
 
 
 @permission_required("core.manage_shop")
-def add_voucher_group(
-        request,
-        template_name="manage/voucher/add_voucher_group.html"):
+def add_voucher_group(request, template_name="manage/voucher/add_voucher_group.html"):
     """Adds a voucher group
     """
     if request.method == "POST":
@@ -266,9 +235,7 @@ def add_voucher_group(
             voucher_group = form.save(commit=False)
             voucher_group.creator = request.user
             voucher_group.save()
-            url = reverse(
-                "lfs_manage_voucher_group", kwargs={
-                    "id": voucher_group.id})
+            url = reverse("lfs_manage_voucher_group", kwargs={"id": voucher_group.id})
             return HttpResponseRedirect(url)
     else:
         form = VoucherGroupAddForm()

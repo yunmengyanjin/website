@@ -8,13 +8,7 @@ from django.db import DEFAULT_DB_ALIAS, connections
 from django.http import Http404
 
 
-def kml(
-        request,
-        label,
-        model,
-        field_name=None,
-        compress=False,
-        using=DEFAULT_DB_ALIAS):
+def kml(request, label, model, field_name=None, compress=False, using=DEFAULT_DB_ALIAS):
     """
     This view generates KML for the given app label, model, and field name.
 
@@ -25,9 +19,7 @@ def kml(
     try:
         klass = apps.get_model(label, model)
     except LookupError:
-        raise Http404(
-            'You must supply a valid app label and module name.  Got "%s.%s"' %
-            (label, model))
+        raise Http404('You must supply a valid app label and module name.  Got "%s.%s"' % (label, model))
 
     if field_name:
         try:
@@ -41,15 +33,13 @@ def kml(
 
     if connection.ops.postgis:
         # PostGIS will take care of transformation.
-        placemarks = klass._default_manager.using(
-            using).kml(field_name=field_name)
+        placemarks = klass._default_manager.using(using).kml(field_name=field_name)
     else:
         # There's no KML method on Oracle or MySQL, so we use the `kml`
         # attribute of the lazy geometry instead.
         placemarks = []
         if connection.ops.oracle:
-            qs = klass._default_manager.using(
-                using).transform(4326, field_name=field_name)
+            qs = klass._default_manager.using(using).transform(4326, field_name=field_name)
         else:
             qs = klass._default_manager.using(using).all()
         for mod in qs:

@@ -66,16 +66,14 @@ class MultipleObjectMixin(ContextMixin):
             queryset, page_size, orphans=self.get_paginate_orphans(),
             allow_empty_first_page=self.get_allow_empty())
         page_kwarg = self.page_kwarg
-        page = self.kwargs.get(
-            page_kwarg) or self.request.GET.get(page_kwarg) or 1
+        page = self.kwargs.get(page_kwarg) or self.request.GET.get(page_kwarg) or 1
         try:
             page_number = int(page)
         except ValueError:
             if page == 'last':
                 page_number = paginator.num_pages
             else:
-                raise Http404(
-                    _("Page is not 'last', nor can it be converted to an int."))
+                raise Http404(_("Page is not 'last', nor can it be converted to an int."))
         try:
             page = paginator.page(page_number)
             return (paginator, page, page.object_list, page.has_other_pages())
@@ -133,8 +131,7 @@ class MultipleObjectMixin(ContextMixin):
         page_size = self.get_paginate_by(queryset)
         context_object_name = self.get_context_object_name(queryset)
         if page_size:
-            paginator, page, queryset, is_paginated = self.paginate_queryset(
-                queryset, page_size)
+            paginator, page, queryset, is_paginated = self.paginate_queryset(queryset, page_size)
             context = {
                 'paginator': paginator,
                 'page_obj': page,
@@ -158,7 +155,6 @@ class BaseListView(MultipleObjectMixin, View):
     """
     A base view for displaying a list of objects.
     """
-
     def get(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
         allow_empty = self.get_allow_empty()
@@ -173,9 +169,8 @@ class BaseListView(MultipleObjectMixin, View):
             else:
                 is_empty = len(self.object_list) == 0
             if is_empty:
-                raise Http404(
-                    _("Empty list and '%(class_name)s.allow_empty' is False.") % {
-                        'class_name': self.__class__.__name__})
+                raise Http404(_("Empty list and '%(class_name)s.allow_empty' is False.")
+                        % {'class_name': self.__class__.__name__})
         context = self.get_context_data()
         return self.render_to_response(context)
 
@@ -192,9 +187,7 @@ class MultipleObjectTemplateResponseMixin(TemplateResponseMixin):
         a list. May not be called if render_to_response is overridden.
         """
         try:
-            names = super(
-                MultipleObjectTemplateResponseMixin,
-                self).get_template_names()
+            names = super(MultipleObjectTemplateResponseMixin, self).get_template_names()
         except ImproperlyConfigured:
             # If template_name isn't specified, it's not a problem --
             # we just start with an empty list.
@@ -206,11 +199,7 @@ class MultipleObjectTemplateResponseMixin(TemplateResponseMixin):
         # generated ones.
         if hasattr(self.object_list, 'model'):
             opts = self.object_list.model._meta
-            names.append(
-                "%s/%s%s.html" %
-                (opts.app_label,
-                 opts.model_name,
-                 self.template_name_suffix))
+            names.append("%s/%s%s.html" % (opts.app_label, opts.model_name, self.template_name_suffix))
 
         return names
 

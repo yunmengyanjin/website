@@ -25,7 +25,6 @@ class BaseDatabaseCreation(object):
     Fields, the SQL used to create and destroy tables, and the creation and
     destruction of test databases.
     """
-
     def __init__(self, connection):
         self.connection = connection
 
@@ -72,7 +71,7 @@ class BaseDatabaseCreation(object):
                 continue
             # Make the definition (e.g. 'foo VARCHAR(30)') for this field.
             field_output = [style.SQL_FIELD(qn(f.column)),
-                            style.SQL_COLTYPE(col_type)]
+                style.SQL_COLTYPE(col_type)]
             # Oracle treats the empty string ('') as null, so coerce the null
             # option whenever '' is a possible value.
             null = f.null
@@ -105,9 +104,9 @@ class BaseDatabaseCreation(object):
             table_output.append(' '.join(field_output))
         for field_constraints in opts.unique_together:
             table_output.append(style.SQL_KEYWORD('UNIQUE') + ' (%s)' %
-                                ", ".join(
-                [style.SQL_FIELD(qn(opts.get_field(f).column))
-                 for f in field_constraints]))
+                ", ".join(
+                    [style.SQL_FIELD(qn(opts.get_field(f).column))
+                     for f in field_constraints]))
 
         full_statement = [style.SQL_KEYWORD('CREATE TABLE') + ' ' +
                           style.SQL_TABLE(qn(opts.db_table)) + ' (']
@@ -135,8 +134,7 @@ class BaseDatabaseCreation(object):
 
         return final_output, pending_references
 
-    def sql_for_inline_foreign_key_references(
-            self, model, field, known_models, style):
+    def sql_for_inline_foreign_key_references(self, model, field, known_models, style):
         """
         Return the SQL snippet defining the foreign key reference for a field.
         """
@@ -144,11 +142,11 @@ class BaseDatabaseCreation(object):
         rel_to = field.rel.to
         if rel_to in known_models or rel_to == model:
             output = [style.SQL_KEYWORD('REFERENCES') + ' ' +
-                      style.SQL_TABLE(qn(rel_to._meta.db_table)) + ' (' +
-                      style.SQL_FIELD(qn(rel_to._meta.get_field(
-                          field.rel.field_name).column)) + ')' +
-                      self.connection.ops.deferrable_sql()
-                      ]
+                style.SQL_TABLE(qn(rel_to._meta.db_table)) + ' (' +
+                style.SQL_FIELD(qn(rel_to._meta.get_field(
+                    field.rel.field_name).column)) + ')' +
+                self.connection.ops.deferrable_sql()
+            ]
             pending = False
         else:
             # We haven't yet created the table to which this field
@@ -178,18 +176,12 @@ class BaseDatabaseCreation(object):
                 # So we are careful with character usage here.
                 r_name = '%s_refs_%s_%s' % (
                     r_col, col, self._digest(r_table, table))
-                final_output.append(
-                    style.SQL_KEYWORD('ALTER TABLE') +
+                final_output.append(style.SQL_KEYWORD('ALTER TABLE') +
                     ' %s ADD CONSTRAINT %s FOREIGN KEY (%s) REFERENCES %s (%s)%s;' %
-                    (qn(r_table),
-                     qn(
-                        truncate_name(
-                            r_name,
-                            self.connection.ops.max_name_length())),
-                        qn(r_col),
-                        qn(table),
-                        qn(col),
-                        self.connection.ops.deferrable_sql()))
+                    (qn(r_table), qn(truncate_name(
+                        r_name, self.connection.ops.max_name_length())),
+                    qn(r_col), qn(table), qn(col),
+                    self.connection.ops.deferrable_sql()))
             del pending_references[model]
         return final_output
 
@@ -197,10 +189,9 @@ class BaseDatabaseCreation(object):
         """
         Returns the CREATE INDEX SQL statements for a single model.
         """
-        warnings.warn(
-            "DatabaseCreation.sql_indexes_for_model is deprecated, "
-            "use the equivalent method of the schema editor instead.",
-            RemovedInDjango20Warning)
+        warnings.warn("DatabaseCreation.sql_indexes_for_model is deprecated, "
+                      "use the equivalent method of the schema editor instead.",
+                      RemovedInDjango20Warning)
         if not model._meta.managed or model._meta.proxy or model._meta.swapped:
             return []
         output = []
@@ -222,11 +213,9 @@ class BaseDatabaseCreation(object):
 
     def sql_indexes_for_fields(self, model, fields, style):
         if len(fields) == 1 and fields[0].db_tablespace:
-            tablespace_sql = self.connection.ops.tablespace_sql(
-                fields[0].db_tablespace)
+            tablespace_sql = self.connection.ops.tablespace_sql(fields[0].db_tablespace)
         elif model._meta.db_tablespace:
-            tablespace_sql = self.connection.ops.tablespace_sql(
-                model._meta.db_tablespace)
+            tablespace_sql = self.connection.ops.tablespace_sql(model._meta.db_tablespace)
         else:
             tablespace_sql = ""
         if tablespace_sql:
@@ -237,8 +226,7 @@ class BaseDatabaseCreation(object):
         for f in fields:
             field_names.append(style.SQL_FIELD(qn(f.column)))
 
-        index_name = "%s_%s" % (model._meta.db_table,
-                                self._digest([f.name for f in fields]))
+        index_name = "%s_%s" % (model._meta.db_table, self._digest([f.name for f in fields]))
 
         return [
             style.SQL_KEYWORD("CREATE INDEX") + " " +
@@ -302,9 +290,7 @@ class BaseDatabaseCreation(object):
             output.extend(self.sql_destroy_indexes_for_field(model, f, style))
         for fs in model._meta.index_together:
             fields = [model._meta.get_field(f) for f in fs]
-            output.extend(
-                self.sql_destroy_indexes_for_fields(
-                    model, fields, style))
+            output.extend(self.sql_destroy_indexes_for_fields(model, fields, style))
         return output
 
     def sql_destroy_indexes_for_field(self, model, f, style):
@@ -318,11 +304,9 @@ class BaseDatabaseCreation(object):
 
     def sql_destroy_indexes_for_fields(self, model, fields, style):
         if len(fields) == 1 and fields[0].db_tablespace:
-            tablespace_sql = self.connection.ops.tablespace_sql(
-                fields[0].db_tablespace)
+            tablespace_sql = self.connection.ops.tablespace_sql(fields[0].db_tablespace)
         elif model._meta.db_tablespace:
-            tablespace_sql = self.connection.ops.tablespace_sql(
-                model._meta.db_tablespace)
+            tablespace_sql = self.connection.ops.tablespace_sql(model._meta.db_tablespace)
         else:
             tablespace_sql = ""
         if tablespace_sql:
@@ -333,8 +317,7 @@ class BaseDatabaseCreation(object):
         for f in fields:
             field_names.append(style.SQL_FIELD(qn(f.column)))
 
-        index_name = "%s_%s" % (model._meta.db_table,
-                                self._digest([f.name for f in fields]))
+        index_name = "%s_%s" % (model._meta.db_table, self._digest([f.name for f in fields]))
 
         return [
             style.SQL_KEYWORD("DROP INDEX") + " " +
@@ -342,12 +325,7 @@ class BaseDatabaseCreation(object):
             ";",
         ]
 
-    def create_test_db(
-            self,
-            verbosity=1,
-            autoclobber=False,
-            serialize=True,
-            keepdb=False):
+    def create_test_db(self, verbosity=1, autoclobber=False, serialize=True, keepdb=False):
         """
         Creates a test database, prompting the user for confirmation if the
         database already exists. Returns the name of the test database created.
@@ -399,8 +377,7 @@ class BaseDatabaseCreation(object):
 
         call_command('createcachetable', database=self.connection.alias)
 
-        # Ensure a connection for the side effect of initializing the test
-        # database.
+        # Ensure a connection for the side effect of initializing the test database.
         self.connection.ensure_connection()
 
         return test_database_name
@@ -428,9 +405,7 @@ class BaseDatabaseCreation(object):
             for model in serializers.sort_dependencies(app_list):
                 if (not model._meta.proxy and model._meta.managed and
                         router.allow_migrate_model(self.connection.alias, model)):
-                    queryset = model._default_manager.using(
-                        self.connection.alias).order_by(
-                        model._meta.pk.name)
+                    queryset = model._default_manager.using(self.connection.alias).order_by(model._meta.pk.name)
                     for obj in queryset.iterator():
                         yield obj
         # Serialize to a string
@@ -444,8 +419,7 @@ class BaseDatabaseCreation(object):
         the serialize_db_to_string method.
         """
         data = StringIO(data)
-        for obj in serializers.deserialize(
-                "json", data, using=self.connection.alias):
+        for obj in serializers.deserialize("json", data, using=self.connection.alias):
             obj.save()
 
     def _get_test_db_name(self):
@@ -485,8 +459,7 @@ class BaseDatabaseCreation(object):
                 if not autoclobber:
                     confirm = input(
                         "Type 'yes' if you would like to try deleting the test "
-                        "database '%s', or 'no' to cancel: " %
-                        test_database_name)
+                        "database '%s', or 'no' to cancel: " % test_database_name)
                 if autoclobber or confirm == 'yes':
                     try:
                         if verbosity >= 1:
@@ -544,8 +517,8 @@ class BaseDatabaseCreation(object):
         with self._nodb_connection.cursor() as cursor:
             # Wait to avoid "database is being accessed by other users" errors.
             time.sleep(1)
-            cursor.execute("DROP DATABASE %s" %
-                           self.connection.ops.quote_name(test_database_name))
+            cursor.execute("DROP DATABASE %s"
+                           % self.connection.ops.quote_name(test_database_name))
 
     def sql_table_creation_suffix(self):
         """

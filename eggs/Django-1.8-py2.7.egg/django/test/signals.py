@@ -67,7 +67,7 @@ def update_connections_time_zone(**kwargs):
     elif kwargs['setting'] == 'TIME_ZONE' and not settings.USE_TZ:
         USE_TZ, TIME_ZONE = settings.USE_TZ, kwargs['value']
     else:
-        # no need to change the database connections' time zones
+        # no need to change the database connnections' time zones
         return
     tz = 'UTC' if USE_TZ else TIME_ZONE
     for conn in connections.all():

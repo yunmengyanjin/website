@@ -65,8 +65,7 @@ def _strformat(value, format_spec=""):
         # TODO: thousand separator
         pass
     try:
-        if ((is_numeric and conversion == 's') or (
-                not is_integer and conversion in set('cdoxX'))):
+        if ((is_numeric and conversion == 's') or (not is_integer and conversion in set('cdoxX'))):
             raise ValueError
         if conversion == 'c':
             conversion = 's'
@@ -249,8 +248,8 @@ def selftest():
     import datetime
     F = FormattableString
 
-    assert F("{0:{width}.{precision}s}").format(
-        'hello world', width=8, precision=5) == 'hello   '
+    assert F("{0:{width}.{precision}s}").format('hello world',
+             width=8, precision=5) == 'hello   '
 
     d = datetime.date(2010, 9, 7)
     assert F("The year is {0.year}").format(d) == "The year is 2010"

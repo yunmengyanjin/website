@@ -20,9 +20,7 @@ def manage_marketing(request, template_name="manage/marketing/marketing.html"):
 
 
 @permission_required("manage_shop")
-def manage_featured_page(
-        request,
-        template_name="manage/marketing/marketing_featured.html"):
+def manage_featured_page(request, template_name="manage/marketing/marketing_featured.html"):
     """Displays the main manage/edit form for featured products.
     """
     featured = manage_featured(request)

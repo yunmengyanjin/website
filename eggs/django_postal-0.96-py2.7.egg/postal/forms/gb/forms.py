@@ -5,15 +5,11 @@ from localflavor.gb.forms import GBPostcodeField, GBCountySelect
 
 from postal.forms import PostalAddressForm
 
-
 class GBPostalAddressForm(PostalAddressForm):
     line1 = forms.CharField(label=_(u"Street"), max_length=100)
     line2 = forms.CharField(label=_(u"Area"), required=False, max_length=100)
     city = forms.CharField(label=_(u"Town"), max_length=100)
-    state = forms.CharField(
-        label=_(u"County"),
-        widget=GBCountySelect,
-        max_length=100)
+    state = forms.CharField(label=_(u"County"), widget=GBCountySelect, max_length=100)
     code = GBPostcodeField(label=_(u"Postcode"))
 
     def __init__(self, *args, **kwargs):
