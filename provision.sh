@@ -30,7 +30,7 @@ apt-get install -y ruby1.9.1
 # echo yunmengyanjin
 # echo yunmengyanjin
 apt-get install -y mysql-client libmysqlclient-dev
-pip install python-mysql
+pip install mysql-python
 pip install flake8
 
 # Configure PostgreSQL
