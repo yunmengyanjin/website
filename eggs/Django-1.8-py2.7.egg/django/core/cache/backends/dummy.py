@@ -4,7 +4,6 @@ from django.core.cache.backends.base import DEFAULT_TIMEOUT, BaseCache
 
 
 class DummyCache(BaseCache):
-
     def __init__(self, host, *args, **kwargs):
         BaseCache.__init__(self, *args, **kwargs)
 

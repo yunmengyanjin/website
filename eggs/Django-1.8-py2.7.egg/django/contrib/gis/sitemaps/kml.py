@@ -36,8 +36,7 @@ class KMLSitemap(Sitemap):
                                             field.name))
             elif isinstance(source, (list, tuple)):
                 if len(source) != 3:
-                    raise ValueError(
-                        'Must specify a 3-tuple of (app_label, module_name, field_name).')
+                    raise ValueError('Must specify a 3-tuple of (app_label, module_name, field_name).')
                 kml_sources.append(source)
             else:
                 raise TypeError('KML Sources must be a model or a 3-tuple.')
@@ -57,14 +56,12 @@ class KMLSitemap(Sitemap):
         return self.locations
 
     def location(self, obj):
-        return urlresolvers.reverse(
-            'django.contrib.gis.sitemaps.views.%s' %
-            self.geo_format,
-            kwargs={
-                'label': obj[0],
-                'model': obj[1],
-                'field_name': obj[2],
-            })
+        return urlresolvers.reverse('django.contrib.gis.sitemaps.views.%s' % self.geo_format,
+                                    kwargs={'label': obj[0],
+                                            'model': obj[1],
+                                            'field_name': obj[2],
+                                            }
+                                    )
 
 
 class KMZSitemap(KMLSitemap):

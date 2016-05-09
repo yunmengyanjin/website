@@ -64,8 +64,7 @@ class BaseConverter(object):
         return value
 
     def decode(self, s):
-        neg, value = self.convert(
-            s, self.digits, self.decimal_digits, self.sign)
+        neg, value = self.convert(s, self.digits, self.decimal_digits, self.sign)
         if neg:
             value = '-' + value
         return int(value)

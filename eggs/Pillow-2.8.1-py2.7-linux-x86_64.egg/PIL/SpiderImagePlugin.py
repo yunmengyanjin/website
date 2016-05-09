@@ -44,7 +44,7 @@ import sys
 def isInt(f):
     try:
         i = int(f)
-        if f - i == 0:
+        if f-i == 0:
             return 1
         else:
             return 0
@@ -176,7 +176,7 @@ class SpiderImageFile(ImageFile.ImageFile):
         (min, max) = self.getextrema()
         m = 1
         if max != min:
-            m = depth / (max - min)
+            m = depth / (max-min)
         b = -m * min
         return self.point(lambda i, m=m, b=b: i * m + b).convert("L")
 
@@ -264,7 +264,7 @@ def _save(im, fp, filename):
     fp.writelines(hdr)
 
     rawmode = "F;32NF"  # 32-bit native floating point
-    ImageFile._save(im, fp, [("raw", (0, 0) + im.size, 0, (rawmode, 0, 1))])
+    ImageFile._save(im, fp, [("raw", (0, 0)+im.size, 0, (rawmode, 0, 1))])
 
     fp.close()
 

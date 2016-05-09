@@ -38,27 +38,12 @@ class Command(BaseCommand):
     program_options = ['--check-format']
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            '--locale',
-            '-l',
-            dest='locale',
-            action='append',
-            default=[],
+        parser.add_argument('--locale', '-l', dest='locale', action='append', default=[],
             help='Locale(s) to process (e.g. de_AT). Default is to process all. '
             'Can be used multiple times.')
-        parser.add_argument(
-            '--exclude',
-            '-x',
-            dest='exclude',
-            action='append',
-            default=[],
+        parser.add_argument('--exclude', '-x', dest='exclude', action='append', default=[],
             help='Locales to exclude. Default is none. Can be used multiple times.')
-        parser.add_argument(
-            '--use-fuzzy',
-            '-f',
-            dest='fuzzy',
-            action='store_true',
-            default=False,
+        parser.add_argument('--use-fuzzy', '-f', dest='fuzzy', action='store_true', default=False,
             help='Use fuzzy translations.')
 
     def handle(self, **options):
@@ -97,15 +82,13 @@ class Command(BaseCommand):
 
         for basedir in basedirs:
             if locales:
-                dirs = [os.path.join(basedir, l, 'LC_MESSAGES')
-                        for l in locales]
+                dirs = [os.path.join(basedir, l, 'LC_MESSAGES') for l in locales]
             else:
                 dirs = [basedir]
             locations = []
             for ldir in dirs:
                 for dirpath, dirnames, filenames in os.walk(ldir):
-                    locations.extend((dirpath, f)
-                                     for f in filenames if f.endswith('.po'))
+                    locations.extend((dirpath, f) for f in filenames if f.endswith('.po'))
             if locations:
                 self.compile_messages(locations)
 
@@ -125,14 +108,12 @@ class Command(BaseCommand):
 
             # Check writability on first location
             if i == 0 and not is_writable(npath(base_path + '.mo')):
-                self.stderr.write(
-                    "The po files under %s are in a seemingly not writable location. "
-                    "mo files will not be updated/created." %
-                    dirpath)
+                self.stderr.write("The po files under %s are in a seemingly not writable location. "
+                                  "mo files will not be updated/created." % dirpath)
                 return
 
-            args = [self.program] + self.program_options + \
-                ['-o', npath(base_path + '.mo'), npath(base_path + '.po')]
+            args = [self.program] + self.program_options + ['-o',
+                    npath(base_path + '.mo'), npath(base_path + '.po')]
             output, errors, status = popen_wrapper(args)
             if status:
                 if errors:

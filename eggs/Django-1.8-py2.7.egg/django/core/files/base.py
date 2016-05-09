@@ -26,9 +26,7 @@ class File(FileProxyMixin):
         return smart_text(self.name or '')
 
     def __repr__(self):
-        return force_str(
-            "<%s: %s>" %
-            (self.__class__.__name__, self or "None"))
+        return force_str("<%s: %s>" % (self.__class__.__name__, self or "None"))
 
     def __bool__(self):
         return bool(self.name)
@@ -151,11 +149,9 @@ class ContentFile(File):
     """
     A File-like object that takes just raw content, rather than an actual file.
     """
-
     def __init__(self, content, name=None):
         if six.PY3:
-            stream_class = StringIO if isinstance(
-                content, six.text_type) else BytesIO
+            stream_class = StringIO if isinstance(content, six.text_type) else BytesIO
         else:
             stream_class = BytesIO
             content = force_bytes(content)

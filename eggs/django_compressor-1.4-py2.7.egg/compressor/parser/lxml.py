@@ -15,7 +15,6 @@ class LxmlParser(ParserBase):
     {% compress %} tag. Under python 2 it will also try to use beautiful
     soup parser in case of any problems with encoding.
     """
-
     def __init__(self, content):
         try:
             from lxml.html import fromstring
@@ -58,10 +57,8 @@ class LxmlParser(ParserBase):
         return tree
 
     def css_elems(self):
-        return self.tree.xpath(
-            '//link[re:test(@rel, "^stylesheet$", "i")]|style',
-            namespaces={
-                "re": "http://exslt.org/regular-expressions"})
+        return self.tree.xpath('//link[re:test(@rel, "^stylesheet$", "i")]|style',
+            namespaces={"re": "http://exslt.org/regular-expressions"})
 
     def js_elems(self):
         return self.tree.findall('script')

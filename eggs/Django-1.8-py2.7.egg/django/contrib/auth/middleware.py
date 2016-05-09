@@ -12,7 +12,6 @@ def get_user(request):
 
 
 class AuthenticationMiddleware(object):
-
     def process_request(self, request):
         assert hasattr(request, 'session'), (
             "The Django authentication middleware requires session middleware "
@@ -32,7 +31,6 @@ class SessionAuthenticationMiddleware(object):
     Now a backwards compatibility shim that enables session verification in
     auth.get_user() if this middleware is in MIDDLEWARE_CLASSES.
     """
-
     def process_request(self, request):
         pass
 
@@ -113,9 +111,7 @@ class RemoteUserMiddleware(object):
         but only if the user is authenticated via the RemoteUserBackend.
         """
         try:
-            stored_backend = load_backend(
-                request.session.get(
-                    auth.BACKEND_SESSION_KEY, ''))
+            stored_backend = load_backend(request.session.get(auth.BACKEND_SESSION_KEY, ''))
         except ImportError:
             # backend failed to load
             auth.logout(request)

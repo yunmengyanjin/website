@@ -22,8 +22,7 @@ class PrefixNode(template.Node):
         """
         Class method to parse prefix node and return a Node.
         """
-        # token.split_contents() isn't useful here because tags using this
-        # method don't accept variable as arguments
+        # token.split_contents() isn't useful here because tags using this method don't accept variable as arguments
         tokens = token.contents.split()
         if len(tokens) > 1 and tokens[1] != 'as':
             raise template.TemplateSyntaxError(
@@ -91,7 +90,6 @@ def get_media_prefix(parser, token):
 
 
 class StaticNode(template.Node):
-
     def __init__(self, varname=None, path=None):
         if path is None:
             raise template.TemplateSyntaxError(

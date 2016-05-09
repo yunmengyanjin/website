@@ -98,10 +98,7 @@ def orders_inline(request, template_name="manage/order/orders_inline.html"):
     }))
 
 
-def order_inline(
-        request,
-        order_id,
-        template_name="manage/order/order_inline.html"):
+def order_inline(request, order_id, template_name="manage/order/order_inline.html"):
     """Displays the details of an order.
     """
     order_filters = request.session.get("order-filters", {})
@@ -128,10 +125,7 @@ def order_inline(
     }))
 
 
-def order_filters_inline(
-        request,
-        order_id,
-        template_name="manage/order/order_filters_inline.html"):
+def order_filters_inline(request, order_id, template_name="manage/order/order_filters_inline.html"):
     """Renders the filters section within the order view.
     """
     order_filters = request.session.get("order-filters", {})
@@ -157,9 +151,7 @@ def order_filters_inline(
     }))
 
 
-def orders_filters_inline(
-        request,
-        template_name="manage/order/orders_filters_inline.html"):
+def orders_filters_inline(request, template_name="manage/order/orders_filters_inline.html"):
     """Displays the order filter on top of the order overview view.
     """
     order_filters = request.session.get("order-filters", {})
@@ -191,10 +183,7 @@ def orders_filters_inline(
     return result
 
 
-def selectable_orders_inline(
-        request,
-        order_id,
-        template_name="manage/order/selectable_orders_inline.html"):
+def selectable_orders_inline(request, order_id, template_name="manage/order/selectable_orders_inline.html"):
     """Displays the selectable orders for the order view. (Used to switch
     quickly from one order to another.)
     """
@@ -427,11 +416,9 @@ def change_order_state(request):
     if order.state == lfs.order.settings.PAID:
         lfs.core.signals.order_paid.send(sender=order, request=request)
 
-    lfs.core.signals.order_state_changed.send(
-        sender=order, order=order, request=request, old_state=old_state)
+    lfs.core.signals.order_state_changed.send(sender=order, order=order, request=request, old_state=old_state)
 
-    cache_key = "%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX,
-                              Order.__name__.lower(), order.pk)
+    cache_key = "%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, Order.__name__.lower(), order.pk)
     cache.delete(cache_key)
 
     msg = _(u"State has been changed")

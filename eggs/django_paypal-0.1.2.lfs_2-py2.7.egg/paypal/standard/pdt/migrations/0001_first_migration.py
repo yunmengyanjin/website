@@ -4,11 +4,10 @@ from south.db import db
 from django.db import models
 from paypal.standard.pdt.models import *
 
-
 class Migration:
-
+    
     def forwards(self, orm):
-
+        
         # Adding model 'PayPalPDT'
         db.create_table('paypal_pdt', (
             ('id', models.AutoField(primary_key=True)),
@@ -129,12 +128,16 @@ class Migration:
             ('st', models.CharField(max_length=32, blank=True)),
         ))
         db.send_create_signal('pdt', ['PayPalPDT'])
-
+        
+    
+    
     def backwards(self, orm):
-
+        
         # Deleting model 'PayPalPDT'
         db.delete_table('paypal_pdt')
-
+        
+    
+    
     models = {
         'pdt.paypalpdt': {
             'Meta': {'db_table': '"paypal_pdt"'},
@@ -256,5 +259,5 @@ class Migration:
             'verify_sign': ('models.CharField', [], {'max_length': '255', 'blank': 'True'})
         }
     }
-
+    
     complete_apps = ['pdt']

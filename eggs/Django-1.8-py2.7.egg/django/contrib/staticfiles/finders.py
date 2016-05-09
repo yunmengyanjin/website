@@ -31,8 +31,7 @@ class BaseFinder(object):
         the first found file path will be returned; if set
         to ``True`` a list of all found files paths is returned.
         """
-        raise NotImplementedError(
-            'subclasses of BaseFinder must provide a find() method')
+        raise NotImplementedError('subclasses of BaseFinder must provide a find() method')
 
     def list(self, ignore_patterns):
         """
@@ -40,8 +39,7 @@ class BaseFinder(object):
         a two item iterable consisting of the relative path and storage
         instance.
         """
-        raise NotImplementedError(
-            'subclasses of BaseFinder must provide a list() method')
+        raise NotImplementedError('subclasses of BaseFinder must provide a list() method')
 
 
 class FileSystemFinder(BaseFinder):
@@ -49,7 +47,6 @@ class FileSystemFinder(BaseFinder):
     A static files finder that uses the ``STATICFILES_DIRS`` setting
     to locate files.
     """
-
     def __init__(self, app_names=None, *args, **kwargs):
         # List of locations with static files
         self.locations = []
@@ -64,8 +61,7 @@ class FileSystemFinder(BaseFinder):
                 prefix, root = root
             else:
                 prefix = ''
-            if settings.STATIC_ROOT and os.path.abspath(
-                    settings.STATIC_ROOT) == os.path.abspath(root):
+            if settings.STATIC_ROOT and os.path.abspath(settings.STATIC_ROOT) == os.path.abspath(root):
                 raise ImproperlyConfigured(
                     "The STATICFILES_DIRS setting should "
                     "not contain the STATIC_ROOT setting")

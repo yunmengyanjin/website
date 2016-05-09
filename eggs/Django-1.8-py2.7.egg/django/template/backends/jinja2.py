@@ -27,13 +27,10 @@ class Jinja2(BaseEngine):
         environment_cls = import_string(environment)
 
         options.setdefault('autoescape', True)
-        options.setdefault(
-            'loader', jinja2.FileSystemLoader(
-                self.template_dirs))
+        options.setdefault('loader', jinja2.FileSystemLoader(self.template_dirs))
         options.setdefault('auto_reload', settings.DEBUG)
-        options.setdefault(
-            'undefined',
-            jinja2.DebugUndefined if settings.DEBUG else jinja2.Undefined)
+        options.setdefault('undefined',
+                           jinja2.DebugUndefined if settings.DEBUG else jinja2.Undefined)
 
         self.env = environment_cls(**options)
 

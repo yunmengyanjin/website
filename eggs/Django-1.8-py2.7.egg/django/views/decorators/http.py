@@ -35,13 +35,12 @@ def require_http_methods(request_method_list):
         @wraps(func, assigned=available_attrs(func))
         def inner(request, *args, **kwargs):
             if request.method not in request_method_list:
-                logger.warning(
-                    'Method Not Allowed (%s): %s',
-                    request.method,
-                    request.path,
+                logger.warning('Method Not Allowed (%s): %s', request.method, request.path,
                     extra={
                         'status_code': 405,
-                        'request': request})
+                        'request': request
+                    }
+                )
                 return HttpResponseNotAllowed(request_method_list)
             return func(request, *args, **kwargs)
         return inner
@@ -59,11 +58,11 @@ require_safe.__doc__ = "Decorator to require that a view only accept safe method
 
 def _precondition_failed(request):
     logger.warning('Precondition Failed: %s', request.path,
-                   extra={
-                       'status_code': 412,
-                       'request': request
-                   },
-                   )
+        extra={
+            'status_code': 412,
+            'request': request
+        },
+    )
     return HttpResponse(status=412)
 
 
@@ -122,8 +121,7 @@ def condition(etag_func=None, last_modified_func=None):
                     if dt:
                         return timegm(dt.utctimetuple())
 
-            res_etag = etag_func(
-                request, *args, **kwargs) if etag_func else None
+            res_etag = etag_func(request, *args, **kwargs) if etag_func else None
             res_last_modified = get_last_modified()
 
             response = None
@@ -134,18 +132,18 @@ def condition(etag_func=None, last_modified_func=None):
                 # We only get here if no undefined combinations of headers are
                 # specified.
                 if ((if_none_match and (res_etag in etags or
-                                        "*" in etags and res_etag)) and
+                        "*" in etags and res_etag)) and
                         (not if_modified_since or
                             (res_last_modified and if_modified_since and
-                             res_last_modified <= if_modified_since))):
+                            res_last_modified <= if_modified_since))):
                     if request.method in ("GET", "HEAD"):
                         response = HttpResponseNotModified()
                     else:
                         response = _precondition_failed(request)
                 elif (if_match and ((not res_etag and "*" in etags) or
-                                    (res_etag and res_etag not in etags) or
-                                    (res_last_modified and if_unmodified_since and
-                                     res_last_modified > if_unmodified_since))):
+                        (res_etag and res_etag not in etags) or
+                        (res_last_modified and if_unmodified_since and
+                        res_last_modified > if_unmodified_since))):
                     response = _precondition_failed(request)
                 elif (not if_none_match and request.method in ("GET", "HEAD") and
                         res_last_modified and if_modified_since and

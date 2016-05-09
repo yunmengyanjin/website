@@ -27,15 +27,8 @@ class BEPostalCodeField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            BEPostalCodeField,
-            self).__init__(
-            r'^[1-9]\d{3}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(BEPostalCodeField, self).__init__(r'^[1-9]\d{3}$',
+                                                max_length, min_length, *args, **kwargs)
 
 
 class BEPhoneNumberField(RegexField):
@@ -45,7 +38,7 @@ class BEPhoneNumberField(RegexField):
     Landlines have a seven-digit subscriber number and a one-digit area code,
     while smaller cities have a six-digit subscriber number and a two-digit
     area code. Cell phones have a six-digit subscriber number and a two-digit
-    area code preceded by the number 4.
+    area code preceeded by the number 4.
     0d ddd dd dd, 0d/ddd.dd.dd, 0d.ddd.dd.dd,
     0dddddddd - dialling a bigger city
     0dd dd dd dd, 0dd/dd.dd.dd, 0dd.dd.dd.dd,
@@ -62,22 +55,15 @@ class BEPhoneNumberField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            BEPhoneNumberField,
-            self).__init__(
-            r'^[0]\d{1}[/. ]?\d{3}[. ]\d{2}[. ]?\d{2}$|^[0]\d{2}[/. ]?\d{2}[. ]?\d{2}[. ]?\d{2}$|^[0][4]\d{2}[/. ]?\d{2}[. ]?\d{2}[. ]?\d{2}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(BEPhoneNumberField, self).__init__(r'^[0]\d{1}[/. ]?\d{3}[. ]\d{2}[. ]?\d{2}$|^[0]\d{2}[/. ]?\d{2}[. ]?\d{2}[. ]?\d{2}$|^[0][4]\d{2}[/. ]?\d{2}[. ]?\d{2}[. ]?\d{2}$',
+                                                 max_length, min_length,
+                                                 *args, **kwargs)
 
 
 class BERegionSelect(Select):
     """
     A Select widget that uses a list of belgium regions as its choices.
     """
-
     def __init__(self, attrs=None):
         super(BERegionSelect, self).__init__(attrs, choices=REGION_CHOICES)
 
@@ -86,6 +72,5 @@ class BEProvinceSelect(Select):
     """
     A Select widget that uses a list of belgium provinces as its choices.
     """
-
     def __init__(self, attrs=None):
         super(BEProvinceSelect, self).__init__(attrs, choices=PROVINCE_CHOICES)

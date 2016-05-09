@@ -37,23 +37,19 @@ class MigrationQuestioner(object):
             app_config = apps.get_app_config(app_label)
         except LookupError:         # It's a fake app.
             return self.defaults.get("ask_initial", False)
-        migrations_import_path = "%s.%s" % (
-            app_config.name, MIGRATIONS_MODULE_NAME)
+        migrations_import_path = "%s.%s" % (app_config.name, MIGRATIONS_MODULE_NAME)
         try:
             migrations_module = importlib.import_module(migrations_import_path)
         except ImportError:
             return self.defaults.get("ask_initial", False)
         else:
             if hasattr(migrations_module, "__file__"):
-                filenames = os.listdir(
-                    os.path.dirname(
-                        migrations_module.__file__))
+                filenames = os.listdir(os.path.dirname(migrations_module.__file__))
             elif hasattr(migrations_module, "__path__"):
                 if len(migrations_module.__path__) > 1:
                     return False
                 filenames = os.listdir(list(migrations_module.__path__)[0])
-            return not any(x.endswith(".py")
-                           for x in filenames if x != "__init__.py")
+            return not any(x.endswith(".py") for x in filenames if x != "__init__.py")
 
     def ask_not_null_addition(self, field_name, model_name):
         "Adding a NOT NULL field to a model"
@@ -119,9 +115,7 @@ class InteractiveMigrationQuestioner(MigrationQuestioner):
                 sys.exit(1)
             else:
                 try:
-                    return eval(
-                        code, {}, {
-                            "datetime": datetime_safe, "timezone": timezone})
+                    return eval(code, {}, {"datetime": datetime_safe, "timezone": timezone})
                 except (SyntaxError, NameError) as e:
                     print("Invalid input: %s" % e)
 
@@ -131,13 +125,12 @@ class InteractiveMigrationQuestioner(MigrationQuestioner):
             choice = self._choice_input(
                 "You are trying to add a non-nullable field '%s' to %s without a default; "
                 "we can't do that (the database needs something to populate existing rows).\n"
-                "Please select a fix:" %
-                (field_name,
-                 model_name),
+                "Please select a fix:" % (field_name, model_name),
                 [
                     "Provide a one-off default now (will be set on all existing rows)",
                     "Quit, and let me add a default in models.py",
-                ])
+                ]
+            )
             if choice == 2:
                 sys.exit(3)
             else:
@@ -151,16 +144,15 @@ class InteractiveMigrationQuestioner(MigrationQuestioner):
                 "You are trying to change the nullable field '%s' on %s to non-nullable "
                 "without a default; we can't do that (the database needs something to "
                 "populate existing rows).\n"
-                "Please select a fix:" %
-                (field_name,
-                 model_name),
+                "Please select a fix:" % (field_name, model_name),
                 [
                     "Provide a one-off default now (will be set on all existing rows)",
                     ("Ignore for now, and let me handle existing rows with NULL myself "
                      "(e.g. adding a RunPython or RunSQL operation in the new migration "
                      "file before the AlterField operation)"),
                     "Quit, and let me add a default in models.py",
-                ])
+                ]
+            )
             if choice == 2:
                 return NOT_PROVIDED
             elif choice == 3:
@@ -172,24 +164,14 @@ class InteractiveMigrationQuestioner(MigrationQuestioner):
     def ask_rename(self, model_name, old_name, new_name, field_instance):
         "Was this field really renamed?"
         msg = "Did you rename %s.%s to %s.%s (a %s)? [y/N]"
-        return self._boolean_input(
-            msg %
-            (model_name,
-             old_name,
-             model_name,
-             new_name,
-             field_instance.__class__.__name__),
-            False)
+        return self._boolean_input(msg % (model_name, old_name, model_name, new_name,
+                                          field_instance.__class__.__name__), False)
 
     def ask_rename_model(self, old_model_state, new_model_state):
         "Was this model really renamed?"
         msg = "Did you rename the %s.%s model to %s? [y/N]"
-        return self._boolean_input(
-            msg %
-            (old_model_state.app_label,
-             old_model_state.name,
-             new_model_state.name),
-            False)
+        return self._boolean_input(msg % (old_model_state.app_label, old_model_state.name,
+                                          new_model_state.name), False)
 
     def ask_merge(self, app_label):
         return self._boolean_input(

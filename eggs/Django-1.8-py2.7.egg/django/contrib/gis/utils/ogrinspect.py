@@ -32,8 +32,7 @@ def mapping(data_source, geom_name='geom', layer_key=0, multi_geom=False):
     elif isinstance(data_source, DataSource):
         pass
     else:
-        raise TypeError(
-            'Data source parameter must be a string or a DataSource object.')
+        raise TypeError('Data source parameter must be a string or a DataSource object.')
 
     # Creating the dictionary.
     _mapping = {}
@@ -124,18 +123,9 @@ def ogrinspect(*args, **kwargs):
     return '\n'.join(s for s in _ogrinspect(*args, **kwargs))
 
 
-def _ogrinspect(
-        data_source,
-        model_name,
-        geom_name='geom',
-        layer_key=0,
-        srid=None,
-        multi_geom=False,
-        name_field=None,
-        imports=True,
-        decimal=False,
-        blank=False,
-        null=False):
+def _ogrinspect(data_source, model_name, geom_name='geom', layer_key=0, srid=None,
+                multi_geom=False, name_field=None, imports=True,
+                decimal=False, blank=False, null=False):
     """
     Helper routine for `ogrinspect` that generates GeoDjango models corresponding
     to the given data source.  See the `ogrinspect` docstring for more details.
@@ -146,8 +136,7 @@ def _ogrinspect(
     elif isinstance(data_source, DataSource):
         pass
     else:
-        raise TypeError(
-            'Data source parameter must be a string or a DataSource object.')
+        raise TypeError('Data source parameter must be a string or a DataSource object.')
 
     # Getting the layer corresponding to the layer key and getting
     # a string listing of all OGR fields in the Layer.
@@ -218,9 +207,7 @@ def _ogrinspect(
         elif field_type is OFTTime:
             yield '    %s = models.TimeField(%s)' % (mfield, kwargs_str[2:])
         else:
-            raise TypeError(
-                'Unknown field type %s in %s' %
-                (field_type, mfield))
+            raise TypeError('Unknown field type %s in %s' % (field_type, mfield))
 
     # TODO: Autodetection of multigeometry types (see #7218).
     gtype = layer.geom_type

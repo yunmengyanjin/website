@@ -43,8 +43,7 @@ class DatabaseSchemaEditor(BaseDatabaseSchemaEditor):
         super(DatabaseSchemaEditor, self).add_field(model, field)
 
         # Simulate the effect of a one-off default.
-        if self.skip_default(field) and field.default not in {
-                None, NOT_PROVIDED}:
+        if self.skip_default(field) and field.default not in {None, NOT_PROVIDED}:
             effective_default = self.effective_default(field)
             self.execute('UPDATE %(table)s SET %(column)s = %%s' % {
                 'table': self.quote_name(model._meta.db_table),
@@ -59,7 +58,6 @@ class DatabaseSchemaEditor(BaseDatabaseSchemaEditor):
             for field in model._meta.local_fields:
                 if field.db_index and not field.unique and field.get_internal_type() == "ForeignKey":
                     # Temporary setting db_index to False (in memory) to disable
-                    # index creation for FKs (index automatically created by
-                    # MySQL)
+                    # index creation for FKs (index automatically created by MySQL)
                     field.db_index = False
         return super(DatabaseSchemaEditor, self)._model_indexes_sql(model)

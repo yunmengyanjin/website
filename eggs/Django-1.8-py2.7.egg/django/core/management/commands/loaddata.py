@@ -32,32 +32,19 @@ except ImportError:
 
 class Command(BaseCommand):
     help = 'Installs the named fixture(s) in the database.'
-    missing_args_message = (
-        "No database fixture specified. Please provide the "
-        "path of at least one fixture in the command line.")
+    missing_args_message = ("No database fixture specified. Please provide the "
+                            "path of at least one fixture in the command line.")
 
     def add_arguments(self, parser):
         parser.add_argument('args', metavar='fixture', nargs='+',
-                            help='Fixture labels.')
-        parser.add_argument(
-            '--database',
-            action='store',
-            dest='database',
-            default=DEFAULT_DB_ALIAS,
-            help='Nominates a specific database to load '
+            help='Fixture labels.')
+        parser.add_argument('--database', action='store', dest='database',
+            default=DEFAULT_DB_ALIAS, help='Nominates a specific database to load '
             'fixtures into. Defaults to the "default" database.')
-        parser.add_argument(
-            '--app',
-            action='store',
-            dest='app_label',
-            default=None,
-            help='Only look for fixtures in the specified app.')
-        parser.add_argument(
-            '--ignorenonexistent',
-            '-i',
-            action='store_true',
-            dest='ignore',
-            default=False,
+        parser.add_argument('--app', action='store', dest='app_label',
+            default=None, help='Only look for fixtures in the specified app.')
+        parser.add_argument('--ignorenonexistent', '-i', action='store_true',
+            dest='ignore', default=False,
             help='Ignores entries in the serialized data for fields that do not '
             'currently exist on the model.')
 
@@ -89,8 +76,7 @@ class Command(BaseCommand):
         self.models = set()
 
         self.serialization_formats = serializers.get_public_serializer_formats()
-        # Forcing binary mode may be revisited after dropping Python 2 support
-        # (see #22399)
+        # Forcing binary mode may be revisited after dropping Python 2 support (see #22399)
         self.compression_formats = {
             None: (open, 'rb'),
             'gz': (gzip.GzipFile, 'rb'),
@@ -115,8 +101,7 @@ class Command(BaseCommand):
         # If we found even one object in a fixture, we need to reset the
         # database sequences.
         if self.loaded_object_count > 0:
-            sequence_sql = connection.ops.sequence_reset_sql(
-                no_style(), self.models)
+            sequence_sql = connection.ops.sequence_reset_sql(no_style(), self.models)
             if sequence_sql:
                 if self.verbosity >= 2:
                     self.stdout.write("Resetting sequences\n")
@@ -128,22 +113,18 @@ class Command(BaseCommand):
             if self.fixture_count == 0 and self.hide_empty:
                 pass
             elif self.fixture_object_count == self.loaded_object_count:
-                self.stdout.write(
-                    "Installed %d object(s) from %d fixture(s)" %
+                self.stdout.write("Installed %d object(s) from %d fixture(s)" %
                     (self.loaded_object_count, self.fixture_count))
             else:
-                self.stdout.write(
-                    "Installed %d object(s) (of %d) from %d fixture(s)" %
+                self.stdout.write("Installed %d object(s) (of %d) from %d fixture(s)" %
                     (self.loaded_object_count, self.fixture_object_count, self.fixture_count))
 
     def load_label(self, fixture_label):
         """
         Loads fixtures files for a given label.
         """
-        for fixture_file, fixture_dir, fixture_name in self.find_fixtures(
-                fixture_label):
-            _, ser_fmt, cmp_fmt = self.parse_name(
-                os.path.basename(fixture_file))
+        for fixture_file, fixture_dir, fixture_name in self.find_fixtures(fixture_label):
+            _, ser_fmt, cmp_fmt = self.parse_name(os.path.basename(fixture_file))
             open_method, mode = self.compression_formats[cmp_fmt]
             fixture = open_method(fixture_file, mode)
             try:
@@ -151,37 +132,33 @@ class Command(BaseCommand):
                 objects_in_fixture = 0
                 loaded_objects_in_fixture = 0
                 if self.verbosity >= 2:
-                    self.stdout.write(
-                        "Installing %s fixture '%s' from %s." %
+                    self.stdout.write("Installing %s fixture '%s' from %s." %
                         (ser_fmt, fixture_name, humanize(fixture_dir)))
 
-                objects = serializers.deserialize(
-                    ser_fmt, fixture, using=self.using, ignorenonexistent=self.ignore)
+                objects = serializers.deserialize(ser_fmt, fixture,
+                    using=self.using, ignorenonexistent=self.ignore)
 
                 for obj in objects:
                     objects_in_fixture += 1
-                    if router.allow_migrate_model(
-                            self.using, obj.object.__class__):
+                    if router.allow_migrate_model(self.using, obj.object.__class__):
                         loaded_objects_in_fixture += 1
                         self.models.add(obj.object.__class__)
                         try:
                             obj.save(using=self.using)
                         except (DatabaseError, IntegrityError) as e:
-                            e.args = (
-                                "Could not load %(app_label)s.%(object_name)s(pk=%(pk)s): %(error_msg)s" % {
-                                    'app_label': obj.object._meta.app_label,
-                                    'object_name': obj.object._meta.object_name,
-                                    'pk': obj.object.pk,
-                                    'error_msg': force_text(e)},
-                            )
+                            e.args = ("Could not load %(app_label)s.%(object_name)s(pk=%(pk)s): %(error_msg)s" % {
+                                'app_label': obj.object._meta.app_label,
+                                'object_name': obj.object._meta.object_name,
+                                'pk': obj.object.pk,
+                                'error_msg': force_text(e)
+                            },)
                             raise
 
                 self.loaded_object_count += loaded_objects_in_fixture
                 self.fixture_object_count += objects_in_fixture
             except Exception as e:
                 if not isinstance(e, CommandError):
-                    e.args = ("Problem installing fixture '%s': %s" % (
-                        fixture_file, e),)
+                    e.args = ("Problem installing fixture '%s': %s" % (fixture_file, e),)
                 raise
             finally:
                 fixture.close()
@@ -201,10 +178,8 @@ class Command(BaseCommand):
         """
         fixture_name, ser_fmt, cmp_fmt = self.parse_name(fixture_label)
         databases = [self.using, None]
-        cmp_fmts = list(self.compression_formats.keys()
-                        ) if cmp_fmt is None else [cmp_fmt]
-        ser_fmts = serializers.get_public_serializer_formats() if ser_fmt is None else [
-            ser_fmt]
+        cmp_fmts = list(self.compression_formats.keys()) if cmp_fmt is None else [cmp_fmt]
+        ser_fmts = serializers.get_public_serializer_formats() if ser_fmt is None else [ser_fmt]
 
         if self.verbosity >= 2:
             self.stdout.write("Loading '%s' fixtures..." % fixture_name)
@@ -215,32 +190,23 @@ class Command(BaseCommand):
         else:
             fixture_dirs = self.fixture_dirs
             if os.path.sep in os.path.normpath(fixture_name):
-                fixture_dirs = [
-                    os.path.join(
-                        dir_,
-                        os.path.dirname(fixture_name)) for dir_ in fixture_dirs]
+                fixture_dirs = [os.path.join(dir_, os.path.dirname(fixture_name))
+                                for dir_ in fixture_dirs]
                 fixture_name = os.path.basename(fixture_name)
 
         suffixes = ('.'.join(ext for ext in combo if ext)
-                    for combo in product(databases, ser_fmts, cmp_fmts))
+                for combo in product(databases, ser_fmts, cmp_fmts))
         targets = set('.'.join((fixture_name, suffix)) for suffix in suffixes)
 
         fixture_files = []
         for fixture_dir in fixture_dirs:
             if self.verbosity >= 2:
-                self.stdout.write(
-                    "Checking %s for fixtures..." %
-                    humanize(fixture_dir))
+                self.stdout.write("Checking %s for fixtures..." % humanize(fixture_dir))
             fixture_files_in_dir = []
-            for candidate in glob.iglob(
-                os.path.join(
-                    fixture_dir,
-                    fixture_name + '*')):
+            for candidate in glob.iglob(os.path.join(fixture_dir, fixture_name + '*')):
                 if os.path.basename(candidate) in targets:
-                    # Save the fixture_dir and fixture_name for future error
-                    # messages.
-                    fixture_files_in_dir.append(
-                        (candidate, fixture_dir, fixture_name))
+                    # Save the fixture_dir and fixture_name for future error messages.
+                    fixture_files_in_dir.append((candidate, fixture_dir, fixture_name))
 
             if self.verbosity >= 2 and not fixture_files_in_dir:
                 self.stdout.write("No fixture '%s' in %s." %
@@ -260,7 +226,8 @@ class Command(BaseCommand):
         elif fixture_name == 'initial_data' and fixture_files:
             warnings.warn(
                 'initial_data fixtures are deprecated. Use data migrations instead.',
-                RemovedInDjango19Warning)
+                RemovedInDjango19Warning
+            )
 
         return fixture_files
 
@@ -276,16 +243,15 @@ class Command(BaseCommand):
         dirs = []
         fixture_dirs = settings.FIXTURE_DIRS
         if len(fixture_dirs) != len(set(fixture_dirs)):
-            raise ImproperlyConfigured(
-                "settings.FIXTURE_DIRS contains duplicates.")
+            raise ImproperlyConfigured("settings.FIXTURE_DIRS contains duplicates.")
         for app_config in apps.get_app_configs():
             app_label = app_config.label
             app_dir = os.path.join(app_config.path, 'fixtures')
             if app_dir in fixture_dirs:
                 raise ImproperlyConfigured(
                     "'%s' is a default fixture directory for the '%s' app "
-                    "and cannot be listed in settings.FIXTURE_DIRS." %
-                    (app_dir, app_label))
+                    "and cannot be listed in settings.FIXTURE_DIRS." % (app_dir, app_label)
+                )
 
             if self.app_label and app_label != self.app_label:
                 continue

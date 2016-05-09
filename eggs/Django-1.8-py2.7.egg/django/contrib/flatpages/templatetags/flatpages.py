@@ -7,7 +7,6 @@ register = template.Library()
 
 
 class FlatpageNode(template.Node):
-
     def __init__(self, context_name, starts_with=None, user=None):
         self.context_name = context_name
         if starts_with:

@@ -19,7 +19,6 @@ from reviews.models import Review
 class RequestFactory(Client):
     """
     """
-
     def request(self, **request):
         environ = {
             'HTTP_COOKIE': self.cookies,
@@ -53,7 +52,6 @@ def create_request(user=None):
 class ReviewsModelsTestCase(TestCase):
     """
     """
-
     def setUp(self):
         """
         """
@@ -87,10 +85,7 @@ class ReviewsModelsTestCase(TestCase):
         self.assertEqual(review.name, "Jane Doe")
         self.assertEqual(review.email, "jane@doe.com")
 
-        review.user = User(
-            first_name="John",
-            last_name="Doe",
-            email="john@doe.com")
+        review.user = User(first_name="John", last_name="Doe", email="john@doe.com")
 
         self.assertEqual(review.name, "John Doe")
         self.assertEqual(review.email, "john@doe.com")
@@ -98,10 +93,8 @@ class ReviewsModelsTestCase(TestCase):
     def test_review_manager(self):
         """
         """
-        review_1 = Review.objects.create(
-            content=self.page, creation_date="2009-10-16")
-        review_2 = Review.objects.create(
-            content=self.page, creation_date="2009-10-15")
+        review_1 = Review.objects.create(content=self.page, creation_date="2009-10-16")
+        review_2 = Review.objects.create(content=self.page, creation_date="2009-10-15")
 
         # all is providing all reviews
         result = Review.objects.all()
@@ -140,7 +133,6 @@ class ReviewsModelsTestCase(TestCase):
 class ReviewsViewsTestCase(TestCase):
     """
     """
-
     def setUp(self):
         """
         """
@@ -151,11 +143,7 @@ class ReviewsViewsTestCase(TestCase):
         """
         """
         ctype = ContentType.objects.get_for_model(self.page)
-        url = reverse(
-            "reviews_add",
-            kwargs={
-                "content_type_id": ctype.id,
-                "content_id": self.page.id})
+        url = reverse("reviews_add", kwargs={"content_type_id": ctype.id, "content_id": self.page.id})
 
         # The result has to ``Preview`` within it
         result = self.client.get(url)
@@ -172,7 +160,6 @@ class ReviewsViewsTestCase(TestCase):
 class PortletsUtilsTestCase(TestCase):
     """
     """
-
     def setUp(self):
         """
         """
@@ -300,19 +287,11 @@ class PortletsUtilsTestCase(TestCase):
         self.assertEqual(reviews.utils.has_rated(request, self.page_2), False)
 
         # Rate for page 1
-        Review.objects.create(
-            content=self.page_1,
-            score=6.0,
-            active=True,
-            session_id=request.session.session_key)
+        Review.objects.create(content=self.page_1, score=6.0, active=True, session_id=request.session.session_key)
         self.assertEqual(reviews.utils.has_rated(request, self.page_1), True)
         self.assertEqual(reviews.utils.has_rated(request, self.page_2), False)
 
         # Rate for page 2
-        Review.objects.create(
-            content=self.page_2,
-            score=6.0,
-            active=True,
-            session_id=request.session.session_key)
+        Review.objects.create(content=self.page_2, score=6.0, active=True, session_id=request.session.session_key)
         self.assertEqual(reviews.utils.has_rated(request, self.page_1), True)
         self.assertEqual(reviews.utils.has_rated(request, self.page_2), True)

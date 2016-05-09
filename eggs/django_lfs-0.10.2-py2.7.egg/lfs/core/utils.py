@@ -63,7 +63,7 @@ def get_default_shop(request=None):
 
     try:
         shop = Shop.objects.get(pk=1)
-    except Shop.DoesNotExist as e:  # No guarantee that our shop will have pk=1 in postgres
+    except Shop.DoesNotExist, e:  # No guarantee that our shop will have pk=1 in postgres
         shop = Shop.objects.all()[0]
 
     if request:
@@ -102,7 +102,6 @@ class MessageHttpResponseRedirect(HttpResponseRedirect):
     """
     Django's HttpResponseRedirect with a LFS message
     """
-
     def __init__(self, redirect_to, msg):
         HttpResponseRedirect.__init__(self, redirect_to)
         if msg:
@@ -111,11 +110,7 @@ class MessageHttpResponseRedirect(HttpResponseRedirect):
             expires_time = time.time() + max_age
             expires = cookie_date(expires_time)
 
-            self.set_cookie(
-                "message",
-                lfs_quote(msg),
-                max_age=max_age,
-                expires=expires)
+            self.set_cookie("message", lfs_quote(msg), max_age=max_age, expires=expires)
 
 
 def render_to_message_response(*args, **kwargs):
@@ -135,11 +130,7 @@ def set_message_to(response, msg):
     expires_time = time.time() + max_age
     expires = cookie_date(expires_time)
     if msg:
-        response.set_cookie(
-            "message",
-            lfs_quote(msg),
-            max_age=max_age,
-            expires=expires)
+        response.set_cookie("message", lfs_quote(msg), max_age=max_age, expires=expires)
     return response
 
 
@@ -153,11 +144,7 @@ def set_message_cookie(url, msg):
     expires = cookie_date(expires_time)
 
     response = HttpResponseRedirect(url)
-    response.set_cookie(
-        "message",
-        lfs_quote(msg),
-        max_age=max_age,
-        expires=expires)
+    response.set_cookie("message", lfs_quote(msg), max_age=max_age, expires=expires)
 
     return response
 
@@ -210,8 +197,7 @@ def set_redirect_for(old_path, new_path):
     """Sets redirect path for the passed path.
     """
     try:
-        redirect = Redirect.objects.get(
-            site=settings.SITE_ID, old_path=old_path)
+        redirect = Redirect.objects.get(site=settings.SITE_ID, old_path=old_path)
         redirect.new_path = new_path
         redirect.save()
     except Redirect.DoesNotExist:
@@ -287,7 +273,6 @@ def getLOL(objects, objects_per_row=3):
 class LazyEncoder(json.JSONEncoder):
     """Encodes django's lazy i18n strings.
     """
-
     def default(self, obj):
         if isinstance(obj, Promise):
             return force_unicode(obj)
@@ -297,7 +282,6 @@ class LazyEncoder(json.JSONEncoder):
 class CategoryTree(object):
     """Represents a category tree.
     """
-
     def __init__(self, currents, start_level, expand_level):
         self.currents = currents
         self.start_level = start_level
@@ -402,18 +386,10 @@ def define_page_range(current_page, total_pages, window=6):
     page_range = deque(maxlen=maxlen)
 
     # minimum possible index is either: (current_page - window) or 1
-    window_start = (
-        current_page -
-        window) if (
-        current_page -
-        window) > 0 else 1
+    window_start = (current_page - window) if (current_page - window) > 0 else 1
 
     # maximum possible index is current_page + window or total_pages
-    window_end = total_pages if (
-        current_page +
-        window) > total_pages else (
-        current_page +
-        window)
+    window_end = total_pages if (current_page + window) > total_pages else (current_page + window)
 
     # if we have enough pages then we should end at preffered end
     preffered_end = current_page + int(window / 2.0)
@@ -464,7 +440,7 @@ def lfs_pagination(request, current_page, url='', getparam='start'):
                  'first_page': first,
                  'last_page': last,
                  'getvars': ''
-                 }
+                }
 
     getvars = request.GET.copy()
     if getparam in getvars:
@@ -472,3 +448,4 @@ def lfs_pagination(request, current_page, url='', getparam='start'):
     if len(getvars.keys()) > 0:
         to_return['getvars'] = "&%s" % getvars.urlencode()
     return to_return
+

@@ -20,20 +20,17 @@ from PIL import Image, ImageColor, ImageDraw, ImageFont, ImagePath
 
 
 class Pen:
-
     def __init__(self, color, width=1, opacity=255):
         self.color = ImageColor.getrgb(color)
         self.width = width
 
 
 class Brush:
-
     def __init__(self, color, opacity=255):
         self.color = ImageColor.getrgb(color)
 
 
 class Font:
-
     def __init__(self, color, file, size=12):
         # FIXME: add support for bitmap fonts
         self.color = ImageColor.getrgb(color)

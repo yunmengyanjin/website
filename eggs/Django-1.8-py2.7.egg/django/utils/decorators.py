@@ -11,11 +11,9 @@ from django.utils import six
 
 
 class classonlymethod(classmethod):
-
     def __get__(self, instance, owner):
         if instance is not None:
-            raise AttributeError(
-                "This method is available only on the class, not on instances.")
+            raise AttributeError("This method is available only on the class, not on instances.")
         return super(classonlymethod, self).__get__(instance, owner)
 
 
@@ -42,8 +40,7 @@ def method_decorator(decorator):
         def dummy(*args, **kwargs):
             pass
         update_wrapper(_wrapper, dummy)
-        # Need to preserve any existing attributes of 'func', including the
-        # name.
+        # Need to preserve any existing attributes of 'func', including the name.
         update_wrapper(_wrapper, func)
 
         return _wrapper
@@ -106,8 +103,7 @@ def make_middleware_decorator(middleware_class):
                     if result is not None:
                         return result
                 if hasattr(middleware, 'process_view'):
-                    result = middleware.process_view(
-                        request, view_func, args, kwargs)
+                    result = middleware.process_view(request, view_func, args, kwargs)
                     if result is not None:
                         return result
                 try:
@@ -120,13 +116,11 @@ def make_middleware_decorator(middleware_class):
                     raise
                 if hasattr(response, 'render') and callable(response.render):
                     if hasattr(middleware, 'process_template_response'):
-                        response = middleware.process_template_response(
-                            request, response)
+                        response = middleware.process_template_response(request, response)
                     # Defer running of process_response until after the template
                     # has been rendered:
                     if hasattr(middleware, 'process_response'):
-                        callback = lambda response: middleware.process_response(
-                            request, response)
+                        callback = lambda response: middleware.process_response(request, response)
                         response.add_post_render_callback(callback)
                 else:
                     if hasattr(middleware, 'process_response'):
@@ -139,13 +133,11 @@ def make_middleware_decorator(middleware_class):
 
 if ContextDecorator is None:
     # ContextDecorator was introduced in Python 3.2
-    # See
-    # https://docs.python.org/3/library/contextlib.html#contextlib.ContextDecorator
+    # See https://docs.python.org/3/library/contextlib.html#contextlib.ContextDecorator
     class ContextDecorator(object):
         """
         A base class that enables a context manager to also be used as a decorator.
         """
-
         def __call__(self, func):
             @wraps(func, assigned=available_attrs(func))
             def inner(*args, **kwargs):

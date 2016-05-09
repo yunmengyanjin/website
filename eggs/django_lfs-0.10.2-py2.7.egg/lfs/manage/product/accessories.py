@@ -21,10 +21,7 @@ from lfs.core.utils import LazyEncoder
 
 
 @permission_required("core.manage_shop")
-def manage_accessories(
-        request,
-        product_id,
-        template_name="manage/product/accessories.html"):
+def manage_accessories(request, product_id, template_name="manage/product/accessories.html"):
     """
     """
     product = Product.objects.get(pk=product_id)
@@ -46,11 +43,7 @@ def manage_accessories(
 
 
 @permission_required("core.manage_shop")
-def manage_accessories_inline(
-        request,
-        product_id,
-        as_string=False,
-        template_name="manage/product/accessories_inline.html"):
+def manage_accessories_inline(request, product_id, as_string=False, template_name="manage/product/accessories_inline.html"):
     """View which shows all accessories for the product with the passed id.
     """
     product = Product.objects.get(pk=product_id)
@@ -72,7 +65,7 @@ def manage_accessories_inline(
         page = r.get("page", s.get("accessories_page", 1))
         filter_ = r.get("filter", s.get("filter"))
         category_filter = r.get("accessories_category_filter",
-                                s.get("accessories_category_filter"))
+                          s.get("accessories_category_filter"))
     else:
         page = r.get("page", 1)
         filter_ = r.get("filter")
@@ -85,7 +78,7 @@ def manage_accessories_inline(
 
     try:
         s["accessories-amount"] = int(r.get("accessories-amount",
-                                            s.get("accessories-amount")))
+                                      s.get("accessories-amount")))
     except TypeError:
         s["accessories-amount"] = 25
 
@@ -93,10 +86,8 @@ def manage_accessories_inline(
     if filter_:
         filters &= Q(name__icontains=filter_)
         filters |= Q(sku__icontains=filter_)
-        filters |= (Q(sub_type=VARIANT) & Q(active_sku=False)
-                    & Q(parent__sku__icontains=filter_))
-        filters |= (Q(sub_type=VARIANT) & Q(active_name=False)
-                    & Q(parent__name__icontains=filter_))
+        filters |= (Q(sub_type=VARIANT) & Q(active_sku=False) & Q(parent__sku__icontains=filter_))
+        filters |= (Q(sub_type=VARIANT) & Q(active_name=False) & Q(parent__name__icontains=filter_))
 
     if category_filter:
         if category_filter == "None":
@@ -113,10 +104,7 @@ def manage_accessories_inline(
 
     products = Product.objects.filter(filters).exclude(pk=product_id)
 
-    paginator = Paginator(
-        products.exclude(
-            pk__in=accessory_ids),
-        s["accessories-amount"])
+    paginator = Paginator(products.exclude(pk__in=accessory_ids), s["accessories-amount"])
 
     try:
         page = paginator.page(page)
@@ -162,15 +150,13 @@ def add_accessories(request, product_id):
 
         temp_id = temp_id.split("-")[1]
         accessory = Product.objects.get(pk=temp_id)
-        product_accessory = ProductAccessories(
-            product=parent_product, accessory=accessory)
+        product_accessory = ProductAccessories(product=parent_product, accessory=accessory)
         product_accessory.save()
 
     _update_positions(parent_product)
     product_changed.send(parent_product)
 
-    html = [["#accessories-inline",
-             manage_accessories_inline(request, product_id, as_string=True)]]
+    html = [["#accessories-inline", manage_accessories_inline(request, product_id, as_string=True)]]
 
     result = json.dumps({
         "html": html,
@@ -195,16 +181,14 @@ def remove_accessories(request, product_id):
 
             temp_id = temp_id.split("-")[1]
             accessory = Product.objects.get(pk=temp_id)
-            product_accessory = ProductAccessories.objects.filter(
-                product=parent_product, accessory=accessory)
+            product_accessory = ProductAccessories.objects.filter(product=parent_product, accessory=accessory)
 
             product_accessory.delete()
 
         _update_positions(parent_product)
         product_changed.send(parent_product)
 
-        html = [["#accessories-inline",
-                 manage_accessories_inline(request, product_id, as_string=True)]]
+        html = [["#accessories-inline", manage_accessories_inline(request, product_id, as_string=True)]]
 
         result = json.dumps({
             "html": html,
@@ -219,8 +203,7 @@ def remove_accessories(request, product_id):
 
             temp_id = temp_id.split("-")[1]
             accessory = Product.objects.get(pk=temp_id)
-            product_accessory = ProductAccessories.objects.get(
-                product=parent_product, accessory=accessory)
+            product_accessory = ProductAccessories.objects.get(product=parent_product, accessory=accessory)
 
             # Update quantity
             quantity = request.POST.get("quantity-%s" % temp_id)
@@ -236,8 +219,7 @@ def remove_accessories(request, product_id):
 
         _update_positions(parent_product)
 
-        html = [["#accessories-inline",
-                 manage_accessories_inline(request, product_id, as_string=True)]]
+        html = [["#accessories-inline", manage_accessories_inline(request, product_id, as_string=True)]]
         result = json.dumps({
             "html": html,
             "message": _(u"Accessories have been updated.")
@@ -257,8 +239,7 @@ def update_accessories(request, product_id):
         product.active_accessories = False
     product.save()
 
-    html = [["#accessories-inline",
-             manage_accessories_inline(request, product_id, as_string=True)]]
+    html = [["#accessories-inline", manage_accessories_inline(request, product_id, as_string=True)]]
     result = json.dumps({
         "html": html,
         "message": _(u"Accessories have been updated.")

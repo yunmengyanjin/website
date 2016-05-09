@@ -14,14 +14,11 @@ from compressor.tests.test_templatetags import render
 
 
 class GzipStorage(LazyObject):
-
     def _setup(self):
-        self._wrapped = get_storage_class(
-            'compressor.storage.GzipCompressorFileStorage')()
+        self._wrapped = get_storage_class('compressor.storage.GzipCompressorFileStorage')()
 
 
 class StorageTestCase(TestCase):
-
     def setUp(self):
         self.old_enabled = settings.COMPRESS_ENABLED
         settings.COMPRESS_ENABLED = True
@@ -34,16 +31,8 @@ class StorageTestCase(TestCase):
 
     def test_gzip_storage(self):
         storage.default_storage.save('test.txt', ContentFile('yeah yeah'))
-        self.assertTrue(
-            os.path.exists(
-                os.path.join(
-                    settings.COMPRESS_ROOT,
-                    'test.txt')))
-        self.assertTrue(
-            os.path.exists(
-                os.path.join(
-                    settings.COMPRESS_ROOT,
-                    'test.txt.gz')))
+        self.assertTrue(os.path.exists(os.path.join(settings.COMPRESS_ROOT, 'test.txt')))
+        self.assertTrue(os.path.exists(os.path.join(settings.COMPRESS_ROOT, 'test.txt.gz')))
 
     def test_css_tag_with_storage(self):
         template = """{% load compress %}{% compress css %}

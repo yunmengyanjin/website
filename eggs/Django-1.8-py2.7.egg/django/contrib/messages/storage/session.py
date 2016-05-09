@@ -26,17 +26,14 @@ class SessionStorage(BaseStorage):
         always stores everything it is given, so return True for the
         all_retrieved flag.
         """
-        return self.deserialize_messages(
-            self.request.session.get(
-                self.session_key)), True
+        return self.deserialize_messages(self.request.session.get(self.session_key)), True
 
     def _store(self, messages, response, *args, **kwargs):
         """
         Stores a list of messages to the request's session.
         """
         if messages:
-            self.request.session[
-                self.session_key] = self.serialize_messages(messages)
+            self.request.session[self.session_key] = self.serialize_messages(messages)
         else:
             self.request.session.pop(self.session_key, None)
         return []

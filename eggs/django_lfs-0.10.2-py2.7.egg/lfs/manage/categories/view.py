@@ -20,23 +20,18 @@ from lfs.utils.widgets import SelectImage
 class ViewForm(ModelForm):
     """Form to add/edit category.
     """
-
     def __init__(self, *args, **kwargs):
         super(ViewForm, self).__init__(*args, **kwargs)
-        self.fields["template"].widget = SelectImage(
-            choices=CATEGORY_TEMPLATES)
+        self.fields["template"].widget = SelectImage(choices=CATEGORY_TEMPLATES)
 
     class Meta:
         model = Category
         fields = ("template", "show_all_products", "active_formats",
-                  "product_cols", "product_rows", "category_cols", )
+            "product_cols", "product_rows", "category_cols", )
 
 
 @permission_required("core.manage_shop")
-def category_view(
-        request,
-        category_id,
-        template_name="manage/category/view.html"):
+def category_view(request, category_id, template_name="manage/category/view.html"):
     """Displays the view data for the category with passed category id.
 
     This is used as a part of the whole category form.
@@ -73,3 +68,4 @@ def no_categories(request, template_name="manage/category/no_categories.html"):
     """Displays that there are no categories.
     """
     return render_to_response(template_name, RequestContext(request, {}))
+

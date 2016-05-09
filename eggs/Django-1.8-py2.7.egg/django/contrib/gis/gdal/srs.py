@@ -85,9 +85,7 @@ class SpatialReference(GDALBase):
 
         # If the pointer is NULL, throw an exception.
         if not srs:
-            raise SRSException(
-                'Could not create spatial reference from: %s' %
-                srs_input)
+            raise SRSException('Could not create spatial reference from: %s' % srs_input)
         else:
             self.ptr = srs
 
@@ -140,11 +138,7 @@ class SpatialReference(GDALBase):
         The attribute value for the given target node (e.g. 'PROJCS'). The index
         keyword specifies an index of the child node to return.
         """
-        if not isinstance(
-                target,
-                six.string_types) or not isinstance(
-                index,
-                int):
+        if not isinstance(target, six.string_types) or not isinstance(index, int):
             raise TypeError
         return capi.get_attr_value(self.ptr, force_bytes(target), index)
 
@@ -340,13 +334,8 @@ class CoordTransform(GDALBase):
 
     def __init__(self, source, target):
         "Initializes on a source and target SpatialReference objects."
-        if not isinstance(
-                source,
-                SpatialReference) or not isinstance(
-                target,
-                SpatialReference):
-            raise TypeError(
-                'source and target must be of type SpatialReference')
+        if not isinstance(source, SpatialReference) or not isinstance(target, SpatialReference):
+            raise TypeError('source and target must be of type SpatialReference')
         self.ptr = capi.new_ct(source._ptr, target._ptr)
         self._srs1_name = source.name
         self._srs2_name = target.name
@@ -357,5 +346,4 @@ class CoordTransform(GDALBase):
             capi.destroy_ct(self._ptr)
 
     def __str__(self):
-        return 'Transform from "%s" to "%s"' % (
-            self._srs1_name, self._srs2_name)
+        return 'Transform from "%s" to "%s"' % (self._srs1_name, self._srs2_name)

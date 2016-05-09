@@ -37,12 +37,10 @@ class DatabaseFeatures(BaseDatabaseFeatures):
     closed_cursor_error_class = InterfaceError
     bare_select_suffix = " FROM DUAL"
     uppercases_column_names = True
-    # select for update with limit can be achieved on Oracle, but not with the
-    # current backend.
+    # select for update with limit can be achieved on Oracle, but not with the current backend.
     supports_select_for_update_with_limit = False
 
-    def introspected_boolean_field_type(
-            self, field=None, created_separately=False):
+    def introspected_boolean_field_type(self, field=None, created_separately=False):
         """
         Some versions of Oracle -- we've seen this on 11.2.0.1 and suspect
         it goes back -- have a weird bug where, when an integer column is
@@ -53,11 +51,6 @@ class DatabaseFeatures(BaseDatabaseFeatures):
 
         The bug is solved in Oracle 11.2.0.2 and up.
         """
-        if self.connection.oracle_full_version < '11.2.0.2' and field and field.has_default(
-        ) and created_separately:
+        if self.connection.oracle_full_version < '11.2.0.2' and field and field.has_default() and created_separately:
             return 'IntegerField'
-        return super(
-            DatabaseFeatures,
-            self).introspected_boolean_field_type(
-            field,
-            created_separately)
+        return super(DatabaseFeatures, self).introspected_boolean_field_type(field, created_separately)

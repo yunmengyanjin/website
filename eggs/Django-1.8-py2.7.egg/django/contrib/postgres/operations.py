@@ -11,20 +11,10 @@ class CreateExtension(Operation):
     def state_forwards(self, app_label, state):
         pass
 
-    def database_forwards(
-            self,
-            app_label,
-            schema_editor,
-            from_state,
-            to_state):
+    def database_forwards(self, app_label, schema_editor, from_state, to_state):
         schema_editor.execute("CREATE EXTENSION IF NOT EXISTS %s" % self.name)
 
-    def database_backwards(
-            self,
-            app_label,
-            schema_editor,
-            from_state,
-            to_state):
+    def database_backwards(self, app_label, schema_editor, from_state, to_state):
         schema_editor.execute("DROP EXTENSION %s" % self.name)
 
     def describe(self):
@@ -36,19 +26,8 @@ class HStoreExtension(CreateExtension):
     def __init__(self):
         self.name = 'hstore'
 
-    def database_forwards(
-            self,
-            app_label,
-            schema_editor,
-            from_state,
-            to_state):
-        super(
-            HStoreExtension,
-            self).database_forwards(
-            app_label,
-            schema_editor,
-            from_state,
-            to_state)
+    def database_forwards(self, app_label, schema_editor, from_state, to_state):
+        super(HStoreExtension, self).database_forwards(app_label, schema_editor, from_state, to_state)
         # Register hstore straight away as it cannot be done before the
         # extension is installed, a subsequent data migration would use the
         # same connection

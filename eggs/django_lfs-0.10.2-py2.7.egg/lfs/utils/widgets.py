@@ -4,7 +4,6 @@ from django.template.loader import render_to_string
 
 
 class SelectImage(Select):
-
     def __init__(self, attrs=None, choices=()):
         super(Select, self).__init__(attrs)
         # choices can be any iterable, but we may need to render this widget

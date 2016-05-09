@@ -6,8 +6,7 @@ from django.utils import six
 TableInfo = namedtuple('TableInfo', ['name', 'type'])
 
 # Structure returned by the DB-API cursor.description interface (PEP 249)
-FieldInfo = namedtuple(
-    'FieldInfo',
+FieldInfo = namedtuple('FieldInfo',
     'name type_code display_size internal_size precision scale null_ok')
 
 
@@ -63,8 +62,7 @@ class BaseDatabaseIntrospection(object):
         Returns an unsorted list of TableInfo named tuples of all tables and
         views that exist in the database.
         """
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseIntrospection may require a get_table_list() method')
+        raise NotImplementedError('subclasses of BaseDatabaseIntrospection may require a get_table_list() method')
 
     def django_table_names(self, only_existing=False, include_views=True):
         """
@@ -78,13 +76,11 @@ class BaseDatabaseIntrospection(object):
         from django.db import router
         tables = set()
         for app_config in apps.get_app_configs():
-            for model in router.get_migratable_models(
-                    app_config, self.connection.alias):
+            for model in router.get_migratable_models(app_config, self.connection.alias):
                 if not model._meta.managed:
                     continue
                 tables.add(model._meta.db_table)
-                tables.update(f.m2m_db_table()
-                              for f in model._meta.local_many_to_many)
+                tables.update(f.m2m_db_table() for f in model._meta.local_many_to_many)
         tables = list(tables)
         if only_existing:
             existing_tables = self.table_names(include_views=include_views)
@@ -101,9 +97,7 @@ class BaseDatabaseIntrospection(object):
         from django.db import router
         all_models = []
         for app_config in apps.get_app_configs():
-            all_models.extend(
-                router.get_migratable_models(
-                    app_config, self.connection.alias))
+            all_models.extend(router.get_migratable_models(app_config, self.connection.alias))
         tables = list(map(self.table_name_converter, tables))
         return {
             m for m in all_models
@@ -118,26 +112,21 @@ class BaseDatabaseIntrospection(object):
         sequence_list = []
 
         for app_config in apps.get_app_configs():
-            for model in router.get_migratable_models(
-                    app_config, self.connection.alias):
+            for model in router.get_migratable_models(app_config, self.connection.alias):
                 if not model._meta.managed:
                     continue
                 if model._meta.swapped:
                     continue
                 for f in model._meta.local_fields:
                     if isinstance(f, models.AutoField):
-                        sequence_list.append(
-                            {'table': model._meta.db_table, 'column': f.column})
-                        # Only one AutoField is allowed per model, so don't
-                        # bother continuing.
-                        break
+                        sequence_list.append({'table': model._meta.db_table, 'column': f.column})
+                        break  # Only one AutoField is allowed per model, so don't bother continuing.
 
                 for f in model._meta.local_many_to_many:
                     # If this is an m2m using an intermediate table,
                     # we don't need to reset the sequence.
                     if f.rel.through is None:
-                        sequence_list.append(
-                            {'table': f.m2m_db_table(), 'column': None})
+                        sequence_list.append({'table': f.m2m_db_table(), 'column': None})
 
         return sequence_list
 
@@ -146,8 +135,7 @@ class BaseDatabaseIntrospection(object):
         Backends can override this to return a list of (column_name, referenced_table_name,
         referenced_column_name) for all key columns in given table.
         """
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseIntrospection may require a get_key_columns() method')
+        raise NotImplementedError('subclasses of BaseDatabaseIntrospection may require a get_key_columns() method')
 
     def get_primary_key_column(self, cursor, table_name):
         """
@@ -167,8 +155,7 @@ class BaseDatabaseIntrospection(object):
 
         Only single-column indexes are introspected.
         """
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseIntrospection may require a get_indexes() method')
+        raise NotImplementedError('subclasses of BaseDatabaseIntrospection may require a get_indexes() method')
 
     def get_constraints(self, cursor, table_name):
         """
@@ -187,5 +174,4 @@ class BaseDatabaseIntrospection(object):
         Some backends may return special constraint names that don't exist
         if they don't name constraints of a certain type (e.g. SQLite)
         """
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseIntrospection may require a get_constraints() method')
+        raise NotImplementedError('subclasses of BaseDatabaseIntrospection may require a get_constraints() method')

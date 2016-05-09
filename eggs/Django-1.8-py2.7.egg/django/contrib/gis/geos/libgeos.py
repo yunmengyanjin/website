@@ -121,8 +121,7 @@ def get_pointer_arr(n):
     return GeomArr()
 
 # Returns the string version of the GEOS library. Have to set the restype
-# explicitly to c_char_p to ensure compatibility across 32 and 64-bit
-# platforms.
+# explicitly to c_char_p to ensure compatibility across 32 and 64-bit platforms.
 geos_version = lgeos.GEOSversion
 geos_version.argtypes = None
 geos_version.restype = c_char_p
@@ -146,14 +145,8 @@ def geos_version_info():
     m = version_regex.match(ver)
     if not m:
         raise GEOSException('Could not parse version info string "%s"' % ver)
-    return {
-        key: m.group(key) for key in (
-            'version',
-            'release_candidate',
-            'capi_version',
-            'major',
-            'minor',
-            'subminor')}
+    return {key: m.group(key) for key in (
+        'version', 'release_candidate', 'capi_version', 'major', 'minor', 'subminor')}
 
 # Version numbers and whether or not prepared geometry support is available.
 _verinfo = geos_version_info()

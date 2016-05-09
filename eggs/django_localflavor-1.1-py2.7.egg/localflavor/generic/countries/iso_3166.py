@@ -243,7 +243,7 @@ ISO_3166_1_ALPHA2_COUNTRY_CODES = (
     'VE',  # Venezuela, Bolivarian Republic of
     'VG',  # Virgin Islands, British
     'VI',  # Virgin Islands, U.S.
-    'VN',  # Viet Name
+    'VN',  # Viet Nam
     'VU',  # Vanuatu
     'WF',  # Wallis and Futuna
     'WS',  # Samoa

@@ -11,7 +11,6 @@ from djangorecipe.boilerplate import script_template, versions
 
 
 class Recipe(object):
-
     def __init__(self, buildout, name, options):
         # The use of version is deprecated.
         if 'version' in options:
@@ -51,10 +50,7 @@ class Recipe(object):
 
         # respect relative-paths (from zc.recipe.egg)
         relative_paths = options.get(
-            'relative-paths',
-            buildout['buildout'].get(
-                'relative-paths',
-                'false'))
+            'relative-paths', buildout['buildout'].get('relative-paths', 'false'))
         if relative_paths == 'true':
             options['buildout-directory'] = buildout['buildout']['directory']
             self._relative_paths = options['buildout-directory']

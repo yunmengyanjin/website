@@ -37,7 +37,6 @@ class PaymentMethodAddForm(ModelForm):
 class PaymentMethodForm(ModelForm):
     """Form to edit a payment method.
     """
-
     def __init__(self, *args, **kwargs):
         super(PaymentMethodForm, self).__init__(*args, **kwargs)
         self.fields["image"].widget = LFSImageInput()
@@ -59,13 +58,13 @@ def manage_payment(request):
         url = reverse("lfs_add_payment_method")
     else:
         url = reverse("lfs_manage_payment_method",
-                      kwargs={"payment_method_id": payment_method.id})
+            kwargs={"payment_method_id": payment_method.id})
     return HttpResponseRedirect(url)
 
 
 @permission_required("core.manage_shop")
 def manage_payment_method(request, payment_method_id,
-                          template_name="manage/payment/manage_payment.html"):
+    template_name="manage/payment/manage_payment.html"):
     """The main view to manage the payment method with given id.
 
     This view collects the various parts of the payment form (data, criteria,
@@ -84,9 +83,7 @@ def manage_payment_method(request, payment_method_id,
 
 # Parts of the manage payment view.
 @permission_required("core.manage_shop")
-def payment_methods(
-        request,
-        template_name="manage/payment/payment_methods.html"):
+def payment_methods(request, template_name="manage/payment/payment_methods.html"):
     """Returns all payment methods as html.
 
     This view is used as a part within the manage payment view.
@@ -103,11 +100,7 @@ def payment_methods(
 
 
 @permission_required("core.manage_shop")
-def payment_method_data(
-        request,
-        payment_id,
-        form=None,
-        template_name="manage/payment/payment_method_data.html"):
+def payment_method_data(request, payment_id, form=None, template_name="manage/payment/payment_method_data.html"):
     """
     Returns the payment data as html.
 
@@ -125,10 +118,8 @@ def payment_method_data(
 
 
 @permission_required("core.manage_shop")
-def payment_method_criteria(
-        request,
-        payment_method_id,
-        template_name="manage/payment/payment_method_criteria.html"):
+def payment_method_criteria(request, payment_method_id,
+    template_name="manage/payment/payment_method_criteria.html"):
     """Returns the criteria of the payment method with passed id as HTML.
 
     This view is used as a part within the manage payment view.
@@ -149,10 +140,8 @@ def payment_method_criteria(
 
 
 @permission_required("core.manage_shop")
-def payment_method_prices(
-        request,
-        payment_method_id,
-        template_name="manage/payment/payment_method_prices.html"):
+def payment_method_prices(request, payment_method_id,
+    template_name="manage/payment/payment_method_prices.html"):
     """Returns the payment method prices for the payment method with given id.
 
     This view is used as a part within the manage payment view.
@@ -166,11 +155,7 @@ def payment_method_prices(
 
 
 @permission_required("core.manage_shop")
-def payment_price_criteria(
-        request,
-        payment_price_id,
-        as_string=False,
-        template_name="manage/payment/payment_price_criteria.html"):
+def payment_price_criteria(request, payment_price_id, as_string=False, template_name="manage/payment/payment_price_criteria.html"):
     """Returns the criteria of the payment price with passed id.
 
     This view is used as a part within the manage payment view.
@@ -204,7 +189,7 @@ def payment_price_criteria(
 
 @permission_required("core.manage_shop")
 def add_payment_method(request,
-                       template_name="manage/payment/add_payment_method.html"):
+    template_name="manage/payment/add_payment_method.html"):
     """Provides an add form and saves a new payment method.
     """
     if request.method == "POST":
@@ -212,10 +197,7 @@ def add_payment_method(request,
         if form.is_valid():
             new_payment_method = form.save()
             return lfs.core.utils.set_message_cookie(
-                url=reverse(
-                    "lfs_manage_payment_method",
-                    kwargs={
-                        "payment_method_id": new_payment_method.id}),
+                url=reverse("lfs_manage_payment_method", kwargs={"payment_method_id": new_payment_method.id}),
                 msg=_(u"Payment method has been added."),
             )
     else:
@@ -350,10 +332,7 @@ def save_payment_method_data(request, payment_method_id):
     This is called via an AJAX request and returns JSON encoded data.
     """
     payment_method = PaymentMethod.objects.get(pk=payment_method_id)
-    payment_form = PaymentMethodForm(
-        instance=payment_method,
-        data=request.POST,
-        files=request.FILES)
+    payment_form = PaymentMethodForm(instance=payment_method, data=request.POST, files=request.FILES)
 
     if payment_form.is_valid():
         payment_form.save()
@@ -391,10 +370,8 @@ def delete_payment_method(request, payment_method_id):
     except ObjectDoesNotExist:
         pass
     else:
-        for customer in Customer.objects.filter(
-                selected_payment_method=payment_method_id):
-            customer.selected_payment_method = payment_utils.get_default_payment_method(
-                request)
+        for customer in Customer.objects.filter(selected_payment_method=payment_method_id):
+            customer.selected_payment_method = payment_utils.get_default_payment_method(request)
             customer.save()
 
         payment_method.delete()

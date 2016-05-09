@@ -20,8 +20,7 @@ class GEOSCoordSeq(GEOSBase):
     def __init__(self, ptr, z=False):
         "Initializes from a GEOS pointer."
         if not isinstance(ptr, CS_PTR):
-            raise TypeError(
-                'Coordinate sequence should initialize with a CS_PTR.')
+            raise TypeError('Coordinate sequence should initialize with a CS_PTR.')
         self._ptr = ptr
         self._z = z
 
@@ -53,8 +52,7 @@ class GEOSCoordSeq(GEOSBase):
         elif numpy and isinstance(value, numpy.ndarray):
             pass
         else:
-            raise TypeError(
-                'Must set coordinate with a sequence (list, tuple, or numpy array).')
+            raise TypeError('Must set coordinate with a sequence (list, tuple, or numpy array).')
         # Checking the dims of the input
         if self.dims == 3 and self._z:
             n_args = 3
@@ -75,9 +73,7 @@ class GEOSCoordSeq(GEOSBase):
         "Checks the given index."
         sz = self.size
         if (sz < 1) or (index < 0) or (index >= sz):
-            raise GEOSIndexError(
-                'invalid GEOS Geometry index: %s' %
-                str(index))
+            raise GEOSIndexError('invalid GEOS Geometry index: %s' % str(index))
 
     def _checkdim(self, dim):
         "Checks the given dimension."
@@ -89,9 +85,7 @@ class GEOSCoordSeq(GEOSBase):
         "Returns the value for the given dimension and index."
         self._checkindex(index)
         self._checkdim(dimension)
-        return capi.cs_getordinate(
-            self.ptr, index, dimension, byref(
-                c_double()))
+        return capi.cs_getordinate(self.ptr, index, dimension, byref(c_double()))
 
     def setOrdinate(self, dimension, index, value):
         "Sets the value for the given dimension and index."

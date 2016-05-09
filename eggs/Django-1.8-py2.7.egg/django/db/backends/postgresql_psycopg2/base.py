@@ -27,13 +27,10 @@ def psycopg2_version():
 PSYCOPG2_VERSION = psycopg2_version()
 
 if PSYCOPG2_VERSION < (2, 4, 5):
-    raise ImproperlyConfigured(
-        "psycopg2_version 2.4.5 or newer is required; you have %s" %
-        psycopg2.__version__)
+    raise ImproperlyConfigured("psycopg2_version 2.4.5 or newer is required; you have %s" % psycopg2.__version__)
 
 
-# Some of these import psycopg2, so import them after checking if it's
-# installed.
+# Some of these import psycopg2, so import them after checking if it's installed.
 from .client import DatabaseClient                          # isort:skip
 from .creation import DatabaseCreation                      # isort:skip
 from .features import DatabaseFeatures                      # isort:skip
@@ -48,10 +45,8 @@ IntegrityError = Database.IntegrityError
 
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
-psycopg2.extensions.register_adapter(
-    SafeBytes, psycopg2.extensions.QuotedString)
-psycopg2.extensions.register_adapter(
-    SafeText, psycopg2.extensions.QuotedString)
+psycopg2.extensions.register_adapter(SafeBytes, psycopg2.extensions.QuotedString)
+psycopg2.extensions.register_adapter(SafeText, psycopg2.extensions.QuotedString)
 psycopg2.extras.register_uuid()
 
 # Register support for inet[] manually so we don't have to handle the Inet()

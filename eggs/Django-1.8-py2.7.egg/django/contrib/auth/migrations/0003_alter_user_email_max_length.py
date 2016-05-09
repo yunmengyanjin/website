@@ -14,9 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='user',
             name='email',
-            field=models.EmailField(
-                max_length=254,
-                verbose_name='email address',
-                blank=True),
+            field=models.EmailField(max_length=254, verbose_name='email address', blank=True),
         ),
     ]

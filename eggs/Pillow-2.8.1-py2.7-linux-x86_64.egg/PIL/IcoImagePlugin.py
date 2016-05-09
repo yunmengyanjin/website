@@ -50,7 +50,7 @@ def _save(im, fp, filename):
                                x[0] > 255 or x[1] > 255) else True, sizes)
     sizes = sorted(sizes, key=lambda x: x[0])
     fp.write(struct.pack("H", len(sizes)))  # idCount(2)
-    offset = fp.tell() + len(sizes) * 16
+    offset = fp.tell() + len(sizes)*16
     for size in sizes:
         width, height = size
         fp.write(struct.pack("B", width))  # bWidth(1)
@@ -81,7 +81,6 @@ def _accept(prefix):
 
 
 class IcoFile:
-
     def __init__(self, buf):
         """
         Parse image from file-like object containing ico file data
@@ -225,7 +224,7 @@ class IcoFile:
                     im.size,        # (w, h)
                     maskData,       # source chars
                     'raw',          # raw decoder
-                    ('1;I', int(w / 8), -1)  # 1bpp inverted, padded, reversed
+                    ('1;I', int(w/8), -1)  # 1bpp inverted, padded, reversed
                 )
 
                 # now we have two images, im is XOR image and mask is AND image

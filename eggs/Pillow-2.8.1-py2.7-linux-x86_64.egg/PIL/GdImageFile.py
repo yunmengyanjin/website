@@ -63,7 +63,7 @@ class GdImageFile(ImageFile.ImageFile):
 
         self.palette = ImagePalette.raw("RGB", s[7:])
 
-        self.tile = [("raw", (0, 0) + self.size, 775, ("L", 0, -1))]
+        self.tile = [("raw", (0, 0)+self.size, 775, ("L", 0, -1))]
 
 
 ##

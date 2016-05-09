@@ -9,21 +9,11 @@ class Command(BaseCommand):
     shells = ['ipython', 'bpython']
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            '--plain',
-            action='store_true',
-            dest='plain',
+        parser.add_argument('--plain', action='store_true', dest='plain',
             help='Tells Django to use plain Python, not IPython or bpython.')
-        parser.add_argument(
-            '--no-startup',
-            action='store_true',
-            dest='no_startup',
+        parser.add_argument('--no-startup', action='store_true', dest='no_startup',
             help='When using plain Python, ignore the PYTHONSTARTUP environment variable and ~/.pythonrc.py script.')
-        parser.add_argument(
-            '-i',
-            '--interface',
-            choices=self.shells,
-            dest='interface',
+        parser.add_argument('-i', '--interface', choices=self.shells, dest='interface',
             help='Specify an interactive interpreter interface. Available options: "ipython" and "bpython"')
 
     def _ipython_pre_011(self):
@@ -46,10 +36,7 @@ class Command(BaseCommand):
 
     def ipython(self):
         """Start any version of IPython"""
-        for ip in (
-                self._ipython,
-                self._ipython_pre_100,
-                self._ipython_pre_011):
+        for ip in (self._ipython, self._ipython_pre_100, self._ipython_pre_011):
             try:
                 ip()
             except ImportError:
@@ -76,8 +63,7 @@ class Command(BaseCommand):
     def handle(self, **options):
         try:
             if options['plain']:
-                # Don't bother loading IPython, because the user wants plain
-                # Python.
+                # Don't bother loading IPython, because the user wants plain Python.
                 raise ImportError
 
             self.run_shell(shell=options['interface'])
@@ -95,16 +81,13 @@ class Command(BaseCommand):
                 # We don't have to wrap the following import in a 'try', because
                 # we already know 'readline' was imported successfully.
                 import rlcompleter
-                readline.set_completer(
-                    rlcompleter.Completer(imported_objects).complete)
+                readline.set_completer(rlcompleter.Completer(imported_objects).complete)
                 readline.parse_and_bind("tab:complete")
 
             # We want to honor both $PYTHONSTARTUP and .pythonrc.py, so follow system
             # conventions and get $PYTHONSTARTUP first then .pythonrc.py.
             if not options['no_startup']:
-                for pythonrc in (
-                        os.environ.get("PYTHONSTARTUP"),
-                        '~/.pythonrc.py'):
+                for pythonrc in (os.environ.get("PYTHONSTARTUP"), '~/.pythonrc.py'):
                     if not pythonrc:
                         continue
                     pythonrc = os.path.expanduser(pythonrc)
@@ -112,12 +95,7 @@ class Command(BaseCommand):
                         continue
                     try:
                         with open(pythonrc) as handle:
-                            exec(
-                                compile(
-                                    handle.read(),
-                                    pythonrc,
-                                    'exec'),
-                                imported_objects)
+                            exec(compile(handle.read(), pythonrc, 'exec'), imported_objects)
                     except NameError:
                         pass
             code.interact(local=imported_objects)

@@ -9,15 +9,7 @@ from django.db.models.lookups import RegisterLookupMixin
 from django.utils.deprecation import RemovedInDjango20Warning
 from django.utils.functional import cached_property
 
-__all__ = [
-    'Aggregate',
-    'Avg',
-    'Count',
-    'Max',
-    'Min',
-    'StdDev',
-    'Sum',
-    'Variance']
+__all__ = ['Aggregate', 'Avg', 'Count', 'Max', 'Min', 'StdDev', 'Sum', 'Variance']
 
 
 warnings.warn(
@@ -80,8 +72,7 @@ class Aggregate(RegisterLookupMixin):
 
         self.field = tmp
 
-    # Two fake fields used to identify aggregate types in data-conversion
-    # operations.
+    # Two fake fields used to identify aggregate types in data-conversion operations.
     @cached_property
     def _ordinal_aggregate_field(self):
         return IntegerField()
@@ -134,12 +125,7 @@ class Count(Aggregate):
     sql_template = '%(function)s(%(distinct)s%(field)s)'
 
     def __init__(self, col, distinct=False, **extra):
-        super(
-            Count,
-            self).__init__(
-            col,
-            distinct='DISTINCT ' if distinct else '',
-            **extra)
+        super(Count, self).__init__(col, distinct='DISTINCT ' if distinct else '', **extra)
 
 
 class Max(Aggregate):

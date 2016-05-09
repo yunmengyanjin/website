@@ -31,7 +31,6 @@ class LimitedStream(object):
     LimitedStream wraps another stream in order to not allow reading from it
     past specified amount of bytes.
     '''
-
     def __init__(self, stream, limit, buf_size=64 * 1024 * 1024):
         self.stream = stream
         self.remaining = limit
@@ -80,7 +79,6 @@ class LimitedStream(object):
 
 
 class WSGIRequest(http.HttpRequest):
-
     def __init__(self, environ):
         script_name = get_script_name(environ)
         path_info = get_path_info(environ)
@@ -114,8 +112,7 @@ class WSGIRequest(http.HttpRequest):
             content_length = int(environ.get('CONTENT_LENGTH'))
         except (ValueError, TypeError):
             content_length = 0
-        self._stream = LimitedStream(
-            self.environ['wsgi.input'], content_length)
+        self._stream = LimitedStream(self.environ['wsgi.input'], content_length)
         self._read_started = False
         self.resolver_match = None
 
@@ -132,8 +129,7 @@ class WSGIRequest(http.HttpRequest):
     @cached_property
     def GET(self):
         # The WSGI spec says 'QUERY_STRING' may be absent.
-        raw_query_string = get_bytes_from_wsgi(
-            self.environ, 'QUERY_STRING', '')
+        raw_query_string = get_bytes_from_wsgi(self.environ, 'QUERY_STRING', '')
         return http.QueryDict(raw_query_string, encoding=self._encoding)
 
     def _get_post(self):
@@ -183,11 +179,11 @@ class WSGIHandler(base.BaseHandler):
             request = self.request_class(environ)
         except UnicodeDecodeError:
             logger.warning('Bad Request (UnicodeDecodeError)',
-                           exc_info=sys.exc_info(),
-                           extra={
-                               'status_code': 400,
-                           }
-                           )
+                exc_info=sys.exc_info(),
+                extra={
+                    'status_code': 400,
+                }
+            )
             response = http.HttpResponseBadRequest()
         else:
             response = self.get_response(request)
@@ -197,13 +193,9 @@ class WSGIHandler(base.BaseHandler):
         status = '%s %s' % (response.status_code, response.reason_phrase)
         response_headers = [(str(k), str(v)) for k, v in response.items()]
         for c in response.cookies.values():
-            response_headers.append(
-                (str('Set-Cookie'), str(c.output(header=''))))
+            response_headers.append((str('Set-Cookie'), str(c.output(header=''))))
         start_response(force_str(status), response_headers)
-        if getattr(
-                response,
-                'file_to_stream',
-                None) is not None and environ.get('wsgi.file_wrapper'):
+        if getattr(response, 'file_to_stream', None) is not None and environ.get('wsgi.file_wrapper'):
             response = environ['wsgi.file_wrapper'](response.file_to_stream)
         return response
 

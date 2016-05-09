@@ -17,8 +17,7 @@ import shutil
 import os
 import doctest
 
-
-def rmtree(path):
+def rmtree (path):
     """
     A variant of shutil.rmtree which tries hard to be successful
     On windows shutil.rmtree aborts when it tries to delete a
@@ -54,15 +53,15 @@ def rmtree(path):
     >>> os.path.isdir (d)
     0
     """
-    def retry_writeable(func, path, exc):
-        os.chmod(path, 384)  # 0600
-        func(path)
+    def retry_writeable (func, path, exc):
+        os.chmod (path, 384) # 0600
+        func (path)
 
-    shutil.rmtree(path, onerror=retry_writeable)
-
+    shutil.rmtree (path, onerror = retry_writeable)
 
 def test_suite():
     return doctest.DocTestSuite()
 
 if "__main__" == __name__:
     doctest.testmod()
+

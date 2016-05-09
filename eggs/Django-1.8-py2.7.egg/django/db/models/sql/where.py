@@ -68,8 +68,8 @@ class WhereNode(tree.Node):
         # about the value(s) to the query construction. Specifically, datetime
         # and empty values need special handling. Other types could be used
         # here in the future (using Python types is suggested for consistency).
-        if (isinstance(value, datetime.datetime) or (isinstance(
-                obj.field, DateTimeField) and lookup_type != 'isnull')):
+        if (isinstance(value, datetime.datetime)
+                or (isinstance(obj.field, DateTimeField) and lookup_type != 'isnull')):
             value_annotation = datetime.datetime
         elif hasattr(value, 'value_annotation'):
             value_annotation = value.value_annotation
@@ -113,7 +113,7 @@ class WhereNode(tree.Node):
                     result_params.extend(params)
                 else:
                     if sql is None:
-                        # Skip empty children totally.
+                        # Skip empty childs totally.
                         non_empty_childs -= 1
                         continue
                     everything_childs += 1
@@ -182,8 +182,7 @@ class WhereNode(tree.Node):
 
         if isinstance(lvalue, Constraint):
             try:
-                lvalue, params = lvalue.process(
-                    lookup_type, params_or_value, connection)
+                lvalue, params = lvalue.process(lookup_type, params_or_value, connection)
             except EmptyShortCircuit:
                 raise EmptyResultSet
         else:
@@ -192,8 +191,7 @@ class WhereNode(tree.Node):
 
         if isinstance(lvalue, tuple):
             # A direct database column lookup.
-            field_sql, field_params = self.sql_for_columns(
-                lvalue, compiler, connection, field_internal_type), []
+            field_sql, field_params = self.sql_for_columns(lvalue, compiler, connection, field_internal_type), []
         else:
             # A smart object with an as_sql() method.
             field_sql, field_params = compiler.compile(lvalue)
@@ -248,27 +246,18 @@ class WhereNode(tree.Node):
         elif is_datetime_field and lookup_type in ('month', 'day', 'week_day',
                                                    'hour', 'minute', 'second'):
             tzname = timezone.get_current_timezone_name() if settings.USE_TZ else None
-            sql, tz_params = connection.ops.datetime_extract_sql(
-                lookup_type, field_sql, tzname)
+            sql, tz_params = connection.ops.datetime_extract_sql(lookup_type, field_sql, tzname)
             return ('%s = %%s' % sql, tz_params + params)
         elif lookup_type in ('month', 'day', 'week_day'):
-            return (
-                '%s = %%s' %
-                connection.ops.date_extract_sql(
-                    lookup_type,
-                    field_sql),
-                params)
+            return ('%s = %%s'
+                    % connection.ops.date_extract_sql(lookup_type, field_sql), params)
         elif lookup_type == 'isnull':
-            assert value_annotation in (
-                True, False), "Invalid value_annotation for isnull"
-            return (
-                '%s IS %sNULL' %
-                (field_sql, ('' if value_annotation else 'NOT ')), ())
+            assert value_annotation in (True, False), "Invalid value_annotation for isnull"
+            return ('%s IS %sNULL' % (field_sql, ('' if value_annotation else 'NOT ')), ())
         elif lookup_type == 'search':
             return (connection.ops.fulltext_search_sql(field_sql), params)
         elif lookup_type in ('regex', 'iregex'):
-            return connection.ops.regex_lookup(
-                lookup_type) % (field_sql, cast_sql), params
+            return connection.ops.regex_lookup(lookup_type) % (field_sql, cast_sql), params
 
         raise TypeError('Invalid lookup_type: %r' % lookup_type)
 
@@ -307,7 +296,7 @@ class WhereNode(tree.Node):
     def clone(self):
         """
         Creates a clone of the tree. Must only be called on root nodes (nodes
-        with empty subtree_parents). Children must be either (Contraint, lookup,
+        with empty subtree_parents). Childs must be either (Contraint, lookup,
         value) tuples, or objects supporting .clone().
         """
         clone = self.__class__._new_instance(
@@ -327,13 +316,7 @@ class WhereNode(tree.Node):
     @classmethod
     def _contains_aggregate(cls, obj):
         if not isinstance(obj, tree.Node):
-            return getattr(
-                obj.lhs,
-                'contains_aggregate',
-                False) or getattr(
-                obj.rhs,
-                'contains_aggregate',
-                False)
+            return getattr(obj.lhs, 'contains_aggregate', False) or getattr(obj.rhs, 'contains_aggregate', False)
         return any(cls._contains_aggregate(c) for c in obj.children)
 
     @cached_property
@@ -342,7 +325,6 @@ class WhereNode(tree.Node):
 
 
 class EmptyWhere(WhereNode):
-
     def add(self, data, connector):
         return
 
@@ -363,13 +345,11 @@ class NothingNode(object):
     """
     A node that matches nothing.
     """
-
     def as_sql(self, compiler=None, connection=None):
         raise EmptyResultSet
 
 
 class ExtraWhere(object):
-
     def __init__(self, sqls, params):
         self.sqls = sqls
         self.params = params
@@ -384,7 +364,6 @@ class Constraint(object):
     An object that can be passed to WhereNode.add() and knows how to
     pre-process itself prior to including in the WhereNode.
     """
-
     def __init__(self, alias, col, field):
         warnings.warn(
             "The Constraint class will be removed in Django 1.9. Use Lookup class instead.",
@@ -405,15 +384,15 @@ class Constraint(object):
         from django.db.models.base import ObjectDoesNotExist
         try:
             if self.field:
-                params = self.field.get_db_prep_lookup(
-                    lookup_type, value, connection=connection, prepared=True)
+                params = self.field.get_db_prep_lookup(lookup_type, value,
+                    connection=connection, prepared=True)
                 db_type = self.field.db_type(connection=connection)
             else:
                 # This branch is used at times when we add a comparison to NULL
                 # (we don't really want to waste time looking up the associated
                 # field object at the calling location).
-                params = Field().get_db_prep_lookup(
-                    lookup_type, value, connection=connection, prepared=True)
+                params = Field().get_db_prep_lookup(lookup_type, value,
+                    connection=connection, prepared=True)
                 db_type = None
         except ObjectDoesNotExist:
             raise EmptyShortCircuit
@@ -426,13 +405,11 @@ class Constraint(object):
         else:
             new = Empty()
             new.__class__ = self.__class__
-            new.alias, new.col, new.field = change_map[
-                self.alias], self.col, self.field
+            new.alias, new.col, new.field = change_map[self.alias], self.col, self.field
             return new
 
 
 class SubqueryConstraint(object):
-
     def __init__(self, alias, columns, targets, query_object):
         self.alias = alias
         self.columns = columns
@@ -445,8 +422,7 @@ class SubqueryConstraint(object):
         # QuerySet was sent
         if hasattr(query, 'values'):
             if query._db and connection.alias != query._db:
-                raise ValueError(
-                    "Can't do subqueries with queries on different DBs.")
+                raise ValueError("Can't do subqueries with queries on different DBs.")
             # Do not override already existing values.
             if not hasattr(query, 'field_names'):
                 query = query.values(*self.targets)
@@ -454,13 +430,11 @@ class SubqueryConstraint(object):
                 query = query._clone()
             query = query.query
             if query.can_filter():
-                # If there is no slicing in use, then we can safely drop all
-                # ordering
+                # If there is no slicing in use, then we can safely drop all ordering
                 query.clear_ordering(True)
 
         query_compiler = query.get_compiler(connection=connection)
-        return query_compiler.as_subquery_condition(
-            self.alias, self.columns, compiler)
+        return query_compiler.as_subquery_condition(self.alias, self.columns, compiler)
 
     def relabel_aliases(self, change_map):
         self.alias = change_map.get(self.alias, self.alias)

@@ -78,11 +78,7 @@ class ListMixin(object):
     def __getitem__(self, index):
         "Get the item(s) at the specified index/slice."
         if isinstance(index, slice):
-            return [
-                self._get_single_external(i) for i in range(
-                    *
-                    index.indices(
-                        len(self)))]
+            return [self._get_single_external(i) for i in range(*index.indices(len(self)))]
         else:
             index = self._checkindex(index)
             return self._get_single_external(index)
@@ -244,9 +240,7 @@ class ListMixin(object):
         if newLen < self._minlength:
             raise ValueError('Must have at least %d items' % self._minlength)
         if self._maxlength is not None and newLen > self._maxlength:
-            raise ValueError(
-                'Cannot have more than %d items' %
-                self._maxlength)
+            raise ValueError('Cannot have more than %d items' % self._maxlength)
 
         self._set_list(newLen, newItems)
 

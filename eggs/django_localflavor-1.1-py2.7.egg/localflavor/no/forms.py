@@ -25,15 +25,8 @@ class NOZipCodeField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            NOZipCodeField,
-            self).__init__(
-            r'^\d{4}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(NOZipCodeField, self).__init__(r'^\d{4}$',
+                                             max_length, min_length, *args, **kwargs)
 
 
 class NOMunicipalitySelect(Select):
@@ -41,13 +34,8 @@ class NOMunicipalitySelect(Select):
     A Select widget that uses a list of Norwegian municipalities (fylker)
     as its choices.
     """
-
     def __init__(self, attrs=None):
-        super(
-            NOMunicipalitySelect,
-            self).__init__(
-            attrs,
-            choices=MUNICIPALITY_CHOICES)
+        super(NOMunicipalitySelect, self).__init__(attrs, choices=MUNICIPALITY_CHOICES)
 
 
 class NOSocialSecurityNumber(Field):
@@ -110,15 +98,10 @@ class NOPhoneNumberField(RegexField):
     Field with phonenumber validation. Requires a phone number with
     8 digits and optional country code
     """
-    default_error_messages = {'invalid': _(
-        'A phone number must be 8 digits and may have country code'), }
+    default_error_messages = {
+        'invalid': _('A phone number must be 8 digits and may have country code'),
+    }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            NOPhoneNumberField,
-            self).__init__(
-            r'^(?:\+47)? ?(\d{3}\s?\d{2}\s?\d{3}|\d{2}\s?\d{2}\s?\d{2}\s?\d{2})$',
-            max_length,
-            min_length,
-            *args,
-            **kwargs)
+        super(NOPhoneNumberField, self).__init__(r'^(?:\+47)? ?(\d{3}\s?\d{2}\s?\d{3}|\d{2}\s?\d{2}\s?\d{2}\s?\d{2})$',
+                                                 max_length, min_length, *args, **kwargs)

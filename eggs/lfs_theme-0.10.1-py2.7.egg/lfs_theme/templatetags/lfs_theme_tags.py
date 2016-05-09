@@ -16,13 +16,10 @@ register = Library()
 class SlotsInformationNode(Node):
     """
     """
-
     def render(self, context):
         request = context.get("request")
-        obj = context.get("category") or context.get(
-            "product") or context.get("page")
-        if obj is None or obj.__class__.__name__.lower(
-        ) not in ('category', 'product', 'page'):
+        obj = context.get("category") or context.get("product") or context.get("page")
+        if obj is None or obj.__class__.__name__.lower() not in ('category', 'product', 'page'):
             obj = lfs.core.utils.get_default_shop(request)
 
         slots = cache.get("slots")
@@ -31,8 +28,7 @@ class SlotsInformationNode(Node):
             cache.set("slots", slots)
 
         for slot in slots:
-            cache_key = "has-portlets-%s-%s-%s" % (
-                obj.__class__.__name__, obj.id, slot.name)
+            cache_key = "has-portlets-%s-%s-%s" % (obj.__class__.__name__, obj.id, slot.name)
             has_portlets = cache.get(cache_key)
             if has_portlets is None:
                 has_portlets = portlets.utils.has_portlets(obj, slot)
@@ -44,11 +40,7 @@ class SlotsInformationNode(Node):
         content_class = cache.get(cache_key)
         if content_class is None:
             content_class = "span-24 last"
-            if context.get(
-                    "SlotLeft",
-                    None) and context.get(
-                    "SlotRight",
-                    None):
+            if context.get("SlotLeft", None) and context.get("SlotRight", None):
                 content_class = "span-15 padding-both"
             elif context.get("SlotLeft", None):
                 content_class = "span-19 padding-left last"
@@ -59,7 +51,6 @@ class SlotsInformationNode(Node):
 
         context["content_class"] = content_class
         return ''
-
 
 def do_slots_information(parser, token):
     """Calculates some context variables based on displayed slots.

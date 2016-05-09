@@ -48,7 +48,6 @@ class NLProvinceSelect(Select):
     A Select widget that uses a list of provinces of the Netherlands as its
     choices.
     """
-
     def __init__(self, attrs=None):
         super(NLProvinceSelect, self).__init__(attrs, choices=PROVINCE_CHOICES)
 

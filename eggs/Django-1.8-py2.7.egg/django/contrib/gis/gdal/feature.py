@@ -23,8 +23,7 @@ class Feature(GDALBase):
         Initializes Feature from a pointer and its Layer object.
         """
         if not feat:
-            raise GDALException(
-                'Cannot create OGR Feature, invalid pointer given.')
+            raise GDALException('Cannot create OGR Feature, invalid pointer given.')
         self.ptr = feat
         self._layer = layer
 
@@ -118,7 +117,5 @@ class Feature(GDALBase):
         "Returns the index of the given field name."
         i = capi.get_field_index(self.ptr, force_bytes(field_name))
         if i < 0:
-            raise OGRIndexError(
-                'invalid OFT field name given: "%s"' %
-                field_name)
+            raise OGRIndexError('invalid OFT field name given: "%s"' % field_name)
         return i

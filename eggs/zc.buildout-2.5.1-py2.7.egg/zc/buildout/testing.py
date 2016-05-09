@@ -16,12 +16,12 @@
 
 try:
     # Python 3
-    from http.server import HTTPServer, BaseHTTPRequestHandler
+    from http.server    import HTTPServer, BaseHTTPRequestHandler
     from urllib.request import urlopen
 except ImportError:
     # Python 2
     from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
-    from urllib2 import urlopen
+    from urllib2        import urlopen
 
 import errno
 import logging
@@ -49,17 +49,15 @@ is_win32 = sys.platform == 'win32'
 setuptools_location = pkg_resources.working_set.find(
     pkg_resources.Requirement.parse('setuptools')).location
 
-
 def cat(dir, *names):
     path = os.path.join(dir, *names)
     if (not os.path.exists(path)
         and is_win32
-        and os.path.exists(path + '-script.py')
+        and os.path.exists(path+'-script.py')
         ):
-        path = path + '-script.py'
+        path = path+'-script.py'
     with open(path) as f:
         print_(f.read(), end='')
-
 
 def ls(dir, *subs):
     if subs:
@@ -74,10 +72,8 @@ def ls(dir, *subs):
             print_('- ', end=' ')
         print_(name)
 
-
 def mkdir(*path):
     os.mkdir(os.path.join(*path))
-
 
 def remove(*path):
     path = os.path.join(*path)
@@ -86,10 +82,8 @@ def remove(*path):
     else:
         os.remove(path)
 
-
 def rmdir(*path):
     shutil.rmtree(os.path.join(*path))
-
 
 def write(dir, *args):
     path = os.path.join(dir, *(args[:-1]))
@@ -99,23 +93,21 @@ def write(dir, *args):
     fsync(f.fileno())
     f.close()
 
-
 def clean_up_pyc(*path):
     base, filename = os.path.join(*path[:-1]), path[-1]
     if filename.endswith('.py'):
-        filename += 'c'  # .py -> .pyc
+        filename += 'c' # .py -> .pyc
     for path in (
         os.path.join(base, filename),
         os.path.join(base, '__pycache__'),
-    ):
+        ):
         if os.path.isdir(path):
             rmdir(path)
         elif os.path.exists(path):
             remove(path)
 
-# FIXME - check for other platforms
+## FIXME - check for other platforms
 MUST_CLOSE_FDS = not sys.platform.startswith('win')
-
 
 def system(command, input='', with_exit_code=False):
     p = subprocess.Popen(command,
@@ -138,10 +130,8 @@ def system(command, input='', with_exit_code=False):
         output += 'EXIT CODE: %s' % p.wait()
     return output
 
-
 def get(url):
     return str(urlopen(url).read().decode())
-
 
 def _runsetup(setup, *args):
     if os.path.isdir(setup):
@@ -159,10 +149,8 @@ def _runsetup(setup, *args):
     finally:
         os.chdir(here)
 
-
 def sdist(setup, dest):
     _runsetup(setup, 'sdist', '-d', dest, '--formats=zip')
-
 
 def bdist_egg(setup, executable, dest=None):
     # Backward compat:
@@ -172,26 +160,23 @@ def bdist_egg(setup, executable, dest=None):
         assert executable == sys.executable, (executable, sys.executable)
     _runsetup(setup, 'bdist_egg', '-d', dest)
 
-
 def wait_until(label, func, *args, **kw):
     if 'timeout' in kw:
         kw = dict(kw)
         timeout = kw.pop('timeout')
     else:
         timeout = 30
-    deadline = time.time() + timeout
+    deadline = time.time()+timeout
     while time.time() < deadline:
         if func(*args, **kw):
             return
         time.sleep(0.01)
-    raise ValueError('Timed out waiting for: ' + label)
-
+    raise ValueError('Timed out waiting for: '+label)
 
 class TestOptions(zc.buildout.buildout.Options):
 
     def initialize(self):
         pass
-
 
 class Buildout(zc.buildout.buildout.Buildout):
 
@@ -201,7 +186,6 @@ class Buildout(zc.buildout.buildout.Buildout):
 
     Options = TestOptions
 
-
 def buildoutSetUp(test):
 
     test.globs['__tear_downs'] = __tear_downs = []
@@ -210,13 +194,12 @@ def buildoutSetUp(test):
     prefer_final = zc.buildout.easy_install.prefer_final()
     register_teardown(
         lambda: zc.buildout.easy_install.prefer_final(prefer_final)
-    )
+        )
 
     here = os.getcwd()
     register_teardown(lambda: os.chdir(here))
 
     handlers_before_set_up = logging.getLogger().handlers[:]
-
     def restore_root_logger_handlers():
         root_logger = logging.getLogger()
         for handler in root_logger.handlers[:]:
@@ -231,7 +214,6 @@ def buildoutSetUp(test):
 
     old_home = os.environ.get('HOME')
     os.environ['HOME'] = os.path.join(base, 'bbbBadHome')
-
     def restore_home():
         if old_home is None:
             del os.environ['HOME']
@@ -245,7 +227,7 @@ def buildoutSetUp(test):
     tmp = tempfile.mkdtemp('buildouttests')
     register_teardown(lambda: rmtree(tmp))
 
-    zc.buildout.easy_install.default_index_url = 'file://' + tmp
+    zc.buildout.easy_install.default_index_url = 'file://'+tmp
     os.environ['buildout-testing-index-url'] = (
         zc.buildout.easy_install.default_index_url)
 
@@ -270,7 +252,9 @@ def buildoutSetUp(test):
          # in the eggs dir.
          ('buildout', 'develop-eggs-directory', 'eggs'),
          ]
-    ).bootstrap([])
+        ).bootstrap([])
+
+
 
     # Create the develop-eggs dir, which didn't get created the usual
     # way due to the trick above:
@@ -283,7 +267,6 @@ def buildoutSetUp(test):
         return url
 
     cdpaths = []
-
     def cd(*path):
         path = os.path.join(*path)
         cdpaths.append(os.path.abspath(os.getcwd()))
@@ -293,34 +276,32 @@ def buildoutSetUp(test):
         os.chdir(cdpaths.pop())
 
     test.globs.update(dict(
-        sample_buildout=sample,
-        ls=ls,
-        cat=cat,
-        mkdir=mkdir,
-        rmdir=rmdir,
-        remove=remove,
-        tmpdir=tmpdir,
-        write=write,
-        system=system,
-        get=get,
-        cd=cd, uncd=uncd,
-        join=os.path.join,
-        sdist=sdist,
-        bdist_egg=bdist_egg,
-        start_server=start_server,
-        buildout=os.path.join(sample, 'bin', 'buildout'),
-        wait_until=wait_until,
-        print_=print_,
-        clean_up_pyc=clean_up_pyc,
-    ))
+        sample_buildout = sample,
+        ls = ls,
+        cat = cat,
+        mkdir = mkdir,
+        rmdir = rmdir,
+        remove = remove,
+        tmpdir = tmpdir,
+        write = write,
+        system = system,
+        get = get,
+        cd = cd, uncd = uncd,
+        join = os.path.join,
+        sdist = sdist,
+        bdist_egg = bdist_egg,
+        start_server = start_server,
+        buildout = os.path.join(sample, 'bin', 'buildout'),
+        wait_until = wait_until,
+        print_ = print_,
+        clean_up_pyc = clean_up_pyc,
+        ))
 
     zc.buildout.easy_install.prefer_final(prefer_final)
-
 
 def buildoutTearDown(test):
     for f in test.globs['__tear_downs']:
         f()
-
 
 class Server(HTTPServer):
 
@@ -329,14 +310,12 @@ class Server(HTTPServer):
         self.tree = os.path.abspath(tree)
 
     __run = True
-
     def serve_forever(self):
         while self.__run:
             self.handle_request()
 
     def handle_error(self, *_):
         self.__run = False
-
 
 class Handler(BaseHTTPRequestHandler):
 
@@ -369,12 +348,12 @@ class Handler(BaseHTTPRequestHandler):
 
         path = os.path.abspath(os.path.join(self.tree, *self.path.split('/')))
         if not (
-            ((path == self.tree) or path.startswith(self.tree + os.path.sep))
+            ((path == self.tree) or path.startswith(self.tree+os.path.sep))
             and
             os.path.exists(path)
-        ):
+            ):
             self.send_response(404, 'Not Found')
-            # self.send_response(200)
+            #self.send_response(200)
             out = '<html><body>Not Found</body></html>'.encode()
             #out = '\n'.join(self.tree, self.path, path)
             self.send_header('Content-Length', str(len(out)))
@@ -416,12 +395,10 @@ class Handler(BaseHTTPRequestHandler):
         if self.__server.__log:
             print_('%s %s %s' % (self.command, code, self.path))
 
-
 def _run(tree, port):
     server_address = ('localhost', port)
     httpd = Server(tree, server_address, Handler)
     httpd.serve_forever()
-
 
 def get_port():
     for i in range(10):
@@ -436,7 +413,6 @@ def get_port():
             s.close()
     raise RuntimeError("Can't find port")
 
-
 def _start_server(tree, name=''):
     port = get_port()
     thread = threading.Thread(target=_run, args=(tree, port), name=name)
@@ -445,19 +421,16 @@ def _start_server(tree, name=''):
     wait(port, up=True)
     return port, thread
 
-
 def start_server(tree):
     return _start_server(tree)[0]
 
-
 def stop_server(url, thread=None):
     try:
-        urlopen(url + '__stop__')
+        urlopen(url+'__stop__')
     except Exception:
         pass
     if thread is not None:
-        thread.join()  # wait for thread to stop
-
+        thread.join() # wait for thread to stop
 
 def wait(port, up):
     addr = 'localhost', port
@@ -482,7 +455,6 @@ def wait(port, up):
         else:
             raise SystemError("Couldn't stop server")
 
-
 def install(project, destination):
     if not isinstance(destination, str):
         destination = os.path.join(destination.globs['sample_buildout'],
@@ -500,9 +472,8 @@ def install(project, destination):
             shutil.copyfile(dist.location, destination)
     else:
         # copy link
-        with open(os.path.join(destination, project + '.egg-link'), 'w') as f:
+        with open(os.path.join(destination, project+'.egg-link'), 'w') as f:
             f.write(dist.location)
-
 
 def install_develop(project, destination):
     if not isinstance(destination, str):
@@ -511,9 +482,8 @@ def install_develop(project, destination):
 
     dist = pkg_resources.working_set.find(
         pkg_resources.Requirement.parse(project))
-    with open(os.path.join(destination, project + '.egg-link'), 'w') as f:
+    with open(os.path.join(destination, project+'.egg-link'), 'w') as f:
         f.write(dist.location)
-
 
 def _normalize_path(match):
     path = match.group(1)
@@ -528,7 +498,7 @@ normalize_path = (
         r'''[^'" \t\n\r]+\%(sep)s_[Tt][Ee][Ss][Tt]_\%(sep)s([^"' \t\n\r]+)'''
         % dict(sep=os.path.sep)),
     _normalize_path,
-)
+    )
 
 normalize_endings = re.compile('\r\n'), '\n'
 
@@ -546,7 +516,7 @@ else:
 normalize_egg_py = (
     re.compile('-py\d[.]\d(-\S+)?.egg'),
     '-pyN.N.egg',
-)
+    )
 
 normalize_exception_type_for_python_2_and_3 = (
     re.compile(r'^(\w+\.)*([A-Z][A-Za-z0-9]+Error: )'),
@@ -560,5 +530,5 @@ adding_find_link = (re.compile(r"Adding find link '[^']+'"
 
 ignore_not_upgrading = (
     re.compile(
-        'Not upgrading because not running a local buildout command.\n'
+    'Not upgrading because not running a local buildout command.\n'
     ), '')

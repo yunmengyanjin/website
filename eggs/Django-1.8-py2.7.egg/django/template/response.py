@@ -13,10 +13,7 @@ class ContentNotRenderedError(Exception):
 
 
 class SimpleTemplateResponse(HttpResponse):
-    rendering_attrs = [
-        'template_name',
-        'context_data',
-        '_post_render_callbacks']
+    rendering_attrs = ['template_name', 'context_data', '_post_render_callbacks']
 
     def __init__(self, template, context=None, content_type=None, status=None,
                  charset=None, using=None):
@@ -49,13 +46,7 @@ class SimpleTemplateResponse(HttpResponse):
         # content argument doesn't make sense here because it will be replaced
         # with rendered template so we always pass empty string in order to
         # prevent errors and provide shorter signature.
-        super(
-            SimpleTemplateResponse,
-            self).__init__(
-            '',
-            content_type,
-            status,
-            charset)
+        super(SimpleTemplateResponse, self).__init__('', content_type, status, charset)
 
         # _is_rendered tracks whether the template and context has been baked
         # into a final response.
@@ -177,17 +168,15 @@ class SimpleTemplateResponse(HttpResponse):
 
     def __iter__(self):
         if not self._is_rendered:
-            raise ContentNotRenderedError(
-                'The response content must be '
-                'rendered before it can be iterated over.')
+            raise ContentNotRenderedError('The response content must be '
+                                          'rendered before it can be iterated over.')
         return super(SimpleTemplateResponse, self).__iter__()
 
     @property
     def content(self):
         if not self._is_rendered:
-            raise ContentNotRenderedError(
-                'The response content must be '
-                'rendered before it can be accessed.')
+            raise ContentNotRenderedError('The response content must be '
+                                          'rendered before it can be accessed.')
         return super(SimpleTemplateResponse, self).content
 
     @content.setter
@@ -199,12 +188,11 @@ class SimpleTemplateResponse(HttpResponse):
 
 
 class TemplateResponse(SimpleTemplateResponse):
-    rendering_attrs = SimpleTemplateResponse.rendering_attrs + \
-        ['_request', '_current_app']
+    rendering_attrs = SimpleTemplateResponse.rendering_attrs + ['_request', '_current_app']
 
     def __init__(self, request, template, context=None, content_type=None,
-                 status=None, current_app=_current_app_undefined, charset=None,
-                 using=None):
+            status=None, current_app=_current_app_undefined, charset=None,
+            using=None):
         # As a convenience we'll allow callers to provide current_app without
         # having to avoid needing to create the RequestContext directly
         if current_app is not _current_app_undefined:

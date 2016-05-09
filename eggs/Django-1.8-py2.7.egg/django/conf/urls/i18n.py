@@ -20,8 +20,8 @@ def i18n_patterns(prefix, *args):
             "instead of django.conf.urls.url() instances is deprecated and "
             "will no longer work in Django 2.0. Use a list of "
             "django.conf.urls.url() instances instead.",
-            RemovedInDjango20Warning,
-            stacklevel=2)
+            RemovedInDjango20Warning, stacklevel=2
+        )
         pattern_list = patterns(prefix, *args)
     else:
         pattern_list = [prefix] + list(args)

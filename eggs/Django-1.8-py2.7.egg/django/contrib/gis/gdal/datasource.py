@@ -55,12 +55,7 @@ from django.utils.six.moves import range
 class DataSource(GDALBase):
     "Wraps an OGR Data Source object."
 
-    def __init__(
-            self,
-            ds_input,
-            ds_driver=False,
-            write=False,
-            encoding='utf-8'):
+    def __init__(self, ds_input, ds_driver=False, write=False, encoding='utf-8'):
         # The write flag.
         if write:
             self._write = 1
@@ -76,22 +71,15 @@ class DataSource(GDALBase):
             ds_driver = Driver.ptr_type()
             try:
                 # OGROpen will auto-detect the data source type.
-                ds = capi.open_ds(
-                    force_bytes(ds_input),
-                    self._write,
-                    byref(ds_driver))
+                ds = capi.open_ds(force_bytes(ds_input), self._write, byref(ds_driver))
             except GDALException:
                 # Making the error message more clear rather than something
                 # like "Invalid pointer returned from OGROpen".
-                raise GDALException(
-                    'Could not open the datasource at "%s"' %
-                    ds_input)
+                raise GDALException('Could not open the datasource at "%s"' % ds_input)
         elif isinstance(ds_input, self.ptr_type) and isinstance(ds_driver, Driver.ptr_type):
             ds = ds_input
         else:
-            raise GDALException(
-                'Invalid data source input type: %s' %
-                type(ds_input))
+            raise GDALException('Invalid data source input type: %s' % type(ds_input))
 
         if ds:
             self.ptr = ds
@@ -115,9 +103,7 @@ class DataSource(GDALBase):
         if isinstance(index, six.string_types):
             l = capi.get_layer_by_name(self.ptr, force_bytes(index))
             if not l:
-                raise OGRIndexError(
-                    'invalid OGR Layer name given: "%s"' %
-                    index)
+                raise OGRIndexError('invalid OGR Layer name given: "%s"' % index)
         elif isinstance(index, int):
             if index < 0 or index >= self.layer_count:
                 raise OGRIndexError('index out of range')

@@ -20,8 +20,8 @@ def add_domain(domain, url, secure=False):
         # Support network-path reference (see #16753) - RSS requires a protocol
         url = '%s:%s' % (protocol, url)
     elif not (url.startswith('http://')
-              or url.startswith('https://')
-              or url.startswith('mailto:')):
+            or url.startswith('https://')
+            or url.startswith('mailto:')):
         url = iri_to_uri('%s://%s%s' % (protocol, domain, url))
     return url
 
@@ -44,8 +44,7 @@ class Feed(object):
         response = HttpResponse(content_type=feedgen.mime_type)
         if hasattr(self, 'item_pubdate') or hasattr(self, 'item_updateddate'):
             # if item_pubdate or item_updateddate is defined for the feed, set
-            # header so as ConditionalGetMiddleware is able to send 304 NOT
-            # MODIFIED
+            # header so as ConditionalGetMiddleware is able to send 304 NOT MODIFIED
             response['Last-Modified'] = http_date(
                 timegm(feedgen.latest_post_date().utctimetuple()))
         feedgen.write(response, 'utf-8')
@@ -64,8 +63,8 @@ class Feed(object):
         except AttributeError:
             raise ImproperlyConfigured(
                 'Give your %s class a get_absolute_url() method, or define an '
-                'item_link() method in your Feed class.' %
-                item.__class__.__name__)
+                'item_link() method in your Feed class.' % item.__class__.__name__
+            )
 
     def __get_dynamic_attr(self, attname, obj, default=None):
         try:
@@ -154,8 +153,7 @@ class Feed(object):
         description_tmp = None
         if self.description_template is not None:
             try:
-                description_tmp = loader.get_template(
-                    self.description_template)
+                description_tmp = loader.get_template(self.description_template)
             except TemplateDoesNotExist:
                 pass
 
@@ -179,15 +177,13 @@ class Feed(object):
             enc_url = self.__get_dynamic_attr('item_enclosure_url', item)
             if enc_url:
                 enc = feedgenerator.Enclosure(
-                    url=smart_text(enc_url), length=smart_text(
-                        self.__get_dynamic_attr(
-                            'item_enclosure_length', item)), mime_type=smart_text(
-                        self.__get_dynamic_attr(
-                            'item_enclosure_mime_type', item)))
+                    url=smart_text(enc_url),
+                    length=smart_text(self.__get_dynamic_attr('item_enclosure_length', item)),
+                    mime_type=smart_text(self.__get_dynamic_attr('item_enclosure_mime_type', item))
+                )
             author_name = self.__get_dynamic_attr('item_author_name', item)
             if author_name is not None:
-                author_email = self.__get_dynamic_attr(
-                    'item_author_email', item)
+                author_email = self.__get_dynamic_attr('item_author_email', item)
                 author_link = self.__get_dynamic_attr('item_author_link', item)
             else:
                 author_email = author_link = None

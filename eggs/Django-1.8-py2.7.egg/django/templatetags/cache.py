@@ -10,14 +10,7 @@ register = Library()
 
 
 class CacheNode(Node):
-
-    def __init__(
-            self,
-            nodelist,
-            expire_time_var,
-            fragment_name,
-            vary_on,
-            cache_name):
+    def __init__(self, nodelist, expire_time_var, fragment_name, vary_on, cache_name):
         self.nodelist = nodelist
         self.expire_time_var = expire_time_var
         self.fragment_name = fragment_name
@@ -28,28 +21,20 @@ class CacheNode(Node):
         try:
             expire_time = self.expire_time_var.resolve(context)
         except VariableDoesNotExist:
-            raise TemplateSyntaxError(
-                '"cache" tag got an unknown variable: %r' %
-                self.expire_time_var.var)
+            raise TemplateSyntaxError('"cache" tag got an unknown variable: %r' % self.expire_time_var.var)
         try:
             expire_time = int(expire_time)
         except (ValueError, TypeError):
-            raise TemplateSyntaxError(
-                '"cache" tag got a non-integer timeout value: %r' %
-                expire_time)
+            raise TemplateSyntaxError('"cache" tag got a non-integer timeout value: %r' % expire_time)
         if self.cache_name:
             try:
                 cache_name = self.cache_name.resolve(context)
             except VariableDoesNotExist:
-                raise TemplateSyntaxError(
-                    '"cache" tag got an unknown variable: %r' %
-                    self.cache_name.var)
+                raise TemplateSyntaxError('"cache" tag got an unknown variable: %r' % self.cache_name.var)
             try:
                 fragment_cache = caches[cache_name]
             except InvalidCacheBackendError:
-                raise TemplateSyntaxError(
-                    'Invalid cache name specified for cache tag: %r' %
-                    cache_name)
+                raise TemplateSyntaxError('Invalid cache name specified for cache tag: %r' % cache_name)
         else:
             try:
                 fragment_cache = caches['template_fragments']
@@ -95,17 +80,15 @@ def do_cache(parser, token):
     parser.delete_first_token()
     tokens = token.split_contents()
     if len(tokens) < 3:
-        raise TemplateSyntaxError(
-            "'%r' tag requires at least 2 arguments." %
-            tokens[0])
+        raise TemplateSyntaxError("'%r' tag requires at least 2 arguments." % tokens[0])
     if len(tokens) > 3 and tokens[-1].startswith('using='):
         cache_name = parser.compile_filter(tokens[-1][len('using='):])
         tokens = tokens[:-1]
     else:
         cache_name = None
     return CacheNode(nodelist,
-                     parser.compile_filter(tokens[1]),
-                     tokens[2],  # fragment_name can't be a variable.
-                     [parser.compile_filter(t) for t in tokens[3:]],
-                     cache_name,
-                     )
+        parser.compile_filter(tokens[1]),
+        tokens[2],  # fragment_name can't be a variable.
+        [parser.compile_filter(t) for t in tokens[3:]],
+        cache_name,
+    )

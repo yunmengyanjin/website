@@ -71,13 +71,8 @@ class CNProvinceSelect(Select):
     A select widget providing the list of provinces and districts
     in People's Republic of China as choices.
     """
-
     def __init__(self, attrs=None):
-        super(
-            CNProvinceSelect,
-            self).__init__(
-            attrs,
-            choices=CN_PROVINCE_CHOICES)
+        super(CNProvinceSelect, self).__init__(attrs, choices=CN_PROVINCE_CHOICES)
 
 
 class CNPostCodeField(RegexField):
@@ -115,14 +110,7 @@ class CNIDCardField(CharField):
     }
 
     def __init__(self, max_length=18, min_length=15, *args, **kwargs):
-        super(
-            CNIDCardField,
-            self).__init__(
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(CNIDCardField, self).__init__(max_length, min_length, *args, **kwargs)
 
     def clean(self, value):
         """

@@ -46,16 +46,10 @@ class Cart(models.Model):
     A cart is only created if it needs to, i.e. when the shop user adds
     something to the cart.
     """
-    user = models.ForeignKey(
-        User,
-        verbose_name=_(u"User"),
-        blank=True,
-        null=True)
+    user = models.ForeignKey(User, verbose_name=_(u"User"), blank=True, null=True)
     session = models.CharField(_(u"Session"), blank=True, max_length=100)
-    creation_date = models.DateTimeField(
-        _(u"Creation date"), auto_now_add=True)
-    modification_date = models.DateTimeField(
-        _(u"Modification date"), auto_now=True)
+    creation_date = models.DateTimeField(_(u"Creation date"), auto_now_add=True)
+    modification_date = models.DateTimeField(_(u"Modification date"), auto_now=True)
 
     def __unicode__(self):
         return u"%s, %s" % (self.user, self.session)
@@ -81,36 +75,31 @@ class Cart(models.Model):
                 cart_item.amount += amount
                 cart_item.save()
             else:
-                cart_item = CartItem.objects.create(
-                    cart=self, product=product, amount=amount)
+                cart_item = CartItem.objects.create(cart=self, product=product, amount=amount)
                 if properties_dict:
                     for key, item in properties_dict.items():
                         property_id = item['property_id']
-                        property_group_id = item['property_group_id'] if item[
-                            'property_group_id'] != '0' else None
+                        property_group_id = item['property_group_id'] if item['property_group_id'] != '0' else None
                         value = item['value']
                         try:
                             Property.objects.get(pk=property_id)
                         except Property.DoesNotExist:
                             pass
                         else:
-                            CartItemPropertyValue.objects.create(
-                                cart_item=cart_item,
-                                property_group_id=property_group_id,
-                                property_id=property_id,
-                                value=value)
+                            CartItemPropertyValue.objects.create(cart_item=cart_item,
+                                                                 property_group_id=property_group_id,
+                                                                 property_id=property_id,
+                                                                 value=value)
         else:
             try:
                 cart_item = CartItem.objects.get(cart=self, product=product)
             except CartItem.DoesNotExist:
-                cart_item = CartItem.objects.create(
-                    cart=self, product=product, amount=amount)
+                cart_item = CartItem.objects.create(cart=self, product=product, amount=amount)
             else:
                 cart_item.amount += float(amount)
                 cart_item.save()
 
-        cache_key = "%s-cart-items-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        cache_key = "%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         cache.delete(cache_key)
 
         return cart_item
@@ -129,19 +118,16 @@ class Cart(models.Model):
         Returns the item for passed product and properties or None if there
         is none.
         """
-        properties_dict_keys = [
-            '{0}_{1}_{2}'.format(
-                item['property_group_id'],
-                item['property_id'],
-                item['value']) for item in properties_dict.values()]
+        properties_dict_keys = ['{0}_{1}_{2}'.format(item['property_group_id'],
+                                                     item['property_id'],
+                                                     item['value']) for item in properties_dict.values()]
         properties_dict_keys = sorted(properties_dict_keys)
         properties_dict_key = '-'.join(properties_dict_keys)
         for item in CartItem.objects.filter(cart=self, product=product):
             item_props = []
             for pv in item.properties.all():
                 property_group_id = pv.property_group_id if pv.property_group_id else '0'
-                key = '{0}_{1}_{2}'.format(
-                    property_group_id, pv.property_id, pv.value)
+                key = '{0}_{1}_{2}'.format(property_group_id, pv.property_id, pv.value)
                 item_props.append(key)
             item_props = sorted(item_props)
             item_props_key = '-'.join(item_props)
@@ -155,8 +141,7 @@ class Cart(models.Model):
         Returns the items of the cart.
         """
         self._update_product_amounts()
-        cache_key = "%s-cart-items-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        cache_key = "%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         items = cache.get(cache_key)
         if items is None:
             items = CartItem.objects.select_related().filter(cart=self, product__active=True)
@@ -172,10 +157,8 @@ class Cart(models.Model):
         import lfs.shipping.utils
         max_delivery_time = None
         for item in self.get_items():
-            delivery_time = lfs.shipping.utils.get_product_delivery_time(
-                request, item.product, for_cart=True)
-            if (max_delivery_time is None) or (
-                    delivery_time.as_hours() > max_delivery_time.as_hours()):
+            delivery_time = lfs.shipping.utils.get_product_delivery_time(request, item.product, for_cart=True)
+            if (max_delivery_time is None) or (delivery_time.as_hours() > max_delivery_time.as_hours()):
                 max_delivery_time = delivery_time
         return max_delivery_time
 
@@ -209,8 +192,9 @@ class Cart(models.Model):
         return tax
 
     def _update_product_amounts(self):
-        items = CartItem.objects.select_related('product').filter(
-            cart=self, product__active=True, product__manage_stock_amount=True)
+        items = CartItem.objects.select_related('product').filter(cart=self,
+                                                                  product__active=True,
+                                                                  product__manage_stock_amount=True)
         updated = False
         for item in items:
             if item.amount > item.product.stock_amount and not item.product.order_time:
@@ -221,8 +205,7 @@ class Cart(models.Model):
                     item.save()
                 updated = True
         if updated:
-            cache_key = "%s-cart-items-%s" % (
-                settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+            cache_key = "%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
             cache.delete(cache_key)
 
 
@@ -251,17 +234,16 @@ class CartItem(models.Model):
     cart = models.ForeignKey(Cart, verbose_name=_(u"Cart"))
     product = models.ForeignKey(Product, verbose_name=_(u"Product"))
     amount = models.FloatField(_(u"Quantity"), blank=True, null=True)
-    creation_date = models.DateTimeField(
-        _(u"Creation date"), auto_now_add=True)
-    modification_date = models.DateTimeField(
-        _(u"Modification date"), auto_now=True)
+    creation_date = models.DateTimeField(_(u"Creation date"), auto_now_add=True)
+    modification_date = models.DateTimeField(_(u"Modification date"), auto_now=True)
 
     class Meta:
         ordering = ['id']
 
     def __unicode__(self):
-        return u"Product: %(product)s, Quantity: %(amount)f, Cart: %(cart)s" % {
-            'product': self.product, 'amount': self.amount, 'cart': self.cart}
+        return u"Product: %(product)s, Quantity: %(amount)f, Cart: %(cart)s" % {'product': self.product,
+                                                                                'amount': self.amount,
+                                                                                'cart': self.cart}
 
     def get_price_net(self, request):
         """
@@ -289,13 +271,11 @@ class CartItem(models.Model):
                 except:
                     price = self.product.get_price_gross(request)
             else:
-                price = self.product.get_price_gross(
-                    request, with_properties=False)
+                price = self.product.get_price_gross(request, with_properties=False)
                 for property in self.properties.all():
                     if property.property.is_select_field:
                         try:
-                            option = PropertyOption.objects.get(
-                                pk=int(float(property.value)))
+                            option = PropertyOption.objects.get(pk=int(float(property.value)))
                         except (PropertyOption.DoesNotExist, AttributeError, ValueError):
                             pass
                         else:
@@ -304,10 +284,8 @@ class CartItem(models.Model):
                             except (TypeError, ValueError):
                                 pass
                             else:
-                                if not self.product.price_includes_tax(
-                                        request):
-                                    option_price = option_price * \
-                                        ((100 + self.product.get_tax_rate(request)) / 100)
+                                if not self.product.price_includes_tax(request):
+                                    option_price = option_price * ((100 + self.product.get_tax_rate(request)) / 100)
                                 price += option_price
         return price
 
@@ -358,15 +336,15 @@ class CartItem(models.Model):
             price = ""
 
             try:
-                cipv = CartItemPropertyValue.objects.get(
-                    cart_item=self, property=prop, property_group=property_group)
+                cipv = CartItemPropertyValue.objects.get(cart_item=self,
+                                                         property=prop,
+                                                         property_group=property_group)
             except CartItemPropertyValue.DoesNotExist:
                 continue
 
             if prop.is_select_field:
                 try:
-                    option = PropertyOption.objects.get(
-                        pk=int(float(cipv.value)))
+                    option = PropertyOption.objects.get(pk=int(float(cipv.value)))
                 except (PropertyOption.DoesNotExist, ValueError):
                     value = cipv.value
                     price = 0.0
@@ -395,9 +373,7 @@ class CartItem(models.Model):
                 "property_group_name": property_group.name
             })
 
-        properties = sorted(properties,
-                            key=lambda x: '{0}-{1}'.format(x['property_group_name'],
-                                                           x['obj'].position))
+        properties = sorted(properties, key=lambda x: '{0}-{1}'.format(x['property_group_name'], x['obj'].position))
         return properties
 
 
@@ -417,14 +393,7 @@ class CartItemPropertyValue(models.Model):
     value
         The value which is stored.
     """
-    cart_item = models.ForeignKey(
-        CartItem,
-        verbose_name=_(u"Cart item"),
-        related_name="properties")
+    cart_item = models.ForeignKey(CartItem, verbose_name=_(u"Cart item"), related_name="properties")
     property = models.ForeignKey(Property, verbose_name=_(u"Property"))
-    property_group = models.ForeignKey(
-        PropertyGroup,
-        verbose_name=_(u'Property group'),
-        null=True,
-        blank=True)
+    property_group = models.ForeignKey(PropertyGroup, verbose_name=_(u'Property group'), null=True, blank=True)
     value = models.CharField("Value", blank=True, max_length=100)

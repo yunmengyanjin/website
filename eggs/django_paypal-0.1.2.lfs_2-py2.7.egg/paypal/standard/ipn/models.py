@@ -15,15 +15,12 @@ class PayPalIPN(PayPalStandardBase):
 
     def _postback(self):
         """Perform PayPal Postback validation."""
-        return urllib2.urlopen(
-            self.get_endpoint(),
-            "cmd=_notify-validate&%s" %
-            self.query).read()
-
+        return urllib2.urlopen(self.get_endpoint(), "cmd=_notify-validate&%s" % self.query).read()
+    
     def _verify_postback(self):
         if self.response != "VERIFIED":
             self.set_flag("Invalid postback. (%s)" % self.response)
-
+            
     def send_signals(self):
         """Shout for the world to hear whether a txn was successful."""
         # Transaction signals:
@@ -50,4 +47,4 @@ class PayPalIPN(PayPalStandardBase):
             elif self.is_subscription_end_of_term():
                 subscription_eot.send(sender=self)
             elif self.is_subscription_modified():
-                subscription_modify.send(sender=self)
+                subscription_modify.send(sender=self)            

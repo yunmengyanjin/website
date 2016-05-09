@@ -6,7 +6,7 @@ from django.utils import six
 from django.utils.deprecation import RemovedInDjango19Warning
 
 warnings.warn("django.utils.importlib will be removed in Django 1.9.",
-              RemovedInDjango19Warning, stacklevel=2)
+    RemovedInDjango19Warning, stacklevel=2)
 
 
 def _resolve_name(name, package, level):
@@ -18,8 +18,7 @@ def _resolve_name(name, package, level):
         try:
             dot = package.rindex('.', 0, dot)
         except ValueError:
-            raise ValueError(
-                "attempted relative import beyond top-level package")
+            raise ValueError("attempted relative import beyond top-level package")
     return "%s.%s" % (package[:dot], name)
 
 
@@ -36,8 +35,7 @@ else:
         """
         if name.startswith('.'):
             if not package:
-                raise TypeError(
-                    "relative imports require the 'package' argument")
+                raise TypeError("relative imports require the 'package' argument")
             level = 0
             for character in name:
                 if character != '.':

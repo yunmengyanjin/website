@@ -19,7 +19,7 @@ def compress_kml(kml):
 def render_to_kml(*args, **kwargs):
     "Renders the response as KML (using the correct MIME type)."
     return HttpResponse(loader.render_to_string(*args, **kwargs),
-                        content_type='application/vnd.google-earth.kml+xml')
+        content_type='application/vnd.google-earth.kml+xml')
 
 
 def render_to_kmz(*args, **kwargs):
@@ -28,10 +28,10 @@ def render_to_kmz(*args, **kwargs):
     MIME type).
     """
     return HttpResponse(compress_kml(loader.render_to_string(*args, **kwargs)),
-                        content_type='application/vnd.google-earth.kmz')
+        content_type='application/vnd.google-earth.kmz')
 
 
 def render_to_text(*args, **kwargs):
     "Renders the response using the MIME type for plain text."
     return HttpResponse(loader.render_to_string(*args, **kwargs),
-                        content_type='text/plain')
+        content_type='text/plain')

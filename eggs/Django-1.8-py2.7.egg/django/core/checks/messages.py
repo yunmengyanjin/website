@@ -36,8 +36,7 @@ class CheckMessage(object):
             obj = "?"
         elif isinstance(self.obj, models.base.ModelBase):
             # We need to hardcode ModelBase and Field cases because its __str__
-            # method doesn't return "applabel.modellabel" and cannot be
-            # changed.
+            # method doesn't return "applabel.modellabel" and cannot be changed.
             model = self.obj
             app = model._meta.app_label
             obj = '%s.%s' % (app, model._meta.object_name)
@@ -48,8 +47,8 @@ class CheckMessage(object):
         return "%s: %s%s%s" % (obj, id, self.msg, hint)
 
     def __repr__(self):
-        return "<%s: level=%r, msg=%r, hint=%r, obj=%r, id=%r>" % (
-            self.__class__.__name__, self.level, self.msg, self.hint, self.obj, self.id)
+        return "<%s: level=%r, msg=%r, hint=%r, obj=%r, id=%r>" % \
+            (self.__class__.__name__, self.level, self.msg, self.hint, self.obj, self.id)
 
     def is_serious(self):
         return self.level >= ERROR
@@ -60,30 +59,25 @@ class CheckMessage(object):
 
 
 class Debug(CheckMessage):
-
     def __init__(self, *args, **kwargs):
         super(Debug, self).__init__(DEBUG, *args, **kwargs)
 
 
 class Info(CheckMessage):
-
     def __init__(self, *args, **kwargs):
         super(Info, self).__init__(INFO, *args, **kwargs)
 
 
 class Warning(CheckMessage):
-
     def __init__(self, *args, **kwargs):
         super(Warning, self).__init__(WARNING, *args, **kwargs)
 
 
 class Error(CheckMessage):
-
     def __init__(self, *args, **kwargs):
         super(Error, self).__init__(ERROR, *args, **kwargs)
 
 
 class Critical(CheckMessage):
-
     def __init__(self, *args, **kwargs):
         super(Critical, self).__init__(CRITICAL, *args, **kwargs)

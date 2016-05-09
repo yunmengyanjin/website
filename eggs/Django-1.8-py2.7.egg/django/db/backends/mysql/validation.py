@@ -3,7 +3,6 @@ from django.db.backends.base.validation import BaseDatabaseValidation
 
 
 class DatabaseValidation(BaseDatabaseValidation):
-
     def check_field(self, field, **kwargs):
         """
         MySQL has the following field length restriction:
@@ -31,5 +30,6 @@ class DatabaseValidation(BaseDatabaseValidation):
                         hint=None,
                         obj=field,
                         id='mysql.E001',
-                    ))
+                    )
+                )
         return errors

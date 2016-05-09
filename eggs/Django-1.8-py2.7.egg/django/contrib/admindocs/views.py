@@ -37,13 +37,7 @@ class BaseAdminDocsView(TemplateView):
             # Display an error message for people without docutils
             self.template_name = 'admin_doc/missing_docutils.html'
             return self.render_to_response(admin.site.each_context(request))
-        return super(
-            BaseAdminDocsView,
-            self).dispatch(
-            request,
-            *
-            args,
-            **kwargs)
+        return super(BaseAdminDocsView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         kwargs.update({'root_path': urlresolvers.reverse('admin:index')})
@@ -56,8 +50,10 @@ class BookmarkletsView(BaseAdminDocsView):
 
     def get_context_data(self, **kwargs):
         context = super(BookmarkletsView, self).get_context_data(**kwargs)
-        context.update({'admin_url': "%s://%s%s" % (self.request.scheme,
-                                                    self.request.get_host(), context['root_path'])})
+        context.update({
+            'admin_url': "%s://%s%s" % (
+                self.request.scheme, self.request.get_host(), context['root_path'])
+        })
         return context
 
 
@@ -78,8 +74,7 @@ class TemplateTagIndexView(BaseAdminDocsView):
                 if body:
                     body = utils.parse_rst(body, 'tag', _('tag:') + tag_name)
                 for key in metadata:
-                    metadata[key] = utils.parse_rst(
-                        metadata[key], 'tag', _('tag:') + tag_name)
+                    metadata[key] = utils.parse_rst(metadata[key], 'tag', _('tag:') + tag_name)
                 if library in builtins:
                     tag_library = ''
                 else:
@@ -106,17 +101,13 @@ class TemplateFilterIndexView(BaseAdminDocsView):
         builtin_libs = [(None, lib) for lib in builtins]
         for module_name, library in builtin_libs + app_libs:
             for filter_name, filter_func in library.filters.items():
-                title, body, metadata = utils.parse_docstring(
-                    filter_func.__doc__)
+                title, body, metadata = utils.parse_docstring(filter_func.__doc__)
                 if title:
-                    title = utils.parse_rst(
-                        title, 'filter', _('filter:') + filter_name)
+                    title = utils.parse_rst(title, 'filter', _('filter:') + filter_name)
                 if body:
-                    body = utils.parse_rst(
-                        body, 'filter', _('filter:') + filter_name)
+                    body = utils.parse_rst(body, 'filter', _('filter:') + filter_name)
                 for key in metadata:
-                    metadata[key] = utils.parse_rst(
-                        metadata[key], 'filter', _('filter:') + filter_name)
+                    metadata[key] = utils.parse_rst(metadata[key], 'filter', _('filter:') + filter_name)
                 if library in builtins:
                     tag_library = ''
                 else:
@@ -168,8 +159,7 @@ class ViewDetailView(BaseAdminDocsView):
         if body:
             body = utils.parse_rst(body, 'view', _('view:') + view)
         for key in metadata:
-            metadata[key] = utils.parse_rst(
-                metadata[key], 'model', _('view:') + view)
+            metadata[key] = utils.parse_rst(metadata[key], 'model', _('view:') + view)
         kwargs.update({
             'name': view,
             'summary': title,
@@ -201,9 +191,7 @@ class ModelDetailView(BaseAdminDocsView):
         try:
             model = app_config.get_model(model_name)
         except LookupError:
-            raise Http404(
-                _("Model %(model_name)r not found in app %(app_label)r") %
-                self.kwargs)
+            raise Http404(_("Model %(model_name)r not found in app %(app_label)r") % self.kwargs)
 
         opts = model._meta
 
@@ -246,23 +234,20 @@ class ModelDetailView(BaseAdminDocsView):
                 'app_label': app_label,
                 'object_name': data_type,
             }
-            fields.append({'name': "%s.all" % field.name,
-                           "data_type": 'List',
-                           'verbose': utils.parse_rst(_("all %s") % verbose,
-                                                      'model',
-                                                      _('model:') + opts.model_name),
-                           })
-            fields.append({'name': "%s.count" % field.name,
-                           'data_type': 'Integer',
-                           'verbose': utils.parse_rst(_("number of %s") % verbose,
-                                                      'model',
-                                                      _('model:') + opts.model_name),
-                           })
+            fields.append({
+                'name': "%s.all" % field.name,
+                "data_type": 'List',
+                'verbose': utils.parse_rst(_("all %s") % verbose, 'model', _('model:') + opts.model_name),
+            })
+            fields.append({
+                'name': "%s.count" % field.name,
+                'data_type': 'Integer',
+                'verbose': utils.parse_rst(_("number of %s") % verbose, 'model', _('model:') + opts.model_name),
+            })
 
         # Gather model methods.
         for func_name, func in model.__dict__.items():
-            if (inspect.isfunction(func) and len(
-                    inspect.getargspec(func)[0]) == 1):
+            if (inspect.isfunction(func) and len(inspect.getargspec(func)[0]) == 1):
                 try:
                     for exclude in MODEL_METHODS_EXCLUDE:
                         if func_name.startswith(exclude):
@@ -271,8 +256,7 @@ class ModelDetailView(BaseAdminDocsView):
                     continue
                 verbose = func.__doc__
                 if verbose:
-                    verbose = utils.parse_rst(utils.trim_docstring(
-                        verbose), 'model', _('model:') + opts.model_name)
+                    verbose = utils.parse_rst(utils.trim_docstring(verbose), 'model', _('model:') + opts.model_name)
                 fields.append({
                     'name': func_name,
                     'data_type': get_return_data_type(func_name),
@@ -286,18 +270,16 @@ class ModelDetailView(BaseAdminDocsView):
                 'object_name': rel.opts.object_name,
             }
             accessor = rel.get_accessor_name()
-            fields.append({'name': "%s.all" % accessor,
-                           'data_type': 'List',
-                           'verbose': utils.parse_rst(_("all %s") % verbose,
-                                                      'model',
-                                                      _('model:') + opts.model_name),
-                           })
-            fields.append({'name': "%s.count" % accessor,
-                           'data_type': 'Integer',
-                           'verbose': utils.parse_rst(_("number of %s") % verbose,
-                                                      'model',
-                                                      _('model:') + opts.model_name),
-                           })
+            fields.append({
+                'name': "%s.all" % accessor,
+                'data_type': 'List',
+                'verbose': utils.parse_rst(_("all %s") % verbose, 'model', _('model:') + opts.model_name),
+            })
+            fields.append({
+                'name': "%s.count" % accessor,
+                'data_type': 'Integer',
+                'verbose': utils.parse_rst(_("number of %s") % verbose, 'model', _('model:') + opts.model_name),
+            })
         kwargs.update({
             'name': '%s.%s' % (opts.app_label, opts.object_name),
             'summary': title,
@@ -406,9 +388,7 @@ def extract_views_from_urlpatterns(urlpatterns, base='', namespace=None):
             except ViewDoesNotExist:
                 continue
         else:
-            raise TypeError(
-                _("%s does not appear to be a urlpattern object") %
-                p)
+            raise TypeError(_("%s does not appear to be a urlpattern object") % p)
     return views
 
 named_group_matcher = re.compile(r'\(\?P(<\w+>).+?\)')
@@ -428,8 +408,7 @@ def simplify_regex(pattern):
     pattern = non_named_group_matcher.sub("<var>", pattern)
 
     # clean up any outstanding regex-y characters.
-    pattern = pattern.replace('^', '').replace('$', '').replace(
-        '?', '').replace('//', '/').replace('\\', '')
+    pattern = pattern.replace('^', '').replace('$', '').replace('?', '').replace('//', '/').replace('\\', '')
     if not pattern.startswith('/'):
         pattern = '/' + pattern
     return pattern

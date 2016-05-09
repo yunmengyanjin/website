@@ -3,9 +3,7 @@ from django.db import models
 from south.db import db
 from paypal.standard.ipn.models import *
 
-
-class Migration:
-
+class Migration:    
     def forwards(self, orm):
         # Adding model 'PayPalIPN'
         db.create_table('paypal_ipn', (
@@ -123,7 +121,7 @@ class Migration:
         ))
         db.send_create_signal('ipn', ['PayPalIPN'])
 
-    def backwards(self, orm):
+    def backwards(self, orm):        
         # Deleting model 'PayPalIPN'
         db.delete_table('paypal_ipn')
 

@@ -68,17 +68,8 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
 
     def get_table_description(self, cursor, table_name):
         "Returns a description of the table, with the DB-API cursor.description interface."
-        return [
-            FieldInfo(
-                info['name'],
-                info['type'],
-                None,
-                info['size'],
-                None,
-                None,
-                info['null_ok']) for info in self._table_info(
-                cursor,
-                table_name)]
+        return [FieldInfo(info['name'], info['type'], None, info['size'], None, None,
+                 info['null_ok']) for info in self._table_info(cursor, table_name)]
 
     def column_name_converter(self, name):
         """
@@ -105,9 +96,7 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
         relations = {}
 
         # Schema for this table
-        cursor.execute(
-            "SELECT sql FROM sqlite_master WHERE tbl_name = %s AND type = %s", [
-                table_name, "table"])
+        cursor.execute("SELECT sql FROM sqlite_master WHERE tbl_name = %s AND type = %s", [table_name, "table"])
         try:
             results = cursor.fetchone()[0].strip()
         except TypeError:
@@ -123,10 +112,7 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
             if field_desc.startswith("UNIQUE"):
                 continue
 
-            m = re.search(
-                'references (\S*) ?\(["|]?(.*)["|]?\)',
-                field_desc,
-                re.I)
+            m = re.search('references (\S*) ?\(["|]?(.*)["|]?\)', field_desc, re.I)
             if not m:
                 continue
             table, column = [s.strip('"') for s in m.groups()]
@@ -138,13 +124,10 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
             else:
                 field_name = field_desc.split()[0].strip('"')
 
-            cursor.execute(
-                "SELECT sql FROM sqlite_master WHERE tbl_name = %s",
-                [table])
+            cursor.execute("SELECT sql FROM sqlite_master WHERE tbl_name = %s", [table])
             result = cursor.fetchall()[0]
             other_table_results = result[0].strip()
-            li, ri = other_table_results.index(
-                '('), other_table_results.rindex(')')
+            li, ri = other_table_results.index('('), other_table_results.rindex(')')
             other_table_results = other_table_results[li + 1:ri]
 
             for other_desc in other_table_results.split(','):
@@ -167,9 +150,7 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
         key_columns = []
 
         # Schema for this table
-        cursor.execute(
-            "SELECT sql FROM sqlite_master WHERE tbl_name = %s AND type = %s", [
-                table_name, "table"])
+        cursor.execute("SELECT sql FROM sqlite_master WHERE tbl_name = %s AND type = %s", [table_name, "table"])
         results = cursor.fetchone()[0].strip()
         results = results[results.index('(') + 1:results.rindex(')')]
 
@@ -181,15 +162,11 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
             if field_desc.startswith("UNIQUE"):
                 continue
 
-            m = re.search(
-                '"(.*)".*references (.*) \(["|](.*)["|]\)',
-                field_desc,
-                re.I)
+            m = re.search('"(.*)".*references (.*) \(["|](.*)["|]\)', field_desc, re.I)
             if not m:
                 continue
 
-            # This will append (column_name, referenced_table_name,
-            # referenced_column_name) to key_columns
+            # This will append (column_name, referenced_table_name, referenced_column_name) to key_columns
             key_columns.append(tuple(s.strip('"') for s in m.groups()))
 
         return key_columns
@@ -200,26 +177,17 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
             if info['pk'] != 0:
                 indexes[info['name']] = {'primary_key': True,
                                          'unique': False}
-        cursor.execute('PRAGMA index_list(%s)' %
-                       self.connection.ops.quote_name(table_name))
+        cursor.execute('PRAGMA index_list(%s)' % self.connection.ops.quote_name(table_name))
         # seq, name, unique
-        for index, unique in [(field[1], field[2])
-                              for field in cursor.fetchall()]:
-            cursor.execute(
-                'PRAGMA index_info(%s)' %
-                self.connection.ops.quote_name(index))
+        for index, unique in [(field[1], field[2]) for field in cursor.fetchall()]:
+            cursor.execute('PRAGMA index_info(%s)' % self.connection.ops.quote_name(index))
             info = cursor.fetchall()
             # Skip indexes across multiple fields
             if len(info) != 1:
                 continue
             name = info[0][2]  # seqno, cid, name
-            indexes[name] = {
-                'primary_key': indexes.get(
-                    name,
-                    {}).get(
-                    "primary_key",
-                    False),
-                'unique': unique}
+            indexes[name] = {'primary_key': indexes.get(name, {}).get("primary_key", False),
+                             'unique': unique}
         return indexes
 
     def get_primary_key_column(self, cursor, table_name):
@@ -227,9 +195,7 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
         Get the column name of the primary key for the given table.
         """
         # Don't use PRAGMA because that causes issues with some transactions
-        cursor.execute(
-            "SELECT sql FROM sqlite_master WHERE tbl_name = %s AND type = %s", [
-                table_name, "table"])
+        cursor.execute("SELECT sql FROM sqlite_master WHERE tbl_name = %s AND type = %s", [table_name, "table"])
         row = cursor.fetchone()
         if row is None:
             raise ValueError("Table %s does not exist" % table_name)
@@ -243,9 +209,7 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
         return None
 
     def _table_info(self, cursor, name):
-        cursor.execute(
-            'PRAGMA table_info(%s)' %
-            self.connection.ops.quote_name(name))
+        cursor.execute('PRAGMA table_info(%s)' % self.connection.ops.quote_name(name))
         # cid, name, type, notnull, dflt_value, pk
         return [{'name': field[1],
                  'type': field[2],
@@ -260,13 +224,10 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
         """
         constraints = {}
         # Get the index info
-        cursor.execute("PRAGMA index_list(%s)" %
-                       self.connection.ops.quote_name(table_name))
+        cursor.execute("PRAGMA index_list(%s)" % self.connection.ops.quote_name(table_name))
         for number, index, unique in cursor.fetchall():
             # Get the index info for that index
-            cursor.execute(
-                'PRAGMA index_info(%s)' %
-                self.connection.ops.quote_name(index))
+            cursor.execute('PRAGMA index_info(%s)' % self.connection.ops.quote_name(index))
             for index_rank, column_rank, column in cursor.fetchall():
                 if index not in constraints:
                     constraints[index] = {

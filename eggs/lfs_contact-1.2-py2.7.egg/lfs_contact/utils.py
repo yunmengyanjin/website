@@ -47,13 +47,7 @@ def send_contact_mail(request, form, template="lfs/mail/contact_mail.html"):
         'Sender': shop.from_email
     }
 
-    mail = EmailMultiAlternatives(
-        subject=subject,
-        body="",
-        from_email=from_email,
-        to=to,
-        bcc=bcc,
-        headers=headers)
+    mail = EmailMultiAlternatives(subject=subject, body="", from_email=from_email, to=to, bcc=bcc, headers=headers)
     mail.attach_alternative(text, "text/html")
 
     mail.send()

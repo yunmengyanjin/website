@@ -78,7 +78,7 @@ class SiteManager(models.Manager):
 class Site(models.Model):
 
     domain = models.CharField(_('domain name'), max_length=100,
-                              validators=[_simple_domain_name_validator])
+        validators=[_simple_domain_name_validator])
     name = models.CharField(_('display name'), max_length=50)
     objects = SiteManager()
 
@@ -93,7 +93,6 @@ class Site(models.Model):
 
 
 class RequestSite(RealRequestSite):
-
     def __init__(self, *args, **kwargs):
         warnings.warn(
             "Please import RequestSite from django.contrib.sites.requests.",

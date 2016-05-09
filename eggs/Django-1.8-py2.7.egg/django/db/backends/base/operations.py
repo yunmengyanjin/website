@@ -73,15 +73,13 @@ class BaseDatabaseOperations(object):
         Given a lookup_type of 'year', 'month' or 'day', returns the SQL that
         extracts a value from the given date field field_name.
         """
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseOperations may require a date_extract_sql() method')
+        raise NotImplementedError('subclasses of BaseDatabaseOperations may require a date_extract_sql() method')
 
     def date_interval_sql(self, timedelta):
         """
         Implements the date interval functionality for expressions
         """
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseOperations may require a date_interval_sql() method')
+        raise NotImplementedError('subclasses of BaseDatabaseOperations may require a date_interval_sql() method')
 
     def date_trunc_sql(self, lookup_type, field_name):
         """
@@ -89,8 +87,7 @@ class BaseDatabaseOperations(object):
         truncates the given date field field_name to a date object with only
         the given specificity.
         """
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseOperations may require a datetrunc_sql() method')
+        raise NotImplementedError('subclasses of BaseDatabaseOperations may require a datetrunc_sql() method')
 
     def datetime_cast_sql(self):
         """
@@ -107,8 +104,7 @@ class BaseDatabaseOperations(object):
         'second', returns the SQL that extracts a value from the given
         datetime field field_name, and a tuple of parameters.
         """
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseOperations may require a datetime_extract_sql() method')
+        raise NotImplementedError('subclasses of BaseDatabaseOperations may require a datetime_extract_sql() method')
 
     def datetime_trunc_sql(self, lookup_type, field_name, tzname):
         """
@@ -117,8 +113,7 @@ class BaseDatabaseOperations(object):
         field_name to a datetime object with only the given specificity, and
         a tuple of parameters.
         """
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseOperations may require a datetime_trunk_sql() method')
+        raise NotImplementedError('subclasses of BaseDatabaseOperations may require a datetime_trunk_sql() method')
 
     def deferrable_sql(self):
         """
@@ -134,8 +129,7 @@ class BaseDatabaseOperations(object):
         checked for duplicates.
         """
         if fields:
-            raise NotImplementedError(
-                'DISTINCT ON fields is not supported by this database backend')
+            raise NotImplementedError('DISTINCT ON fields is not supported by this database backend')
         else:
             return 'DISTINCT'
 
@@ -192,8 +186,7 @@ class BaseDatabaseOperations(object):
         search of the given field_name. Note that the resulting string should
         contain a '%s' placeholder for the value being searched against.
         """
-        raise NotImplementedError(
-            'Full-text search is not implemented for this database backend')
+        raise NotImplementedError('Full-text search is not implemented for this database backend')
 
     def last_executed_query(self, cursor, sql, params):
         """
@@ -206,15 +199,13 @@ class BaseDatabaseOperations(object):
         according to their own quoting schemes.
         """
         # Convert params to contain Unicode values.
-        to_unicode = lambda s: force_text(
-            s, strings_only=True, errors='replace')
+        to_unicode = lambda s: force_text(s, strings_only=True, errors='replace')
         if isinstance(params, (list, tuple)):
             u_params = tuple(to_unicode(val) for val in params)
         elif params is None:
             u_params = ()
         else:
-            u_params = {to_unicode(k): to_unicode(v)
-                        for k, v in params.items()}
+            u_params = {to_unicode(k): to_unicode(v) for k, v in params.items()}
 
         return six.text_type("QUERY = %r - PARAMS = %r") % (sql, u_params)
 
@@ -255,8 +246,7 @@ class BaseDatabaseOperations(object):
         Returns the value to use for the LIMIT when we are wanting "LIMIT
         infinity". Returns None if the limit clause can be omitted in this case.
         """
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseOperations may require a no_limit_value() method')
+        raise NotImplementedError('subclasses of BaseDatabaseOperations may require a no_limit_value() method')
 
     def pk_default_value(self):
         """
@@ -324,8 +314,7 @@ class BaseDatabaseOperations(object):
         Returns a quoted version of the given table, index or column name. Does
         not quote the given name if it's already been quoted.
         """
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseOperations may require a quote_name() method')
+        raise NotImplementedError('subclasses of BaseDatabaseOperations may require a quote_name() method')
 
     def random_function_sql(self):
         """
@@ -342,8 +331,7 @@ class BaseDatabaseOperations(object):
         If the feature is not supported (or part of it is not supported), a
         NotImplementedError exception can be raised.
         """
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseOperations may require a regex_lookup() method')
+        raise NotImplementedError('subclasses of BaseDatabaseOperations may require a regex_lookup() method')
 
     def savepoint_create_sql(self, sid):
         """
@@ -389,8 +377,7 @@ class BaseDatabaseOperations(object):
         to tables with foreign keys pointing the tables being truncated.
         PostgreSQL requires a cascade even if these tables are empty.
         """
-        raise NotImplementedError(
-            'subclasses of BaseDatabaseOperations must provide a sql_flush() method')
+        raise NotImplementedError('subclasses of BaseDatabaseOperations must provide a sql_flush() method')
 
     def sequence_reset_by_name_sql(self, style, sequences):
         """
@@ -439,13 +426,7 @@ class BaseDatabaseOperations(object):
 
     def prep_for_like_query(self, x):
         """Prepares a value for use in a LIKE query."""
-        return force_text(x).replace(
-            "\\",
-            "\\\\").replace(
-            "%",
-            "\%").replace(
-            "_",
-            "\_")
+        return force_text(x).replace("\\", "\\\\").replace("%", "\%").replace("_", "\_")
 
     # Same as prep_for_like_query(), but called for "iexact" matches, which
     # need not necessarily be implemented using "LIKE" in the backend.
@@ -538,12 +519,7 @@ class BaseDatabaseOperations(object):
         """
         return []
 
-    def convert_durationfield_value(
-            self,
-            value,
-            expression,
-            connection,
-            context):
+    def convert_durationfield_value(self, value, expression, connection, context):
         if value is not None:
             value = str(decimal.Decimal(value) / decimal.Decimal(1000000))
             value = parse_duration(value)

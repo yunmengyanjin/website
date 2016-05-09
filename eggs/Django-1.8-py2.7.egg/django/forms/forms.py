@@ -88,7 +88,7 @@ class DeclarativeFieldsMetaclass(MediaDefiningClass):
         attrs['declared_fields'] = OrderedDict(current_fields)
 
         new_class = (super(DeclarativeFieldsMetaclass, mcs)
-                     .__new__(mcs, name, bases, attrs))
+            .__new__(mcs, name, bases, attrs))
 
         # Walk through the MRO.
         declared_fields = OrderedDict()
@@ -115,7 +115,6 @@ class BaseForm(object):
     # class is different than Form. See the comments by the Form class for more
     # information. Any improvements to the form API should be made to *this*
     # class, not to the Form class.
-
     def __init__(self, data=None, files=None, auto_id='id_%s', prefix=None,
                  initial=None, error_class=ErrorList, label_suffix=None,
                  empty_permitted=False):
@@ -127,8 +126,7 @@ class BaseForm(object):
         self.initial = initial or {}
         self.error_class = error_class
         # Translators: This is the default suffix added to form field labels
-        self.label_suffix = label_suffix if label_suffix is not None else _(
-            ':')
+        self.label_suffix = label_suffix if label_suffix is not None else _(':')
         self.empty_permitted = empty_permitted
         self._errors = None  # Stores the errors after clean() has been called.
         self._changed_data = None
@@ -192,8 +190,7 @@ class BaseForm(object):
 
         Subclasses may wish to override.
         """
-        return '%s-%s' % (self.prefix,
-                          field_name) if self.prefix else field_name
+        return '%s-%s' % (self.prefix, field_name) if self.prefix else field_name
 
     def add_initial_prefix(self, field_name):
         """
@@ -201,24 +198,16 @@ class BaseForm(object):
         """
         return 'initial-%s' % self.add_prefix(field_name)
 
-    def _html_output(
-            self,
-            normal_row,
-            error_row,
-            row_ender,
-            help_text_html,
-            errors_on_separate_row):
+    def _html_output(self, normal_row, error_row, row_ender, help_text_html, errors_on_separate_row):
         "Helper function for outputting HTML. Used by as_table(), as_ul(), as_p()."
-        # Errors that should be displayed above all fields.
-        top_errors = self.non_field_errors()
+        top_errors = self.non_field_errors()  # Errors that should be displayed above all fields.
         output, hidden_fields = [], []
 
         for name, field in self.fields.items():
             html_class_attr = ''
             bf = self[name]
             # Escape and cache in local variable.
-            bf_errors = self.error_class(
-                [conditional_escape(error) for error in bf.errors])
+            bf_errors = self.error_class([conditional_escape(error) for error in bf.errors])
             if bf.is_hidden:
                 if bf_errors:
                     top_errors.extend(
@@ -278,8 +267,7 @@ class BaseForm(object):
                         'field_name': '',
                     })
                     output.append(last_row)
-                output[-1] = last_row[:-
-                                      len(row_ender)] + str_hidden + row_ender
+                output[-1] = last_row[:-len(row_ender)] + str_hidden + row_ender
             else:
                 # If there aren't any rows in the output, just append the
                 # hidden fields.
@@ -319,9 +307,7 @@ class BaseForm(object):
         field -- i.e., from Form.clean(). Returns an empty ErrorList if there
         are none.
         """
-        return self.errors.get(
-            NON_FIELD_ERRORS, self.error_class(
-                error_class='nonfield'))
+        return self.errors.get(NON_FIELD_ERRORS, self.error_class(error_class='nonfield'))
 
     def _raw_value(self, fieldname):
         """
@@ -371,11 +357,9 @@ class BaseForm(object):
             if field not in self.errors:
                 if field != NON_FIELD_ERRORS and field not in self.fields:
                     raise ValueError(
-                        "'%s' has no field named '%s'." %
-                        (self.__class__.__name__, field))
+                        "'%s' has no field named '%s'." % (self.__class__.__name__, field))
                 if field == NON_FIELD_ERRORS:
-                    self._errors[field] = self.error_class(
-                        error_class='nonfield')
+                    self._errors[field] = self.error_class(error_class='nonfield')
                 else:
                     self._errors[field] = self.error_class()
             self._errors[field].extend(error_list)
@@ -414,8 +398,7 @@ class BaseForm(object):
             # value_from_datadict() gets the data from the data dictionaries.
             # Each widget type knows how to retrieve its own data, because some
             # widgets split data over several HTML fields.
-            value = field.widget.value_from_datadict(
-                self.data, self.files, self.add_prefix(name))
+            value = field.widget.value_from_datadict(self.data, self.files, self.add_prefix(name))
             try:
                 if isinstance(field, FileField):
                     initial = self.initial.get(name, field.initial)
@@ -472,8 +455,7 @@ class BaseForm(object):
             # method of each widget.
             for name, field in self.fields.items():
                 prefixed_name = self.add_prefix(name)
-                data_value = field.widget.value_from_datadict(
-                    self.data, self.files, prefixed_name)
+                data_value = field.widget.value_from_datadict(self.data, self.files, prefixed_name)
                 if not field.show_hidden_initial:
                     initial_value = self.initial.get(name, field.initial)
                     if callable(initial_value):
@@ -482,9 +464,8 @@ class BaseForm(object):
                     initial_prefixed_name = self.add_initial_prefix(name)
                     hidden_widget = field.hidden_widget()
                     try:
-                        initial_value = field.to_python(
-                            hidden_widget.value_from_datadict(
-                                self.data, self.files, initial_prefixed_name))
+                        initial_value = field.to_python(hidden_widget.value_from_datadict(
+                            self.data, self.files, initial_prefixed_name))
                     except ValidationError:
                         # Always assume data has changed if validation fails.
                         self._changed_data.append(name)
@@ -541,7 +522,6 @@ class Form(six.with_metaclass(DeclarativeFieldsMetaclass, BaseForm)):
 @python_2_unicode_compatible
 class BoundField(object):
     "A Field plus data"
-
     def __init__(self, form, field, name):
         self.form = form
         self.field = field
@@ -571,8 +551,7 @@ class BoundField(object):
         """
         id_ = self.field.widget.attrs.get('id') or self.auto_id
         attrs = {'id': id_} if id_ else {}
-        for subwidget in self.field.widget.subwidgets(
-                self.html_name, self.value(), attrs):
+        for subwidget in self.field.widget.subwidgets(self.html_name, self.value(), attrs):
             yield subwidget
 
     def __len__(self):
@@ -640,8 +619,7 @@ class BoundField(object):
         """
         Returns the data for this BoundField, or None if it wasn't given.
         """
-        return self.field.widget.value_from_datadict(
-            self.form.data, self.form.files, self.html_name)
+        return self.field.widget.value_from_datadict(self.form.data, self.form.files, self.html_name)
 
     def value(self):
         """
@@ -683,8 +661,7 @@ class BoundField(object):
                             else self.form.label_suffix)
         # Only add the suffix if the label does not end in punctuation.
         # Translators: If found as last label character, these punctuation
-        # characters will prevent the default label_suffix to be appended to
-        # the label
+        # characters will prevent the default label_suffix to be appended to the label
         if label_suffix and contents and contents[-1] not in _(':?.!'):
             contents = format_html('{}{}', contents, label_suffix)
         widget = self.field.widget
@@ -693,8 +670,7 @@ class BoundField(object):
             id_for_label = widget.id_for_label(id_)
             if id_for_label:
                 attrs = dict(attrs or {}, **{'for': id_for_label})
-            if self.field.required and hasattr(
-                    self.form, 'required_css_class'):
+            if self.field.required and hasattr(self.form, 'required_css_class'):
                 attrs = attrs or {}
                 if 'class' in attrs:
                     attrs['class'] += ' ' + self.form.required_css_class

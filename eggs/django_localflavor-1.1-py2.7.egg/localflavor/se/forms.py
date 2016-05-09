@@ -10,19 +10,14 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import EMPTY_VALUES
 from .se_counties import COUNTY_CHOICES
-from .utils import (
-    id_number_checksum,
-    validate_id_birthday,
-    format_personal_id_number,
-    valid_organisation,
-    format_organisation_number)
+from .utils import (id_number_checksum, validate_id_birthday,
+                    format_personal_id_number, valid_organisation, format_organisation_number)
 
 
 __all__ = ('SECountySelect', 'SEOrganisationNumberField',
            'SEPersonalIdentityNumberField', 'SEPostalCodeField')
 
-SWEDISH_ID_NUMBER = re.compile(
-    r'^(?P<century>\d{2})?(?P<year>\d{2})(?P<month>\d{2})(?P<day>\d{2})(?P<sign>[\-+])?(?P<serial>\d{3})(?P<checksum>\d)$')
+SWEDISH_ID_NUMBER = re.compile(r'^(?P<century>\d{2})?(?P<year>\d{2})(?P<month>\d{2})(?P<day>\d{2})(?P<sign>[\-+])?(?P<serial>\d{3})(?P<checksum>\d)$')
 SE_POSTAL_CODE = re.compile(r'^[1-9]\d{2} ?\d{2}$')
 
 
@@ -142,8 +137,7 @@ class SEPersonalIdentityNumberField(forms.CharField):
 
         # make sure that co-ordination numbers do not pass if not allowed
         if not self.coordination_number and int(gd['day']) > 60:
-            raise forms.ValidationError(
-                self.error_messages['coordination_number'])
+            raise forms.ValidationError(self.error_messages['coordination_number'])
 
         return format_personal_id_number(birth_day, gd)
 
@@ -162,13 +156,7 @@ class SEPostalCodeField(forms.RegexField):
     }
 
     def __init__(self, *args, **kwargs):
-        super(
-            SEPostalCodeField,
-            self).__init__(
-            SE_POSTAL_CODE,
-            *
-            args,
-            **kwargs)
+        super(SEPostalCodeField, self).__init__(SE_POSTAL_CODE, *args, **kwargs)
 
     def clean(self, value):
         return super(SEPostalCodeField, self).clean(value).replace(' ', '')

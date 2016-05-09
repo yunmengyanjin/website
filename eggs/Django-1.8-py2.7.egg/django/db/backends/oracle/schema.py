@@ -20,11 +20,7 @@ class DatabaseSchemaEditor(BaseDatabaseSchemaEditor):
     sql_delete_table = "DROP TABLE %(table)s CASCADE CONSTRAINTS"
 
     def quote_value(self, value):
-        if isinstance(
-            value,
-            (datetime.date,
-             datetime.time,
-             datetime.datetime)):
+        if isinstance(value, (datetime.date, datetime.time, datetime.datetime)):
             return "'%s'" % value
         elif isinstance(value, six.string_types):
             return "'%s'" % six.text_type(value).replace("\'", "\'\'")
@@ -54,13 +50,7 @@ class DatabaseSchemaEditor(BaseDatabaseSchemaEditor):
     def alter_field(self, model, old_field, new_field, strict=False):
         try:
             # Run superclass action
-            super(
-                DatabaseSchemaEditor,
-                self).alter_field(
-                model,
-                old_field,
-                new_field,
-                strict)
+            super(DatabaseSchemaEditor, self).alter_field(model, old_field, new_field, strict)
         except DatabaseError as e:
             description = str(e)
             # If we're changing to/from LOB fields, we need to do a

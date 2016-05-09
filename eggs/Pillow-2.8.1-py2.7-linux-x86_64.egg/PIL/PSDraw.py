@@ -71,7 +71,7 @@ class PSDraw:
         :param size: Size in points.
         """
         if font not in self.isofont:
-            # re-encode font
+            # reencode font
             self._fp_write("/PSDraw-%s ISOLatin1Encoding /%s E\n" %
                            (font, font))
             self.isofont[font] = 1

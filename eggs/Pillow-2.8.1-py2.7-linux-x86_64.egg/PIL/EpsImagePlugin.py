@@ -81,8 +81,8 @@ def Ghostscript(tile, size, fp, scale=1):
     # orig_bbox = bbox
     size = (size[0] * scale, size[1] * scale)
     # resolution is dependent on bbox and size
-    res = (float((72.0 * size[0]) / (bbox[2] - bbox[0])),
-           float((72.0 * size[1]) / (bbox[3] - bbox[1])))
+    res = (float((72.0 * size[0]) / (bbox[2]-bbox[0])),
+           float((72.0 * size[1]) / (bbox[3]-bbox[1])))
     # print("Ghostscript", scale, size, orig_size, bbox, orig_bbox, res)
 
     import os
@@ -112,7 +112,7 @@ def Ghostscript(tile, size, fp, scale=1):
             fp.seek(0)
             lengthfile = fsize
             while lengthfile > 0:
-                s = fp.read(min(lengthfile, 100 * 1024))
+                s = fp.read(min(lengthfile, 100*1024))
                 if not s:
                     break
                 lengthfile -= len(s)
@@ -128,7 +128,7 @@ def Ghostscript(tile, size, fp, scale=1):
                "-sDEVICE=ppmraw",            # ppm driver
                "-sOutputFile=%s" % outfile,  # output file
                "-c", "%d %d translate" % (-bbox[0], -bbox[1]),
-               # adjust for image origin
+                                             # adjust for image origin
                "-f", infile,                 # input file
                ]
 
@@ -161,7 +161,6 @@ class PSFile:
     """
     Wrapper for bytesio object that treats either CR or LF as end of line.
     """
-
     def __init__(self, fp):
         self.fp = fp
         self.char = None
@@ -367,7 +366,6 @@ def _save(im, fp, filename, eps=1):
         raise ValueError("image mode is not supported")
 
     class NoCloseStream:
-
         def __init__(self, fp):
             self.fp = fp
 
@@ -407,7 +405,7 @@ def _save(im, fp, filename, eps=1):
     fp.write(operator[2] + "\n")
     fp.flush()
 
-    ImageFile._save(im, base_fp, [("eps", (0, 0) + im.size, 0, None)])
+    ImageFile._save(im, base_fp, [("eps", (0, 0)+im.size, 0, None)])
 
     fp.write("\n%%%%EndBinary\n")
     fp.write("grestore end\n")

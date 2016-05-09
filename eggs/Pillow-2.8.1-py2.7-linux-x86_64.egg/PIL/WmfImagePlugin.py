@@ -48,8 +48,8 @@ if hasattr(Image.core, "drawwmf"):
             return Image.frombytes(
                 "RGB", im.size,
                 Image.core.drawwmf(im.fp.read(), im.size, self.bbox),
-                "raw", "BGR", (im.size[0] * 3 + 3) & -4, -1
-            )
+                "raw", "BGR", (im.size[0]*3 + 3) & -4, -1
+                )
 
     register_handler(WmfHandler())
 
@@ -75,7 +75,7 @@ def _accept(prefix):
     return (
         prefix[:6] == b"\xd7\xcd\xc6\x9a\x00\x00" or
         prefix[:4] == b"\x01\x00\x00\x00"
-    )
+        )
 
 
 ##

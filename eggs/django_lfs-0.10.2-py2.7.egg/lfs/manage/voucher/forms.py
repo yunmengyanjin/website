@@ -17,7 +17,6 @@ class VoucherOptionsForm(forms.ModelForm):
         model = VoucherOptions
         exclude = ()
 
-
 class VoucherGroupAddForm(forms.ModelForm):
     """Form to add a VoucherGroup.
     """
@@ -41,12 +40,8 @@ class VoucherForm(forms.Form):
     value = forms.FloatField(label=_(u"Value"), required=True)
     start_date = forms.DateField(label=_(u"Start date"), required=True)
     end_date = forms.DateField(label=_(u"End date"), required=True)
-    kind_of = forms.ChoiceField(
-        label=_(u"Kind of"),
-        choices=KIND_OF_CHOICES,
-        required=True)
-    effective_from = forms.FloatField(
-        label=_(u"Effective from"), required=True)
+    kind_of = forms.ChoiceField(label=_(u"Kind of"), choices=KIND_OF_CHOICES, required=True)
+    effective_from = forms.FloatField(label=_(u"Effective from"), required=True)
     tax = forms.ChoiceField(label=_(u"Tax"), required=False)
     limit = forms.IntegerField(label=_(u"Limit"), initial=1, required=True)
 

@@ -145,7 +145,6 @@ else:
         return None
 
     class UnixViewer(Viewer):
-
         def show_file(self, file, **options):
             command, executable = self.get_command_ex(file, **options)
             command = "(%s %s; rm -f %s)&" % (command, quote(file),
@@ -156,7 +155,6 @@ else:
     # implementations
 
     class DisplayViewer(UnixViewer):
-
         def get_command_ex(self, file, **options):
             command = executable = "display"
             return command, executable
@@ -165,7 +163,6 @@ else:
         register(DisplayViewer)
 
     class XVViewer(UnixViewer):
-
         def get_command_ex(self, file, title=None, **options):
             # note: xv is pretty outdated.  most modern systems have
             # imagemagick's display command instead.

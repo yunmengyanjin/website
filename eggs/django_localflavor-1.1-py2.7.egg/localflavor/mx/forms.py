@@ -50,7 +50,6 @@ class MXStateSelect(Select):
     """
     A Select widget that uses a list of Mexican states as its choices.
     """
-
     def __init__(self, attrs=None):
         super(MXStateSelect, self).__init__(attrs, choices=STATE_CHOICES)
 
@@ -111,17 +110,10 @@ class MXRFCField(RegexField):
     }
 
     def __init__(self, min_length=9, max_length=13, *args, **kwargs):
-        rfc_re = re.compile(
-            r'^([A-Z&Ññ]{3}|[A-Z][AEIOU][A-Z]{2})%s([A-Z0-9]{2}[0-9A])?$' %
-            DATE_RE, re.IGNORECASE)
-        super(
-            MXRFCField,
-            self).__init__(
-            rfc_re,
-            min_length=min_length,
-            max_length=max_length,
-            *args,
-            **kwargs)
+        rfc_re = re.compile(r'^([A-Z&Ññ]{3}|[A-Z][AEIOU][A-Z]{2})%s([A-Z0-9]{2}[0-9A])?$' % DATE_RE,
+                            re.IGNORECASE)
+        super(MXRFCField, self).__init__(rfc_re, min_length=min_length,
+                                         max_length=max_length, *args, **kwargs)
 
     def clean(self, value):
         value = super(MXRFCField, self).clean(value)
@@ -205,14 +197,8 @@ class MXCURPField(RegexField):
         curp_re = (r'^[A-Z][AEIOU][A-Z]{2}%s[HM]%s%s{3}[0-9A-Z]\d$' %
                    (DATE_RE, states_re, consonants_re))
         curp_re = re.compile(curp_re, re.IGNORECASE)
-        super(
-            MXCURPField,
-            self).__init__(
-            curp_re,
-            min_length=min_length,
-            max_length=max_length,
-            *args,
-            **kwargs)
+        super(MXCURPField, self).__init__(curp_re, min_length=min_length,
+                                          max_length=max_length, *args, **kwargs)
 
     def clean(self, value):
         value = super(MXCURPField, self).clean(value)
@@ -269,14 +255,10 @@ class MXSocialSecurityNumberField(RegexField):
     def __init__(self, min_length=11, max_length=11, *args, **kwargs):
         ssn_re = r'^\d{11}$'
         ssn_re = re.compile(ssn_re)
-        super(
-            MXSocialSecurityNumberField,
-            self).__init__(
-            ssn_re,
-            min_length=min_length,
-            max_length=max_length,
-            *args,
-            **kwargs)
+        super(MXSocialSecurityNumberField, self).__init__(ssn_re,
+                                                          min_length=min_length,
+                                                          max_length=max_length,
+                                                          *args, **kwargs)
 
     def clean(self, value):
         value = super(MXSocialSecurityNumberField, self).clean(value)

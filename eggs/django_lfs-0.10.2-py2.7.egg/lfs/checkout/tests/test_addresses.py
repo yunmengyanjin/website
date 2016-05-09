@@ -126,9 +126,7 @@ class CheckoutAddressesTestCase(TestCase):
         """Tests that checkout page gets populated with correct details
         """
         # login as our customer
-        logged_in = self.client.login(
-            username=self.username,
-            password=self.password)
+        logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
         cart_response = self.client.get(reverse('lfs_cart'))
@@ -136,19 +134,15 @@ class CheckoutAddressesTestCase(TestCase):
 
         checkout_response = self.client.get(reverse('lfs_checkout'))
 
-        # we expect a list of irish counties in the response as we have an
-        # Irish shipping address
+        # we expect a list of irish counties in the response as we have an Irish shipping address
         self.assertContains(checkout_response, 'Offaly', status_code=200)
 
-        # we expect a list of american states in the response as we have an
-        # Irish shipping address
+        # we expect a list of american states in the response as we have an Irish shipping address
         self.assertContains(checkout_response, 'Washington', status_code=200)
 
     def test_address_changed_on_checkout(self):
         # login as our customer
-        logged_in = self.client.login(
-            username=self.username,
-            password=self.password)
+        logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
         self.assertEquals(Address.objects.count(), 2)
@@ -179,15 +173,9 @@ class CheckoutAddressesTestCase(TestCase):
                          'payment_method': self.by_invoice.id,
                          }
 
-        checkout_post_response = self.client.post(
-            reverse('lfs_checkout'), checkout_data)
-        # self.dump_response(checkout_post_response)
-        self.assertRedirects(
-            checkout_post_response,
-            reverse('lfs_thank_you'),
-            status_code=302,
-            target_status_code=200,
-        )
+        checkout_post_response = self.client.post(reverse('lfs_checkout'), checkout_data)
+        #self.dump_response(checkout_post_response)
+        self.assertRedirects(checkout_post_response, reverse('lfs_thank_you'), status_code=302, target_status_code=200,)
 
         # test we have same amount of address objects at end of checkout
         self.assertEquals(Address.objects.count(), 4)
@@ -196,16 +184,9 @@ class CheckoutAddressesTestCase(TestCase):
         self.assertEquals(Address.objects.count(), 2)
 
         # register a new user
-        registration_response = self.client.post(
-            reverse('lfs_login'),
-            {
-                'action': 'register',
-                'email': 'test@test.com',
-                'password_1': 'password',
-                'password_2': 'password'})
+        registration_response = self.client.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers[
-                          'location'], ('Location', 'http://testserver/'))
+        self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
 
         # get our new customer
         our_customer = Customer.objects.get(user__email="test@test.com")
@@ -220,8 +201,7 @@ class CheckoutAddressesTestCase(TestCase):
 
         # test that an ajax request creates a new customer address
         form_data = {'invoice-country': 'ie'}
-        ajax_respons = self.client.post(
-            reverse('lfs_changed_invoice_country'), form_data)
+        ajax_respons = self.client.post(reverse('lfs_changed_invoice_country'), form_data)
         self.assertEquals(Address.objects.count(), 6)
 
         # refetch our customer
@@ -229,8 +209,7 @@ class CheckoutAddressesTestCase(TestCase):
         self.assertNotEqual(our_customer.selected_invoice_address, None)
         self.assertNotEqual(our_customer.selected_shipping_address, None)
 
-        # test that we still have the same number of Addresses after another
-        # invoice post
+        # test that we still have the same number of Addresses after another invoice post
         form_data = {'invoice-line1': 'my house',
                      'invoice-line2': 'a street',
                      'invoice-city': 'a city',
@@ -238,8 +217,7 @@ class CheckoutAddressesTestCase(TestCase):
                      'invoice-state': 'a state',
                      'invoice-country': 'ie',
                      }
-        ajax_respons = self.client.post(
-            reverse('lfs_changed_invoice_country'), form_data)
+        ajax_respons = self.client.post(reverse('lfs_changed_invoice_country'), form_data)
         self.assertEquals(Address.objects.count(), 6)
 
         # post some shipping address info
@@ -247,8 +225,7 @@ class CheckoutAddressesTestCase(TestCase):
             'shipping-line1': 'de missusesss house',
             'shipping-country': 'ie',
         }
-        ajax_respons = self.client.post(
-            reverse('lfs_changed_shipping_country'), form_data)
+        ajax_respons = self.client.post(reverse('lfs_changed_shipping_country'), form_data)
         self.assertEquals(Address.objects.count(), 6)
 
         # refetch our customer
@@ -256,17 +233,15 @@ class CheckoutAddressesTestCase(TestCase):
         self.assertNotEqual(our_customer.selected_invoice_address, None)
         self.assertNotEqual(our_customer.selected_shipping_address, None)
 
-        # test that adding more info to shipping address doesn't create a brand
-        # new one
+        # test that adding more info to shipping address doesn't create a brand new one
         form_data = {'shipping-firstname': 'charlize',
                      'shipping-line2': 'a street',
                      'shipping-city': 'a city',
                      'shipping-code': 'a code',
                      'shipping-state': 'a state',
                      'shipping-country': 'ie',
-                     }
-        ajax_respons = self.client.post(
-            reverse('lfs_changed_shipping_country'), form_data)
+                    }
+        ajax_respons = self.client.post(reverse('lfs_changed_shipping_country'), form_data)
         self.assertEquals(Address.objects.count(), 6)
 
 
@@ -400,9 +375,7 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
         """Tests that checkout page gets populated with correct details
         """
         # login as our customer
-        logged_in = self.client.login(
-            username=self.username,
-            password=self.password)
+        logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
         cart_response = self.client.get(reverse('lfs_cart'))
@@ -410,20 +383,16 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
 
         checkout_response = self.client.get(reverse('lfs_checkout'))
 
-        # we expect a list of irish counties in the response as we have an
-        # Irish shipping address
+        # we expect a list of irish counties in the response as we have an Irish shipping address
         self.assertContains(checkout_response, 'Offaly', status_code=200)
 
-        # we expect a list of american states in the response as we have an
-        # Irish shipping address
+        # we expect a list of american states in the response as we have an Irish shipping address
         self.assertContains(checkout_response, 'Washington', status_code=200)
 
     @override_settings(LFS_AUTO_UPDATE_DEFAULT_ADDRESSES=False)
     def test_address_changed_on_checkout(self):
         # login as our customer
-        logged_in = self.client.login(
-            username=self.username,
-            password=self.password)
+        logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
         self.assertEquals(Address.objects.count(), 4)
@@ -454,15 +423,9 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
                          'payment_method': self.by_invoice.id,
                          }
 
-        checkout_post_response = self.client.post(
-            reverse('lfs_checkout'), checkout_data)
-        # self.dump_response(checkout_post_response)
-        self.assertRedirects(
-            checkout_post_response,
-            reverse('lfs_thank_you'),
-            status_code=302,
-            target_status_code=200,
-        )
+        checkout_post_response = self.client.post(reverse('lfs_checkout'), checkout_data)
+        #self.dump_response(checkout_post_response)
+        self.assertRedirects(checkout_post_response, reverse('lfs_thank_you'), status_code=302, target_status_code=200,)
 
         # test we have same amount of address objects at end of checkout
         self.assertEquals(Address.objects.count(), 6)
@@ -472,16 +435,9 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
         self.assertEquals(Address.objects.count(), 4)
 
         # register a new user
-        registration_response = self.client.post(
-            reverse('lfs_login'),
-            {
-                'action': 'register',
-                'email': 'test@test.com',
-                'password_1': 'password',
-                'password_2': 'password'})
+        registration_response = self.client.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers[
-                          'location'], ('Location', 'http://testserver/'))
+        self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
 
         # get our new customer
         our_customer = Customer.objects.get(user__email="test@test.com")
@@ -496,8 +452,7 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
 
         # test that an ajax request creates a new customer address
         form_data = {'invoice-country': 'ie'}
-        ajax_respons = self.client.post(
-            reverse('lfs_changed_invoice_country'), form_data)
+        ajax_respons = self.client.post(reverse('lfs_changed_invoice_country'), form_data)
         self.assertEquals(Address.objects.count(), 8)
 
         # refetch our customer
@@ -505,8 +460,7 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
         self.assertNotEqual(our_customer.selected_invoice_address, None)
         self.assertNotEqual(our_customer.selected_shipping_address, None)
 
-        # test that we still have the same number of Addresses after another
-        # invoice post
+        # test that we still have the same number of Addresses after another invoice post
         form_data = {'invoice-line1': 'my house',
                      'invoice-line2': 'a street',
                      'invoice-city': 'a city',
@@ -514,8 +468,7 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
                      'invoice-state': 'a state',
                      'invoice-country': 'ie',
                      }
-        ajax_respons = self.client.post(
-            reverse('lfs_changed_invoice_country'), form_data)
+        ajax_respons = self.client.post(reverse('lfs_changed_invoice_country'), form_data)
         self.assertEquals(Address.objects.count(), 8)
 
         # post some shipping address info
@@ -523,8 +476,7 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
             'shipping-line1': 'de missusesss house',
             'shipping-country': 'ie',
         }
-        ajax_respons = self.client.post(
-            reverse('lfs_changed_shipping_country'), form_data)
+        ajax_respons = self.client.post(reverse('lfs_changed_shipping_country'), form_data)
         self.assertEquals(Address.objects.count(), 8)
 
         # refetch our customer
@@ -532,15 +484,13 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
         self.assertNotEqual(our_customer.selected_invoice_address, None)
         self.assertNotEqual(our_customer.selected_shipping_address, None)
 
-        # test that adding more info to shipping address doesn't create a brand
-        # new one
+        # test that adding more info to shipping address doesn't create a brand new one
         form_data = {'shipping-firstname': 'charlize',
                      'shipping-line2': 'a street',
                      'shipping-city': 'a city',
                      'shipping-code': 'a code',
                      'shipping-state': 'a state',
                      'shipping-country': 'ie',
-                     }
-        ajax_respons = self.client.post(
-            reverse('lfs_changed_shipping_country'), form_data)
+                    }
+        ajax_respons = self.client.post(reverse('lfs_changed_shipping_country'), form_data)
         self.assertEquals(Address.objects.count(), 8)

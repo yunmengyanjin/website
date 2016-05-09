@@ -5,7 +5,6 @@ from django import forms
 from paypal.pro.fields import CreditCardField, CreditCardExpiryField, CreditCardCVV2Field, CountryField
 from paypal.pro.exceptions import PayPalFailure
 
-
 class PaymentForm(forms.Form):
     """Form used to process direct payments."""
     firstname = forms.CharField(255, label="First Name")
@@ -22,7 +21,7 @@ class PaymentForm(forms.Form):
     def process(self, request, item):
         """Process a PayPal direct payment."""
         from paypal.pro.helpers import PayPalWPP
-        wpp = PayPalWPP(request)
+        wpp = PayPalWPP(request) 
         params = self.cleaned_data
         params['creditcardtype'] = self.fields['acct'].card_type
         params['expdate'] = self.cleaned_data['expdate'].strftime("%m%Y")
@@ -35,12 +34,10 @@ class PaymentForm(forms.Form):
                 nvp_obj = wpp.doDirectPayment(params)
             # Create recurring payment:
             else:
-                nvp_obj = wpp.createRecurringPaymentsProfile(
-                    params, direct=True)
+                nvp_obj = wpp.createRecurringPaymentsProfile(params, direct=True)
         except PayPalFailure:
             return False
         return True
-
 
 class ConfirmForm(forms.Form):
     """Hidden form used by ExpressPay flow to keep track of payer information."""

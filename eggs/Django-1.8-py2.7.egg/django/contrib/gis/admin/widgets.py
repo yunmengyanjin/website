@@ -16,7 +16,6 @@ class OpenLayersWidget(Textarea):
     """
     Renders an OpenLayers map using the WKT of the geometry.
     """
-
     def render(self, name, value, attrs=None):
         # Update the template parameters with any attributes passed in.
         if attrs:
@@ -69,8 +68,9 @@ class OpenLayersWidget(Textarea):
                     wkt = ogr.wkt
                 except GDALException as err:
                     logger.error(
-                        "Error transforming geometry from srid '%s' to srid '%s' (%s)" %
-                        (value.srid, srid, err))
+                        "Error transforming geometry from srid '%s' to srid '%s' (%s)" % (
+                            value.srid, srid, err)
+                    )
                     wkt = ''
             else:
                 wkt = value.wkt

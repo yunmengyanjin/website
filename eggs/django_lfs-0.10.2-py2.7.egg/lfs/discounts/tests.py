@@ -30,7 +30,6 @@ from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 from lfs.tests.utils import RequestFactory
 
-
 class DiscountsTestCase1(TestCase):
     """Unit tests for lfs.discounts
     """
@@ -43,8 +42,7 @@ class DiscountsTestCase1(TestCase):
         self.request = DummyRequest(user=self.user)
 
         self.d = Discount.objects.create(name="Summer", value=10.0, type=0)
-        self.p = Product.objects.create(
-            name="Product", slug="p", price=11, weight=12.0)
+        self.p = Product.objects.create(name="Product", slug="p", price=11, weight=12.0)
 
         # Delete the cart for every test method.
         cart = lfs.cart.utils.get_cart(self.request)
@@ -63,8 +61,7 @@ class DiscountsTestCase1(TestCase):
     def test_criteria(self):
         """
         """
-        c = WeightCriterion.objects.create(
-            value=10.0, operator=GREATER_THAN, content=self.d)
+        c = WeightCriterion.objects.create(value=10.0, operator=GREATER_THAN, content=self.d)
 
         self.assertEqual(self.d.is_valid(self.request), False)
         self.assertEqual(self.d.is_valid(self.request, self.p), True)
@@ -88,8 +85,7 @@ class DiscountTestCase2(TestCase):
 
         tax = Tax.objects.create(rate=19)
 
-        discount = Discount.objects.create(
-            name="Summer", value=10.0, type=0, tax=tax)
+        discount = Discount.objects.create(name="Summer", value=10.0, type=0, tax=tax)
 
         shipping_method = ShippingMethod.objects.create(
             name="Standard",
@@ -117,6 +113,7 @@ class DiscountTestCase2(TestCase):
             phone="555-111111",
             email="john@doe.com",
         )
+
 
         address2 = Address.objects.create(
             firstname="John",
@@ -182,5 +179,4 @@ class DiscountTestCase2(TestCase):
         for order_item in order.items.all():
             if order_item.product_name == "Summer":
                 self.assertEqual("%.2f" % order_item.price_net, "-8.40")
-                self.assertEqual("%.2f" %
-                                 order_item.product_price_net, "-8.40")
+                self.assertEqual("%.2f" % order_item.product_price_net, "-8.40")

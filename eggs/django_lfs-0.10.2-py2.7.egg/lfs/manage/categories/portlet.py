@@ -10,14 +10,11 @@ from lfs.catalog.models import Category
 
 
 @permission_required("core.manage_shop")
-def manage_categories_portlet(
-        request,
-        category_id,
-        template_name="manage/category/manage_categories_portlet.html"):
+def manage_categories_portlet(request, category_id,
+    template_name="manage/category/manage_categories_portlet.html"):
     """Returns a management portlet of all categories.
     """
-    cache_key = "%s-%s-manage-category-portlet" % (
-        category_id, settings.CACHE_MIDDLEWARE_KEY_PREFIX)
+    cache_key = "%s-%s-manage-category-portlet" % (category_id, settings.CACHE_MIDDLEWARE_KEY_PREFIX)
     result = cache.get(cache_key)
     if result is not None:
         return result
@@ -59,13 +56,10 @@ def categories_portlet_children(request, category):
             "is_current": _is_current_category(request, child_category),
         })
 
-    result = render_to_string(
-        "manage/category/manage_categories_portlet_children.html",
-        RequestContext(
-            request,
-            {
-                "category": category,
-                "categories": categories}))
+    result = render_to_string("manage/category/manage_categories_portlet_children.html", RequestContext(request, {
+        "category": category,
+        "categories": categories
+    }))
 
     return result
 

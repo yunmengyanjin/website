@@ -53,8 +53,7 @@ class BaseHandler(object):
             except MiddlewareNotUsed as exc:
                 if settings.DEBUG:
                     if six.text_type(exc):
-                        logger.debug(
-                            'MiddlewareNotUsed(%r): %s', middleware_path, exc)
+                        logger.debug('MiddlewareNotUsed(%r): %s', middleware_path, exc)
                     else:
                         logger.debug('MiddlewareNotUsed: %r', middleware_path)
                 continue
@@ -64,14 +63,11 @@ class BaseHandler(object):
             if hasattr(mw_instance, 'process_view'):
                 self._view_middleware.append(mw_instance.process_view)
             if hasattr(mw_instance, 'process_template_response'):
-                self._template_response_middleware.insert(
-                    0, mw_instance.process_template_response)
+                self._template_response_middleware.insert(0, mw_instance.process_template_response)
             if hasattr(mw_instance, 'process_response'):
-                self._response_middleware.insert(
-                    0, mw_instance.process_response)
+                self._response_middleware.insert(0, mw_instance.process_response)
             if hasattr(mw_instance, 'process_exception'):
-                self._exception_middleware.insert(
-                    0, mw_instance.process_exception)
+                self._exception_middleware.insert(0, mw_instance.process_exception)
 
         # We only assign to this when initialization is complete as it is used
         # as a flag for initialization being complete.
@@ -90,10 +86,8 @@ class BaseHandler(object):
             callback, param_dict = resolver.resolve_error_handler(status_code)
             response = callback(request, **param_dict)
         except:
-            signals.got_request_exception.send(
-                sender=self.__class__, request=request)
-            response = self.handle_uncaught_exception(
-                request, resolver, sys.exc_info())
+            signals.got_request_exception.send(sender=self.__class__, request=request)
+            response = self.handle_uncaught_exception(request, resolver, sys.exc_info())
 
         return response
 
@@ -128,16 +122,14 @@ class BaseHandler(object):
 
                 # Apply view middleware
                 for middleware_method in self._view_middleware:
-                    response = middleware_method(
-                        request, callback, callback_args, callback_kwargs)
+                    response = middleware_method(request, callback, callback_args, callback_kwargs)
                     if response:
                         break
 
             if response is None:
                 wrapped_callback = self.make_view_atomic(callback)
                 try:
-                    response = wrapped_callback(
-                        request, *callback_args, **callback_kwargs)
+                    response = wrapped_callback(request, *callback_args, **callback_kwargs)
                 except Exception as e:
                     # If the view raised an exception, run it through exception
                     # middleware, and if the exception middleware returns a
@@ -155,17 +147,15 @@ class BaseHandler(object):
                     view_name = callback.__name__
                 else:                                           # CBV
                     view_name = callback.__class__.__name__ + '.__call__'
-                raise ValueError(
-                    "The view %s.%s didn't return an HttpResponse object. It returned None instead." %
-                    (callback.__module__, view_name))
+                raise ValueError("The view %s.%s didn't return an HttpResponse object. It returned None instead."
+                                 % (callback.__module__, view_name))
 
             # If the response supports deferred rendering, apply template
             # response middleware and then render the response
             if hasattr(response, 'render') and callable(response.render):
                 for middleware_method in self._template_response_middleware:
                     response = middleware_method(request, response)
-                    # Complain if the template response middleware returned
-                    # None (a common error).
+                    # Complain if the template response middleware returned None (a common error).
                     if response is None:
                         raise ValueError(
                             "%s.process_template_response didn't return an "
@@ -175,10 +165,10 @@ class BaseHandler(object):
 
         except http.Http404 as e:
             logger.warning('Not Found: %s', request.path,
-                           extra={
-                               'status_code': 404,
-                               'request': request
-                           })
+                        extra={
+                            'status_code': 404,
+                            'request': request
+                        })
             if settings.DEBUG:
                 response = debug.technical_404_response(request, e)
             else:
@@ -206,7 +196,7 @@ class BaseHandler(object):
             # The request logger receives events for any problematic request
             # The security logger receives events for all SuspiciousOperations
             security_logger = logging.getLogger('django.security.%s' %
-                                                e.__class__.__name__)
+                            e.__class__.__name__)
             security_logger.error(
                 force_text(e),
                 extra={
@@ -214,8 +204,7 @@ class BaseHandler(object):
                     'request': request
                 })
             if settings.DEBUG:
-                return debug.technical_500_response(
-                    request, *sys.exc_info(), status_code=400)
+                return debug.technical_500_response(request, *sys.exc_info(), status_code=400)
 
             response = self.get_exception_response(request, resolver, 400)
 
@@ -224,19 +213,15 @@ class BaseHandler(object):
             raise
 
         except:  # Handle everything else.
-            # Get the exception info now, in case another exception is thrown
-            # later.
-            signals.got_request_exception.send(
-                sender=self.__class__, request=request)
-            response = self.handle_uncaught_exception(
-                request, resolver, sys.exc_info())
+            # Get the exception info now, in case another exception is thrown later.
+            signals.got_request_exception.send(sender=self.__class__, request=request)
+            response = self.handle_uncaught_exception(request, resolver, sys.exc_info())
 
         try:
             # Apply response middleware, regardless of the response
             for middleware_method in self._response_middleware:
                 response = middleware_method(request, response)
-                # Complain if the response middleware returned None (a common
-                # error).
+                # Complain if the response middleware returned None (a common error).
                 if response is None:
                     raise ValueError(
                         "%s.process_response didn't return an "
@@ -244,10 +229,8 @@ class BaseHandler(object):
                         % (middleware_method.__self__.__class__.__name__))
             response = self.apply_response_fixes(request, response)
         except:  # Any exception should be gathered and handled
-            signals.got_request_exception.send(
-                sender=self.__class__, request=request)
-            response = self.handle_uncaught_exception(
-                request, resolver, sys.exc_info())
+            signals.got_request_exception.send(sender=self.__class__, request=request)
+            response = self.handle_uncaught_exception(request, resolver, sys.exc_info())
 
         response._closable_objects.append(request)
 
@@ -267,12 +250,12 @@ class BaseHandler(object):
             raise
 
         logger.error('Internal Server Error: %s', request.path,
-                     exc_info=exc_info,
-                     extra={
-                         'status_code': 500,
-                         'request': request
-                     }
-                     )
+            exc_info=exc_info,
+            extra={
+                'status_code': 500,
+                'request': request
+            }
+        )
 
         if settings.DEBUG:
             return debug.technical_500_response(request, *exc_info)

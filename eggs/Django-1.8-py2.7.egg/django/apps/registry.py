@@ -213,8 +213,8 @@ class Apps(object):
                 warnings.warn(
                     "Model '%s.%s' was already registered. "
                     "Reloading models is not advised as it can lead to inconsistencies, "
-                    "most notably with related models." %
-                    (model_name, app_label), RuntimeWarning, stacklevel=2)
+                    "most notably with related models." % (model_name, app_label),
+                    RuntimeWarning, stacklevel=2)
             else:
                 raise RuntimeError(
                     "Conflicting '%s' models in application '%s': %s and %s." %
@@ -279,14 +279,10 @@ class Apps(object):
         This method is safe is the sense that it doesn't trigger any imports.
         """
         available = set(available)
-        installed = set(
-            app_config.name for app_config in self.get_app_configs())
+        installed = set(app_config.name for app_config in self.get_app_configs())
         if not available.issubset(installed):
-            raise ValueError(
-                "Available apps isn't a subset of installed "
-                "apps, extra apps: %s" %
-                ", ".join(
-                    available - installed))
+            raise ValueError("Available apps isn't a subset of installed "
+                "apps, extra apps: %s" % ", ".join(available - installed))
 
         self.stored_app_configs.append(self.app_configs)
         self.app_configs = OrderedDict(
@@ -376,8 +372,7 @@ class Apps(object):
         """
         warnings.warn(
             "get_app_config(app_label).models_module supersedes get_app(app_label).",
-            RemovedInDjango19Warning,
-            stacklevel=2)
+            RemovedInDjango19Warning, stacklevel=2)
         try:
             models_module = self.get_app_config(app_label).models_module
         except LookupError as exc:
@@ -394,8 +389,7 @@ class Apps(object):
         """
         warnings.warn(
             "[a.models_module for a in get_app_configs()] supersedes get_apps().",
-            RemovedInDjango19Warning,
-            stacklevel=2)
+            RemovedInDjango19Warning, stacklevel=2)
         app_configs = self.get_app_configs()
         return [app_config.models_module for app_config in app_configs
                 if app_config.models_module is not None]

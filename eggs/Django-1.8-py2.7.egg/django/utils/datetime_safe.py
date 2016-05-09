@@ -15,13 +15,11 @@ from datetime import (
 
 
 class date(real_date):
-
     def strftime(self, fmt):
         return strftime(self, fmt)
 
 
 class datetime(real_datetime):
-
     def strftime(self, fmt):
         return strftime(self, fmt)
 
@@ -62,7 +60,7 @@ def _findall(text, substr):
     # Also finds overlaps
     sites = []
     i = 0
-    while True:
+    while 1:
         j = text.find(substr, i)
         if j == -1:
             break
@@ -76,9 +74,7 @@ def strftime(dt, fmt):
         return super(type(dt), dt).strftime(fmt)
     illegal_formatting = _illegal_formatting.search(fmt)
     if illegal_formatting:
-        raise TypeError(
-            "strftime of dates before 1900 does not handle" +
-            illegal_formatting.group(0))
+        raise TypeError("strftime of dates before 1900 does not handle" + illegal_formatting.group(0))
 
     year = dt.year
     # For every non-leap year century, advance by

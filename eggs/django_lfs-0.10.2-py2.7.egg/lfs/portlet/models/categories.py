@@ -40,29 +40,23 @@ class CategoriesPortlet(Portlet):
         else:
             object_id = object.id
 
-        cache_key = "%s-categories-portlet-%s-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, object.__class__.__name__, object_id)
+        cache_key = "%s-categories-portlet-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, object.__class__.__name__, object_id)
         result = cache.get(cache_key)
         if result is not None:
             return result
 
-        current_categories = lfs.core.utils.get_current_categories(
-            request, object)
+        current_categories = lfs.core.utils.get_current_categories(request, object)
 
         ct = lfs.core.utils.CategoryTree(
             current_categories, self.start_level, self.expand_level)
         category_tree = ct.get_category_tree()
 
-        result = render_to_string(
-            "lfs/portlets/categories.html",
-            RequestContext(
-                request,
-                {
-                    "title": self.title,
-                    "categories": category_tree,
-                    "product": product,
-                    "category": category,
-                }))
+        result = render_to_string("lfs/portlets/categories.html", RequestContext(request, {
+            "title": self.title,
+            "categories": category_tree,
+            "product": product,
+            "category": category,
+        }))
 
         cache.set(cache_key, result)
         return result

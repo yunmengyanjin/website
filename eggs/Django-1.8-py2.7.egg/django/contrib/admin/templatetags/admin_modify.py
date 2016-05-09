@@ -3,9 +3,7 @@ from django import template
 register = template.Library()
 
 
-@register.inclusion_tag(
-    'admin/prepopulated_fields_js.html',
-    takes_context=True)
+@register.inclusion_tag('admin/prepopulated_fields_js.html', takes_context=True)
 def prepopulated_fields_js(context):
     """
     Creates a list of prepopulated_fields that should render Javascript for
@@ -18,8 +16,7 @@ def prepopulated_fields_js(context):
         for inline_admin_formset in context['inline_admin_formsets']:
             for inline_admin_form in inline_admin_formset:
                 if inline_admin_form.original is None:
-                    prepopulated_fields.extend(
-                        inline_admin_form.prepopulated_fields)
+                    prepopulated_fields.extend(inline_admin_form.prepopulated_fields)
     context.update({'prepopulated_fields': prepopulated_fields})
     return context
 

@@ -137,7 +137,6 @@ class CountryDescriptor(object):
         >>> person.country.flag
         '/static/flags/nz.gif'
     """
-
     def __init__(self, field):
         self.field = field
 

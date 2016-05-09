@@ -58,18 +58,15 @@ class CheckRegistry(object):
                 tags += (check, )
             return inner
 
-    def run_checks(self, app_configs=None, tags=None,
-                   include_deployment_checks=False):
+    def run_checks(self, app_configs=None, tags=None, include_deployment_checks=False):
         """ Run all registered checks and return list of Errors and Warnings.
         """
         errors = []
         checks = self.get_checks(include_deployment_checks)
 
         if tags is not None:
-            checks = [
-                check for check in checks if hasattr(
-                    check, 'tags') and set(
-                    check.tags) & set(tags)]
+            checks = [check for check in checks
+                      if hasattr(check, 'tags') and set(check.tags) & set(tags)]
 
         for check in checks:
             new_errors = check(app_configs=app_configs)
@@ -83,8 +80,7 @@ class CheckRegistry(object):
         return tag in self.tags_available(include_deployment_checks)
 
     def tags_available(self, deployment_checks=False):
-        return set(chain(
-            *[check.tags for check in self.get_checks(deployment_checks) if hasattr(check, 'tags')]))
+        return set(chain(*[check.tags for check in self.get_checks(deployment_checks) if hasattr(check, 'tags')]))
 
     def get_checks(self, include_deployment_checks=False):
         checks = list(self.registered_checks)

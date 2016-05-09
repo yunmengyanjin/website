@@ -22,14 +22,10 @@ class RelatedProductsPortlet(Portlet):
         product = context.get("product")
         request = context.get("request")
 
-        return render_to_string(
-            "lfs/portlets/related_products.html",
-            RequestContext(
-                request,
-                {
-                    "title": self.title,
-                    "product": product,
-                }))
+        return render_to_string("lfs/portlets/related_products.html", RequestContext(request, {
+            "title": self.title,
+            "product": product,
+        }))
 
     def form(self, **kwargs):
         return RelatedProductsForm(instance=self, **kwargs)

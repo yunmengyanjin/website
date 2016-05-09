@@ -35,10 +35,8 @@ class CompressorMixin(object):
                          exception=ImproperlyConfigured)(*args, **kwargs)
 
     def get_compressor(self, context, kind):
-        return self.compressor_cls(
-            kind,
-            content=self.get_original_content(context),
-            context=context)
+        return self.compressor_cls(kind,
+            content=self.get_original_content(context), context=context)
 
     def debug_mode(self, context):
         if settings.COMPRESS_DEBUG_TOGGLE:
@@ -70,11 +68,9 @@ class CompressorMixin(object):
             if key in offline_manifest:
                 return offline_manifest[key]
             else:
-                raise OfflineGenerationError(
-                    'You have offline compression '
+                raise OfflineGenerationError('You have offline compression '
                     'enabled but key "%s" is missing from offline manifest. '
-                    'You may need to run "python manage.py compress".' %
-                    key)
+                    'You may need to run "python manage.py compress".' % key)
 
     def render_cached(self, compressor, kind, mode, forced=False):
         """
@@ -103,15 +99,13 @@ class CompressorMixin(object):
         compressor = self.get_compressor(context, kind)
 
         # Prepare the actual compressor and check cache
-        cache_key, cache_content = self.render_cached(
-            compressor, kind, mode, forced=forced)
+        cache_key, cache_content = self.render_cached(compressor, kind, mode, forced=forced)
         if cache_content is not None:
             return cache_content
 
         # call compressor output method and handle exceptions
         try:
-            rendered_output = self.render_output(
-                compressor, mode, forced=forced)
+            rendered_output = self.render_output(compressor, mode, forced=forced)
             if cache_key:
                 cache_set(cache_key, rendered_output)
             assert isinstance(rendered_output, six.string_types)
@@ -152,8 +146,7 @@ class CompressorNode(CompressorMixin, template.Node):
         if self.debug_mode(context):
             return self.get_original_content(context)
 
-        return self.render_compressed(
-            context, self.kind, self.mode, forced=forced)
+        return self.render_compressed(context, self.kind, self.mode, forced=forced)
 
 
 @register.tag

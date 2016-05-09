@@ -15,8 +15,7 @@ def lfs_login(request, user):
     """
     if user is None:
         user = request.user
-    # TODO: It would be nice to support different login methods, like signed
-    # cookies.
+    # TODO: It would be nice to support different login methods, like signed cookies.
     user.last_login = datetime.datetime.now()
     user.save()
 
@@ -34,7 +33,7 @@ def lfs_login(request, user):
     if hasattr(request, 'user'):
         request.user = user
 
-    # LFS stuff
+    ### LFS stuff
     cart_utils.update_cart_after_login(request)
     customer_utils.update_customer_after_login(request)
 

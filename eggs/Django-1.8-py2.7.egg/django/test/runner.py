@@ -13,16 +13,10 @@ from django.utils.six import StringIO
 
 
 class DebugSQLTextTestResult(unittest.TextTestResult):
-
     def __init__(self, stream, descriptions, verbosity):
         self.logger = logging.getLogger('django.db.backends')
         self.logger.setLevel(logging.DEBUG)
-        super(
-            DebugSQLTextTestResult,
-            self).__init__(
-            stream,
-            descriptions,
-            verbosity)
+        super(DebugSQLTextTestResult, self).__init__(stream, descriptions, verbosity)
 
     def startTest(self, test):
         self.debug_sql_stream = StringIO()
@@ -51,8 +45,7 @@ class DebugSQLTextTestResult(unittest.TextTestResult):
     def printErrorList(self, flavour, errors):
         for test, err, sql_debug in errors:
             self.stream.writeln(self.separator1)
-            self.stream.writeln("%s: %s" %
-                                (flavour, self.getDescription(test)))
+            self.stream.writeln("%s: %s" % (flavour, self.getDescription(test)))
             self.stream.writeln(self.separator2)
             self.stream.writeln("%s" % err)
             self.stream.writeln(self.separator2)
@@ -85,39 +78,19 @@ class DiscoverRunner(object):
 
     @classmethod
     def add_arguments(cls, parser):
-        parser.add_argument(
-            '-t',
-            '--top-level-directory',
-            action='store',
-            dest='top_level',
-            default=None,
+        parser.add_argument('-t', '--top-level-directory',
+            action='store', dest='top_level', default=None,
             help='Top level of project for unittest discovery.')
-        parser.add_argument(
-            '-p',
-            '--pattern',
-            action='store',
-            dest='pattern',
+        parser.add_argument('-p', '--pattern', action='store', dest='pattern',
             default="test*.py",
             help='The test matching pattern. Defaults to test*.py.')
-        parser.add_argument(
-            '-k',
-            '--keepdb',
-            action='store_true',
-            dest='keepdb',
+        parser.add_argument('-k', '--keepdb', action='store_true', dest='keepdb',
             default=False,
             help='Preserves the test DB between runs.')
-        parser.add_argument(
-            '-r',
-            '--reverse',
-            action='store_true',
-            dest='reverse',
+        parser.add_argument('-r', '--reverse', action='store_true', dest='reverse',
             default=False,
             help='Reverses test cases order.')
-        parser.add_argument(
-            '-d',
-            '--debug-sql',
-            action='store_true',
-            dest='debug_sql',
+        parser.add_argument('-d', '--debug-sql', action='store_true', dest='debug_sql',
             default=False,
             help='Prints logged SQL queries on failure.')
 
@@ -172,8 +145,7 @@ class DiscoverRunner(object):
                     break
                 kwargs['top_level_dir'] = top_level
 
-            if not (tests and tests.countTestCases()
-                    ) and is_discoverable(label):
+            if not (tests and tests.countTestCases()) and is_discoverable(label):
                 # Try discovery if path is a package or directory
                 tests = self.test_loader.discover(start_dir=label, **kwargs)
 
@@ -212,8 +184,7 @@ class DiscoverRunner(object):
         old_names, mirrors = old_config
         for connection, old_name, destroy in old_names:
             if destroy:
-                connection.creation.destroy_test_db(
-                    old_name, self.verbosity, self.keepdb)
+                connection.creation.destroy_test_db(old_name, self.verbosity, self.keepdb)
 
     def teardown_test_environment(self, **kwargs):
         unittest.removeHandler()
@@ -349,12 +320,7 @@ def partition_suite(suite, classes, bins, reverse=False):
                 bins[-1].add(test)
 
 
-def setup_databases(
-        verbosity,
-        interactive,
-        keepdb=False,
-        debug_sql=False,
-        **kwargs):
+def setup_databases(verbosity, interactive, keepdb=False, debug_sql=False, **kwargs):
     from django.db import connections, DEFAULT_DB_ALIAS
 
     # First pass -- work out which databases actually need to be created,
@@ -384,8 +350,7 @@ def setup_databases(
                 dependencies[alias] = test_settings['DEPENDENCIES']
             else:
                 if alias != DEFAULT_DB_ALIAS and connection.creation.test_db_signature() != default_sig:
-                    dependencies[alias] = test_settings.get(
-                        'DEPENDENCIES', [DEFAULT_DB_ALIAS])
+                    dependencies[alias] = test_settings.get('DEPENDENCIES', [DEFAULT_DB_ALIAS])
 
     # Second pass -- actually create the databases.
     old_names = []
@@ -402,11 +367,7 @@ def setup_databases(
                     verbosity,
                     autoclobber=not interactive,
                     keepdb=keepdb,
-                    serialize=connection.settings_dict.get(
-                        "TEST",
-                        {}).get(
-                        "SERIALIZE",
-                        True),
+                    serialize=connection.settings_dict.get("TEST", {}).get("SERIALIZE", True),
                 )
                 destroy = True
             else:

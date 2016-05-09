@@ -52,7 +52,6 @@ class PropertyForm(ModelForm):
 class ProductVariantSimpleForm(ModelForm):
     """ Variants add form.
     """
-
     def __init__(self, all_properties, *args, **kwargs):
         super(ProductVariantSimpleForm, self).__init__(*args, **kwargs)
         self.fields['slug'].required = False
@@ -60,22 +59,14 @@ class ProductVariantSimpleForm(ModelForm):
             prop = prop_dict['property']
             property_group = prop_dict['property_group']
             property_group_id = property_group.pk if property_group else 0
-            property_group_name = property_group.name if property_group else _(
-                'Local')
-            field_label = u'<span class="property-group-label">[%s]</span> %s' % (
-                property_group_name, prop.name)
+            property_group_name = property_group.name if property_group else _('Local')
+            field_label = u'<span class="property-group-label">[%s]</span> %s' % (property_group_name, prop.name)
             choices = [('all', _('All')), ('', '---')]
             choices.extend(list(prop.options.values_list('pk', 'name')))
-            self.fields[
-                'property_%s_%s' %
-                (property_group_id,
-                 prop.id)] = ChoiceField(
-                label=field_label,
-                choices=choices,
-                required=False)
-            self.initial[
-                'property_%s_%s' %
-                (property_group_id, prop.id)] = 'all'
+            self.fields['property_%s_%s' % (property_group_id, prop.id)] = ChoiceField(label=field_label,
+                                                                                       choices=choices,
+                                                                                       required=False)
+            self.initial['property_%s_%s' % (property_group_id, prop.id)] = 'all'
 
     class Meta:
         model = Product
@@ -85,7 +76,6 @@ class ProductVariantSimpleForm(ModelForm):
 class ProductVariantCreateForm(ModelForm):
     """ Form used to create product variant for specific set of options
     """
-
     def __init__(self, options=None, product=None, *args, **kwargs):
         super(ProductVariantCreateForm, self).__init__(*args, **kwargs)
         self.fields['slug'].required = False
@@ -135,7 +125,6 @@ class ProductVariantCreateForm(ModelForm):
 class CategoryVariantForm(ModelForm):
     """
     """
-
     def __init__(self, *args, **kwargs):
         super(CategoryVariantForm, self).__init__(*args, **kwargs)
         product = kwargs.get("instance")
@@ -145,8 +134,7 @@ class CategoryVariantForm(ModelForm):
             choices.append(cv)
 
         for variant in Product.objects.filter(parent=product):
-            choices.append([variant.id, "%s (%s)" %
-                            (variant.get_name(), variant.variant_position)])
+            choices.append([variant.id, "%s (%s)" % (variant.get_name(), variant.variant_position)])
 
         self.fields["category_variant"].widget = Select(choices=choices)
 
@@ -166,14 +154,12 @@ class DisplayTypeForm(ModelForm):
 class DefaultVariantForm(ModelForm):
     """Form to edit the default variant.
     """
-
     def __init__(self, *args, **kwargs):
         super(DefaultVariantForm, self).__init__(*args, **kwargs)
         instance = kwargs.get("instance")
 
         choices = [("", "------")]
-        choices.extend([(v.id, "%s (%s)" % (v.get_name(), v.variant_position))
-                        for v in instance.variants.all()])
+        choices.extend([(v.id, "%s (%s)" % (v.get_name(), v.variant_position)) for v in instance.variants.all()])
 
         self.fields["default_variant"].choices = choices
 
@@ -183,12 +169,7 @@ class DefaultVariantForm(ModelForm):
 
 
 @permission_required("core.manage_shop")
-def manage_variants(
-        request,
-        product_id,
-        as_string=False,
-        variant_simple_form=None,
-        template_name="manage/product/variants.html"):
+def manage_variants(request, product_id, as_string=False, variant_simple_form=None, template_name="manage/product/variants.html"):
     """Manages the variants of a product.
     """
     product = Product.objects.get(pk=product_id)
@@ -198,18 +179,15 @@ def manage_variants(
     property_form = PropertyForm()
     property_option_form = PropertyOptionForm()
     if not variant_simple_form:
-        variant_simple_form = ProductVariantSimpleForm(
-            all_properties=all_properties)
+        variant_simple_form = ProductVariantSimpleForm(all_properties=all_properties)
     display_type_form = DisplayTypeForm(instance=product)
     default_variant_form = DefaultVariantForm(instance=product)
     category_variant_form = CategoryVariantForm(instance=product)
 
     pid = product.get_parent().pk
     properties_version = get_cache_group_id('global-properties-version')
-    group_id = '%s-%s' % (properties_version,
-                          get_cache_group_id('properties-%s' % pid))
-    cache_key = "%s-manage-properties-variants-%s-%s" % (
-        settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, product_id)
+    group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
+    cache_key = "%s-manage-properties-variants-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, product_id)
     variants = cache.get(cache_key)
     # Get all properties. We need to traverse through all property / options
     # in order to select the options of the current variant.
@@ -236,15 +214,13 @@ def manage_variants(
             property_group = prop_dict['property_group']
             property_group_id = property_group.pk if property_group else 0
 
-            for so in ProductPropertyValue.objects.filter(
-                    property=prop,
-                    property_group=property_group,
-                    product__in=product_variants,
-                    type=PROPERTY_VALUE_TYPE_VARIANT):
+            for so in ProductPropertyValue.objects.filter(property=prop,
+                                                          property_group=property_group,
+                                                          product__in=product_variants,
+                                                          type=PROPERTY_VALUE_TYPE_VARIANT):
                 ppk = so.product_id
                 selected_groups = selected_options.setdefault(ppk, {})
-                selected_groups.setdefault(property_group_id, {})[
-                    so.property_id] = so.value
+                selected_groups.setdefault(property_group_id, {})[so.property_id] = so.value
 
         for variant in product_variants:
             properties = []
@@ -255,9 +231,7 @@ def manage_variants(
 
                 options = deepcopy(props_options.get(prop.pk, {}))
                 try:
-                    sop = selected_options[
-                        variant.pk][property_group_id][
-                        prop.pk]
+                    sop = selected_options[variant.pk][property_group_id][prop.pk]
                     options[sop]['selected'] = True
                 except KeyError:
                     pass
@@ -336,8 +310,7 @@ def add_property(request, product_id):
         property.filterable = False
 
         property.save()
-        product_property = ProductsPropertiesRelation(
-            product=product, property=property, position=999)
+        product_property = ProductsPropertiesRelation(product=product, property=property, position=999)
         product_property.save()
 
         # Refresh positions
@@ -349,8 +322,7 @@ def add_property(request, product_id):
     pid = product.get_parent().pk
     invalidate_cache_group_id('properties-%s' % pid)
 
-    html = [["#variants", manage_variants(
-        request, product_id, as_string=True)]]
+    html = [["#variants", manage_variants(request, product_id, as_string=True)]]
 
     result = json.dumps({
         "html": html,
@@ -375,13 +347,7 @@ def delete_property(request, product_id, property_id):
         pid = product.get_parent().pk
         invalidate_cache_group_id('properties-%s' % pid)
 
-    html = (
-        ("#variants",
-         manage_variants(
-             request,
-             product_id,
-             as_string=True)),
-    )
+    html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
     result = json.dumps({
         "html": html,
@@ -401,8 +367,7 @@ def change_property_position(request):
     direction = request.GET.get("direction")
 
     try:
-        product_property = ProductsPropertiesRelation.objects.get(
-            product=product_id, property=property_id)
+        product_property = ProductsPropertiesRelation.objects.get(product=product_id, property=property_id)
     except ObjectDoesNotExist:
         pass
     else:
@@ -417,13 +382,7 @@ def change_property_position(request):
     pid = Product.objects.get(pk=product_id).get_parent().pk
     invalidate_cache_group_id('properties-%s' % pid)
 
-    html = (
-        ("#variants",
-         manage_variants(
-             request,
-             product_id,
-             as_string=True)),
-    )
+    html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
     result = json.dumps({
         "html": html,
@@ -454,9 +413,7 @@ def add_property_option(request, product_id):
             position += 1
 
         # Refresh positions
-        for i, option in enumerate(
-            PropertyOption.objects.filter(
-                property=property_id)):
+        for i, option in enumerate(PropertyOption.objects.filter(property=property_id)):
             option.position = i
             option.save()
         message = _(u'Option has been added.')
@@ -468,8 +425,7 @@ def add_property_option(request, product_id):
     pid = product.get_parent().pk
     invalidate_cache_group_id('properties-%s' % pid)
 
-    html = [["#variants", manage_variants(
-        request, product_id, as_string=True)]]
+    html = [["#variants", manage_variants(request, product_id, as_string=True)]]
 
     result = json.dumps({
         "html": html,
@@ -494,13 +450,7 @@ def delete_property_option(request, product_id, option_id):
         pid = product.get_parent().pk
         invalidate_cache_group_id('properties-%s' % pid)
 
-    html = (
-        ("#variants",
-         manage_variants(
-             request,
-             product_id,
-             as_string=True)),
-    )
+    html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
     result = json.dumps({
         "html": html,
@@ -516,15 +466,12 @@ def add_variants(request, product_id):
     """Adds variants to product with passed product_id based on property/option-
     combinations passed within request body.
     """
-    cache.delete(
-        "%s-variants%s" %
-        (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product_id))
+    cache.delete("%s-variants%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product_id))
 
     product = Product.objects.get(pk=product_id)
     all_properties = product.get_variants_properties()
 
-    variant_simple_form = ProductVariantSimpleForm(
-        all_properties=all_properties, data=request.POST)
+    variant_simple_form = ProductVariantSimpleForm(all_properties=all_properties, data=request.POST)
 
     message = ''
     added_count = 0
@@ -542,26 +489,20 @@ def add_variants(request, product_id):
                 _property, property_group_id, property_id = key.split("_")
                 if value == "all":
                     temp = []
-                    for option in PropertyOption.objects.filter(
-                            property=property_id):
-                        temp.append("%s|%s|%s" %
-                                    (property_group_id, property_id, option.id))
+                    for option in PropertyOption.objects.filter(property=property_id):
+                        temp.append("%s|%s|%s" % (property_group_id, property_id, option.id))
                     properties.append(temp)
                 elif value == '':
                     continue
                 else:
-                    properties.append(["%s|%s|%s" %
-                                       (property_group_id, property_id, value)])
+                    properties.append(["%s|%s|%s" % (property_group_id, property_id, value)])
 
         # Create a variant for every requested option combination
-        for i, options in enumerate(
-            manage_utils.cartesian_product(
-                *properties)):
+        for i, options in enumerate(manage_utils.cartesian_product(*properties)):
             if product.has_variant(options, only_active=False):
                 continue
 
-            pvcf = ProductVariantCreateForm(
-                options=options, product=product, data=request.POST)
+            pvcf = ProductVariantCreateForm(options=options, product=product, data=request.POST)
             if pvcf.is_valid():
                 variant = pvcf.save(commit=False)
                 variant.sku = "%s-%s" % (product.sku, i + 1)
@@ -582,25 +523,22 @@ def add_variants(request, product_id):
 
                 # Save the value for this product and property.
                 for option in options:
-                    property_group_id, property_id, option_id = option.split(
-                        "|")
+                    property_group_id, property_id, option_id = option.split("|")
                     # local properties are not bound to property groups
                     property_group_id = None if property_group_id == '0' else property_group_id
-                    ProductPropertyValue.objects.create(
-                        product=variant,
-                        property_group_id=property_group_id,
-                        property_id=property_id,
-                        value=option_id,
-                        type=PROPERTY_VALUE_TYPE_VARIANT)
+                    ProductPropertyValue.objects.create(product=variant,
+                                                        property_group_id=property_group_id,
+                                                        property_id=property_id,
+                                                        value=option_id,
+                                                        type=PROPERTY_VALUE_TYPE_VARIANT)
                     # By default we create also the filter values as this most of
                     # the users would expect.
                     if Property.objects.get(pk=property_id).filterable:
-                        ProductPropertyValue.objects.create(
-                            product=variant,
-                            property_group_id=property_group_id,
-                            property_id=property_id,
-                            value=option_id,
-                            type=PROPERTY_VALUE_TYPE_FILTER)
+                        ProductPropertyValue.objects.create(product=variant,
+                                                            property_group_id=property_group_id,
+                                                            property_id=property_id,
+                                                            value=option_id,
+                                                            type=PROPERTY_VALUE_TYPE_FILTER)
             else:
                 continue
         else:
@@ -608,20 +546,11 @@ def add_variants(request, product_id):
 
             if added_count > 0:
                 message = _(u"Variants have been added.")
-        variant_simple_form = ProductVariantSimpleForm(
-            all_properties=all_properties)
+        variant_simple_form = ProductVariantSimpleForm(all_properties=all_properties)
 
     html = (
-        ("#selectable-products-inline",
-         _selectable_products_inline(
-             request,
-             product)),
-        ("#variants",
-         manage_variants(
-             request,
-             product_id,
-             as_string=True,
-             variant_simple_form=variant_simple_form)),
+        ("#selectable-products-inline", _selectable_products_inline(request, product)),
+        ("#variants", manage_variants(request, product_id, as_string=True, variant_simple_form=variant_simple_form)),
     )
 
     result = json.dumps({
@@ -656,8 +585,7 @@ def update_variants(request, product_id):
                         product.save()
                     variant.delete()
     elif action == "update":
-        # TODO: change all of these to formsets or something that will allow
-        # for error hangling/messages
+        # TODO: change all of these to formsets or something that will allow for error hangling/messages
         message = _(u"Variants have been saved.")
         for key, value in request.POST.items():
             if key.startswith("variant-"):
@@ -679,11 +607,8 @@ def update_variants(request, product_id):
                     if variant.slug != slug:
                         counter = 1
                         new_slug = slug[:80]
-                        while Product.objects.exclude(
-                                pk=variant.pk).filter(
-                                slug=new_slug).exists():
-                            new_slug = '%s-%s' % (slug[:(79 -
-                                                         len(str(counter)))], counter)
+                        while Product.objects.exclude(pk=variant.pk).filter(slug=new_slug).exists():
+                            new_slug = '%s-%s' % (slug[:(79 - len(str(counter)))], counter)
                             counter += 1
                         variant.slug = new_slug
 
@@ -714,8 +639,7 @@ def update_variants(request, product_id):
 
                     # default variant
                     try:
-                        product.default_variant_id = int(
-                            request.POST.get("default_variant"))
+                        product.default_variant_id = int(request.POST.get("default_variant"))
                     except TypeError:
                         pass
                     else:
@@ -724,8 +648,7 @@ def update_variants(request, product_id):
                 variant.save()
 
             elif key.startswith("property"):
-                # properties are marshalled as:
-                # property-variant_id|property_group_id|property_id
+                # properties are marshalled as: property-variant_id|property_group_id|property_id
                 temp = key.split("-")[1]
                 variant_id, property_group_id, property_id = temp.split("|")
                 if property_group_id == '0':  # local properties are not bound to property groups
@@ -737,30 +660,27 @@ def update_variants(request, product_id):
                 prop = Property.objects.get(pk=property_id)
                 ppv = None
                 try:
-                    ppv = ProductPropertyValue.objects.get(
-                        product=variant,
-                        property_id=property_id,
-                        property_group_id=property_group_id,
-                        type=PROPERTY_VALUE_TYPE_VARIANT)
+                    ppv = ProductPropertyValue.objects.get(product=variant,
+                                                           property_id=property_id,
+                                                           property_group_id=property_group_id,
+                                                           type=PROPERTY_VALUE_TYPE_VARIANT)
                 except ProductPropertyValue.DoesNotExist:
                     pass
 
                 if prop.filterable:  # it is possible that multiple values are selected for filter
-                    ppv_filterables = ProductPropertyValue.objects.filter(
-                        product=variant,
-                        property_group_id=property_group_id,
-                        property_id=property_id,
-                        type=PROPERTY_VALUE_TYPE_FILTER)
+                    ppv_filterables = ProductPropertyValue.objects.filter(product=variant,
+                                                                          property_group_id=property_group_id,
+                                                                          property_id=property_id,
+                                                                          type=PROPERTY_VALUE_TYPE_FILTER)
 
                 if value != '':
                     is_changed = True
                     if not ppv:
-                        ppv = ProductPropertyValue.objects.create(
-                            product=variant,
-                            property_group_id=property_group_id,
-                            property_id=property_id,
-                            type=PROPERTY_VALUE_TYPE_VARIANT,
-                            value=value)
+                        ppv = ProductPropertyValue.objects.create(product=variant,
+                                                                  property_group_id=property_group_id,
+                                                                  property_id=property_id,
+                                                                  type=PROPERTY_VALUE_TYPE_VARIANT,
+                                                                  value=value)
                     else:
                         is_changed = ppv.value != value
                         ppv.value = value
@@ -768,12 +688,11 @@ def update_variants(request, product_id):
 
                     if prop.filterable and is_changed:
                         ppv_filterables.delete()
-                        ProductPropertyValue.objects.create(
-                            product=variant,
-                            property_group_id=property_group_id,
-                            property_id=property_id,
-                            value=value,
-                            type=PROPERTY_VALUE_TYPE_FILTER)
+                        ProductPropertyValue.objects.create(product=variant,
+                                                            property_group_id=property_group_id,
+                                                            property_id=property_id,
+                                                            value=value,
+                                                            type=PROPERTY_VALUE_TYPE_FILTER)
 
                 elif ppv:
                     ppv.delete()
@@ -790,15 +709,8 @@ def update_variants(request, product_id):
     invalidate_cache_group_id('properties-%s' % pid)
 
     html = (
-        ("#variants",
-         manage_variants(
-             request,
-             product_id,
-             as_string=True)),
-        ("#selectable-products-inline",
-         _selectable_products_inline(
-             request,
-             product)),
+        ("#variants", manage_variants(request, product_id, as_string=True)),
+        ("#selectable-products-inline", _selectable_products_inline(request, product)),
     )
 
     result = json.dumps({
@@ -817,20 +729,13 @@ def edit_sub_type(request, product_id):
 
     form = DisplayTypeForm(data=request.POST)
     if form.is_valid():
-        product.variants_display_type = request.POST.get(
-            "variants_display_type")
+        product.variants_display_type = request.POST.get("variants_display_type")
         product.save()
 
     # Send a signal to update cache
     product_changed.send(product)
 
-    html = (
-        ("#variants",
-         manage_variants(
-             request,
-             product_id,
-             as_string=True)),
-    )
+    html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
     result = json.dumps({
         "html": html,
@@ -854,13 +759,7 @@ def update_category_variant(request, product_id):
     # Send a signal to update cache
     product_changed.send(product)
 
-    html = (
-        ("#variants",
-         manage_variants(
-             request,
-             product_id,
-             as_string=True)),
-    )
+    html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
     result = json.dumps({
         "html": html,
@@ -874,9 +773,7 @@ def _refresh_property_positions(product_id):
     """
     """
     # Refresh positions
-    for i, product_property in enumerate(
-            ProductsPropertiesRelation.objects.filter(
-            product=product_id)):
+    for i, product_property in enumerate(ProductsPropertiesRelation.objects.filter(product=product_id)):
         product_property.position = i * 2
         product_property.save()
 
@@ -903,3 +800,4 @@ def _selectable_products_inline(request, product):
         page = paginator.page(1)
 
     return selectable_products_inline(request, page, paginator, product.id)
+

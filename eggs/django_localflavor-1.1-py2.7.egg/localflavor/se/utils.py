@@ -5,7 +5,7 @@ from django.utils import six
 def id_number_checksum(gd):
     """
     Calculates a Swedish ID number checksum, using the
-    "Luhn"-algorithm
+    "Luhn"-algoritm
     """
     n = s = 0
     for c in (gd['year'] + gd['month'] + gd['day'] + gd['serial']):
@@ -39,13 +39,10 @@ def validate_id_birthday(gd, fix_coordination_number_day=True):
 
     if gd['century'] is None:
 
-        # The century was not specified, and need to be calculated from todays
-        # date
-        year = int(today.strftime('%Y')) - \
-            int(today.strftime('%y')) + int(gd['year'])
+        # The century was not specified, and need to be calculated from todays date
+        year = int(today.strftime('%Y')) - int(today.strftime('%y')) + int(gd['year'])
 
-        if ('%s%s%02d' % (gd['year'], gd['month'], day)
-            ) > today.strftime('%y%m%d'):
+        if ('%s%s%02d' % (gd['year'], gd['month'], day)) > today.strftime('%y%m%d'):
             year -= 100
 
         # If the person is older than 100 years
@@ -71,11 +68,7 @@ def validate_id_birthday(gd, fix_coordination_number_day=True):
 
 def format_personal_id_number(birth_day, gd):
     # birth_day.strftime cannot be used, since it does not support dates < 1900
-    return six.text_type(str(birth_day.year) +
-                         gd['month'] +
-                         gd['day'] +
-                         gd['serial'] +
-                         gd['checksum'])
+    return six.text_type(str(birth_day.year) + gd['month'] + gd['day'] + gd['serial'] + gd['checksum'])
 
 
 def format_organisation_number(gd):
@@ -84,13 +77,7 @@ def format_organisation_number(gd):
     else:
         century = gd['century']
 
-    return six.text_type(
-        century +
-        gd['year'] +
-        gd['month'] +
-        gd['day'] +
-        gd['serial'] +
-        gd['checksum'])
+    return six.text_type(century + gd['year'] + gd['month'] + gd['day'] + gd['serial'] + gd['checksum'])
 
 
 def valid_organisation(gd):

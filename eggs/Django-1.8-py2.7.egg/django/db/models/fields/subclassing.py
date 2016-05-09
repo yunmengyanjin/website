@@ -18,9 +18,8 @@ class SubfieldBase(type):
     has the descriptor protocol attached to it.
     """
     def __new__(cls, name, bases, attrs):
-        warnings.warn(
-            "SubfieldBase has been deprecated. Use Field.from_db_value instead.",
-            RemovedInDjango20Warning)
+        warnings.warn("SubfieldBase has been deprecated. Use Field.from_db_value instead.",
+                  RemovedInDjango20Warning)
 
         new_class = super(SubfieldBase, cls).__new__(cls, name, bases, attrs)
         new_class.contribute_to_class = make_contrib(
@@ -33,7 +32,6 @@ class Creator(object):
     """
     A placeholder class that provides a way to set the attribute on the model.
     """
-
     def __init__(self, field):
         self.field = field
 
@@ -55,7 +53,6 @@ def make_contrib(superclass, func=None):
     case that the existing contribute_to_class() calls all the necessary
     superclass methods.
     """
-
     def contribute_to_class(self, cls, name, **kwargs):
         if func:
             func(self, cls, name, **kwargs)

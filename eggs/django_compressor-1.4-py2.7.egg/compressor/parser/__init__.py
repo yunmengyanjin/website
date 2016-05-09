@@ -13,8 +13,7 @@ from compressor.parser.html5lib import Html5LibParser  # noqa
 class AutoSelectParser(LazyObject):
     options = (
         # TODO: make lxml.html parser first again
-        # fast and part of the Python stdlib
-        (six.moves.html_parser.__name__, HtmlParser),
+        (six.moves.html_parser.__name__, HtmlParser),  # fast and part of the Python stdlib
         ('lxml.html', LxmlParser),  # lxml, extremely fast
     )
 

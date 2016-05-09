@@ -259,7 +259,7 @@ class Countries(object):
         choices by index.
         """
         try:
-            return next(islice(self.__iter__(), index, index + 1))
+            return next(islice(self.__iter__(), index, index+1))
         except TypeError:
             return list(islice(self.__iter__(), index.start, index.stop,
                                index.step))

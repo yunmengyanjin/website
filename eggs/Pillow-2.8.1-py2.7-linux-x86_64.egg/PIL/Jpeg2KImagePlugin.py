@@ -30,9 +30,9 @@ def _parse_codestream(fp):
     lsiz, rsiz, xsiz, ysiz, xosiz, yosiz, xtsiz, ytsiz, \
         xtosiz, ytosiz, csiz \
         = struct.unpack('>HHIIIIIIIIH', siz[:38])
-    ssiz = [None] * csiz
-    xrsiz = [None] * csiz
-    yrsiz = [None] * csiz
+    ssiz = [None]*csiz
+    xrsiz = [None]*csiz
+    yrsiz = [None]*csiz
     for i in range(csiz):
         ssiz[i], xrsiz[i], yrsiz[i] \
             = struct.unpack('>BBB', siz[36 + 3 * i:39 + 3 * i])
@@ -257,7 +257,7 @@ def _save(im, fp, filename):
         fd
     )
 
-    ImageFile._save(im, fp, [('jpeg2k', (0, 0) + im.size, 0, kind)])
+    ImageFile._save(im, fp, [('jpeg2k', (0, 0)+im.size, 0, kind)])
 
 # ------------------------------------------------------------
 # Registry stuff

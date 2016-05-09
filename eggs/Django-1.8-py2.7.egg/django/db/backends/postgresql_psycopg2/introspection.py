@@ -35,11 +35,7 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
     ignored_tables = []
 
     def get_field_type(self, data_type, description):
-        field_type = super(
-            DatabaseIntrospection,
-            self).get_field_type(
-            data_type,
-            description)
+        field_type = super(DatabaseIntrospection, self).get_field_type(data_type, description)
         if field_type == 'IntegerField' and description.default and 'nextval' in description.default:
             return 'AutoField'
         return field_type
@@ -68,12 +64,10 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
             FROM information_schema.columns
             WHERE table_name = %s""", [table_name])
         field_map = {line[0]: line[1:] for line in cursor.fetchall()}
-        cursor.execute(
-            "SELECT * FROM %s LIMIT 1" %
-            self.connection.ops.quote_name(table_name))
-        return [FieldInfo(*((force_text(line[0]),
-                             ) + line[1:6] + (field_map[force_text(line[0])][0] == 'YES',
-                                              field_map[force_text(line[0])][1]))) for line in cursor.description]
+        cursor.execute("SELECT * FROM %s LIMIT 1" % self.connection.ops.quote_name(table_name))
+        return [FieldInfo(*((force_text(line[0]),) + line[1:6]
+                            + (field_map[force_text(line[0])][0] == 'YES', field_map[force_text(line[0])][1])))
+                for line in cursor.description]
 
     def get_relations(self, cursor, table_name):
         """
@@ -133,8 +127,7 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
                 continue
             if row[0] not in indexes:
                 indexes[row[0]] = {'primary_key': False, 'unique': False}
-            # It's possible to have the unique and PK constraints in separate
-            # indexes.
+            # It's possible to have the unique and PK constraints in separate indexes.
             if row[3]:
                 indexes[row[0]]['primary_key'] = True
             if row[2]:
@@ -172,13 +165,8 @@ class DatabaseIntrospection(BaseDatabaseIntrospection):
                 constraints[constraint] = {
                     "columns": [],
                     "primary_key": kind.lower() == "primary key",
-                    "unique": kind.lower() in [
-                        "primary key",
-                        "unique"],
-                    "foreign_key": tuple(
-                        used_cols[0].split(
-                            ".",
-                            1)) if kind.lower() == "foreign key" else None,
+                    "unique": kind.lower() in ["primary key", "unique"],
+                    "foreign_key": tuple(used_cols[0].split(".", 1)) if kind.lower() == "foreign key" else None,
                     "check": False,
                     "index": False,
                 }

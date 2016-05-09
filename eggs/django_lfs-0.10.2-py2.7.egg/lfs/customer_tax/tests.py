@@ -26,22 +26,19 @@ class CustomerTaxTestCase(TestCase):
         self.de = Country.objects.create(code="de", name="Germany")
         self.ie = Country.objects.create(code="ie", name="Ireland")
 
-        self.product = Product.objects.create(
-            name="P1", slug="p1", price=100.0)
+        self.product = Product.objects.create(name="P1", slug="p1", price=100.0)
 
         self.request = create_request()
         self.request.user = AnonymousUser()
         self.customer = get_or_create_customer(self.request)
 
         self.ct1 = CustomerTax.objects.create(rate=20.0)
-        cc = CountryCriterion.objects.create(
-            content=self.ct1, operator=Criterion.IS_SELECTED)
+        cc = CountryCriterion.objects.create(content=self.ct1, operator=Criterion.IS_SELECTED)
         cc.value.add(self.ch)
         cc.value.add(self.us)
 
         self.ct2 = CustomerTax.objects.create(rate=10.0)
-        cc = CountryCriterion.objects.create(
-            content=self.ct2, operator=Criterion.IS_SELECTED)
+        cc = CountryCriterion.objects.create(content=self.ct2, operator=Criterion.IS_SELECTED)
         cc.value.add(self.ie)
 
     def test_customer_tax(self):

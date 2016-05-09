@@ -59,8 +59,7 @@ class NetPriceTestCase(TestCase):
             active=True)
 
         # Products without properties and variants
-        self.p2 = Product.objects.create(
-            name=u"Product 2", slug=u"product-2", active=True)
+        self.p2 = Product.objects.create(name=u"Product 2", slug=u"product-2", active=True)
 
         # Add a variant with color = red, size = m
         self.v1 = Product.objects.create(
@@ -192,8 +191,7 @@ class NetPriceTestCase(TestCase):
     def test_get_standard_price_1(self):
         """Test the price vs. standard price for a product.
         """
-        # By default get_standard_price returns then normal price of the
-        # product
+        # By default get_standard_price returns then normal price of the product
         standard_price = self.p1.get_standard_price(self.request)
         self.assertEqual(standard_price, 1.0)
 

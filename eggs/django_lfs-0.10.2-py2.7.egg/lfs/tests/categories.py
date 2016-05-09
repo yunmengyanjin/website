@@ -14,7 +14,6 @@ from lfs.views import get_category_nodes
 class CategoriesTestCase(TestCase):
     """
     """
-
     def setUp(self):
         """
         """
@@ -27,16 +26,10 @@ class CategoriesTestCase(TestCase):
         category_2 = Category(name="Category 2", slug="category-2")
         category_2.save()
 
-        category_1_1 = Category(
-            name="Category 1-1",
-            slug="category-1-1",
-            parent=category_1)
+        category_1_1 = Category(name="Category 1-1", slug="category-1-1", parent=category_1)
         category_1_1.save()
 
-        category_1_1_1 = Category(
-            name="Category 1-1-1",
-            slug="category-1-1-1",
-            parent=category_1_1)
+        category_1_1_1 = Category(name="Category 1-1-1", slug="category-1-1-1", parent=category_1_1)
         category_1_1_1.save()
 
     def test_category_creation(self):

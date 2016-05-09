@@ -13,12 +13,10 @@ from django.views.generic.detail import (
     BaseDetailView, SingleObjectMixin, SingleObjectTemplateResponseMixin,
 )
 
-PERCENT_PLACEHOLDER_REGEX = re.compile(
-    r'%\([^\)]+\)')  # RemovedInDjango20Warning
+PERCENT_PLACEHOLDER_REGEX = re.compile(r'%\([^\)]+\)')  # RemovedInDjango20Warning
 
 
 class FormMixinBase(type):
-
     def __new__(cls, name, bases, attrs):
         get_form = attrs.get('get_form')
         if get_form and inspect.isfunction(get_form):
@@ -149,8 +147,8 @@ class ModelFormMixin(FormMixin, SingleObjectMixin):
             if self.fields is None:
                 raise ImproperlyConfigured(
                     "Using ModelFormMixin (base class of %s) without "
-                    "the 'fields' attribute is prohibited." %
-                    self.__class__.__name__)
+                    "the 'fields' attribute is prohibited." % self.__class__.__name__
+                )
 
             return model_forms.modelform_factory(model, fields=self.fields)
 
@@ -200,7 +198,6 @@ class ProcessFormView(View):
     """
     A mixin that renders a form on GET and processes it on POST.
     """
-
     def get(self, request, *args, **kwargs):
         """
         Handles GET requests and instantiates a blank version of the form.
@@ -243,7 +240,6 @@ class BaseCreateView(ModelFormMixin, ProcessFormView):
 
     Using this base class requires subclassing to provide a response mixin.
     """
-
     def get(self, request, *args, **kwargs):
         self.object = None
         return super(BaseCreateView, self).get(request, *args, **kwargs)
@@ -267,7 +263,6 @@ class BaseUpdateView(ModelFormMixin, ProcessFormView):
 
     Using this base class requires subclassing to provide a response mixin.
     """
-
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         return super(BaseUpdateView, self).get(request, *args, **kwargs)

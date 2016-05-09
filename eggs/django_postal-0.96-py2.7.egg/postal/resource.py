@@ -34,24 +34,11 @@ class Emitter(object):
     method detection came, and we accidentially caught these
     as the methods on the handler. Issue58 says that's no good.
     """
-    EMITTERS = {}
-    RESERVED_FIELDS = set(['read',
-                           'update',
-                           'create',
-                           'delete',
-                           'model',
-                           'anonymous',
-                           'allowed_methods',
-                           'fields',
-                           'exclude'])
+    EMITTERS = { }
+    RESERVED_FIELDS = set(['read', 'update', 'create', 'delete', 'model', 'anonymous',
+                           'allowed_methods', 'fields', 'exclude'])
 
-    def __init__(
-            self,
-            payload,
-            c_typemapper,
-            handler,
-            fields=(),
-            anonymous=True):
+    def __init__(self, payload, c_typemapper, handler, fields=(), anonymous=True):
         self.typemapper = c_typemapper
         self.data = payload
         self.handler = handler
@@ -125,25 +112,20 @@ class Emitter(object):
             """
             Foreign keys.
             """
-            return [_model(m, fields) for m in data.iterator()]
+            return [ _model(m, fields) for m in data.iterator() ]
 
         def _m2m(data, field, fields=None):
             """
             Many to many (re-route to `_model`.)
             """
-            return [
-                _model(
-                    m,
-                    fields) for m in getattr(
-                    data,
-                    field.name).iterator()]
+            return [ _model(m, fields) for m in getattr(data, field.name).iterator() ]
 
         def _model(data, fields=None):
             """
             Models. Will respect the `fields` and/or
             `exclude` on the handler (see `typemapper`.)
             """
-            ret = {}
+            ret = { }
             handler = self.in_typemapper(type(data), self.anonymous)
             get_absolute_uri = False
 
@@ -155,7 +137,7 @@ class Emitter(object):
 
                 if not fields or hasattr(handler, 'fields'):
                     """
-                    Fields was not specified, try to find the correct
+                    Fields was not specified, try to find teh correct
                     version in the typemapper we were sent.
                     """
                     mapped = self.in_typemapper(type(data), self.anonymous)
@@ -166,8 +148,8 @@ class Emitter(object):
                         get_absolute_uri = True
 
                     if not get_fields:
-                        get_fields = set([f.attname.replace(
-                            "_id", "", 1) for f in data._meta.fields + data._meta.virtual_fields])
+                        get_fields = set([ f.attname.replace("_id", "", 1)
+                            for f in data._meta.fields + data._meta.virtual_fields])
 
                     if hasattr(mapped, 'extra_fields'):
                         get_fields.update(mapped.extra_fields)
@@ -188,8 +170,7 @@ class Emitter(object):
                 met_fields = self.method_fields(handler, get_fields)
 
                 for f in data._meta.local_fields + data._meta.virtual_fields:
-                    if f.serialize and not any(
-                            [p in met_fields for p in [f.attname, f.name]]):
+                    if f.serialize and not any([ p in met_fields for p in [ f.attname, f.name ]]):
                         if not f.rel:
                             if f.attname in get_fields:
                                 ret[f.attname] = _any(v(f))
@@ -235,8 +216,7 @@ class Emitter(object):
                             else:
                                 ret[maybe_field] = _any(maybe)
                         else:
-                            handler_f = getattr(
-                                handler or self.handler, maybe_field, None)
+                            handler_f = getattr(handler or self.handler, maybe_field, None)
 
                             if handler_f:
                                 ret[maybe_field] = _any(handler_f(data))
@@ -258,9 +238,8 @@ class Emitter(object):
                     url_id, fields = handler.resource_uri(data)
 
                     try:
-                        ret['resource_uri'] = permalink(
-                            lambda: (url_id, fields))()
-                    except NoReverseMatch as e:
+                        ret['resource_uri'] = permalink(lambda: (url_id, fields))()
+                    except NoReverseMatch, e:
                         pass
 
             if hasattr(data, 'get_api_url') and 'resource_uri' not in ret:
@@ -282,13 +261,13 @@ class Emitter(object):
             """
             Querysets.
             """
-            return [_any(v, fields) for v in data]
+            return [_any(v, fields) for v in data ]
 
         def _list(data, fields=None):
             """
             Lists.
             """
-            return [_any(v, fields) for v in data]
+            return [_any(v, fields) for v in data ]
 
         def _dict(data, fields=None):
             """
@@ -325,7 +304,7 @@ class Emitter(object):
         """
         Gets an emitter, returns the class and a content-type.
         """
-        if format in cls.EMITTERS:
+        if cls.EMITTERS.has_key(format):
             return cls.EMITTERS.get(format)
 
         raise ValueError("No emitters found for type %s" % format)
@@ -352,7 +331,6 @@ class Emitter(object):
 
 
 class HandlerMethod(object):
-
     def __init__(self, method, stale=False):
         self.method = method
         self.stale = stale
@@ -364,7 +342,7 @@ class HandlerMethod(object):
             if arg in ('self', 'request', 'form'):
                 continue
 
-            didx = len(args) - idx
+            didx = len(args)-idx
 
             if defaults and len(defaults) >= didx:
                 yield (arg, str(defaults[-didx]))
@@ -414,7 +392,6 @@ class HandlerMethod(object):
 
 
 class NoAuthentication(object):
-
     def is_authenticated(self, request):
         return True
 
@@ -432,7 +409,7 @@ class Resource(object):
 
     def __init__(self, handler, authentication=None):
         if not callable(handler):
-            raise AttributeError("Handler not callable.")
+            raise AttributeError, "Handler not callable."
 
         self.handler = handler()
         self.csrf_exempt = getattr(self.handler, 'csrf_exempt', True)
@@ -468,12 +445,12 @@ class Resource(object):
 
     def form_validation_response(self, e):
         """
-        Method to return form validation error information.
+        Method to return form validation error information. 
         You will probably want to override this in your own
         `Resource` subclass.
         """
         resp = rc.BAD_REQUEST
-        resp.write(' ' + str(e.form.errors))
+        resp.write(' '+str(e.form.errors))
         return resp
 
     @property
@@ -502,7 +479,7 @@ class Resource(object):
         for authenticator in self.authentication:
             if not authenticator.is_authenticated(request):
                 if self.anonymous and \
-                        rm in self.anonymous.allowed_methods:
+                    rm in self.anonymous.allowed_methods:
 
                     actor, anonymous = self.anonymous(), True
                 else:
@@ -544,15 +521,14 @@ class Resource(object):
                 else:
                     request.data = request.PUT
 
-        if rm not in handler.allowed_methods:
+        if not rm in handler.allowed_methods:
             return HttpResponseNotAllowed(handler.allowed_methods)
 
         meth = getattr(handler, self.callmap.get(rm, ''), None)
         if not meth:
             raise Http404
 
-        # Support emitter both through (?P<emitter_format>) and
-        # ?format=emitter.
+        # Support emitter both through (?P<emitter_format>) and ?format=emitter.
         em_format = self.determine_emitter(request, *args, **kwargs)
 
         kwargs.pop('emitter_format', None)
@@ -564,16 +540,14 @@ class Resource(object):
 
         try:
             result = meth(request, *args, **kwargs)
-        except Exception as e:
+        except Exception, e:
             result = self.error_handler(e, request, meth, em_format)
 
         try:
             emitter, ct = Emitter.get(em_format)
             fields = handler.fields
 
-            if hasattr(
-                    handler, 'list_fields') and isinstance(
-                    result, (list, tuple, QuerySet)):
+            if hasattr(handler, 'list_fields') and isinstance(result, (list, tuple, QuerySet)):
                 fields = handler.list_fields
         except ValueError:
             result = rc.BAD_REQUEST
@@ -583,15 +557,15 @@ class Resource(object):
         status_code = 200
 
         # If we're looking at a response object which contains non-string
-        # content, then assume we should use the emitter to format that
+        # content, then assume we should use the emitter to format that 
         # content
         if isinstance(result, HttpResponse) and not result._is_string:
             status_code = result.status_code
             # Note: We can't use result.content here because that method attempts
-            # to convert the content into a string which we don't want.
+            # to convert the content into a string which we don't want. 
             # when _is_string is False _container is the raw data
             result = result._container
-
+     
         srl = emitter(result, typemapper, handler, fields, anonymous)
 
         try:
@@ -601,10 +575,8 @@ class Resource(object):
             before sending it to the client. Won't matter for
             smaller datasets, but larger will have an impact.
             """
-            if self.stream:
-                stream = srl.stream_render(request)
-            else:
-                stream = srl.render(request)
+            if self.stream: stream = srl.stream_render(request)
+            else: stream = srl.render(request)
 
             if not isinstance(stream, HttpResponse):
                 resp = HttpResponse(stream, mimetype=ct, status=status_code)
@@ -614,7 +586,7 @@ class Resource(object):
             resp.streaming = self.stream
 
             return resp
-        except HttpStatusCode as e:
+        except HttpStatusCode, e:
             return e.response
 
     @staticmethod
@@ -624,9 +596,9 @@ class Resource(object):
         request object, and returns the sanitized version.
         """
         for method_type in ('GET', 'PUT', 'POST', 'DELETE'):
-            block = getattr(request, method_type, {})
+            block = getattr(request, method_type, { })
 
-            if True in [k.startswith("oauth_") for k in block.keys()]:
+            if True in [ k.startswith("oauth_") for k in block.keys() ]:
                 sanitized = block.copy()
 
                 for k in sanitized.keys():
@@ -643,16 +615,17 @@ class Resource(object):
         subject = "Piston crash report"
         html = reporter.get_traceback_html()
 
-        message = EmailMessage(settings.EMAIL_SUBJECT_PREFIX + subject,
-                               html, settings.SERVER_EMAIL,
-                               [admin[1] for admin in settings.ADMINS])
+        message = EmailMessage(settings.EMAIL_SUBJECT_PREFIX+subject,
+                                html, settings.SERVER_EMAIL,
+                                [ admin[1] for admin in settings.ADMINS ])
 
         message.content_subtype = 'html'
         message.send(fail_silently=True)
 
+
     def error_handler(self, e, request, meth, em_format):
         """
-        Override this method to add handling of errors customized for your
+        Override this method to add handling of errors customized for your 
         needs
         """
         if isinstance(e, FormValidationError):
@@ -680,8 +653,8 @@ class Resource(object):
 
         elif isinstance(e, HttpStatusCode):
             return e.response
-
-        else:
+ 
+        else: 
             """
             On errors (like code errors), we'd like to be able to
             give crash reports to both admins and also the calling

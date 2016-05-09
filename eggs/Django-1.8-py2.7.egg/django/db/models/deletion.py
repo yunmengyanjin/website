@@ -8,7 +8,6 @@ from django.utils import six
 
 
 class ProtectedError(IntegrityError):
-
     def __init__(self, msg, protected_objects):
         self.protected_objects = protected_objects
         super(ProtectedError, self).__init__(msg, protected_objects)
@@ -17,16 +16,17 @@ class ProtectedError(IntegrityError):
 def CASCADE(collector, field, sub_objs, using):
     collector.collect(sub_objs, source=field.rel.to,
                       source_attr=field.name, nullable=field.null)
-    if field.null and not connections[
-            using].features.can_defer_constraint_checks:
+    if field.null and not connections[using].features.can_defer_constraint_checks:
         collector.add_field_update(field, None, sub_objs)
 
 
 def PROTECT(collector, field, sub_objs, using):
-    raise ProtectedError(
-        "Cannot delete some instances of model '%s' because "
-        "they are referenced through a protected foreign key: '%s.%s'" %
-        (field.rel.to.__name__, sub_objs[0].__class__.__name__, field.name), sub_objs)
+    raise ProtectedError("Cannot delete some instances of model '%s' because "
+        "they are referenced through a protected foreign key: '%s.%s'" % (
+            field.rel.to.__name__, sub_objs[0].__class__.__name__, field.name
+        ),
+        sub_objs
+    )
 
 
 def SET(value):
@@ -56,8 +56,7 @@ def get_candidate_relations_to_delete(opts):
     # Collect models that contain candidate relations to delete. This may include
     # relations coming from proxy models.
     candidate_models = {opts}
-    candidate_models = candidate_models.union(
-        opts.concrete_model._meta.proxied_children)
+    candidate_models = candidate_models.union(opts.concrete_model._meta.proxied_children)
     # For each model, get all candidate fields.
     candidate_model_fields = chain.from_iterable(
         opts.get_fields(include_hidden=True) for opts in candidate_models
@@ -65,12 +64,12 @@ def get_candidate_relations_to_delete(opts):
     # The candidate relations are the ones that come from N-1 and 1-1 relations.
     # N-N  (i.e., many-to-many) relations aren't candidates for deletion.
     return (
-        f for f in candidate_model_fields if f.auto_created and not f.concrete and (
-            f.one_to_one or f.one_to_many))
+        f for f in candidate_model_fields
+        if f.auto_created and not f.concrete and (f.one_to_one or f.one_to_many)
+    )
 
 
 class Collector(object):
-
     def __init__(self, using):
         self.using = using
         # Initially, {model: {instances}}, later values become lists.
@@ -111,8 +110,7 @@ class Collector(object):
             if reverse_dependency:
                 source, model = model, source
             self.dependencies.setdefault(
-                source._meta.concrete_model, set()).add(
-                model._meta.concrete_model)
+                source._meta.concrete_model, set()).add(model._meta.concrete_model)
         return new_objs
 
     def add_field_update(self, field, value, objs):
@@ -150,8 +148,7 @@ class Collector(object):
         # The use of from_field comes from the need to avoid cascade back to
         # parent when parent delete is cascading to child.
         opts = model._meta
-        if any(
-                link != from_field for link in opts.concrete_model._meta.parents.values()):
+        if any(link != from_field for link in opts.concrete_model._meta.parents.values()):
             return False
         # Foreign keys pointing to this model, both from m2m and other
         # models.
@@ -177,7 +174,7 @@ class Collector(object):
             return [objs]
 
     def collect(self, objs, source=None, nullable=False, collect_related=True,
-                source_attr=None, reverse_dependency=False):
+            source_attr=None, reverse_dependency=False):
         """
         Adds 'objs' to the collection of objects to be deleted as well as all
         parent instances.  'objs' must be a homogeneous iterable collection of
@@ -262,10 +259,8 @@ class Collector(object):
             for model in models:
                 if model in sorted_models:
                     continue
-                dependencies = self.dependencies.get(
-                    model._meta.concrete_model)
-                if not (
-                        dependencies and dependencies.difference(concrete_models)):
+                dependencies = self.dependencies.get(model._meta.concrete_model)
+                if not (dependencies and dependencies.difference(concrete_models)):
                     sorted_models.append(model)
                     concrete_models.add(model._meta.concrete_model)
                     found = True
@@ -297,11 +292,9 @@ class Collector(object):
                 qs._raw_delete(using=self.using)
 
             # update fields
-            for model, instances_for_fieldvalues in six.iteritems(
-                    self.field_updates):
+            for model, instances_for_fieldvalues in six.iteritems(self.field_updates):
                 query = sql.UpdateQuery(model)
-                for (field, value), instances in six.iteritems(
-                        instances_for_fieldvalues):
+                for (field, value), instances in six.iteritems(instances_for_fieldvalues):
                     query.update_batch([obj.pk for obj in instances],
                                        {field.name: value}, self.using)
 
@@ -322,10 +315,8 @@ class Collector(object):
                         )
 
         # update collected instances
-        for model, instances_for_fieldvalues in six.iteritems(
-                self.field_updates):
-            for (field, value), instances in six.iteritems(
-                    instances_for_fieldvalues):
+        for model, instances_for_fieldvalues in six.iteritems(self.field_updates):
+            for (field, value), instances in six.iteritems(instances_for_fieldvalues):
                 for obj in instances:
                     setattr(obj, field.attname, value)
         for model, instances in six.iteritems(self.data):

@@ -44,9 +44,7 @@ accept_language_re = re.compile(r'''
         (?:\s*,\s*|$)                                 # Multiple accepts per header.
         ''', re.VERBOSE)
 
-language_code_re = re.compile(
-    r'^[a-z]{1,8}(?:-[a-z0-9]{1,8})*$',
-    re.IGNORECASE)
+language_code_re = re.compile(r'^[a-z]{1,8}(?:-[a-z0-9]{1,8})*$', re.IGNORECASE)
 
 language_code_prefix_re = re.compile(r'^/([\w-]+)(/|$)')
 
@@ -81,8 +79,7 @@ def to_locale(language, to_lower=False):
         else:
             # Get correct locale for sr-latn
             if len(language[p + 1:]) > 2:
-                return language[:p].lower() + '_' + language[p + \
-                                          1].upper() + language[p + 2:].lower()
+                return language[:p].lower() + '_' + language[p + 1].upper() + language[p + 2:].lower()
             return language[:p].lower() + '_' + language[p + 1:].upper()
     else:
         return language.lower()
@@ -107,7 +104,6 @@ class DjangoTranslation(gettext_module.GNUTranslations):
     requested language and add a fallback to the default language, if it's
     different from the requested language.
     """
-
     def __init__(self, language):
         """Create a GNUTranslations() using many locale directories"""
         gettext_module.GNUTranslations.__init__(self)
@@ -183,8 +179,7 @@ class DjangoTranslation(gettext_module.GNUTranslations):
         """Sets the GNUTranslations() fallback with the default language."""
         # Don't set a fallback for the default language or any English variant
         # (as it's empty, so it'll ALWAYS fall back to the default language)
-        if self.__language == settings.LANGUAGE_CODE or self.__language.startswith(
-                'en'):
+        if self.__language == settings.LANGUAGE_CODE or self.__language.startswith('en'):
             return
         default_translation = translation(settings.LANGUAGE_CODE)
         self.add_fallback(default_translation)
@@ -254,8 +249,7 @@ def get_language():
             return t.to_language()
         except AttributeError:
             pass
-    # If we don't have a real translation object, assume it's the default
-    # language.
+    # If we don't have a real translation object, assume it's the default language.
     return settings.LANGUAGE_CODE
 
 
@@ -296,11 +290,7 @@ def do_translate(message, translation_function):
     global _default
 
     # str() is allowing a bytestring message to remain bytestring on Python 2
-    eol_message = message.replace(
-        str('\r\n'),
-        str('\n')).replace(
-        str('\r'),
-        str('\n'))
+    eol_message = message.replace(str('\r\n'), str('\n')).replace(str('\r'), str('\n'))
 
     if len(eol_message) == 0:
         # Returns an empty value of the corresponding type if an empty message
@@ -400,11 +390,7 @@ def all_locale_paths():
     Returns a list of paths to user-provides languages files.
     """
     globalpath = os.path.join(
-        os.path.dirname(
-            upath(
-                sys.modules[
-                    settings.__module__].__file__)),
-        'locale')
+        os.path.dirname(upath(sys.modules[settings.__module__].__file__)), 'locale')
     return [globalpath] + list(settings.LOCALE_PATHS)
 
 
@@ -423,9 +409,7 @@ def check_for_language(lang_code):
     if not language_code_re.search(lang_code):
         return False
     for path in all_locale_paths():
-        if gettext_module.find(
-            'django', path, [
-                to_locale(lang_code)]) is not None:
+        if gettext_module.find('django', path, [to_locale(lang_code)]) is not None:
             return True
     return False
 
@@ -452,8 +436,7 @@ def get_supported_language_variant(lang_code, strict=False):
     <https://www.djangoproject.com/weblog/2007/oct/26/security-fix/>.
     """
     if lang_code:
-        # If 'fr-ca' is not supported, try special fallback or language-only
-        # 'fr'.
+        # If 'fr-ca' is not supported, try special fallback or language-only 'fr'.
         possible_lang_codes = [lang_code]
         try:
             possible_lang_codes.extend(LANG_INFO[lang_code]['fallback'])
@@ -511,8 +494,7 @@ def get_language_from_request(request, check_path=False):
 
     if hasattr(request, 'session'):
         lang_code = request.session.get(LANGUAGE_SESSION_KEY)
-        if lang_code in supported_lang_codes and lang_code is not None and check_for_language(
-                lang_code):
+        if lang_code in supported_lang_codes and lang_code is not None and check_for_language(lang_code):
             return lang_code
 
     lang_code = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
@@ -552,10 +534,8 @@ def blankout(src, char):
 
 
 context_re = re.compile(r"""^\s+.*context\s+((?:"[^"]*?")|(?:'[^']*?'))\s*""")
-inline_re = re.compile(
-    r"""^\s*trans\s+((?:"[^"]*?")|(?:'[^']*?'))(\s+.*context\s+((?:"[^"]*?")|(?:'[^']*?')))?\s*""")
-block_re = re.compile(
-    r"""^\s*blocktrans(\s+.*context\s+((?:"[^"]*?")|(?:'[^']*?')))?(?:\s+|$)""")
+inline_re = re.compile(r"""^\s*trans\s+((?:"[^"]*?")|(?:'[^']*?'))(\s+.*context\s+((?:"[^"]*?")|(?:'[^']*?')))?\s*""")
+block_re = re.compile(r"""^\s*blocktrans(\s+.*context\s+((?:"[^"]*?")|(?:'[^']*?')))?(?:\s+|$)""")
 endblock_re = re.compile(r"""^\s*endblocktrans$""")
 plural_re = re.compile(r"""^\s*plural$""")
 constant_re = re.compile(r"""_\(((?:".*?")|(?:'.*?'))\)""")
@@ -568,13 +548,8 @@ def templatize(src, origin=None):
     does so by translating the Django translation tags into standard gettext
     function invocations.
     """
-    from django.template.base import (
-        Lexer,
-        TOKEN_TEXT,
-        TOKEN_VAR,
-        TOKEN_BLOCK,
-        TOKEN_COMMENT,
-        TRANSLATOR_COMMENT_MARK)
+    from django.template.base import (Lexer, TOKEN_TEXT, TOKEN_VAR,
+        TOKEN_BLOCK, TOKEN_COMMENT, TRANSLATOR_COMMENT_MARK)
     src = force_text(src, settings.FILE_CHARSET)
     out = StringIO('')
     message_context = None
@@ -653,8 +628,8 @@ def templatize(src, origin=None):
                         filemsg = 'file %s, ' % origin
                     raise SyntaxError(
                         "Translation blocks must not include other block tags: "
-                        "%s (%sline %d)" %
-                        (t.contents, filemsg, t.lineno))
+                        "%s (%sline %d)" % (t.contents, filemsg, t.lineno)
+                    )
             elif t.token_type == TOKEN_VAR:
                 if inplural:
                     plural.append('%%(%s)s' % t.contents)
@@ -678,19 +653,13 @@ def templatize(src, origin=None):
                             filemsg = ''
                             if origin:
                                 filemsg = 'file %s, ' % origin
-                            warn_msg = (
-                                "The translator-targeted comment '%s' "
+                            warn_msg = ("The translator-targeted comment '%s' "
                                 "(%sline %d) was ignored, because it wasn't the last item "
-                                "on the line.") % (c,
-                                                   filemsg,
-                                                   comment_lineno_cache)
+                                "on the line.") % (c, filemsg, comment_lineno_cache)
                             warnings.warn(warn_msg, TranslatorCommentWarning)
                         lineno_comment_map[comment_lineno_cache] = []
                 else:
-                    out.write(
-                        '# %s' %
-                        ' | '.join(
-                            lineno_comment_map[comment_lineno_cache]))
+                    out.write('# %s' % ' | '.join(lineno_comment_map[comment_lineno_cache]))
                 comment_lineno_cache = None
 
             if t.token_type == TOKEN_BLOCK:

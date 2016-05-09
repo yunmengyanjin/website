@@ -3,7 +3,6 @@ from django.core.urlresolvers import reverse
 
 register = template.Library()
 
-
 @register.inclusion_tag('postal/monitor_country_change.html')
 def monitor_country_change():
     return {

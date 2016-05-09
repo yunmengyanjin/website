@@ -36,7 +36,7 @@ import traceback
 
 MAXBLOCK = 65536
 
-SAFEBLOCK = 1024 * 1024
+SAFEBLOCK = 1024*1024
 
 LOAD_TRUNCATED_IMAGES = False
 
@@ -169,7 +169,7 @@ class ImageFile(Image.Image):
                         self.map.seek(o)
                         self.im = self.map.readimage(
                             self.mode, self.size, a[1], a[2]
-                        )
+                            )
                     else:
                         # use mmap, if possible
                         import mmap
@@ -179,7 +179,7 @@ class ImageFile(Image.Image):
                         self.map = mmap.mmap(file.fileno(), size)
                         self.im = Image.core.map_buffer(
                             self.map, self.size, d, e, o, a
-                        )
+                            )
                     readonly = 1
                 except (AttributeError, EnvironmentError, ImportError):
                     self.map = None
@@ -292,7 +292,7 @@ class StubImageFile(ImageFile):
     def _open(self):
         raise NotImplementedError(
             "StubImageFile subclass must implement _open"
-        )
+            )
 
     def load(self):
         loader = self._load()
@@ -308,7 +308,7 @@ class StubImageFile(ImageFile):
         "(Hook) Find actual image loader."
         raise NotImplementedError(
             "StubImageFile subclass must implement _load"
-        )
+            )
 
 
 class Parser:
@@ -406,7 +406,7 @@ class Parser:
                     im.tile = []
                     self.decoder = Image._getdecoder(
                         im.mode, d, a, im.decoderconfig
-                    )
+                        )
                     self.decoder.setimage(im.im, e)
 
                     # calculate decoder offset

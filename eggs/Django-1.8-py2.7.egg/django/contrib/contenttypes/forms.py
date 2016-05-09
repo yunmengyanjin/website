@@ -40,34 +40,25 @@ class BaseGenericInlineFormSet(BaseModelFormSet):
         opts = cls.model._meta
         return '-'.join(
             (opts.app_label, opts.model_name,
-             cls.ct_field.name, cls.ct_fk_field.name)
+            cls.ct_field.name, cls.ct_fk_field.name)
         )
 
     def save_new(self, form, commit=True):
         setattr(form.instance, self.ct_field.get_attname(),
-                ContentType.objects.get_for_model(self.instance).pk)
+            ContentType.objects.get_for_model(self.instance).pk)
         setattr(form.instance, self.ct_fk_field.get_attname(),
-                self.instance.pk)
+            self.instance.pk)
         return form.save(commit=commit)
 
 
-def generic_inlineformset_factory(
-        model,
-        form=ModelForm,
-        formset=BaseGenericInlineFormSet,
-        ct_field="content_type",
-        fk_field="object_id",
-        fields=None,
-        exclude=None,
-        extra=3,
-        can_order=False,
-        can_delete=True,
-        max_num=None,
-        formfield_callback=None,
-        validate_max=False,
-        for_concrete_model=True,
-        min_num=None,
-        validate_min=False):
+def generic_inlineformset_factory(model, form=ModelForm,
+                                  formset=BaseGenericInlineFormSet,
+                                  ct_field="content_type", fk_field="object_id",
+                                  fields=None, exclude=None,
+                                  extra=3, can_order=False, can_delete=True,
+                                  max_num=None, formfield_callback=None,
+                                  validate_max=False, for_concrete_model=True,
+                                  min_num=None, validate_min=False):
     """
     Returns a ``GenericInlineFormSet`` for the given kwargs.
 
@@ -77,32 +68,21 @@ def generic_inlineformset_factory(
     opts = model._meta
     # if there is no field called `ct_field` let the exception propagate
     ct_field = opts.get_field(ct_field)
-    if not isinstance(
-            ct_field,
-            models.ForeignKey) or ct_field.rel.to != ContentType:
-        raise Exception(
-            "fk_name '%s' is not a ForeignKey to ContentType" %
-            ct_field)
+    if not isinstance(ct_field, models.ForeignKey) or ct_field.rel.to != ContentType:
+        raise Exception("fk_name '%s' is not a ForeignKey to ContentType" % ct_field)
     fk_field = opts.get_field(fk_field)  # let the exception propagate
     if exclude is not None:
         exclude = list(exclude)
         exclude.extend([ct_field.name, fk_field.name])
     else:
         exclude = [ct_field.name, fk_field.name]
-    FormSet = modelformset_factory(
-        model,
-        form=form,
-        formfield_callback=formfield_callback,
-        formset=formset,
-        extra=extra,
-        can_delete=can_delete,
-        can_order=can_order,
-        fields=fields,
-        exclude=exclude,
-        max_num=max_num,
-        validate_max=validate_max,
-        min_num=min_num,
-        validate_min=validate_min)
+    FormSet = modelformset_factory(model, form=form,
+                                   formfield_callback=formfield_callback,
+                                   formset=formset,
+                                   extra=extra, can_delete=can_delete, can_order=can_order,
+                                   fields=fields, exclude=exclude, max_num=max_num,
+                                   validate_max=validate_max, min_num=min_num,
+                                   validate_min=validate_min)
     FormSet.ct_field = ct_field
     FormSet.ct_fk_field = fk_field
     FormSet.for_concrete_model = for_concrete_model

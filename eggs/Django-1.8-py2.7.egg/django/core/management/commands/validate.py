@@ -12,5 +12,5 @@ class Command(CheckCommand):
 
     def handle(self, **options):
         warnings.warn('"validate" has been deprecated in favor of "check".',
-                      RemovedInDjango19Warning)
+            RemovedInDjango19Warning)
         super(Command, self).handle(**options)

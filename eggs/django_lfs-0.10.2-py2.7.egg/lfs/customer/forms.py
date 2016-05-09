@@ -52,13 +52,7 @@ class CreditCardForm(forms.ModelForm):
     The default credit card form which is displayed within the checkout form
     if a shop customer selects a payment method of type ``credit card``.
     """
-    verification = forms.CharField(
-        label=_(u"Verification Number"),
-        max_length=4,
-        required=False,
-        widget=forms.TextInput(
-            attrs={
-                "size": 4}))
+    verification = forms.CharField(label=_(u"Verification Number"), max_length=4, required=False, widget=forms.TextInput(attrs={"size": 4}))
 
     class Meta:
         model = CreditCard
@@ -68,12 +62,9 @@ class CreditCardForm(forms.ModelForm):
         super(CreditCardForm, self).__init__(*args, **kwargs)
 
         year = datetime.datetime.now().year
-        self.fields["type"].widget = forms.Select(
-            choices=lfs.payment.settings.CREDIT_CARD_TYPE_CHOICES)
-        self.fields["expiration_date_month"].widget = forms.Select(
-            choices=[(i, i) for i in range(1, 13)])
-        self.fields["expiration_date_year"].widget = forms.Select(
-            choices=[(i, i) for i in range(year, year + 10)])
+        self.fields["type"].widget = forms.Select(choices=lfs.payment.settings.CREDIT_CARD_TYPE_CHOICES)
+        self.fields["expiration_date_month"].widget = forms.Select(choices=[(i, i) for i in range(1, 13)])
+        self.fields["expiration_date_year"].widget = forms.Select(choices=[(i, i) for i in range(year, year + 10)])
 
     def clean(self):
         msg = _(u"This field is required.")
@@ -112,9 +103,7 @@ class RegisterForm(forms.Form):
     password_1 = forms.CharField(
         label=_(u"Password"), widget=forms.PasswordInput(), max_length=20)
     password_2 = forms.CharField(
-        label=_(u"Confirm password"),
-        widget=forms.PasswordInput(),
-        max_length=20)
+        label=_(u"Confirm password"), widget=forms.PasswordInput(), max_length=20)
 
     def clean_password_2(self):
         """Validates that password 1 and password 2 are the same.
@@ -131,8 +120,7 @@ class RegisterForm(forms.Form):
         """Validates that the entered e-mail is unique.
         """
         email = self.cleaned_data.get("email")
-        if email and User.objects.filter(
-                Q(email=email) | Q(username=email)).count() > 0:
+        if email and User.objects.filter(Q(email=email) | Q(username=email)).count() > 0:
             raise forms.ValidationError(
                 _(u"That email address is already in use."))
 

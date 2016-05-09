@@ -37,9 +37,7 @@ def manage_delivery_times(request):
     """
     try:
         delivery_time = DeliveryTime.objects.all()[0]
-        url = reverse(
-            "lfs_manage_delivery_time", kwargs={
-                "id": delivery_time.id})
+        url = reverse("lfs_manage_delivery_time", kwargs={"id": delivery_time.id})
     except IndexError:
         url = reverse("lfs_manage_add_delivery_time")
 
@@ -47,18 +45,12 @@ def manage_delivery_times(request):
 
 
 @permission_required("core.manage_shop")
-def manage_delivery_time(
-        request,
-        id,
-        template_name="manage/delivery_times/base.html"):
+def manage_delivery_time(request, id, template_name="manage/delivery_times/base.html"):
     """Provides a form to edit the delivery time with the passed id.
     """
     delivery_time = get_object_or_404(DeliveryTime, pk=id)
     if request.method == "POST":
-        form = DeliveryTimeForm(
-            instance=delivery_time,
-            data=request.POST,
-            files=request.FILES)
+        form = DeliveryTimeForm(instance=delivery_time, data=request.POST, files=request.FILES)
         if form.is_valid():
             new_delivery_time = form.save()
             return lfs.core.utils.set_message_cookie(
@@ -86,10 +78,7 @@ def add_delivery_time(request, template_name="manage/delivery_times/add.html"):
             delivery_time = form.save()
 
             return lfs.core.utils.set_message_cookie(
-                url=reverse(
-                    "lfs_manage_delivery_time",
-                    kwargs={
-                        "id": delivery_time.id}),
+                url=reverse("lfs_manage_delivery_time", kwargs={"id": delivery_time.id}),
                 msg=_(u"Delivery time has been added."),
             )
 

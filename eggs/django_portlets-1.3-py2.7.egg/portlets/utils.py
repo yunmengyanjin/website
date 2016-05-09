@@ -30,12 +30,11 @@ def get_slots(obj):
     for slot in Slot.objects.all():
         temp = []
         for pa in PortletAssignment.objects.filter(
-                slot=slot, content_id=obj.id, content_type=ct.id):
+            slot=slot, content_id=obj.id, content_type=ct.id):
             has_portlets = True
 
             # Display only registered portlets
-            portlet_type = portlet_types.get(
-                pa.portlet.__class__.__name__.lower())
+            portlet_type = portlet_types.get(pa.portlet.__class__.__name__.lower())
             if portlet_type:
                 temp.append({
                     "pa_id": pa.id,
@@ -72,8 +71,7 @@ def is_blocked(obj, slot):
             The slot for which the blocking is tested. Must be a Slot
             instance.
     """
-    logger.info(
-        "Decprecated: portlets: the utility function 'is_blocked' is deprecated. Please use 'Slot.is_blocked'.")
+    logger.info("Decprecated: portlets: the utility function 'is_blocked' is deprecated. Please use 'Slot.is_blocked'.")
     return slot.is_blocked(obj)
 
 
@@ -89,8 +87,7 @@ def has_portlets(obj, slot):
         slot
             The slot which is tested. Must be a Slot instance.
     """
-    logger.info(
-        "Decprecated: portlets: the utility function 'has_portlets' is deprecated. Please use 'Slot.has_portlets'.")
+    logger.info("Decprecated: portlets: the utility function 'has_portlets' is deprecated. Please use 'Slot.has_portlets'.")
     return slot.has_portlets(obj)
 
 
@@ -109,8 +106,7 @@ def get_portlets(obj, slot):
         instance.
 
     """
-    logger.info(
-        "Decprecated: portlets: the utility function 'get_portlets' is deprecated. Please use 'Slot.get_portlets'.")
+    logger.info("Decprecated: portlets: the utility function 'get_portlets' is deprecated. Please use 'Slot.get_portlets'.")
     return slot.get_portlets(obj)
 
 

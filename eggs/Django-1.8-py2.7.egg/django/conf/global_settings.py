@@ -17,13 +17,11 @@ TEMPLATE_DEBUG = False
 # on a live site.
 DEBUG_PROPAGATE_EXCEPTIONS = False
 
-# Whether to use the "Etag" header. This saves bandwidth but slows down
-# performance.
+# Whether to use the "Etag" header. This saves bandwidth but slows down performance.
 USE_ETAGS = False
 
 # People who get code error notifications.
-# In the format (('Full Name', 'email@example.com'), ('Full Name',
-# 'anotheremail@example.com'))
+# In the format (('Full Name', 'email@example.com'), ('Full Name', 'anotheremail@example.com'))
 ADMINS = ()
 
 # Tuple of IP addresses, as strings, that:
@@ -321,8 +319,7 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 2621440  # i.e. 2.5 MB
 FILE_UPLOAD_TEMP_DIR = None
 
 # The numeric mode to set newly-uploaded files to. The value should be a mode
-# you'd pass directly to os.chmod; see
-# http://docs.python.org/lib/os-file-dir.html.
+# you'd pass directly to os.chmod; see http://docs.python.org/lib/os-file-dir.html.
 FILE_UPLOAD_PERMISSIONS = None
 
 # The numeric mode to assign to newly-created directories, when uploading files.

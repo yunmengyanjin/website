@@ -26,7 +26,6 @@ def dummy():
 
 
 class LocMemCache(BaseCache):
-
     def __init__(self, name, params):
         BaseCache.__init__(self, params)
         self._cache = _caches.setdefault(name, {})
@@ -113,12 +112,7 @@ class LocMemCache(BaseCache):
         if self._cull_frequency == 0:
             self.clear()
         else:
-            doomed = [
-                k for (
-                    i,
-                    k) in enumerate(
-                    self._cache) if i %
-                self._cull_frequency == 0]
+            doomed = [k for (i, k) in enumerate(self._cache) if i % self._cull_frequency == 0]
             for k in doomed:
                 self._delete(k)
 

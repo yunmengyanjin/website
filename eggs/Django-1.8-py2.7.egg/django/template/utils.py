@@ -17,7 +17,6 @@ class InvalidTemplateEngineError(ImproperlyConfigured):
 
 
 class EngineHandler(object):
-
     def __init__(self, templates=None):
         """
         templates is an optional list of template engine definitions
@@ -71,9 +70,7 @@ class EngineHandler(object):
             templates[tpl['NAME']] = tpl
 
         counts = Counter(list(templates))
-        duplicates = [
-            alias for alias,
-            count in counts.most_common() if count > 1]
+        duplicates = [alias for alias, count in counts.most_common() if count > 1]
         if duplicates:
             raise ImproperlyConfigured(
                 "Template engine aliases aren't unique, duplicates: {}. "

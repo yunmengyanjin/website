@@ -19,8 +19,7 @@ class BeautifulSoupParser(ParserBase):
                 from BeautifulSoup import BeautifulSoup
             return BeautifulSoup(self.content)
         except ImportError as err:
-            raise ImproperlyConfigured(
-                "Error while importing BeautifulSoup: %s" % err)
+            raise ImproperlyConfigured("Error while importing BeautifulSoup: %s" % err)
         except Exception as err:
             raise ParserError("Error while initializing Parser: %s" % err)
 

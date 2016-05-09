@@ -20,7 +20,6 @@ class Options(object):
 
     This allows cache operations to be controlled by the router
     """
-
     def __init__(self, table):
         self.db_table = table
         self.app_label = 'django_cache'
@@ -35,7 +34,6 @@ class Options(object):
 
 
 class BaseDatabaseCache(BaseCache):
-
     def __init__(self, table, params):
         BaseCache.__init__(self, params)
         self._table = table
@@ -71,8 +69,7 @@ class DatabaseCache(BaseDatabaseCache):
             return default
         now = timezone.now()
         expires = row[2]
-        if connections[db].features.needs_datetime_string_cast and not isinstance(
-                expires, datetime):
+        if connections[db].features.needs_datetime_string_cast and not isinstance(expires, datetime):
             # Note: typecasting is needed by some 3rd party database backends.
             # All core backends work without typecasting, so be careful about
             # changes here - test suite will NOT pick regressions here.
@@ -134,26 +131,18 @@ class DatabaseCache(BaseDatabaseCache):
                         current_expires = result[1]
                         if (connections[db].features.needs_datetime_string_cast and not
                                 isinstance(current_expires, datetime)):
-                            current_expires = typecast_timestamp(
-                                str(current_expires))
+                            current_expires = typecast_timestamp(str(current_expires))
                     exp = connections[db].ops.value_to_db_datetime(exp)
-                    if result and (
-                        mode == 'set' or (
-                            mode == 'add' and current_expires < now)):
-                        cursor.execute(
-                            "UPDATE %s SET value = %%s, expires = %%s "
-                            "WHERE cache_key = %%s" %
-                            table, [
-                                b64encoded, exp, key])
+                    if result and (mode == 'set' or (mode == 'add' and current_expires < now)):
+                        cursor.execute("UPDATE %s SET value = %%s, expires = %%s "
+                                       "WHERE cache_key = %%s" % table,
+                                       [b64encoded, exp, key])
                     else:
-                        cursor.execute(
-                            "INSERT INTO %s (cache_key, value, expires) "
-                            "VALUES (%%s, %%s, %%s)" %
-                            table, [
-                                key, b64encoded, exp])
+                        cursor.execute("INSERT INTO %s (cache_key, value, expires) "
+                                       "VALUES (%%s, %%s, %%s)" % table,
+                                       [key, b64encoded, exp])
             except DatabaseError:
-                # To be threadsafe, updates/inserts are allowed to fail
-                # silently
+                # To be threadsafe, updates/inserts are allowed to fail silently
                 return False
             else:
                 return True
@@ -166,9 +155,7 @@ class DatabaseCache(BaseDatabaseCache):
         table = connections[db].ops.quote_name(self._table)
 
         with connections[db].cursor() as cursor:
-            cursor.execute(
-                "DELETE FROM %s WHERE cache_key = %%s" %
-                table, [key])
+            cursor.execute("DELETE FROM %s WHERE cache_key = %%s" % table, [key])
 
     def has_key(self, key, version=None):
         key = self.make_key(key, version=version)
@@ -184,11 +171,9 @@ class DatabaseCache(BaseDatabaseCache):
         now = now.replace(microsecond=0)
 
         with connections[db].cursor() as cursor:
-            cursor.execute(
-                "SELECT cache_key FROM %s "
-                "WHERE cache_key = %%s and expires > %%s" %
-                table, [
-                    key, connections[db].ops.value_to_db_datetime(now)])
+            cursor.execute("SELECT cache_key FROM %s "
+                           "WHERE cache_key = %%s and expires > %%s" % table,
+                           [key, connections[db].ops.value_to_db_datetime(now)])
             return cursor.fetchone() is not None
 
     def _cull(self, db, cursor, now):

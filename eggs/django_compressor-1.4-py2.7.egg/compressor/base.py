@@ -16,7 +16,7 @@ except ImportError:
 from compressor.cache import get_hexdigest, get_mtime
 from compressor.conf import settings
 from compressor.exceptions import (CompressorError, UncompressableFileError,
-                                   FilterDoesNotExist)
+        FilterDoesNotExist)
 from compressor.filters import CompilerFilter
 from compressor.storage import compressor_file_storage
 from compressor.signals import post_compress
@@ -35,13 +35,7 @@ class Compressor(object):
     """
     type = None
 
-    def __init__(
-            self,
-            content=None,
-            output_prefix=None,
-            context=None,
-            *args,
-            **kwargs):
+    def __init__(self, content=None, output_prefix=None, context=None, *args, **kwargs):
         self.content = content or ""  # rendered contents of {% compress %} tag
         self.output_prefix = output_prefix or "compressed"
         self.output_dir = settings.COMPRESS_OUTPUT_DIR.strip('/')
@@ -111,10 +105,7 @@ class Compressor(object):
             filename = os.path.split(basename)[1]
             parts.append(os.path.splitext(filename)[0])
         parts.extend([get_hexdigest(content, 12), self.type])
-        return os.path.join(
-            self.output_dir,
-            self.output_prefix,
-            '.'.join(parts))
+        return os.path.join(self.output_dir, self.output_prefix, '.'.join(parts))
 
     def get_filename(self, basename):
         """
@@ -265,7 +256,7 @@ class Compressor(object):
                     precompiler_class = getattr(mod, cls_name)
                 except AttributeError:
                     raise FilterDoesNotExist('Could not find "%s".' %
-                                             filter_or_command)
+                            filter_or_command)
                 else:
                     filter = precompiler_class(
                         content, attrs, filter_type=self.type, charset=charset,
@@ -318,10 +309,7 @@ class Compressor(object):
         """
         new_filepath = self.get_filepath(content, basename=basename)
         if not self.storage.exists(new_filepath) or forced:
-            self.storage.save(
-                new_filepath, ContentFile(
-                    content.encode(
-                        self.charset)))
+            self.storage.save(new_filepath, ContentFile(content.encode(self.charset)))
         url = mark_safe(self.storage.url(new_filepath))
         return self.render_output(mode, {"url": url})
 

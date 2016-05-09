@@ -15,9 +15,9 @@ class MKIdentityCardNumberField(RegexField):
     A Macedonian ID card number. Accepts both old and new format.
     """
     default_error_messages = {
-        'invalid': _(
-            'Identity card numbers must contain'
-            ' either 4 to 7 digits or an uppercase letter and 7 digits.'), }
+        'invalid': _('Identity card numbers must contain'
+                     ' either 4 to 7 digits or an uppercase letter and 7 digits.'),
+    }
 
     def __init__(self, *args, **kwargs):
         kwargs['min_length'] = None
@@ -34,11 +34,7 @@ class MKMunicipalitySelect(Select):
     """
 
     def __init__(self, attrs=None):
-        super(
-            MKMunicipalitySelect,
-            self).__init__(
-            attrs,
-            choices=MK_MUNICIPALITIES)
+        super(MKMunicipalitySelect, self).__init__(attrs, choices=MK_MUNICIPALITIES)
 
 
 class UMCNField(RegexField):
@@ -94,22 +90,13 @@ class UMCNField(RegexField):
             return False
 
     def _validate_date_part(self, value):
-        daypart, monthpart, yearpart = int(
-            value[
-                :2]), int(
-            value[
-                2:4]), int(
-                    value[
-                        4:7])
+        daypart, monthpart, yearpart = int(value[:2]), int(value[2:4]), int(value[4:7])
         if yearpart >= 800:
             yearpart += 1000
         else:
             yearpart += 2000
         try:
-            date = datetime.datetime(
-                year=yearpart,
-                month=monthpart,
-                day=daypart).date()
+            date = datetime.datetime(year=yearpart, month=monthpart, day=daypart).date()
         except ValueError:
             return False
         if date >= datetime.datetime.now().date():

@@ -21,7 +21,6 @@ from django.contrib.sessions.middleware import SessionMiddleware
 
 
 class CreditCardTestCase(TestCase):
-
     def setUp(self):
         self.cc = CreditCard(
             type="mastercard",
@@ -32,9 +31,7 @@ class CreditCardTestCase(TestCase):
         )
 
     def test_unicode(self):
-        self.assertEquals(
-            self.cc.__unicode__(), "%s / %s" %
-            (self.cc.type, self.cc.owner))
+        self.assertEquals(self.cc.__unicode__(), "%s / %s" % (self.cc.type, self.cc.owner))
 
 
 class CustomerTestCase(TestCase):
@@ -55,8 +52,8 @@ class CustomerTestCase(TestCase):
         us = Country.objects.get(code="us")
         fr = Country.objects.get(code="fr")
 
-        shop, created = Shop.objects.get_or_create(
-            name="lfs test", shop_owner="John Doe", default_country=de)
+        shop, created = Shop.objects.get_or_create(name="lfs test", shop_owner="John Doe",
+                                          default_country=de)
         shop.save()
         shop.invoice_countries.add(ie)
         shop.invoice_countries.add(gb)
@@ -110,8 +107,8 @@ class AddressTestCase(TestCase):
         us = Country.objects.get(code="us")
         fr = Country.objects.get(code="fr")
 
-        shop, created = Shop.objects.get_or_create(
-            name="lfs test", shop_owner="John Doe", default_country=de)
+        shop, created = Shop.objects.get_or_create(name="lfs test", shop_owner="John Doe",
+                                          default_country=de)
         shop.save()
         shop.invoice_countries.add(ie)
         shop.invoice_countries.add(gb)
@@ -209,14 +206,12 @@ class AddressTestCase(TestCase):
         """
         Tests that we can see a shipping and an invoice address
         """
-        # login as our customer
-        logged_in = self.client.login(
-            username=self.username,
-            password=self.password)
+         # login as our customer
+        logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
         address_response = self.client.get(reverse('lfs_my_addresses'))
-        # self.dump_response(address_response)
+        #self.dump_response(address_response)
         self.assertContains(address_response, 'Smallville', status_code=200)
         self.assertContains(address_response, 'Gotham City', status_code=200)
 
@@ -225,16 +220,9 @@ class AddressTestCase(TestCase):
         # we should have one customer starting
         self.assertEqual(len(Customer.objects.all()), 1)
 
-        registration_response = self.client.post(
-            reverse('lfs_login'),
-            {
-                'action': 'register',
-                'email': 'test@test.com',
-                'password_1': 'password',
-                'password_2': 'password'})
+        registration_response = self.client.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers[
-                          'location'], ('Location', 'http://testserver/'))
+        self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
 
         # Test that one message has been sent.
         self.assertEquals(len(mail.outbox), 1)
@@ -256,16 +244,9 @@ class AddressTestCase(TestCase):
         self.assertEquals(Address.objects.count(), 4)
 
         # register a new user
-        registration_response = self.client.post(
-            reverse('lfs_login'),
-            {
-                'action': 'register',
-                'email': 'test@test.com',
-                'password_1': 'password',
-                'password_2': 'password'})
+        registration_response = self.client.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers[
-                          'location'], ('Location', 'http://testserver/'))
+        self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
 
         self.assertEquals(Address.objects.count(), 8)
 
@@ -279,30 +260,19 @@ class AddressTestCase(TestCase):
 
         # see if we can view the addresss page
         address_data = {
-            'invoice-firstname': 'Joe',
-            'invoice-lastname': 'Bloggs',
-            'invoice-line1': 'de company name',
-            'invoice-line2': 'de street',
-            'invoice-city': 'Dallas',
-            'invoice-state': 'TX',
-            'invoice-code': '84003',
-            'invoice-country': 'US',
-            'invoice-phone': '+49 4711 4711',
-            'invoice-email': 'joe.bloggs@acme.com',
-            'shipping-firstname': 'Joe',
-            'shipping-lastname': 'Bloggs',
-            'shipping-line1': 'de company name',
-            'shipping-line2': 'de street',
-            'shipping-city': 'Dallas',
-            'shipping-state': 'TX',
-            'shipping-code': '84003',
-            'shipping-country': 'US',
-            'shipping-phone': '+49 4712 4712',
-            'invoice-email': 'joe.bloggs@acme.com',
+            'invoice-firstname': 'Joe', 'invoice-lastname': 'Bloggs',
+            'invoice-line1': 'de company name', 'invoice-line2': 'de street',
+            'invoice-city': 'Dallas', 'invoice-state': 'TX',
+            'invoice-code': '84003', 'invoice-country': 'US',
+            'invoice-phone': '+49 4711 4711', 'invoice-email': 'joe.bloggs@acme.com',
+            'shipping-firstname': 'Joe', 'shipping-lastname': 'Bloggs',
+            'shipping-line1': 'de company name', 'shipping-line2': 'de street',
+            'shipping-city': 'Dallas', 'shipping-state': 'TX',
+            'shipping-code': '84003', 'shipping-country': 'US',
+            'shipping-phone': '+49 4712 4712', 'invoice-email': 'joe.bloggs@acme.com',
         }
 
-        address_response = self.client.post(
-            reverse('lfs_my_addresses'), address_data)
+        address_response = self.client.post(reverse('lfs_my_addresses'), address_data)
 
         self.assertEquals(Address.objects.count(), 8)
 
@@ -310,20 +280,15 @@ class AddressTestCase(TestCase):
         our_customer = Customer.objects.get(user=our_user)
         self.assertNotEquals(our_customer.selected_invoice_address, None)
         self.assertNotEquals(our_customer.selected_shipping_address, None)
-        self.assertEquals(
-            our_customer.selected_invoice_address.firstname, 'Joe')
-        self.assertEquals(
-            our_customer.selected_invoice_address.lastname,
-            'Bloggs')
+        self.assertEquals(our_customer.selected_invoice_address.firstname, 'Joe')
+        self.assertEquals(our_customer.selected_invoice_address.lastname, 'Bloggs')
 
     def test_change_address_page(self):
         """
         Tests that we can see a shipping and an invoice address
         """
-        # login as our customer
-        logged_in = self.client.login(
-            username=self.username,
-            password=self.password)
+         # login as our customer
+        logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
         iam = AddressManagement(self.customer, self.address2, "invoice")
@@ -349,8 +314,7 @@ class AddressTestCase(TestCase):
 
         data['invoice-country'] = 'AT'
 
-        response = self.client.post(
-            reverse('lfs_my_addresses'), data=data, follow=True)
+        response = self.client.post(reverse('lfs_my_addresses'), data=data, follow=True)
         self.assertEqual(response.status_code, 200)
         iam2 = Address.objects.get(pk=self.address2.pk)
         self.assertEqual(iam2.firstname, "newname")
@@ -370,8 +334,8 @@ class NoAutoUpdateAddressTestCase(TestCase):
         us = Country.objects.get(code="us")
         fr = Country.objects.get(code="fr")
 
-        shop, created = Shop.objects.get_or_create(
-            name="lfs test", shop_owner="John Doe", default_country=de)
+        shop, created = Shop.objects.get_or_create(name="lfs test", shop_owner="John Doe",
+                                          default_country=de)
         shop.save()
         shop.invoice_countries.add(ie)
         shop.invoice_countries.add(gb)
@@ -470,14 +434,12 @@ class NoAutoUpdateAddressTestCase(TestCase):
         """
         Tests that we can see a shipping and an invoice address
         """
-        # login as our customer
-        logged_in = self.client.login(
-            username=self.username,
-            password=self.password)
+         # login as our customer
+        logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
         address_response = self.client.get(reverse('lfs_my_addresses'))
-        # self.dump_response(address_response)
+        #self.dump_response(address_response)
         self.assertContains(address_response, 'Smallville', status_code=200)
         self.assertContains(address_response, 'Gotham City', status_code=200)
 
@@ -487,16 +449,9 @@ class NoAutoUpdateAddressTestCase(TestCase):
         # we should have one customer starting
         self.assertEqual(len(Customer.objects.all()), 1)
 
-        registration_response = self.client.post(
-            reverse('lfs_login'),
-            {
-                'action': 'register',
-                'email': 'test@test.com',
-                'password_1': 'password',
-                'password_2': 'password'})
+        registration_response = self.client.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers[
-                          'location'], ('Location', 'http://testserver/'))
+        self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
 
         # Test that one message has been sent.
         self.assertEquals(len(mail.outbox), 1)
@@ -519,16 +474,9 @@ class NoAutoUpdateAddressTestCase(TestCase):
         self.assertEquals(Address.objects.count(), 4)
 
         # register a new user
-        registration_response = self.client.post(
-            reverse('lfs_login'),
-            {
-                'action': 'register',
-                'email': 'test@test.com',
-                'password_1': 'password',
-                'password_2': 'password'})
+        registration_response = self.client.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers[
-                          'location'], ('Location', 'http://testserver/'))
+        self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
 
         self.assertEquals(Address.objects.count(), 8)
 
@@ -542,30 +490,19 @@ class NoAutoUpdateAddressTestCase(TestCase):
 
         # see if we can view the addresss page
         address_data = {
-            'invoice-firstname': 'Joe',
-            'invoice-lastname': 'Bloggs',
-            'invoice-line1': 'de company name',
-            'invoice-line2': 'de street',
-            'invoice-city': 'Dallas',
-            'invoice-state': 'TX',
-            'invoice-code': '84003',
-            'invoice-country': 'US',
-            'invoice-phone': '+49 4711 4711',
-            'invoice-email': 'joe.bloggs@acme.com',
-            'shipping-firstname': 'Joe',
-            'shipping-lastname': 'Bloggs',
-            'shipping-line1': 'de company name',
-            'shipping-line2': 'de street',
-            'shipping-city': 'Dallas',
-            'shipping-state': 'TX',
-            'shipping-code': '84003',
-            'shipping-country': 'US',
-            'shipping-phone': '+49 4712 4712',
-            'invoice-email': 'joe.bloggs@acme.com',
+            'invoice-firstname': 'Joe', 'invoice-lastname': 'Bloggs',
+            'invoice-line1': 'de company name', 'invoice-line2': 'de street',
+            'invoice-city': 'Dallas', 'invoice-state': 'TX',
+            'invoice-code': '84003', 'invoice-country': 'US',
+            'invoice-phone': '+49 4711 4711', 'invoice-email': 'joe.bloggs@acme.com',
+            'shipping-firstname': 'Joe', 'shipping-lastname': 'Bloggs',
+            'shipping-line1': 'de company name', 'shipping-line2': 'de street',
+            'shipping-city': 'Dallas', 'shipping-state': 'TX',
+            'shipping-code': '84003', 'shipping-country': 'US',
+            'shipping-phone': '+49 4712 4712', 'invoice-email': 'joe.bloggs@acme.com',
         }
 
-        address_response = self.client.post(
-            reverse('lfs_my_addresses'), address_data)
+        address_response = self.client.post(reverse('lfs_my_addresses'), address_data)
 
         self.assertEquals(Address.objects.count(), 8)
 
@@ -573,21 +510,16 @@ class NoAutoUpdateAddressTestCase(TestCase):
         our_customer = Customer.objects.get(user=our_user)
         self.assertNotEquals(our_customer.selected_invoice_address, None)
         self.assertNotEquals(our_customer.selected_shipping_address, None)
-        self.assertEquals(
-            our_customer.selected_invoice_address.firstname, 'Joe')
-        self.assertEquals(
-            our_customer.selected_invoice_address.lastname,
-            'Bloggs')
+        self.assertEquals(our_customer.selected_invoice_address.firstname, 'Joe')
+        self.assertEquals(our_customer.selected_invoice_address.lastname, 'Bloggs')
 
     @override_settings(LFS_AUTO_UPDATE_DEFAULT_ADDRESSES=False)
     def test_change_address_page(self):
         """
         Tests that we can see a shipping and an invoice address
         """
-        # login as our customer
-        logged_in = self.client.login(
-            username=self.username,
-            password=self.password)
+         # login as our customer
+        logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
         iam = AddressManagement(self.customer, self.address2, "invoice")
@@ -613,8 +545,7 @@ class NoAutoUpdateAddressTestCase(TestCase):
 
         data['invoice-country'] = 'AT'
 
-        response = self.client.post(
-            reverse('lfs_my_addresses'), data=data, follow=True)
+        response = self.client.post(reverse('lfs_my_addresses'), data=data, follow=True)
         self.assertEqual(response.status_code, 200)
         iam2 = Address.objects.get(pk=self.address2.pk)
         self.assertEqual(iam2.firstname, "newname")
@@ -630,64 +561,42 @@ class LoginTestCase(TestCase):
         response = client.get(reverse('lfs_login'))
         self.assertEqual(response.status_code, 200)
 
-        self.assertFalse(
-            User.objects.filter(
-                username='test@example.com').exists())
-        response = client.post(reverse('lfs_login'),
-                               {'email': 'test@example.com',
-                                'password_1': 'test',
-                                'password_2': 'test',
-                                'action': 'register',
-                                'next': '/'})
-        self.assertTrue(
-            User.objects.filter(
-                username='test@example.com').exists())
+        self.assertFalse(User.objects.filter(username='test@example.com').exists())
+        response = client.post(reverse('lfs_login'), {'email': 'test@example.com',
+                                                      'password_1': 'test',
+                                                      'password_2': 'test',
+                                                      'action': 'register',
+                                                      'next': '/'})
+        self.assertTrue(User.objects.filter(username='test@example.com').exists())
 
-        response = client.post(
-            reverse('lfs_login'),
-            {
-                'email': 'testverylongemailaddressthatislongerthanusername@example.com',
-                'password_1': 'test',
-                'password_2': 'test',
-                'action': 'register',
-                'next': '/'})
-        self.assertTrue(
-            User.objects.filter(
-                email='testverylongemailaddressthatislongerthanusername@example.com').exists())
-        u = User.objects.get(
-            email='testverylongemailaddressthatislongerthanusername@example.com')
+        response = client.post(reverse('lfs_login'), {'email': 'testverylongemailaddressthatislongerthanusername@example.com',
+                                                      'password_1': 'test',
+                                                      'password_2': 'test',
+                                                      'action': 'register',
+                                                      'next': '/'})
+        self.assertTrue(User.objects.filter(email='testverylongemailaddressthatislongerthanusername@example.com').exists())
+        u = User.objects.get(email='testverylongemailaddressthatislongerthanusername@example.com')
         self.assertEqual(u.username, u.email[:30])
 
-        new_username = create_unique_username(
-            'testverylongemailaddressthatislongerthanusername2@example.com')
-        response = client.post(
-            reverse('lfs_login'),
-            {
-                'email': 'testverylongemailaddressthatislongerthanusername2@example.com',
-                'password_1': 'test',
-                'password_2': 'test',
-                'action': 'register',
-                'next': '/'})
-        self.assertTrue(
-            User.objects.filter(
-                email='testverylongemailaddressthatislongerthanusername2@example.com').exists())
-        u = User.objects.get(
-            email='testverylongemailaddressthatislongerthanusername2@example.com')
+        new_username = create_unique_username('testverylongemailaddressthatislongerthanusername2@example.com')
+        response = client.post(reverse('lfs_login'), {'email': 'testverylongemailaddressthatislongerthanusername2@example.com',
+                                                      'password_1': 'test',
+                                                      'password_2': 'test',
+                                                      'action': 'register',
+                                                      'next': '/'})
+        self.assertTrue(User.objects.filter(email='testverylongemailaddressthatislongerthanusername2@example.com').exists())
+        u = User.objects.get(email='testverylongemailaddressthatislongerthanusername2@example.com')
         self.assertEqual(u.username, new_username)
 
     def test_change_email(self):
-        u = User.objects.create(
-            username="test@example.com",
-            email="test@example.com",
-            is_active=True)
+        u = User.objects.create(username="test@example.com", email="test@example.com", is_active=True)
         u.set_password('test')
         u.save()
         client = Client()
         client.login(username='test@example.com', password='test')
-        response = client.post(
-            reverse('lfs_my_email'), {
-                'email': 'testverylongemailaddressthatislongerthanusername@example.com', 'action': 'email'})
+        response = client.post(reverse('lfs_my_email'),
+                               {'email': 'testverylongemailaddressthatislongerthanusername@example.com',
+                                'action': 'email'})
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(
-            User.objects.filter(
-                email='testverylongemailaddressthatislongerthanusername@example.com').exists())
+        self.assertTrue(User.objects.filter(email='testverylongemailaddressthatislongerthanusername@example.com').exists())
+

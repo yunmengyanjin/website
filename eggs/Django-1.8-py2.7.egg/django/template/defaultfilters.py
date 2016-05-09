@@ -169,7 +169,7 @@ def floatformat(text, arg=-1):
         # Avoid conversion to scientific notation by accessing `sign`, `digits`
         # and `exponent` from `Decimal.as_tuple()` directly.
         sign, digits, exponent = d.quantize(exp, ROUND_HALF_UP,
-                                            Context(prec=prec)).as_tuple()
+            Context(prec=prec)).as_tuple()
         digits = [six.text_type(digit) for digit in reversed(digits)]
         while len(digits) <= abs(exponent):
             digits.append('0')
@@ -368,7 +368,7 @@ def urlizetrunc(value, limit, autoescape=True):
     Argument: Length to truncate URLs to.
     """
     return mark_safe(_urlize(value, trim_url_limit=int(limit), nofollow=True,
-                             autoescape=autoescape))
+                            autoescape=autoescape))
 
 
 @register.filter(is_safe=False)
@@ -889,8 +889,7 @@ def filesizeformat(bytes):
         value = ungettext("%(size)d byte", "%(size)d bytes", 0) % {'size': 0}
         return avoid_wrapping(value)
 
-    filesize_number_format = lambda value: formats.number_format(
-        round(value, 1), 1)
+    filesize_number_format = lambda value: formats.number_format(round(value, 1), 1)
 
     KB = 1 << 10
     MB = 1 << 20
@@ -899,11 +898,7 @@ def filesizeformat(bytes):
     PB = 1 << 50
 
     if bytes < KB:
-        value = ungettext(
-            "%(size)d byte",
-            "%(size)d bytes",
-            bytes) % {
-            'size': bytes}
+        value = ungettext("%(size)d byte", "%(size)d bytes", bytes) % {'size': bytes}
     elif bytes < MB:
         value = ugettext("%s KB") % filesize_number_format(bytes / KB)
     elif bytes < GB:
@@ -975,5 +970,4 @@ def pprint(value):
     try:
         return pformat(value)
     except Exception as e:
-        return "Error in formatting: %s: %s" % (
-            e.__class__.__name__, force_text(e, errors="replace"))
+        return "Error in formatting: %s: %s" % (e.__class__.__name__, force_text(e, errors="replace"))

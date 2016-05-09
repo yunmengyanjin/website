@@ -159,8 +159,7 @@ class AppConfig(object):
             return self.models[model_name.lower()]
         except KeyError:
             raise LookupError(
-                "App '%s' doesn't have a '%s' model." %
-                (self.label, model_name))
+                "App '%s' doesn't have a '%s' model." % (self.label, model_name))
 
     def get_models(self, include_auto_created=False,
                    include_deferred=False, include_swapped=False):

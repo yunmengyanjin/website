@@ -12,7 +12,6 @@ from .loaders import base
 
 
 class LoaderOrigin(Origin):
-
     def __init__(self, display_name, loader, name, dirs):
         super(LoaderOrigin, self).__init__(display_name)
         self.loader, self.loadname, self.dirs = loader, name, dirs
@@ -66,8 +65,8 @@ def select_template(template_name_list, dirs=_dirs_undefined, using=None):
                 elif dirs is not _dirs_undefined:
                     warnings.warn(
                         "Skipping template backend %s because its get_template "
-                        "method doesn't support the dirs argument." %
-                        engine.name, stacklevel=2)
+                        "method doesn't support the dirs argument." % engine.name,
+                        stacklevel=2)
                 else:
                     return engine.get_template(template_name)
             except TemplateDoesNotExist:
@@ -112,8 +111,7 @@ def render_to_string(template_name, context=None,
                             "render_to_string doesn't support the request argument "
                             "when some deprecated arguments are passed.")
                         continue
-                    # Hack -- use the internal Engine instance of
-                    # DjangoTemplates.
+                    # Hack -- use the internal Engine instance of DjangoTemplates.
                     return engine.engine.render_to_string(
                         template_name, context, context_instance, dirs, dictionary)
                 elif context_instance is not _context_instance_undefined:
@@ -124,8 +122,8 @@ def render_to_string(template_name, context=None,
                 elif dirs is not _dirs_undefined:
                     warnings.warn(
                         "Skipping template backend %s because its render_to_string "
-                        "method doesn't support the dirs argument." %
-                        engine.name, stacklevel=2)
+                        "method doesn't support the dirs argument." % engine.name,
+                        stacklevel=2)
                 elif dictionary is not _dictionary_undefined:
                     warnings.warn(
                         "Skipping template backend %s because its render_to_string "

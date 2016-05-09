@@ -24,17 +24,16 @@ def cache_page(*args, **kwargs):
     # We also add some asserts to give better error messages in case people are
     # using other ways to call cache_page that no longer work.
     if len(args) != 1 or callable(args[0]):
-        raise TypeError(
-            "cache_page has a single mandatory positional argument: timeout")
+        raise TypeError("cache_page has a single mandatory positional argument: timeout")
     cache_timeout = args[0]
     cache_alias = kwargs.pop('cache', None)
     key_prefix = kwargs.pop('key_prefix', None)
     if kwargs:
-        raise TypeError(
-            "cache_page has two optional keyword arguments: cache and key_prefix")
+        raise TypeError("cache_page has two optional keyword arguments: cache and key_prefix")
 
     return decorator_from_middleware_with_args(CacheMiddleware)(
-        cache_timeout=cache_timeout, cache_alias=cache_alias, key_prefix=key_prefix)
+        cache_timeout=cache_timeout, cache_alias=cache_alias, key_prefix=key_prefix
+    )
 
 
 def cache_control(**kwargs):

@@ -9,7 +9,6 @@ from django.utils import six
 
 
 class EmailBackend(BaseEmailBackend):
-
     def __init__(self, *args, **kwargs):
         self.stream = kwargs.pop('stream', sys.stdout)
         self._lock = threading.RLock()

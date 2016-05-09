@@ -23,22 +23,17 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='contenttype',
-            options={
-                'verbose_name': 'content type',
-                'verbose_name_plural': 'content types'},
+            options={'verbose_name': 'content type', 'verbose_name_plural': 'content types'},
         ),
         migrations.AlterField(
             model_name='contenttype',
             name='name',
-            field=models.CharField(
-                max_length=100,
-                null=True),
+            field=models.CharField(max_length=100, null=True),
         ),
         migrations.RunPython(
             migrations.RunPython.noop,
             add_legacy_name,
-            hints={
-                'model_name': 'contenttype'},
+            hints={'model_name': 'contenttype'},
         ),
         migrations.RemoveField(
             model_name='contenttype',

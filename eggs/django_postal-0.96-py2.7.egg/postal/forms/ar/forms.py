@@ -5,7 +5,6 @@ from localflavor.ar.forms import ARProvinceSelect, ARPostalCodeField
 
 from postal.forms import PostalAddressForm
 
-
 class ARPostalAddressForm(PostalAddressForm):
     line1 = forms.CharField(label=_(u"Street"), max_length=50)
     line2 = forms.CharField(label=_(u"Number"), max_length=50)

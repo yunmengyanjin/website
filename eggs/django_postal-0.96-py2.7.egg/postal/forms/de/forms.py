@@ -4,7 +4,6 @@ from localflavor.de.forms import DEZipCodeField
 
 from postal.forms import PostalAddressForm
 
-
 class DEPostalAddressForm(PostalAddressForm):
     line1 = forms.CharField(label=_(u"Street"), max_length=100)
     city = forms.CharField(label=_(u"City"), max_length=100)

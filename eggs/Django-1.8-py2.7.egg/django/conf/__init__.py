@@ -26,7 +26,6 @@ class LazySettings(LazyObject):
     The user can manually configure settings prior to using them. Otherwise,
     Django uses the settings module pointed to by DJANGO_SETTINGS_MODULE.
     """
-
     def _setup(self, name=None):
         """
         Load the settings module pointed to by the environment variable. This
@@ -74,21 +73,15 @@ class BaseSettings(object):
     """
     Common logic for settings whether set by a module or by the user.
     """
-
     def __setattr__(self, name, value):
-        if name in (
-                "MEDIA_URL",
-                "STATIC_URL") and value and not value.endswith('/'):
-            raise ImproperlyConfigured(
-                "If set, %s must end with a slash" % name)
+        if name in ("MEDIA_URL", "STATIC_URL") and value and not value.endswith('/'):
+            raise ImproperlyConfigured("If set, %s must end with a slash" % name)
         object.__setattr__(self, name, value)
 
 
 class Settings(BaseSettings):
-
     def __init__(self, settings_module):
-        # update this dict from global settings (but only for ALL_CAPS
-        # settings)
+        # update this dict from global settings (but only for ALL_CAPS settings)
         for setting in dir(global_settings):
             if setting.isupper():
                 setattr(self, setting, getattr(global_settings, setting))
@@ -111,16 +104,13 @@ class Settings(BaseSettings):
 
                 if (setting in tuple_settings and
                         isinstance(setting_value, six.string_types)):
-                    raise ImproperlyConfigured(
-                        "The %s setting must be a tuple. "
-                        "Please fix your settings." %
-                        setting)
+                    raise ImproperlyConfigured("The %s setting must be a tuple. "
+                            "Please fix your settings." % setting)
                 setattr(self, setting, setting_value)
                 self._explicit_settings.add(setting)
 
         if not self.SECRET_KEY:
-            raise ImproperlyConfigured(
-                "The SECRET_KEY setting must not be empty.")
+            raise ImproperlyConfigured("The SECRET_KEY setting must not be empty.")
 
         if ('django.contrib.auth.middleware.AuthenticationMiddleware' in self.MIDDLEWARE_CLASSES and
                 'django.contrib.auth.middleware.SessionAuthenticationMiddleware' not in self.MIDDLEWARE_CLASSES):
@@ -129,17 +119,16 @@ class Settings(BaseSettings):
                 "Please add 'django.contrib.auth.middleware.SessionAuthenticationMiddleware' "
                 "to your MIDDLEWARE_CLASSES setting when you are ready to opt-in after "
                 "reading the upgrade considerations in the 1.8 release notes.",
-                RemovedInDjango20Warning)
+                RemovedInDjango20Warning
+            )
 
         if hasattr(time, 'tzset') and self.TIME_ZONE:
             # When we can, attempt to validate the timezone. If we can't find
             # this file, no check happens and it's harmless.
             zoneinfo_root = '/usr/share/zoneinfo'
-            if (os.path.exists(zoneinfo_root) and not os.path.exists(
-                    os.path.join(zoneinfo_root, *(self.TIME_ZONE.split('/'))))):
-                raise ValueError(
-                    "Incorrect timezone setting: %s" %
-                    self.TIME_ZONE)
+            if (os.path.exists(zoneinfo_root) and not
+                    os.path.exists(os.path.join(zoneinfo_root, *(self.TIME_ZONE.split('/'))))):
+                raise ValueError("Incorrect timezone setting: %s" % self.TIME_ZONE)
             # Move the time zone info into os.environ. See ticket #2315 for why
             # we don't do this unconditionally (breaks Windows).
             os.environ['TZ'] = self.TIME_ZONE
@@ -185,10 +174,7 @@ class UserSettingsHolder(BaseSettings):
     def is_overridden(self, setting):
         deleted = (setting in self._deleted)
         set_locally = (setting in self.__dict__)
-        set_on_default = getattr(
-            self.default_settings,
-            'is_overridden',
-            lambda s: False)(setting)
+        set_on_default = getattr(self.default_settings, 'is_overridden', lambda s: False)(setting)
         return (deleted or set_locally or set_on_default)
 
 settings = LazySettings()

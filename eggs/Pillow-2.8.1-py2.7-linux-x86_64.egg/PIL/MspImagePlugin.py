@@ -51,7 +51,7 @@ class MspImageFile(ImageFile.ImageFile):
         # Header checksum
         sum = 0
         for i in range(0, 32, 2):
-            sum = sum ^ i16(s[i:i + 2])
+            sum = sum ^ i16(s[i:i+2])
         if sum != 0:
             raise SyntaxError("bad MSP checksum")
 
@@ -59,10 +59,9 @@ class MspImageFile(ImageFile.ImageFile):
         self.size = i16(s[4:]), i16(s[6:])
 
         if s[:4] == b"DanM":
-            self.tile = [("raw", (0, 0) + self.size, 32, ("1", 0, 1))]
+            self.tile = [("raw", (0, 0)+self.size, 32, ("1", 0, 1))]
         else:
-            self.tile = [
-                ("msp", (0, 0) + self.size, 32 + 2 * self.size[1], None)]
+            self.tile = [("msp", (0, 0)+self.size, 32+2*self.size[1], None)]
 
 #
 # write MSP files (uncompressed only)
@@ -94,7 +93,7 @@ def _save(im, fp, filename):
         fp.write(o16(h))
 
     # image body
-    ImageFile._save(im, fp, [("raw", (0, 0) + im.size, 32, ("1", 0, 1))])
+    ImageFile._save(im, fp, [("raw", (0, 0)+im.size, 32, ("1", 0, 1))])
 
 #
 # registry

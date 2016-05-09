@@ -67,9 +67,7 @@ def login(request, template_name="lfs/customer/login.html"):
 
             # Create user
             user = User.objects.create_user(
-                username=create_unique_username(email),
-                email=email,
-                password=password)
+                username=create_unique_username(email), email=email, password=password)
 
             # Create customer
             customer = customer_utils.get_or_create_customer(request)
@@ -99,8 +97,7 @@ def login(request, template_name="lfs/customer/login.html"):
     if next_url is None:
         next_url = reverse("lfs_shop_view")
 
-    # Get just the path of the url. See django.contrib.auth.views.login for
-    # more
+    # Get just the path of the url. See django.contrib.auth.views.login for more
     next_url = urlparse(next_url)
     next_url = next_url[2]
 
@@ -126,8 +123,7 @@ def logout(request):
     from django.contrib.auth import logout
     logout(request)
 
-    return lfs.core.utils.set_message_cookie(
-        reverse("lfs_shop_view"),
+    return lfs.core.utils.set_message_cookie(reverse("lfs_shop_view"),
         msg=_(u"You have been logged out."))
 
 
@@ -207,16 +203,8 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
     customer = lfs.customer.utils.get_or_create_customer(request)
 
     if request.method == "POST":
-        iam = AddressManagement(
-            customer,
-            customer.default_invoice_address,
-            "invoice",
-            request.POST)
-        sam = AddressManagement(
-            customer,
-            customer.default_shipping_address,
-            "shipping",
-            request.POST)
+        iam = AddressManagement(customer, customer.default_invoice_address, "invoice", request.POST)
+        sam = AddressManagement(customer, customer.default_shipping_address, "shipping", request.POST)
 
         if iam.is_valid() and sam.is_valid():
             iam.save()
@@ -232,14 +220,8 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
             msg = _(u"An error has occured.")
     else:
         msg = None
-        iam = AddressManagement(
-            customer,
-            customer.default_invoice_address,
-            "invoice")
-        sam = AddressManagement(
-            customer,
-            customer.default_shipping_address,
-            "shipping")
+        iam = AddressManagement(customer, customer.default_invoice_address, "invoice")
+        sam = AddressManagement(customer, customer.default_shipping_address, "shipping")
 
     return lfs.core.utils.render_to_message_response(
         template_name, RequestContext(request, {
@@ -256,16 +238,13 @@ def email(request, template_name="lfs/customer/email.html"):
     """Saves the email address from the data form.
     """
     if request.method == "POST":
-        email_form = EmailForm(
-            initial={
-                "email": request.user.email},
-            data=request.POST)
+        email_form = EmailForm(initial={"email": request.user.email}, data=request.POST)
         if email_form.is_valid():
             request.user.username = email_form.cleaned_data.get("email")[:30]
             request.user.email = email_form.cleaned_data.get("email")
             request.user.save()
-            return lfs.core.utils.set_message_cookie(
-                reverse("lfs_my_email"), msg=_(u"Your e-mail has been changed."))
+            return lfs.core.utils.set_message_cookie(reverse("lfs_my_email"),
+                                                     msg=_(u"Your e-mail has been changed."))
     else:
         email_form = EmailForm(initial={"email": request.user.email})
 
@@ -283,9 +262,8 @@ def password(request, template_name="lfs/customer/password.html"):
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             form.save()
-            return lfs.core.utils.set_message_cookie(
-                reverse("lfs_my_password"),
-                msg=_(u"Your password has been changed."))
+            return lfs.core.utils.set_message_cookie(reverse("lfs_my_password"),
+                                                     msg=_(u"Your password has been changed."))
     else:
         form = PasswordChangeForm(request.user)
 

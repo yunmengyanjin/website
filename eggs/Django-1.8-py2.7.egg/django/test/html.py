@@ -19,7 +19,6 @@ def normalize_whitespace(string):
 
 @python_2_unicode_compatible
 class Element(object):
-
     def __init__(self, name, attributes):
         self.name = name
         self.attributes = sorted(attributes)
@@ -141,7 +140,6 @@ class Element(object):
 
 @python_2_unicode_compatible
 class RootElement(Element):
-
     def __init__(self):
         super(RootElement, self).__init__(None, ())
 
@@ -151,7 +149,7 @@ class RootElement(Element):
 
 class Parser(HTMLParser):
     SELF_CLOSING_TAGS = ('br', 'hr', 'input', 'img', 'meta', 'spacer',
-                         'link', 'frame', 'base', 'col')
+        'link', 'frame', 'base', 'col')
 
     def __init__(self):
         HTMLParser.__init__(self)

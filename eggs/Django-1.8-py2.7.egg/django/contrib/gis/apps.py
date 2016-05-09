@@ -9,5 +9,4 @@ class GISConfig(AppConfig):
 
     def ready(self):
         if 'geojson' not in serializers.BUILTIN_SERIALIZERS:
-            serializers.BUILTIN_SERIALIZERS[
-                'geojson'] = "django.contrib.gis.serializers.geojson"
+            serializers.BUILTIN_SERIALIZERS['geojson'] = "django.contrib.gis.serializers.geojson"

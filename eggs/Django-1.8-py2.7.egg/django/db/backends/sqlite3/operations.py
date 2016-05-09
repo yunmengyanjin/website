@@ -22,7 +22,6 @@ except ImportError:
 
 
 class DatabaseOperations(BaseDatabaseOperations):
-
     def bulk_batch_size(self, fields, objs):
         """
         SQLite has a compile-time default (SQLITE_LIMIT_VARIABLE_NUMBER) of
@@ -36,11 +35,7 @@ class DatabaseOperations(BaseDatabaseOperations):
 
     def check_expression_support(self, expression):
         bad_fields = (fields.DateField, fields.DateTimeField, fields.TimeField)
-        bad_aggregates = (
-            aggregates.Sum,
-            aggregates.Avg,
-            aggregates.Variance,
-            aggregates.StdDev)
+        bad_aggregates = (aggregates.Sum, aggregates.Avg, aggregates.Variance, aggregates.StdDev)
         if isinstance(expression, bad_aggregates):
             try:
                 output_field = expression.input_field.output_field
@@ -59,8 +54,7 @@ class DatabaseOperations(BaseDatabaseOperations):
         # function django_date_extract that's registered in connect(). Note that
         # single quotes are used because this is a string (and could otherwise
         # cause a collision with a field name).
-        return "django_date_extract('%s', %s)" % (
-            lookup_type.lower(), field_name)
+        return "django_date_extract('%s', %s)" % (lookup_type.lower(), field_name)
 
     def date_interval_sql(self, timedelta):
         return "'%s'" % duration_string(timedelta), []
@@ -74,8 +68,7 @@ class DatabaseOperations(BaseDatabaseOperations):
         # function django_date_trunc that's registered in connect(). Note that
         # single quotes are used because this is a string (and could otherwise
         # cause a collision with a field name).
-        return "django_date_trunc('%s', %s)" % (
-            lookup_type.lower(), field_name)
+        return "django_date_trunc('%s', %s)" % (lookup_type.lower(), field_name)
 
     def datetime_extract_sql(self, lookup_type, field_name, tzname):
         # Same comment as in date_extract_sql.
@@ -131,8 +124,7 @@ class DatabaseOperations(BaseDatabaseOperations):
             if settings.USE_TZ:
                 value = value.astimezone(timezone.utc).replace(tzinfo=None)
             else:
-                raise ValueError(
-                    "SQLite backend does not support timezone-aware datetimes when USE_TZ is False.")
+                raise ValueError("SQLite backend does not support timezone-aware datetimes when USE_TZ is False.")
 
         return six.text_type(value)
 
@@ -142,15 +134,12 @@ class DatabaseOperations(BaseDatabaseOperations):
 
         # SQLite doesn't support tz-aware datetimes
         if timezone.is_aware(value):
-            raise ValueError(
-                "SQLite backend does not support timezone-aware times.")
+            raise ValueError("SQLite backend does not support timezone-aware times.")
 
         return six.text_type(value)
 
     def get_db_converters(self, expression):
-        converters = super(
-            DatabaseOperations,
-            self).get_db_converters(expression)
+        converters = super(DatabaseOperations, self).get_db_converters(expression)
         internal_type = expression.output_field.get_internal_type()
         if internal_type == 'DateTimeField':
             converters.append(self.convert_datetimefield_value)
@@ -164,26 +153,15 @@ class DatabaseOperations(BaseDatabaseOperations):
             converters.append(self.convert_uuidfield_value)
         return converters
 
-    def convert_decimalfield_value(
-            self,
-            value,
-            expression,
-            connection,
-            context):
-        return backend_utils.typecast_decimal(
-            expression.output_field.format_number(value))
+    def convert_decimalfield_value(self, value, expression, connection, context):
+        return backend_utils.typecast_decimal(expression.output_field.format_number(value))
 
     def convert_datefield_value(self, value, expression, connection, context):
         if value is not None and not isinstance(value, datetime.date):
             value = parse_date(value)
         return value
 
-    def convert_datetimefield_value(
-            self,
-            value,
-            expression,
-            connection,
-            context):
+    def convert_datetimefield_value(self, value, expression, connection, context):
         if value is not None and not isinstance(value, datetime.datetime):
             value = parse_datetime_with_timezone_support(value)
         return value
@@ -203,8 +181,7 @@ class DatabaseOperations(BaseDatabaseOperations):
         res.append("SELECT %s" % ", ".join(
             "%%s AS %s" % self.quote_name(f.column) for f in fields
         ))
-        res.extend(["UNION ALL SELECT %s" %
-                    ", ".join(["%s"] * len(fields))] * (num_values - 1))
+        res.extend(["UNION ALL SELECT %s" % ", ".join(["%s"] * len(fields))] * (num_values - 1))
         return " ".join(res)
 
     def combine_expression(self, connector, sub_expressions):
@@ -212,17 +189,11 @@ class DatabaseOperations(BaseDatabaseOperations):
         # user-defined function django_power that's registered in connect().
         if connector == '^':
             return 'django_power(%s)' % ','.join(sub_expressions)
-        return super(
-            DatabaseOperations,
-            self).combine_expression(
-            connector,
-            sub_expressions)
+        return super(DatabaseOperations, self).combine_expression(connector, sub_expressions)
 
     def combine_duration_expression(self, connector, sub_expressions):
         if connector not in ['+', '-']:
-            raise utils.DatabaseError(
-                'Invalid connector for timedelta: %s.' %
-                connector)
+            raise utils.DatabaseError('Invalid connector for timedelta: %s.' % connector)
         fn_params = ["'%s'" % connector] + sub_expressions
         if len(fn_params) > 3:
             raise ValueError('Too many params for timedelta operations.')

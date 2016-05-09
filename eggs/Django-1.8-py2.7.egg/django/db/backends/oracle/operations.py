@@ -98,7 +98,7 @@ WHEN (new.%(col_name)s IS NULL)
         day_precision = len(days)
         fmt = "INTERVAL '%s %02d:%02d:%02d.%06d' DAY(%d) TO SECOND(6)"
         return fmt % (days, hours, minutes, seconds, timedelta.microseconds,
-                      day_precision), []
+                day_precision), []
 
     def date_trunc_sql(self, lookup_type, field_name):
         # http://docs.oracle.com/cd/B19306_01/server.102/b14200/functions230.htm#i1002084
@@ -117,8 +117,7 @@ WHEN (new.%(col_name)s IS NULL)
         if not self._tzname_re.match(tzname):
             raise ValueError("Invalid time zone name: %s" % tzname)
         # Convert from UTC to local time, returning TIMESTAMP WITH TIME ZONE.
-        result = "(FROM_TZ(%s, '0:00') AT TIME ZONE '%s')" % (
-            field_name, tzname)
+        result = "(FROM_TZ(%s, '0:00') AT TIME ZONE '%s')" % (field_name, tzname)
         # Extracting from a TIMESTAMP WITH TIME ZONE ignore the time zone.
         # Convert to a DATETIME, which is called DATE by Oracle. There's no
         # built-in function to do that; the easiest is to go through a string.
@@ -156,9 +155,7 @@ WHEN (new.%(col_name)s IS NULL)
         return sql, []
 
     def get_db_converters(self, expression):
-        converters = super(
-            DatabaseOperations,
-            self).get_db_converters(expression)
+        converters = super(DatabaseOperations, self).get_db_converters(expression)
         internal_type = expression.output_field.get_internal_type()
         if internal_type == 'TextField':
             converters.append(self.convert_textfield_value)
@@ -192,22 +189,12 @@ WHEN (new.%(col_name)s IS NULL)
             value = force_text(value.read())
         return value
 
-    def convert_binaryfield_value(
-            self,
-            value,
-            expression,
-            connection,
-            context):
+    def convert_binaryfield_value(self, value, expression, connection, context):
         if isinstance(value, Database.LOB):
             value = force_bytes(value.read())
         return value
 
-    def convert_booleanfield_value(
-            self,
-            value,
-            expression,
-            connection,
-            context):
+    def convert_booleanfield_value(self, value, expression, connection, context):
         if value in (1, 0):
             value = bool(value)
         return value
@@ -233,8 +220,7 @@ WHEN (new.%(col_name)s IS NULL)
         return " DEFERRABLE INITIALLY DEFERRED"
 
     def drop_sequence_sql(self, table):
-        return "DROP SEQUENCE %s;" % self.quote_name(
-            self._get_sequence_name(table))
+        return "DROP SEQUENCE %s;" % self.quote_name(self._get_sequence_name(table))
 
     def fetch_returned_insert_id(self, cursor):
         return int(cursor._insert_id_var.getvalue())
@@ -253,12 +239,7 @@ WHEN (new.%(col_name)s IS NULL)
             statement = statement.decode('utf-8')
         # Unlike Psycopg's `query` and MySQLdb`'s `_last_executed`, CxOracle's
         # `statement` doesn't contain the query parameters. refs #20010.
-        return super(
-            DatabaseOperations,
-            self).last_executed_query(
-            cursor,
-            statement,
-            params)
+        return super(DatabaseOperations, self).last_executed_query(cursor, statement, params)
 
     def last_insert_id(self, cursor, table_name, pk_name):
         sq_name = self._get_sequence_name(table_name)
@@ -356,8 +337,7 @@ WHEN (new.%(col_name)s IS NULL)
             for f in model._meta.local_fields:
                 if isinstance(f, models.AutoField):
                     table_name = self.quote_name(model._meta.db_table)
-                    sequence_name = self._get_sequence_name(
-                        model._meta.db_table)
+                    sequence_name = self._get_sequence_name(model._meta.db_table)
                     column_name = self.quote_name(f.column)
                     output.append(query % {'sequence': sequence_name,
                                            'table': table_name,
@@ -411,8 +391,7 @@ WHEN (new.%(col_name)s IS NULL)
             if settings.USE_TZ:
                 value = value.astimezone(timezone.utc).replace(tzinfo=None)
             else:
-                raise ValueError(
-                    "Oracle backend does not support timezone-aware datetimes when USE_TZ is False.")
+                raise ValueError("Oracle backend does not support timezone-aware datetimes when USE_TZ is False.")
 
         return Oracle_datetime.from_datetime(value)
 
@@ -425,8 +404,7 @@ WHEN (new.%(col_name)s IS NULL)
 
         # Oracle doesn't support tz-aware times
         if timezone.is_aware(value):
-            raise ValueError(
-                "Oracle backend does not support timezone-aware times.")
+            raise ValueError("Oracle backend does not support timezone-aware times.")
 
         return Oracle_datetime(1900, 1, 1, value.hour, value.minute,
                                value.second, value.microsecond)
@@ -439,9 +417,7 @@ WHEN (new.%(col_name)s IS NULL)
 
     def year_lookup_bounds_for_datetime_field(self, value):
         # cx_Oracle doesn't support tz-aware datetimes
-        bounds = super(
-            DatabaseOperations,
-            self).year_lookup_bounds_for_datetime_field(value)
+        bounds = super(DatabaseOperations, self).year_lookup_bounds_for_datetime_field(value)
         if settings.USE_TZ:
             bounds = [b.astimezone(timezone.utc) for b in bounds]
         return [Oracle_datetime.from_datetime(b) for b in bounds]
@@ -453,15 +429,10 @@ WHEN (new.%(col_name)s IS NULL)
         elif connector == '&':
             return 'BITAND(%s)' % ','.join(sub_expressions)
         elif connector == '|':
-            raise NotImplementedError(
-                "Bit-wise or is not supported in Oracle.")
+            raise NotImplementedError("Bit-wise or is not supported in Oracle.")
         elif connector == '^':
             return 'POWER(%s)' % ','.join(sub_expressions)
-        return super(
-            DatabaseOperations,
-            self).combine_expression(
-            connector,
-            sub_expressions)
+        return super(DatabaseOperations, self).combine_expression(connector, sub_expressions)
 
     def _get_sequence_name(self, table):
         name_length = self.max_name_length() - 3

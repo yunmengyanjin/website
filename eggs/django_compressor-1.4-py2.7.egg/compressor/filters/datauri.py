@@ -18,7 +18,6 @@ class DataUriFilter(FilterBase):
 
     Don't use this class directly. Use a subclass.
     """
-
     def input(self, filename=None, **kwargs):
         if not filename or not filename.startswith(settings.COMPRESS_ROOT):
             return self.content

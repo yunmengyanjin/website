@@ -23,8 +23,9 @@ class ESPostalCodeField(RegexField):
     Spanish postal code is a five digits string, with two first digits
     between 01 and 52, assigned to provinces code.
     """
-    default_error_messages = {'invalid': _(
-        'Enter a valid postal code in the range and format 01XXX - 52XXX.'), }
+    default_error_messages = {
+        'invalid': _('Enter a valid postal code in the range and format 01XXX - 52XXX.'),
+    }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
         super(ESPostalCodeField, self).__init__(
@@ -43,19 +44,13 @@ class ESPhoneNumberField(RegexField):
 
     TODO: accept and strip characters like dot, hyphen... in phone number
     """
-    default_error_messages = {'invalid': _(
-        'Enter a valid phone number in one of the formats 6XXXXXXXX, 8XXXXXXXX or 9XXXXXXXX.'), }
+    default_error_messages = {
+        'invalid': _('Enter a valid phone number in one of the formats 6XXXXXXXX, 8XXXXXXXX or 9XXXXXXXX.'),
+    }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            ESPhoneNumberField,
-            self).__init__(
-            r'^(6|7|8|9)\d{8}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(ESPhoneNumberField, self).__init__(r'^(6|7|8|9)\d{8}$',
+                                                 max_length, min_length, *args, **kwargs)
 
 
 class ESIdentityCardNumberField(RegexField):
@@ -90,13 +85,7 @@ class ESIdentityCardNumberField(RegexField):
         'invalid_cif': _('Invalid checksum for CIF.'),
     }
 
-    def __init__(
-            self,
-            only_nif=False,
-            max_length=None,
-            min_length=None,
-            *args,
-            **kwargs):
+    def __init__(self, only_nif=False, max_length=None, min_length=None, *args, **kwargs):
         self.only_nif = only_nif
         self.nif_control = 'TRWAGMYFPDXBNJZSQVHLCKE'
         self.cif_control = 'JABCDEFGHI'
@@ -107,8 +96,8 @@ class ESIdentityCardNumberField(RegexField):
                                 (self.cif_types + self.nie_types,
                                  self.nif_control + self.cif_control),
                                 re.IGNORECASE)
-        error_message = self.default_error_messages[
-            'invalid%s' % (self.only_nif and '_only_nif' or '')]
+        error_message = self.default_error_messages['invalid%s' %
+                                                    (self.only_nif and '_only_nif' or '')]
         super(ESIdentityCardNumberField, self).__init__(
             id_card_re, max_length, min_length,
             error_message=error_message, *args, **kwargs)
@@ -180,14 +169,8 @@ class ESCCCField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            ESCCCField,
-            self).__init__(
-            r'^\d{4}[ -]?\d{4}[ -]?\d{2}[ -]?\d{10}$',
-            max_length,
-            min_length,
-            *args,
-            **kwargs)
+        super(ESCCCField, self).__init__(r'^\d{4}[ -]?\d{4}[ -]?\d{2}[ -]?\d{10}$',
+                                         max_length, min_length, *args, **kwargs)
 
     def clean(self, value):
         super(ESCCCField, self).clean(value)
@@ -196,12 +179,8 @@ class ESCCCField(RegexField):
         control_str = [1, 2, 4, 8, 5, 10, 9, 7, 3, 6]
         m = re.match(r'^(\d{4})[ -]?(\d{4})[ -]?(\d{2})[ -]?(\d{10})$', value)
         entity, office, checksum, account = m.groups()
-        get_checksum = lambda d: str(11 -
-                                     sum([int(digit) *
-                                          int(control) for digit, control in zip(d, control_str)]) %
-                                     11).replace('10', '1').replace('11', '0')
-        if get_checksum('00' + entity + office) + \
-                get_checksum(account) == checksum:
+        get_checksum = lambda d: str(11 - sum([int(digit) * int(control) for digit, control in zip(d, control_str)]) % 11).replace('10', '1').replace('11', '0')
+        if get_checksum('00' + entity + office) + get_checksum(account) == checksum:
             return value
         else:
             raise ValidationError(self.error_messages['checksum'])
@@ -211,7 +190,6 @@ class ESRegionSelect(Select):
     """
     A Select widget that uses a list of spanish regions as its choices.
     """
-
     def __init__(self, attrs=None):
         super(ESRegionSelect, self).__init__(attrs, choices=REGION_CHOICES)
 
@@ -220,7 +198,6 @@ class ESProvinceSelect(Select):
     """
     A Select widget that uses a list of spanish provinces as its choices.
     """
-
     def __init__(self, attrs=None):
         super(ESProvinceSelect, self).__init__(attrs, choices=PROVINCE_CHOICES)
 
@@ -228,5 +205,5 @@ class ESProvinceSelect(Select):
 def cif_get_checksum(number):
     s1 = sum([int(digit) for pos, digit in enumerate(number) if int(pos) % 2])
     s2 = sum([sum([int(unit) for unit in str(int(digit) * 2)])
-              for pos, digit in enumerate(number) if not int(pos) % 2])
+             for pos, digit in enumerate(number) if not int(pos) % 2])
     return (10 - ((s1 + s2) % 10)) % 10

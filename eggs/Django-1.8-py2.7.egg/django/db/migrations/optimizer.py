@@ -146,9 +146,7 @@ class MigrationOptimizer(object):
         for i, operation in enumerate(operations):
             # Compare it to each operation after it
             for j, other in enumerate(operations[i + 1:]):
-                result = self.reduce(
-                    operation, other, operations[
-                        i + 1:i + j + 1])
+                result = self.reduce(operation, other, operations[i + 1:i + j + 1])
                 if result is not None:
                     # Optimize! Add result, then remaining others, then return
                     new_operations.extend(result)
@@ -235,14 +233,12 @@ class MigrationOptimizer(object):
             if hasattr(other.field, "rel") and other.field.rel:
                 for between in in_between:
                     # Check that it doesn't point to the model
-                    app_label, object_name = self.model_to_key(
-                        other.field.rel.to)
+                    app_label, object_name = self.model_to_key(other.field.rel.to)
                     if between.references_model(object_name, app_label):
                         return None
                     # Check that it's not through the model
                     if getattr(other.field.rel, "through", None):
-                        app_label, object_name = self.model_to_key(
-                            other.field.rel.through)
+                        app_label, object_name = self.model_to_key(other.field.rel.through)
                         if between.references_model(object_name, app_label):
                             return None
             # OK, that's fine
@@ -373,7 +369,6 @@ class MigrationOptimizer(object):
         # If it's field level, only let it through things that don't reference
         # the field (which includes not referencing the model)
         if isinstance(operation, self.field_level_operations):
-            if not other.references_field(
-                    operation.model_name, operation.name, app_label):
+            if not other.references_field(operation.model_name, operation.name, app_label):
                 return True
         return False

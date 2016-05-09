@@ -29,16 +29,10 @@ def generate_categories(request):
         c = Category(name="Category %s" % i, slug="category-%s" % i)
         c.save()
         for j in range(0, 3):
-            sc = Category(
-                name="Category %s%s" %
-                (i, j), slug="category-%s-%s" %
-                (i, j), parent=c)
+            sc = Category(name="Category %s%s" % (i, j), slug="category-%s-%s" % (i, j), parent=c)
             sc.save()
             for k in range(0, 3):
-                ssc = Category(
-                    name="Category %s%s%s" %
-                    (i, j, k), slug="category-%s-%s-%s" %
-                    (i, j, k), parent=sc)
+                ssc = Category(name="Category %s%s%s" % (i, j, k), slug="category-%s-%s-%s" % (i, j, k), parent=sc)
                 ssc.save()
 
     return HttpResponseRedirect("/shops")
@@ -90,8 +84,7 @@ def products(amount=20):
     property = Property(name="Color")
     property.save()
 
-    property_option = PropertyOption(
-        name="Yellow", property=property, price=1.0)
+    property_option = PropertyOption(name="Yellow", property=property, price=1.0)
     property_option.save()
 
     property_option = PropertyOption(name="Red", property=property, price=2.0)
@@ -130,27 +123,12 @@ def products(amount=20):
     category_7 = Category(name="Pullover", slug="pullover", parent=category_5)
     category_7.save()
 
-    shop.categories = [
-        category_1,
-        category_2,
-        category_3,
-        category_4,
-        category_5,
-        category_6,
-        category_7]
+    shop.categories = [category_1, category_2, category_3, category_4, category_5, category_6, category_7]
     shop.save()
 
     # Create products
     for i in range(1, amount):
-        p = Product(
-            name="Rock-%s" %
-            i,
-            slug="rock-%s" %
-            i,
-            sku="rock-000%s" %
-            i,
-            price=i *
-            10)
+        p = Product(name="Rock-%s" % i, slug="rock-%s" % i, sku="rock-000%s" % i, price=i * 10)
         p.save()
 
         if i == 1:
@@ -170,16 +148,7 @@ def products(amount=20):
         print "Rock-%s created" % i
 
     for i in range(1, amount):
-        p = Product(
-            name="Hemd-%s" %
-            i,
-            slug="hemd-%s" %
-            i,
-            sku="hemd-000%s" %
-            i,
-            price=i *
-            10,
-            active=True)
+        p = Product(name="Hemd-%s" % i, slug="hemd-%s" % i, sku="hemd-000%s" % i, price=i * 10, active=True)
         p.save()
 
         img = Image(title="Image 1", image="images/Laminat02.jpg")
@@ -193,16 +162,7 @@ def products(amount=20):
         print "Hemd-%s created" % i
 
     for i in range(1, amount):
-        p = Product(
-            name="Pullover-%s" %
-            i,
-            slug="pullover-%s" %
-            i,
-            sku="pullover-000%s" %
-            i,
-            price=i *
-            10,
-            active=True)
+        p = Product(name="Pullover-%s" % i, slug="pullover-%s" % i, sku="pullover-000%s" % i, price=i * 10, active=True)
         p.save()
 
         img = Image(title="Image 1", image="images/Laminat03.jpg")
@@ -216,16 +176,7 @@ def products(amount=20):
         print "Pullover-%s created" % i
 
     for i in range(1, amount):
-        p = Product(
-            name="Hose-%s" %
-            i,
-            slug="hose-%s" %
-            i,
-            sku="hose-000%s" %
-            i,
-            price=i *
-            10,
-            active=True)
+        p = Product(name="Hose-%s" % i, slug="hose-%s" % i, sku="hose-000%s" % i, price=i * 10, active=True)
         p.save()
 
         img = Image(title="Image 1", image="images/Laminat03.jpg")

@@ -8,7 +8,6 @@ import postal.forms
 
 
 class PostalTests(TestCase):
-
     def test_environment(self):
         """Just make sure everything is set up correctly."""
         self.assert_(True)
@@ -43,11 +42,11 @@ class PostalTests(TestCase):
         self.assertNotEqual(german_form_class, None)
 
         # only use required fields
-        test_data = {'code': '12345', }
+        test_data = {'code': '12345',}
         form = german_form_class(data=test_data)
 
         self.assertEqual(form.fields['line1'].label.lower(), "street")
-        self.assertEqual('line2' in form.fields, False)
+        self.assertEqual(form.fields.has_key('line2'), False)
         self.assertEqual(form.fields['city'].label.lower(), "city")
         self.assertEqual(form.fields['code'].label.lower(), "zip code")
 
@@ -128,7 +127,7 @@ class PostalTests(TestCase):
 
         # only use required fields
         test_data = {'line1': 'street', 'city': 'Tullamore',
-                     'state': 'offaly', }
+                     'state': 'offaly',  }
         form = irish_form_class(data=test_data)
 
         self.assertEqual(form.fields['line1'].label.lower(), "street")
@@ -154,8 +153,7 @@ class PostalTests(TestCase):
     def test_set_default_address(self):
         # change line1 label and make it required
         postal.settings.POSTAL_ADDRESS_LINE1 = ('Crazy address label', True)
-        # we have to reload the postal form for the setting above to take
-        # effect
+        # we have to reload the postal form for the setting above to take effect
         reload(postal.forms)
         form = postal.forms.PostalAddressForm(data={})
         self.assertEqual('Crazy address label' in form.as_p(), True)
@@ -167,8 +165,7 @@ class PostalTests(TestCase):
         # Our form is invalid as line1 is now required
         self.assertEqual(form.is_valid(), False)
 
-        form = postal.forms.PostalAddressForm(
-            data={'line1': 'my street', 'country': 'DE'})
+        form = postal.forms.PostalAddressForm(data={'line1': 'my street', 'country': 'DE'})
         self.assertEqual(form.is_valid(), True)
 
     def test_4_line_address(self):
@@ -202,3 +199,8 @@ class PostalTests(TestCase):
         self.assertEqual(form.fields['city'].label, "c")
         self.assertEqual(form.fields['state'].label, 'd')
         self.assertEqual(form.fields['code'].label, "e")
+
+
+
+
+

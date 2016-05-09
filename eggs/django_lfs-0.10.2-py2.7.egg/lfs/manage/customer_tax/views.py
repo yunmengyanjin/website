@@ -27,9 +27,7 @@ def manage_customer_taxes(request):
     """
     try:
         customer_tax = CustomerTax.objects.all()[0]
-        url = reverse(
-            "lfs_manage_customer_tax", kwargs={
-                "id": customer_tax.id})
+        url = reverse("lfs_manage_customer_tax", kwargs={"id": customer_tax.id})
     except IndexError:
         url = reverse("lfs_manage_no_customer_taxes")
 
@@ -37,10 +35,7 @@ def manage_customer_taxes(request):
 
 
 @permission_required("core.manage_shop")
-def manage_customer_tax(
-        request,
-        id,
-        template_name="manage/customer_tax/customer_tax.html"):
+def manage_customer_tax(request, id, template_name="manage/customer_tax/customer_tax.html"):
     """Displays the main form to manage customer taxes.
     """
     customer_tax = get_object_or_404(CustomerTax, pk=id)
@@ -53,8 +48,7 @@ def manage_customer_tax(
 
 
 # Parts
-def data(request, customer_tax, form=None,
-         template_name="manage/customer_tax/data.html"):
+def data(request, customer_tax, form=None, template_name="manage/customer_tax/data.html"):
     """
     Renders the data tab of customer taxes.
     """
@@ -67,10 +61,7 @@ def data(request, customer_tax, form=None,
     }))
 
 
-def criteria(
-        request,
-        customer_tax,
-        template_name="manage/customer_tax/criteria.html"):
+def criteria(request, customer_tax, template_name="manage/customer_tax/criteria.html"):
     """Returns the criteria of the passed customer tax.
     """
     criteria = []
@@ -86,10 +77,7 @@ def criteria(
     }))
 
 
-def navigation(
-        request,
-        customer_tax,
-        template_name="manage/customer_tax/navigation.html"):
+def navigation(request, customer_tax, template_name="manage/customer_tax/navigation.html"):
     """
     Renders the navigation of customer taxes.
     """
@@ -100,9 +88,7 @@ def navigation(
 
 
 @permission_required("core.manage_shop")
-def no_customer_taxes(
-        request,
-        template_name="manage/customer_tax/no_customer_taxes.html"):
+def no_customer_taxes(request, template_name="manage/customer_tax/no_customer_taxes.html"):
     """Display no taxes available.
     """
     return render_to_response(template_name, RequestContext(request, {}))
@@ -110,9 +96,7 @@ def no_customer_taxes(
 
 # Actions
 @permission_required("core.manage_shop")
-def add_customer_tax(
-        request,
-        template_name="manage/customer_tax/add_customer_tax.html"):
+def add_customer_tax(request, template_name="manage/customer_tax/add_customer_tax.html"):
     """Provides a form to add a new customer tax.
     """
     if request.method == "POST":
@@ -175,10 +159,7 @@ def save_data(request, id):
     Saves the data for the customer tax with given id.
     """
     customer_tax = get_object_or_404(CustomerTax, pk=id)
-    form = CustomerTaxForm(
-        instance=customer_tax,
-        data=request.POST,
-        files=request.FILES)
+    form = CustomerTaxForm(instance=customer_tax, data=request.POST, files=request.FILES)
     if form.is_valid():
         form.save()
         form = None

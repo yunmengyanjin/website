@@ -21,7 +21,6 @@ import sys
 import zc.buildout.easy_install
 import zipfile
 
-
 class Eggs(object):
 
     def __init__(self, buildout, name, options):
@@ -44,13 +43,13 @@ class Eggs(object):
 
         allow_hosts = b_options['allow-hosts']
         allow_hosts = tuple([host.strip() for host in allow_hosts.split('\n')
-                             if host.strip() != ''])
+                               if host.strip()!=''])
         self.allow_hosts = allow_hosts
 
         options['eggs-directory'] = b_options['eggs-directory']
-        options['_e'] = options['eggs-directory']  # backward compat.
+        options['_e'] = options['eggs-directory'] # backward compat.
         options['develop-eggs-directory'] = b_options['develop-eggs-directory']
-        options['_d'] = options['develop-eggs-directory']  # backward compat.
+        options['_d'] = options['develop-eggs-directory'] # backward compat.
 
     def working_set(self, extra=()):
         """Separate method to just get the working set
@@ -74,7 +73,7 @@ class Eggs(object):
             ws = zc.buildout.easy_install.working_set(
                 distributions,
                 [options['develop-eggs-directory'], options['eggs-directory']]
-            )
+                )
         else:
             ws = zc.buildout.easy_install.install(
                 distributions, options['eggs-directory'],
@@ -92,27 +91,27 @@ class Eggs(object):
 
     update = install
 
-
 class Scripts(Eggs):
 
     def __init__(self, buildout, name, options):
         super(Scripts, self).__init__(buildout, name, options)
 
         options['bin-directory'] = buildout['buildout']['bin-directory']
-        options['_b'] = options['bin-directory']  # backward compat.
+        options['_b'] = options['bin-directory'] # backward compat.
 
         self.extra_paths = [
             os.path.join(buildout['buildout']['directory'], p.strip())
             for p in options.get('extra-paths', '').split('\n')
             if p.strip()
-        ]
+            ]
         if self.extra_paths:
             options['extra-paths'] = '\n'.join(self.extra_paths)
+
 
         relative_paths = options.get(
             'relative-paths',
             buildout['buildout'].get('relative-paths', 'false')
-        )
+            )
         if relative_paths == 'true':
             options['buildout-directory'] = buildout['buildout']['directory']
             self._relative_paths = options['buildout-directory']
@@ -122,8 +121,7 @@ class Scripts(Eggs):
 
     parse_entry_point = re.compile(
         '([^=]+)=(\w+(?:[.]\w+)*):(\w+(?:[.]\w+)*)$'
-    ).match
-
+        ).match
     def install(self):
         reqs, ws = self.working_set()
         options = self.options
@@ -135,7 +133,7 @@ class Scripts(Eggs):
                 scripts = dict([
                     ('=' in s) and s.split('=', 1) or (s, s)
                     for s in scripts
-                ])
+                    ])
 
             for s in options.get('entry-points', '').split():
                 parsed = self.parse_entry_point(s)
@@ -162,12 +160,11 @@ class Scripts(Eggs):
                 initialization=options.get('initialization', ''),
                 arguments=options.get('arguments', ''),
                 relative_paths=self._relative_paths,
-            )
+                )
 
         return ()
 
     update = install
-
 
 def get_bool(options, name, default=False):
     value = options.get(name)

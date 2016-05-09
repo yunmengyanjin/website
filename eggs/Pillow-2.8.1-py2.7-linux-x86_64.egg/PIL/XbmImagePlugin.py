@@ -60,12 +60,12 @@ class XbmImageFile(ImageFile.ImageFile):
             if m.group("hotspot"):
                 self.info["hotspot"] = (
                     int(m.group("xhot")), int(m.group("yhot"))
-                )
+                    )
 
             self.mode = "1"
             self.size = xsize, ysize
 
-            self.tile = [("xbm", (0, 0) + self.size, m.end(), None)]
+            self.tile = [("xbm", (0, 0)+self.size, m.end(), None)]
 
 
 def _save(im, fp, filename):
@@ -83,7 +83,7 @@ def _save(im, fp, filename):
 
     fp.write(b"static char im_bits[] = {\n")
 
-    ImageFile._save(im, fp, [("xbm", (0, 0) + im.size, 0, None)])
+    ImageFile._save(im, fp, [("xbm", (0, 0)+im.size, 0, None)])
 
     fp.write(b"};\n")
 

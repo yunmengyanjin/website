@@ -5,7 +5,6 @@ class BaseDatabaseValidation(object):
     """
     This class encapsulates all backend-specific model validation.
     """
-
     def __init__(self, connection):
         self.connection = connection
 
@@ -19,8 +18,7 @@ class BaseDatabaseValidation(object):
         # This is deliberately commented out. It exists as a marker to
         # remind us to remove this method, and the check_field() shim,
         # when the time comes.
-        # warnings.warn('"validate_field" has been deprecated",
-        # RemovedInDjango19Warning)
+        # warnings.warn('"validate_field" has been deprecated", RemovedInDjango19Warning)
         pass
 
     def check_field(self, field, **kwargs):
@@ -29,7 +27,6 @@ class BaseDatabaseValidation(object):
             validate_field() method. When validate_field() is fully
             deprecated, this dummy can be removed too.
             """
-
             def add(self, opts, error_message):
                 self.append(checks.Error(error_message, hint=None, obj=field))
 

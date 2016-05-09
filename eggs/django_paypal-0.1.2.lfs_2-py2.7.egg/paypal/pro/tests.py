@@ -11,10 +11,8 @@ from paypal.pro.fields import CreditCardField
 from paypal.pro.helpers import PayPalWPP, PayPalError
 from paypal.pro.exceptions import PayPalFailure
 
-
 class RequestFactory(Client):
     # Used to generate request objects.
-
     def request(self, **request):
         environ = {
             'HTTP_COOKIE': self.cookies,
@@ -41,31 +39,26 @@ class DummyPayPalWPP(PayPalWPP):
 #         # @@@ Need some reals data here.
 #         "DoDirectPayment": """ack=Success&timestamp=2009-03-12T23%3A52%3A33Z&l_severitycode0=Error&l_shortmessage0=Security+error&l_longmessage0=Security+header+is+not+valid&version=54.0&build=854529&l_errorcode0=&correlationid=""",
 #     }
-#
+# 
 #     def _request(self, data):
 #         return self.responses["DoDirectPayment"]
 
 
 class CreditCardFieldTest(TestCase):
-
     def testCreditCardField(self):
         field = CreditCardField()
         field.clean('4797503429879309')
         self.assertEquals(field.card_type, "Visa")
-        self.assertRaises(
-            ValidationError,
-            CreditCardField().clean,
-            '1234567890123455')
+        self.assertRaises(ValidationError, CreditCardField().clean, '1234567890123455')
 
-
+        
 class PayPalWPPTest(TestCase):
-
     def setUp(self):
-
+    
         # Avoding blasting real requests at PayPal.
         self.old_debug = settings.DEBUG
         settings.DEBUG = True
-
+            
         self.item = {
             'amt': '9.95',
             'inv': 'inv',
@@ -73,9 +66,9 @@ class PayPalWPPTest(TestCase):
             'next': 'http://www.example.com/next/',
             'returnurl': 'http://www.example.com/pay/',
             'cancelurl': 'http://www.example.com/cancel/'
-        }
+        }                    
         self.wpp = DummyPayPalWPP(REQUEST)
-
+        
     def tearDown(self):
         settings.DEBUG = self.old_debug
 
@@ -96,10 +89,10 @@ class PayPalWPPTest(TestCase):
             'cvv2': '037',
             'acct': '4797503429879309',
             'creditcardtype': 'visa',
-            'ipaddress': '10.0.1.199', }
+            'ipaddress': '10.0.1.199',}
         data.update(self.item)
         self.assertTrue(self.wpp.doDirectPayment(data))
-
+        
     def test_doDirectPayment_invalid(self):
         data = {
             'firstname': 'Epic',
@@ -113,7 +106,7 @@ class PayPalWPPTest(TestCase):
             'cvv2': '999',
             'acct': '1234567890',
             'creditcardtype': 'visa',
-            'ipaddress': '10.0.1.199', }
+            'ipaddress': '10.0.1.199',}
         data.update(self.item)
         self.assertRaises(PayPalFailure, self.wpp.doDirectPayment(data))
 
@@ -124,7 +117,7 @@ class PayPalWPPTest(TestCase):
         self.assertTrue(nvp_obj.ack == "Success")
 
 
-# DoExpressCheckoutPayment
+### DoExpressCheckoutPayment
 # PayPal Request:
 # {'amt': '10.00',
 #  'cancelurl': u'http://xxx.xxx.xxx.xxx/deploy/480/upgrade/?upgrade=cname',
@@ -136,7 +129,7 @@ class PayPalWPPTest(TestCase):
 #  'paymentaction': 'Sale',
 #  'returnurl': u'http://xxx.xxx.xxx.xxx/deploy/480/upgrade/?upgrade=cname',
 #  'token': u'EC-6HW17184NE0084127'}
-#
+# 
 # PayPal Response:
 # {'ack': 'Success',
 #  'amt': '10.00',

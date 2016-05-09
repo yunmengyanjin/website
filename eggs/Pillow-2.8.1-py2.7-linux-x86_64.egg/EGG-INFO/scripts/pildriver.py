@@ -52,7 +52,6 @@ from __future__ import print_function
 
 from PIL import Image
 
-
 class PILDriver:
 
     verbose = 0
@@ -501,7 +500,7 @@ if __name__ == '__main__':
     try:
         import readline
     except ImportError:
-        pass  # not available on all platforms
+        pass # not available on all platforms
 
     # If we see command-line arguments, interpret them as a stack state
     # and execute.  Otherwise go interactive.

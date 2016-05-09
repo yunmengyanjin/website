@@ -10,7 +10,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('args', nargs=argparse.REMAINDER,
-                            help='Various KEY=val options.')
+            help='Various KEY=val options.')
 
     def handle(self, *args, **options):
         warnings.warn(

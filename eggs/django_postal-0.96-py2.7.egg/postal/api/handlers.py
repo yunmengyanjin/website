@@ -5,7 +5,7 @@ from postal.library import form_factory
 class PostalHandler(BaseHandler):
     allowed_methods = ('GET',)
 
-    def read(self, request):
+    def read(self, request):        
         iso_code = request.GET.get('country', '')
         json = {}
         form_class = form_factory(country_code=iso_code)

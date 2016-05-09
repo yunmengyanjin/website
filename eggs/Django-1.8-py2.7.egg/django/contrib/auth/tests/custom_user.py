@@ -9,7 +9,6 @@ from django.db import models
 # that every user provide a date of birth. This lets us test
 # changes in username datatype, and non-text required fields.
 class CustomUserManager(BaseUserManager):
-
     def create_user(self, email, date_of_birth, password=None):
         """
         Creates and saves a User with the given email and password.
@@ -27,20 +26,14 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password, date_of_birth):
-        u = self.create_user(
-            email,
-            password=password,
-            date_of_birth=date_of_birth)
+        u = self.create_user(email, password=password, date_of_birth=date_of_birth)
         u.is_admin = True
         u.save(using=self._db)
         return u
 
 
 class CustomUser(AbstractBaseUser):
-    email = models.EmailField(
-        verbose_name='email address',
-        max_length=255,
-        unique=True)
+    email = models.EmailField(verbose_name='email address', max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     date_of_birth = models.DateField()
@@ -90,15 +83,13 @@ class RemoveGroupsAndPermissions(object):
     fields from the AbstractUser class, so they don't clash with the
     related_name sets.
     """
-
     def __enter__(self):
         self._old_au_local_m2m = AbstractUser._meta.local_many_to_many
         self._old_pm_local_m2m = PermissionsMixin._meta.local_many_to_many
         groups = models.ManyToManyField(Group, blank=True)
         groups.contribute_to_class(PermissionsMixin, "groups")
         user_permissions = models.ManyToManyField(Permission, blank=True)
-        user_permissions.contribute_to_class(
-            PermissionsMixin, "user_permissions")
+        user_permissions.contribute_to_class(PermissionsMixin, "user_permissions")
         PermissionsMixin._meta.local_many_to_many = [groups, user_permissions]
         AbstractUser._meta.local_many_to_many = [groups, user_permissions]
 

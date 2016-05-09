@@ -145,31 +145,17 @@ COFA_STATES = (
 #: code changed).
 OBSOLETE_STATES = (
     ('CM', 'Commonwealth of the Northern Mariana Islands'),  # Is now 'MP'
-    # Reverted to Panama 1979
-    ('CZ', 'Panama Canal Zone'),
-    # Philippine independence 1946
-    ('PI', 'Philippine Islands'),
-    # Became the independent COFA states + Northern Mariana Islands 1979-1994
-    ('TT', 'Trust Territory of the Pacific Islands'),
+    ('CZ', 'Panama Canal Zone'),                             # Reverted to Panama 1979
+    ('PI', 'Philippine Islands'),                            # Philippine independence 1946
+    ('TT', 'Trust Territory of the Pacific Islands'),        # Became the independent COFA states + Northern Mariana Islands 1979-1994
 )
 
 
 #: All US states and territories plus DC and military mail.
-STATE_CHOICES = tuple(
-    sorted(
-        US_STATES +
-        US_TERRITORIES +
-        ARMED_FORCES_STATES,
-        key=lambda obj: obj[1]))
+STATE_CHOICES = tuple(sorted(US_STATES + US_TERRITORIES + ARMED_FORCES_STATES, key=lambda obj: obj[1]))
 
 #: All US Postal Service locations.
-USPS_CHOICES = tuple(
-    sorted(
-        US_STATES +
-        US_TERRITORIES +
-        ARMED_FORCES_STATES +
-        COFA_STATES,
-        key=lambda obj: obj[1]))
+USPS_CHOICES = tuple(sorted(US_STATES + US_TERRITORIES + ARMED_FORCES_STATES + COFA_STATES, key=lambda obj: obj[1]))
 
 #: Normalized versions of state names
 STATES_NORMALIZED = {

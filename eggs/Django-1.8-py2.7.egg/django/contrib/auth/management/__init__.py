@@ -33,7 +33,7 @@ def _get_builtin_permissions(opts):
     perms = []
     for action in opts.default_permissions:
         perms.append((get_permission_codename(action, opts),
-                      'Can %s %s' % (action, opts.verbose_name_raw)))
+            'Can %s %s' % (action, opts.verbose_name_raw)))
     return perms
 
 
@@ -57,12 +57,7 @@ def _check_permission_clashing(custom, builtin, ctype):
         pool.add(codename)
 
 
-def create_permissions(
-        app_config,
-        verbosity=2,
-        interactive=True,
-        using=DEFAULT_DB_ALIAS,
-        **kwargs):
+def create_permissions(app_config, verbosity=2, interactive=True, using=DEFAULT_DB_ALIAS, **kwargs):
     if not app_config.models_module:
         return
 
@@ -106,8 +101,7 @@ def create_permissions(
     # Validate the permissions before bulk_creation to avoid cryptic
     # database error when the verbose_name is longer than 50 characters
     permission_name_max_length = Permission._meta.get_field('name').max_length
-    verbose_name_max_length = permission_name_max_length - \
-        11  # len('Can change ') prefix
+    verbose_name_max_length = permission_name_max_length - 11  # len('Can change ') prefix
     for perm in perms:
         if len(perm.name) > permission_name_max_length:
             raise exceptions.ValidationError(
@@ -166,15 +160,14 @@ def get_default_username(check_db=True):
     default_username = get_system_username()
     try:
         default_username = (unicodedata.normalize('NFKD', default_username)
-                            .encode('ascii', 'ignore').decode('ascii')
-                            .replace(' ', '').lower())
+                .encode('ascii', 'ignore').decode('ascii')
+                .replace(' ', '').lower())
     except UnicodeDecodeError:
         return ''
 
     # Run the username validator
     try:
-        auth_app.User._meta.get_field(
-            'username').run_validators(default_username)
+        auth_app.User._meta.get_field('username').run_validators(default_username)
     except exceptions.ValidationError:
         return ''
 

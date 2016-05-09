@@ -13,11 +13,10 @@ class SessionStore(SessionBase):
         """
         try:
             return signing.loads(self.session_key,
-                                 serializer=self.serializer,
-                                 # This doesn't handle non-default expiry
-                                 # dates, see #19201
-                                 max_age=settings.SESSION_COOKIE_AGE,
-                                 salt='django.contrib.sessions.backends.signed_cookies')
+                serializer=self.serializer,
+                # This doesn't handle non-default expiry dates, see #19201
+                max_age=settings.SESSION_COOKIE_AGE,
+                salt='django.contrib.sessions.backends.signed_cookies')
         except (signing.BadSignature, ValueError):
             self.create()
         return {}
@@ -72,9 +71,7 @@ class SessionStore(SessionBase):
         session key.
         """
         session_cache = getattr(self, '_session_cache', {})
-        return signing.dumps(
-            session_cache,
-            compress=True,
+        return signing.dumps(session_cache, compress=True,
             salt='django.contrib.sessions.backends.signed_cookies',
             serializer=self.serializer)
 

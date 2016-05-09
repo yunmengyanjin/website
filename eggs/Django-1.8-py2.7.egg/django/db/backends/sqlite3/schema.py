@@ -37,22 +37,13 @@ class DatabaseSchemaEditor(BaseDatabaseSchemaEditor):
             value = bytes(value)
             hex_encoder = codecs.getencoder('hex_codec')
             value_hex, _length = hex_encoder(value)
-            # Use 'ascii' encoding for b'01' => '01', no need to use force_text
-            # here.
+            # Use 'ascii' encoding for b'01' => '01', no need to use force_text here.
             return "X'%s'" % value_hex.decode('ascii')
         else:
-            raise ValueError(
-                "Cannot quote parameter value %r of type %s" %
-                (value, type(value)))
+            raise ValueError("Cannot quote parameter value %r of type %s" % (value, type(value)))
 
-    def _remake_table(
-            self,
-            model,
-            create_fields=[],
-            delete_fields=[],
-            alter_fields=[],
-            override_uniques=None,
-            override_indexes=None):
+    def _remake_table(self, model, create_fields=[], delete_fields=[], alter_fields=[], override_uniques=None,
+                      override_indexes=None):
         """
         Shortcut to transform a model from old_model into new_model
         """
@@ -60,18 +51,13 @@ class DatabaseSchemaEditor(BaseDatabaseSchemaEditor):
         body = {f.name: f for f in model._meta.local_fields}
         # Since mapping might mix column names and default values,
         # its values must be already quoted.
-        mapping = {
-            f.column: self.quote_name(
-                f.column) for f in model._meta.local_fields}
+        mapping = {f.column: self.quote_name(f.column) for f in model._meta.local_fields}
         # This maps field names (not columns) for things like unique_together
         rename_mapping = {}
         # If any of the new or altered fields is introducing a new PK,
         # remove the old one
         restore_pk_field = None
-        if any(
-                f.primary_key for f in create_fields) or any(
-                n.primary_key for o,
-                n in alter_fields):
+        if any(f.primary_key for f in create_fields) or any(n.primary_key for o, n in alter_fields):
             for name, field in list(body.items()):
                 if field.primary_key:
                     field.primary_key = False
@@ -94,10 +80,9 @@ class DatabaseSchemaEditor(BaseDatabaseSchemaEditor):
             body[new_field.name] = new_field
             if old_field.null and not new_field.null:
                 case_sql = "coalesce(%(col)s, %(default)s)" % {
-                    'col': self.quote_name(
-                        old_field.column),
-                    'default': self.quote_value(
-                        self.effective_default(new_field))}
+                    'col': self.quote_name(old_field.column),
+                    'default': self.quote_value(self.effective_default(new_field))
+                }
                 mapping[new_field.column] = case_sql
             else:
                 mapping[new_field.column] = self.quote_name(old_field.column)
@@ -148,8 +133,7 @@ class DatabaseSchemaEditor(BaseDatabaseSchemaEditor):
         temp_model = type(model._meta.object_name, model.__bases__, body)
         # Create a new table with that format. We remove things from the
         # deferred SQL that match our table name, too
-        self.deferred_sql = [
-            x for x in self.deferred_sql if model._meta.db_table not in x]
+        self.deferred_sql = [x for x in self.deferred_sql if model._meta.db_table not in x]
         self.create_model(temp_model)
         # Copy data from the old table
         field_maps = list(mapping.items())
@@ -162,16 +146,10 @@ class DatabaseSchemaEditor(BaseDatabaseSchemaEditor):
         # Delete the old table
         self.delete_model(model, handle_autom2m=False)
         # Rename the new to the old
-        self.alter_db_table(
-            temp_model,
-            temp_model._meta.db_table,
-            model._meta.db_table)
+        self.alter_db_table(temp_model, temp_model._meta.db_table, model._meta.db_table)
         # Run deferred SQL on correct table
         for sql in self.deferred_sql:
-            self.execute(
-                sql.replace(
-                    temp_model._meta.db_table,
-                    model._meta.db_table))
+            self.execute(sql.replace(temp_model._meta.db_table, model._meta.db_table))
         self.deferred_sql = []
         # Fix any PK-removed field
         if restore_pk_field:
@@ -221,11 +199,7 @@ class DatabaseSchemaEditor(BaseDatabaseSchemaEditor):
         # Alter by remaking table
         self._remake_table(model, alter_fields=[(old_field, new_field)])
 
-    def alter_index_together(
-            self,
-            model,
-            old_index_together,
-            new_index_together):
+    def alter_index_together(self, model, old_index_together, new_index_together):
         """
         Deals with a model changing its index_together.
         Note: The input index_togethers must be doubly-nested, not the single-
@@ -233,11 +207,7 @@ class DatabaseSchemaEditor(BaseDatabaseSchemaEditor):
         """
         self._remake_table(model, override_indexes=new_index_together)
 
-    def alter_unique_together(
-            self,
-            model,
-            old_unique_together,
-            new_unique_together):
+    def alter_unique_together(self, model, old_unique_together, new_unique_together):
         """
         Deals with a model changing its unique_together.
         Note: The input unique_togethers must be doubly-nested, not the single-
@@ -250,8 +220,7 @@ class DatabaseSchemaEditor(BaseDatabaseSchemaEditor):
         Alters M2Ms to repoint their to= endpoints.
         """
         if old_field.rel.through._meta.db_table == new_field.rel.through._meta.db_table:
-            # The field name didn't change, but some options did; we have to
-            # propagate this altering.
+            # The field name didn't change, but some options did; we have to propagate this altering.
             self._remake_table(
                 old_field.rel.through,
                 alter_fields=[(

@@ -15,16 +15,10 @@ class Command(BaseCommand):
     requires_system_checks = False
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            'args',
-            metavar='table_name',
-            nargs='*',
+        parser.add_argument('args', metavar='table_name', nargs='*',
             help='Optional table names. Otherwise, settings.CACHES is used to '
             'find cache tables.')
-        parser.add_argument(
-            '--database',
-            action='store',
-            dest='database',
+        parser.add_argument('--database', action='store', dest='database',
             default=DEFAULT_DB_ALIAS,
             help='Nominates a database onto which the cache tables will be '
             'installed. Defaults to the "default" database.')
@@ -50,18 +44,12 @@ class Command(BaseCommand):
 
         if tablename in connection.introspection.table_names():
             if self.verbosity > 0:
-                self.stdout.write(
-                    "Cache table '%s' already exists." %
-                    tablename)
+                self.stdout.write("Cache table '%s' already exists." % tablename)
             return
 
         fields = (
             # "key" is a reserved word in MySQL, so use "cache_key" instead.
-            models.CharField(
-                name='cache_key',
-                max_length=255,
-                unique=True,
-                primary_key=True),
+            models.CharField(name='cache_key', max_length=255, unique=True, primary_key=True),
             models.TextField(name='value'),
             models.DateTimeField(name='expires', db_index=True),
         )
@@ -77,18 +65,13 @@ class Command(BaseCommand):
                 field_output.append("UNIQUE")
             if f.db_index:
                 unique = "UNIQUE " if f.unique else ""
-                index_output.append(
-                    "CREATE %sINDEX %s ON %s (%s);" %
-                    (unique, qn(
-                        '%s_%s' %
-                        (tablename, f.name)), qn(tablename), qn(
-                        f.name)))
+                index_output.append("CREATE %sINDEX %s ON %s (%s);" %
+                    (unique, qn('%s_%s' % (tablename, f.name)), qn(tablename),
+                    qn(f.name)))
             table_output.append(" ".join(field_output))
         full_statement = ["CREATE TABLE %s (" % qn(tablename)]
         for i, line in enumerate(table_output):
-            full_statement.append(
-                '    %s%s' %
-                (line, ',' if i < len(table_output) - 1 else ''))
+            full_statement.append('    %s%s' % (line, ',' if i < len(table_output) - 1 else ''))
         full_statement.append(');')
 
         with transaction.atomic(using=database,

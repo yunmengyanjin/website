@@ -20,48 +20,19 @@ class Command(BaseCommand):
     help = "Creates new migration(s) for apps."
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            'args',
-            metavar='app_label',
-            nargs='*',
+        parser.add_argument('args', metavar='app_label', nargs='*',
             help='Specify the app label(s) to create migrations for.')
-        parser.add_argument(
-            '--dry-run',
-            action='store_true',
-            dest='dry_run',
-            default=False,
+        parser.add_argument('--dry-run', action='store_true', dest='dry_run', default=False,
             help="Just show what migrations would be made; don't actually write them.")
-        parser.add_argument(
-            '--merge',
-            action='store_true',
-            dest='merge',
-            default=False,
+        parser.add_argument('--merge', action='store_true', dest='merge', default=False,
             help="Enable fixing of migration conflicts.")
-        parser.add_argument(
-            '--empty',
-            action='store_true',
-            dest='empty',
-            default=False,
+        parser.add_argument('--empty', action='store_true', dest='empty', default=False,
             help="Create an empty migration.")
-        parser.add_argument(
-            '--noinput',
-            action='store_false',
-            dest='interactive',
-            default=True,
+        parser.add_argument('--noinput', action='store_false', dest='interactive', default=True,
             help='Tells Django to NOT prompt the user for input of any kind.')
-        parser.add_argument(
-            '-n',
-            '--name',
-            action='store',
-            dest='name',
-            default=None,
+        parser.add_argument('-n', '--name', action='store', dest='name', default=None,
             help="Use this name for migration file(s).")
-        parser.add_argument(
-            '-e',
-            '--exit',
-            action='store_true',
-            dest='exit_code',
-            default=False,
+        parser.add_argument('-e', '--exit', action='store_true', dest='exit_code', default=False,
             help='Exit with error code 1 if no changes needing migrations are found.')
 
     def handle(self, *app_labels, **options):
@@ -84,9 +55,7 @@ class Command(BaseCommand):
                 bad_app_labels.add(app_label)
         if bad_app_labels:
             for app_label in bad_app_labels:
-                self.stderr.write(
-                    "App '%s' could not be found. Is it in INSTALLED_APPS?" %
-                    app_label)
+                self.stderr.write("App '%s' could not be found. Is it in INSTALLED_APPS?" % app_label)
             sys.exit(2)
 
         # Load the current graph state. Pass in None for the connection so
@@ -97,12 +66,12 @@ class Command(BaseCommand):
         # hard if there are any and they don't want to merge
         conflicts = loader.detect_conflicts()
 
-        # If app_labels is specified, filter out conflicting migrations for
-        # unspecified apps
+        # If app_labels is specified, filter out conflicting migrations for unspecified apps
         if app_labels:
             conflicts = {
-                app_label: conflict for app_label,
-                conflict in iteritems(conflicts) if app_label in app_labels}
+                app_label: conflict for app_label, conflict in iteritems(conflicts)
+                if app_label in app_labels
+            }
 
         if conflicts and not self.merge:
             name_str = "; ".join(
@@ -114,8 +83,7 @@ class Command(BaseCommand):
                 "'python manage.py makemigrations --merge'" % name_str
             )
 
-        # If they want to merge and there's nothing to merge, then politely
-        # exit
+        # If they want to merge and there's nothing to merge, then politely exit
         if self.merge and not conflicts:
             self.stdout.write("No conflicts detected to merge.")
             return
@@ -129,16 +97,13 @@ class Command(BaseCommand):
         autodetector = MigrationAutodetector(
             loader.project_state(),
             ProjectState.from_apps(apps),
-            InteractiveMigrationQuestioner(
-                specified_apps=app_labels,
-                dry_run=self.dry_run),
+            InteractiveMigrationQuestioner(specified_apps=app_labels, dry_run=self.dry_run),
         )
 
         # If they want to make an empty migration, make one for each app
         if self.empty:
             if not app_labels:
-                raise CommandError(
-                    "You must supply at least one app label when using --empty.")
+                raise CommandError("You must supply at least one app label when using --empty.")
             # Make a fake changes() result we can pass to arrange_for_graph
             changes = {
                 app: [Migration("custom", app)]
@@ -164,13 +129,9 @@ class Command(BaseCommand):
             # No changes? Tell them.
             if self.verbosity >= 1:
                 if len(app_labels) == 1:
-                    self.stdout.write(
-                        "No changes detected in app '%s'" %
-                        app_labels.pop())
+                    self.stdout.write("No changes detected in app '%s'" % app_labels.pop())
                 elif len(app_labels) > 1:
-                    self.stdout.write(
-                        "No changes detected in apps '%s'" %
-                        ("', '".join(app_labels)))
+                    self.stdout.write("No changes detected in apps '%s'" % ("', '".join(app_labels)))
                 else:
                     self.stdout.write("No changes detected")
 
@@ -188,16 +149,12 @@ class Command(BaseCommand):
         directory_created = {}
         for app_label, app_migrations in changes.items():
             if self.verbosity >= 1:
-                self.stdout.write(
-                    self.style.MIGRATE_HEADING(
-                        "Migrations for '%s':" %
-                        app_label) + "\n")
+                self.stdout.write(self.style.MIGRATE_HEADING("Migrations for '%s':" % app_label) + "\n")
             for migration in app_migrations:
                 # Describe the migration
                 writer = MigrationWriter(migration)
                 if self.verbosity >= 1:
-                    self.stdout.write("  %s:\n" %
-                                      (self.style.MIGRATE_LABEL(writer.filename),))
+                    self.stdout.write("  %s:\n" % (self.style.MIGRATE_LABEL(writer.filename),))
                     for operation in migration.operations:
                         self.stdout.write("    - %s\n" % operation.describe())
                 if not self.dry_run:
@@ -206,8 +163,7 @@ class Command(BaseCommand):
                     if not directory_created.get(app_label, False):
                         if not os.path.isdir(migrations_directory):
                             os.mkdir(migrations_directory)
-                        init_path = os.path.join(
-                            migrations_directory, "__init__.py")
+                        init_path = os.path.join(migrations_directory, "__init__.py")
                         if not os.path.isfile(init_path):
                             open(init_path, "w").close()
                         # We just do this once per app
@@ -239,42 +195,27 @@ class Command(BaseCommand):
             merge_migrations = []
             for migration_name in migration_names:
                 migration = loader.get_migration(app_label, migration_name)
-                migration.ancestry = loader.graph.forwards_plan(
-                    (app_label, migration_name))
+                migration.ancestry = loader.graph.forwards_plan((app_label, migration_name))
                 merge_migrations.append(migration)
-            all_items_equal = lambda seq: all(
-                item == seq[0] for item in seq[1:])
-            merge_migrations_generations = zip(
-                *[m.ancestry for m in merge_migrations])
-            common_ancestor_count = sum(
-                1 for common_ancestor_generation in takewhile(
-                    all_items_equal, merge_migrations_generations))
+            all_items_equal = lambda seq: all(item == seq[0] for item in seq[1:])
+            merge_migrations_generations = zip(*[m.ancestry for m in merge_migrations])
+            common_ancestor_count = sum(1 for common_ancestor_generation
+                                        in takewhile(all_items_equal, merge_migrations_generations))
             if not common_ancestor_count:
-                raise ValueError(
-                    "Could not find common ancestor of %s" %
-                    migration_names)
+                raise ValueError("Could not find common ancestor of %s" % migration_names)
             # Now work out the operations along each divergent branch
             for migration in merge_migrations:
                 migration.branch = migration.ancestry[common_ancestor_count:]
-                migrations_ops = (
-                    loader.get_migration(
-                        node_app,
-                        node_name).operations for node_app,
-                    node_name in migration.branch)
+                migrations_ops = (loader.get_migration(node_app, node_name).operations
+                                  for node_app, node_name in migration.branch)
                 migration.merged_operations = sum(migrations_ops, [])
             # In future, this could use some of the Optimizer code
             # (can_optimize_through) to automatically see if they're
             # mergeable. For now, we always just prompt the user.
             if self.verbosity > 0:
-                self.stdout.write(
-                    self.style.MIGRATE_HEADING(
-                        "Merging %s" %
-                        app_label))
+                self.stdout.write(self.style.MIGRATE_HEADING("Merging %s" % app_label))
                 for migration in merge_migrations:
-                    self.stdout.write(
-                        self.style.MIGRATE_LABEL(
-                            "  Branch %s" %
-                            migration.name))
+                    self.stdout.write(self.style.MIGRATE_LABEL("  Branch %s" % migration.name))
                     for operation in migration.merged_operations:
                         self.stdout.write("    - %s\n" % operation.describe())
             if questioner.ask_merge(app_label):
@@ -288,13 +229,10 @@ class Command(BaseCommand):
                     biggest_number = max(x for x in numbers if x is not None)
                 except ValueError:
                     biggest_number = 1
-                subclass = type(
-                    "Migration", (Migration, ), {
-                        "dependencies": [
-                            (app_label, migration.name) for migration in merge_migrations], })
-                new_migration = subclass(
-                    "%04i_merge" %
-                    (biggest_number + 1), app_label)
+                subclass = type("Migration", (Migration, ), {
+                    "dependencies": [(app_label, migration.name) for migration in merge_migrations],
+                })
+                new_migration = subclass("%04i_merge" % (biggest_number + 1), app_label)
                 writer = MigrationWriter(new_migration)
 
                 if not self.dry_run:
@@ -302,15 +240,12 @@ class Command(BaseCommand):
                     with open(writer.path, "wb") as fh:
                         fh.write(writer.as_string())
                     if self.verbosity > 0:
-                        self.stdout.write(
-                            "\nCreated new merge migration %s" %
-                            writer.path)
+                        self.stdout.write("\nCreated new merge migration %s" % writer.path)
                 elif self.verbosity == 3:
                     # Alternatively, makemigrations --merge --dry-run --verbosity 3
                     # will output the merge migrations to stdout rather than saving
                     # the file to the disk.
-                    self.stdout.write(
-                        self.style.MIGRATE_HEADING(
-                            "Full merge migrations file '%s':" %
-                            writer.filename) + "\n")
+                    self.stdout.write(self.style.MIGRATE_HEADING(
+                        "Full merge migrations file '%s':" % writer.filename) + "\n"
+                    )
                     self.stdout.write("%s\n" % writer.as_string())

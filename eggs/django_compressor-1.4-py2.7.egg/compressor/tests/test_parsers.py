@@ -25,7 +25,6 @@ from compressor.tests.test_base import CompressorTestCase
 
 
 class ParserTestCase(object):
-
     def setUp(self):
         self.old_parser = settings.COMPRESS_PARSER
         settings.COMPRESS_PARSER = self.parser_cls

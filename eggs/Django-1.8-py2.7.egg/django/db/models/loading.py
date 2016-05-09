@@ -9,7 +9,7 @@ warnings.warn(
     RemovedInDjango19Warning, stacklevel=2)
 
 __all__ = ('get_apps', 'get_app', 'get_models', 'get_model', 'register_models',
-           'load_app', 'app_cache_ready')
+        'load_app', 'app_cache_ready')
 
 # Backwards-compatibility for private APIs during the deprecation period.
 UnavailableApp = LookupError

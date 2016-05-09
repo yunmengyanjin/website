@@ -29,7 +29,7 @@ TAGS = {
     0x0106: "PhotometricInterpretation",
     0x0107: "Threshholding",
     0x0108: "CellWidth",
-    0x0109: "CellLength",
+    0x0109: "CellLenght",
     0x010a: "FillOrder",
     0x010d: "DocumentName",
     0x011d: "PageName",

@@ -9,11 +9,9 @@ class ConditionalGetMiddleware(object):
 
     Also sets the Date and Content-Length response-headers.
     """
-
     def process_response(self, request, response):
         response['Date'] = http_date()
-        if not response.streaming and not response.has_header(
-                'Content-Length'):
+        if not response.streaming and not response.has_header('Content-Length'):
             response['Content-Length'] = str(len(response.content))
 
         # If-None-Match must be ignored if original result would be anything
@@ -29,8 +27,7 @@ class ConditionalGetMiddleware(object):
 
         # If-Modified-Since must be ignored if the original result was not a 200.
         # http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.25
-        if response.status_code == 200 and response.has_header(
-                'Last-Modified'):
+        if response.status_code == 200 and response.has_header('Last-Modified'):
             if_modified_since = request.META.get('HTTP_IF_MODIFIED_SINCE')
             if if_modified_since is not None:
                 if_modified_since = parse_http_date_safe(if_modified_since)

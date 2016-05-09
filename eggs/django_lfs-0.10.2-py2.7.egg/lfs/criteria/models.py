@@ -99,18 +99,13 @@ class Criterion(models.Model):
                 [CONTAINS, _(u"Contains")],
             ]
     """
-    content_type = models.ForeignKey(
-        ContentType,
-        verbose_name=_(u"Content type"),
-        related_name="content_type")
+    content_type = models.ForeignKey(ContentType, verbose_name=_(u"Content type"), related_name="content_type")
     content_id = models.PositiveIntegerField(_(u"Content id"))
-    content = generic.GenericForeignKey(
-        ct_field="content_type", fk_field="content_id")
+    content = generic.GenericForeignKey(ct_field="content_type", fk_field="content_id")
     sub_type = models.CharField(_(u"Sub type"), max_length=100, blank=True)
 
     position = models.PositiveIntegerField(_(u"Position"), default=999)
-    operator = models.PositiveIntegerField(
-        _(u"Operator"), blank=True, null=True)
+    operator = models.PositiveIntegerField(_(u"Operator"), blank=True, null=True)
 
     class Meta:
         ordering = ("position", )
@@ -433,8 +428,7 @@ class CombinedLengthAndGirthCriterion(Criterion):
         the clag of all products within the cart.
         """
         if self.product:
-            clag = (2 * self.product.get_width()) + \
-                (2 * self.product.get_height()) + self.product.get_length()
+            clag = (2 * self.product.get_width()) + (2 * self.product.get_height()) + self.product.get_length()
         else:
             if self.cart is None:
                 clag = 0
@@ -527,8 +521,7 @@ class HeightCriterion(Criterion):
         if self.product:
             height = self.product.get_height()
         elif self.cart:
-            height = sum([item.product.get_height() *
-                          item.amount for item in self.cart.get_items()])
+            height = sum([item.product.get_height() * item.amount for item in self.cart.get_items()])
         else:
             height = 0
 
@@ -566,8 +559,7 @@ class LengthCriterion(Criterion):
         if self.product:
             max_length = self.product.get_length()
         elif self.cart:
-            max_length = max([item.product.get_length()
-                              for item in self.cart.get_items()])
+            max_length = max([item.product.get_length() for item in self.cart.get_items()])
         else:
             max_length = 0
 
@@ -589,8 +581,7 @@ class PaymentMethodCriterion(Criterion):
     """
     Criterion to check against payment methods.
     """
-    value = models.ManyToManyField(
-        PaymentMethod, verbose_name=_(u"Payment methods"))
+    value = models.ManyToManyField(PaymentMethod, verbose_name=_(u"Payment methods"))
 
     def get_operators(self):
         """
@@ -627,17 +618,14 @@ class PaymentMethodCriterion(Criterion):
             is_payment_method = False
 
         if (not is_payment_method) and (self.operator == self.IS_SELECTED):
-            payment_method = lfs.payment.utils.get_selected_payment_method(
-                self.request)
+            payment_method = lfs.payment.utils.get_selected_payment_method(self.request)
             return payment_method in self.value.all()
         elif (not is_payment_method) and (self.operator == self.IS_NOT_SELECTED):
-            payment_method = lfs.payment.utils.get_selected_payment_method(
-                self.request)
+            payment_method = lfs.payment.utils.get_selected_payment_method(self.request)
             return payment_method not in self.value.all()
         elif self.operator == self.IS_VALID:
             for pm in self.value.all():
-                if not lfs.criteria.utils.is_valid(
-                        self.request, pm, self.product):
+                if not lfs.criteria.utils.is_valid(self.request, pm, self.product):
                     return False
             return True
         elif self.operator == self.IS_NOT_VALID:
@@ -653,9 +641,7 @@ class ShippingMethodCriterion(Criterion):
     """
     Criterion to check against shipping methods.
     """
-    value = models.ManyToManyField(
-        ShippingMethod,
-        verbose_name=_(u"Shipping methods"))
+    value = models.ManyToManyField(ShippingMethod, verbose_name=_(u"Shipping methods"))
 
     def get_operators(self):
         """
@@ -697,17 +683,14 @@ class ShippingMethodCriterion(Criterion):
             is_shipping_method = False
 
         if (not is_shipping_method) and (self.operator == self.IS_SELECTED):
-            shipping_method = lfs.shipping.utils.get_selected_shipping_method(
-                self.request)
+            shipping_method = lfs.shipping.utils.get_selected_shipping_method(self.request)
             return shipping_method in self.value.all()
         elif (not is_shipping_method) and (self.operator == self.IS_NOT_SELECTED):
-            shipping_method = lfs.shipping.utils.get_selected_shipping_method(
-                self.request)
+            shipping_method = lfs.shipping.utils.get_selected_shipping_method(self.request)
             return shipping_method not in self.value.all()
         elif self.operator == self.IS_VALID:
             for sm in self.value.all():
-                if not lfs.criteria.utils.is_valid(
-                        self.request, sm, self.product):
+                if not lfs.criteria.utils.is_valid(self.request, sm, self.product):
                     return False
             return True
         elif self.operator == self.IS_NOT_VALID:
@@ -739,8 +722,7 @@ class WeightCriterion(Criterion):
         if self.product:
             weight = self.product.get_weight()
         elif self.cart:
-            weight = sum([item.product.get_weight() *
-                          item.amount for item in self.cart.get_items()])
+            weight = sum([item.product.get_weight() * item.amount for item in self.cart.get_items()])
         else:
             weight = 0
 
@@ -778,8 +760,7 @@ class WidthCriterion(Criterion):
         if self.product:
             max_width = self.product.get_width()
         elif self.cart and self.cart.get_items():
-            max_width = max([item.product.get_width()
-                             for item in self.cart.get_items()])
+            max_width = max([item.product.get_width() for item in self.cart.get_items()])
         else:
             max_width = 0
 
@@ -789,8 +770,7 @@ class WidthCriterion(Criterion):
             return True
         if self.operator == self.GREATER_THAN and (max_width > self.value):
             return True
-        if self.operator == self.GREATER_THAN_EQUAL and (
-                max_width >= self.value):
+        if self.operator == self.GREATER_THAN_EQUAL and (max_width >= self.value):
             return True
         if self.operator == self.EQUAL and (max_width == self.value):
             return True

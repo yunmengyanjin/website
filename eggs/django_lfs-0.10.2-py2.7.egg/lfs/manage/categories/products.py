@@ -21,10 +21,7 @@ from lfs.catalog.models import Product
 
 # Views
 @permission_required("core.manage_shop")
-def manage_products(
-        request,
-        category_id,
-        template_name="manage/category/products.html"):
+def manage_products(request, category_id, template_name="manage/category/products.html"):
     """
     """
     category = Category.objects.get(pk=category_id)
@@ -47,8 +44,7 @@ def manage_products(
 
 # Parts
 @permission_required("core.manage_shop")
-def products_inline(request, category_id, as_string=False,
-                    template_name="manage/category/products_inline.html"):
+def products_inline(request, category_id, as_string=False, template_name="manage/category/products_inline.html"):
     """Displays the products-tab of a category.
 
     This is called at start from the manage_products view to assemble the
@@ -57,18 +53,12 @@ def products_inline(request, category_id, as_string=False,
     """
     category = Category.objects.get(pk=category_id)
 
-    product_ids = Product.objects.filter(
-        categories=category).values_list(
-        'pk', flat=True)
+    product_ids = Product.objects.filter(categories=category).values_list('pk', flat=True)
 
     if request.REQUEST.get("keep-session"):
         page = request.REQUEST.get("page", request.session.get("page", 1))
-        filter_ = request.REQUEST.get(
-            "filter", request.session.get(
-                "filter", ""))
-        category_filter = request.REQUEST.get(
-            "category_filter", request.session.get(
-                "category_filter", ""))
+        filter_ = request.REQUEST.get("filter", request.session.get("filter", ""))
+        category_filter = request.REQUEST.get("category_filter", request.session.get("category_filter", ""))
     else:
         page = 1
         filter_ = ""
@@ -80,10 +70,8 @@ def products_inline(request, category_id, as_string=False,
     s["category_filter"] = category_filter
 
     try:
-        s["category-products-amount"] = int(
-            request.REQUEST.get(
-                "category-products-amount",
-                s.get("category-products-amount")))
+        s["category-products-amount"] = int(request.REQUEST.get("category-products-amount",
+                                      s.get("category-products-amount")))
     except TypeError:
         s["category-products-amount"] = 25
 
@@ -105,10 +93,7 @@ def products_inline(request, category_id, as_string=False,
     selectable_products = Product.objects.filter(
         filters).exclude(sub_type=VARIANT).distinct()
 
-    paginator = Paginator(
-        selectable_products.exclude(
-            pk__in=product_ids),
-        s["category-products-amount"])
+    paginator = Paginator(selectable_products.exclude(pk__in=product_ids), s["category-products-amount"])
     try:
         page = paginator.page(page)
     except (EmptyPage, InvalidPage):
@@ -139,11 +124,7 @@ def products_tab(request, category_id):
 
 
 @permission_required("core.manage_shop")
-def selected_products(
-        request,
-        category_id,
-        as_string=False,
-        template_name="manage/category/selected_products.html"):
+def selected_products(request, category_id, as_string=False, template_name="manage/category/selected_products.html"):
     """The selected products part of the products-tab of a category.
 
     This is called at start from the products_inline method to assemble the
@@ -153,15 +134,9 @@ def selected_products(
     category = Category.objects.get(pk=category_id)
 
     if request.REQUEST.get("keep-session"):
-        page_2 = request.REQUEST.get(
-            "page_2", request.session.get(
-                "page_2", 2))
-        filter_2 = request.REQUEST.get(
-            "filter_2", request.session.get(
-                "filter_2", ""))
-        category_filter_2 = request.REQUEST.get(
-            "category_filter_2", request.session.get(
-                "category_filter_2", ""))
+        page_2 = request.REQUEST.get("page_2", request.session.get("page_2", 2))
+        filter_2 = request.REQUEST.get("filter_2", request.session.get("filter_2", ""))
+        category_filter_2 = request.REQUEST.get("category_filter_2", request.session.get("category_filter_2", ""))
     else:
         page_2 = 1
         filter_2 = ""
@@ -171,8 +146,7 @@ def selected_products(
     request.session["filter_2"] = filter_2
 
     try:
-        request.session["category-products-amount"] = int(request.REQUEST.get(
-            "category-products-amount", request.session.get("category-products-amount")))
+        request.session["category-products-amount"] = int(request.REQUEST.get("category-products-amount", request.session.get("category-products-amount")))
     except TypeError:
         request.session["category-products-amount"] = 25
 
@@ -180,11 +154,9 @@ def selected_products(
     if filter_2:
         filters &= (Q(name__icontains=filter_2) | Q(sku__icontains=filter_2))
 
-    products = Product.objects.filter(
-        filters).exclude(sub_type=VARIANT).distinct()
+    products = Product.objects.filter(filters).exclude(sub_type=VARIANT).distinct()
 
-    paginator_2 = Paginator(products, request.session[
-                            "category-products-amount"])
+    paginator_2 = Paginator(products, request.session["category-products-amount"])
     try:
         page_2 = paginator_2.page(page_2)
     except (EmptyPage, InvalidPage):
@@ -222,8 +194,7 @@ def add_products(request, category_id):
 
     category_changed.send(category)
 
-    html = [["#products-inline",
-             products_inline(request, category_id, as_string=True)]]
+    html = [["#products-inline", products_inline(request, category_id, as_string=True)]]
 
     result = json.dumps({
         "html": html,
@@ -252,8 +223,7 @@ def remove_products(request, category_id):
 
     category_changed.send(category)
 
-    html = [["#products-inline",
-             products_inline(request, category_id, as_string=True)]]
+    html = [["#products-inline", products_inline(request, category_id, as_string=True)]]
 
     result = json.dumps({
         "html": html,

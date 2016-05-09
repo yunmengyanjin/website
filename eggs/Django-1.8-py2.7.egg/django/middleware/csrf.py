@@ -84,7 +84,6 @@ class CsrfViewMiddleware(object):
     """
     # The _accept and _reject methods currently only exist for the sake of the
     # requires_csrf_token decorator.
-
     def _accept(self, request):
         # Avoid checking the request twice by adding a custom attribute to
         # request.  This will be relevant when both decorator and middleware
@@ -94,11 +93,11 @@ class CsrfViewMiddleware(object):
 
     def _reject(self, request, reason):
         logger.warning('Forbidden (%s): %s', reason, request.path,
-                       extra={
-                           'status_code': 403,
-                           'request': request,
-                       }
-                       )
+            extra={
+                'status_code': 403,
+                'request': request,
+            }
+        )
         return _get_failure_view()(request, reason=reason)
 
     def process_view(self, request, callback, callback_args, callback_kwargs):
@@ -122,8 +121,7 @@ class CsrfViewMiddleware(object):
         if getattr(callback, 'csrf_exempt', False):
             return None
 
-        # Assume that anything not defined as 'safe' by RFC2616 needs
-        # protection
+        # Assume that anything not defined as 'safe' by RFC2616 needs protection
         if request.method not in ('GET', 'HEAD', 'OPTIONS', 'TRACE'):
             if getattr(request, '_dont_enforce_csrf_checks', False):
                 # Mechanism to turn off CSRF checks for test suite.
@@ -173,8 +171,7 @@ class CsrfViewMiddleware(object):
             request_csrf_token = ""
             if request.method == "POST":
                 try:
-                    request_csrf_token = request.POST.get(
-                        'csrfmiddlewaretoken', '')
+                    request_csrf_token = request.POST.get('csrfmiddlewaretoken', '')
                 except IOError:
                     # Handle a broken connection before we've completed reading
                     # the POST data. process_view shouldn't raise any

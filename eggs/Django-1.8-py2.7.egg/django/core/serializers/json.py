@@ -26,8 +26,7 @@ class Serializer(PythonSerializer):
 
     def _init_options(self):
         if json.__version__.split('.') >= ['2', '1', '3']:
-            # Use JS strings to represent Python Decimal instances (ticket
-            # #16850)
+            # Use JS strings to represent Python Decimal instances (ticket #16850)
             self.options.update({'use_decimal': False})
         self._current = None
         self.json_kwargs = self.options.copy()
@@ -82,17 +81,13 @@ def Deserializer(stream_or_string, **options):
         raise
     except Exception as e:
         # Map to deserializer error
-        six.reraise(
-            DeserializationError,
-            DeserializationError(e),
-            sys.exc_info()[2])
+        six.reraise(DeserializationError, DeserializationError(e), sys.exc_info()[2])
 
 
 class DjangoJSONEncoder(json.JSONEncoder):
     """
     JSONEncoder subclass that knows how to encode date/time and decimal types.
     """
-
     def default(self, o):
         # See "Date Time String Format" in the ECMA-262 specification.
         if isinstance(o, datetime.datetime):

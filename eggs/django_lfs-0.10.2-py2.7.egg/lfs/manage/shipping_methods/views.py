@@ -38,15 +38,13 @@ def manage_shipping(request):
         url = reverse("lfs_manage_no_shipping_methods")
     else:
         url = reverse("lfs_manage_shipping_method",
-                      kwargs={"shipping_method_id": shipping_method.id})
+            kwargs={"shipping_method_id": shipping_method.id})
     return HttpResponseRedirect(url)
 
 
 @permission_required("core.manage_shop")
-def manage_shipping_method(
-        request,
-        shipping_method_id,
-        template_name="manage/shipping_methods/manage_shipping.html"):
+def manage_shipping_method(request, shipping_method_id,
+    template_name="manage/shipping_methods/manage_shipping.html"):
     """The main view to manage the shipping method with given id.
 
     This view collects the various parts of the shipping form (data, criteria,
@@ -64,9 +62,7 @@ def manage_shipping_method(
 
 
 @permission_required("core.manage_shop")
-def no_shipping_methods(
-        request,
-        template_name="manage/shipping_methods/no_shipping_methods.html"):
+def no_shipping_methods(request, template_name="manage/shipping_methods/no_shipping_methods.html"):
     """Displays that there are no shipping methods.
     """
     return render_to_response(template_name, RequestContext(request, {}))
@@ -74,9 +70,7 @@ def no_shipping_methods(
 
 # Parts of the manage shipping view.
 @permission_required("core.manage_shop")
-def shipping_methods(
-        request,
-        template_name="manage/shipping_methods/shipping_methods.html"):
+def shipping_methods(request, template_name="manage/shipping_methods/shipping_methods.html"):
     """Returns all shipping methods as html.
 
     This view is used as a part within the manage shipping view.
@@ -93,11 +87,7 @@ def shipping_methods(
 
 
 @permission_required("core.manage_shop")
-def shipping_method_data(
-        request,
-        shipping_id,
-        form=None,
-        template_name="manage/shipping_methods/shipping_method_data.html"):
+def shipping_method_data(request, shipping_id, form=None, template_name="manage/shipping_methods/shipping_method_data.html"):
     """Returns the shipping data as html.
 
     This view is used as a part within the manage shipping view.
@@ -113,10 +103,8 @@ def shipping_method_data(
 
 
 @permission_required("core.manage_shop")
-def shipping_method_criteria(
-        request,
-        shipping_method_id,
-        template_name="manage/shipping_methods/shipping_method_criteria.html"):
+def shipping_method_criteria(request, shipping_method_id,
+    template_name="manage/shipping_methods/shipping_method_criteria.html"):
     """Returns the criteria of the shipping method with passed id as HTML.
 
     This view is used as a part within the manage shipping view.
@@ -137,10 +125,8 @@ def shipping_method_criteria(
 
 
 @permission_required("core.manage_shop")
-def shipping_method_prices(
-        request,
-        shipping_method_id,
-        template_name="manage/shipping_methods/shipping_method_prices.html"):
+def shipping_method_prices(request, shipping_method_id,
+    template_name="manage/shipping_methods/shipping_method_prices.html"):
     """Returns the shipping method prices for the shipping method with given id.
 
     This view is used as a part within the manage shipping view.
@@ -154,17 +140,13 @@ def shipping_method_prices(
 
 
 @permission_required("core.manage_shop")
-def shipping_price_criteria(
-        request,
-        shipping_price_id,
-        as_string=False,
-        template_name="manage/shipping_methods/shipping_price_criteria.html"):
+def shipping_price_criteria(request, shipping_price_id, as_string=False,
+    template_name="manage/shipping_methods/shipping_price_criteria.html"):
     """Returns the criteria of the shipping price with passed id.
 
     This view is used as a part within the manage shipping view.
     """
-    shipping_price = get_object_or_404(
-        ShippingMethodPrice, pk=shipping_price_id)
+    shipping_price = get_object_or_404(ShippingMethodPrice, pk=shipping_price_id)
 
     criteria = []
     position = 0
@@ -193,9 +175,8 @@ def shipping_price_criteria(
 
 # Actions
 @permission_required("core.manage_shop")
-def add_shipping_method(
-        request,
-        template_name="manage/shipping_methods/add_shipping_method.html"):
+def add_shipping_method(request,
+    template_name="manage/shipping_methods/add_shipping_method.html"):
     """Provides an add form and saves a new shipping method.
     """
     if request.method == "POST":
@@ -203,20 +184,16 @@ def add_shipping_method(
         if form.is_valid():
             new_shipping_method = form.save()
             return lfs.core.utils.set_message_cookie(
-                url=reverse(
-                    "lfs_manage_shipping_method",
-                    kwargs={
-                        "shipping_method_id": new_shipping_method.id}),
+                url=reverse("lfs_manage_shipping_method", kwargs={"shipping_method_id": new_shipping_method.id}),
                 msg=_(u"Shipping method has been added."),
             )
     else:
         form = ShippingMethodAddForm()
 
-    return render_to_response(
-        template_name, RequestContext(
-            request, {
-                "form": form, "came_from": request.REQUEST.get(
-                    "came_from", reverse("lfs_manage_shipping")), }))
+    return render_to_response(template_name, RequestContext(request, {
+        "form": form,
+        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_shipping")),
+    }))
 
 
 @permission_required("core.manage_shop")
@@ -224,12 +201,10 @@ def save_shipping_method_criteria(request, shipping_method_id):
     """Saves the criteria for the shipping method with given id. The criteria
     are passed via request body.
     """
-    shipping_method = lfs_get_object_or_404(
-        ShippingMethod, pk=shipping_method_id)
+    shipping_method = lfs_get_object_or_404(ShippingMethod, pk=shipping_method_id)
     shipping_method.save_criteria(request)
 
-    html = [["#criteria", shipping_method_criteria(
-        request, shipping_method_id)]]
+    html = [["#criteria", shipping_method_criteria(request, shipping_method_id)]]
 
     result = json.dumps({
         "html": html,
@@ -244,8 +219,7 @@ def save_shipping_price_criteria(request, shipping_price_id):
     """Saves the criteria for the shipping price with given id. The criteria
     are passed via request body.
     """
-    shipping_price = get_object_or_404(
-        ShippingMethodPrice, pk=shipping_price_id)
+    shipping_price = get_object_or_404(ShippingMethodPrice, pk=shipping_price_id)
     shipping_price.save_criteria(request)
 
     html = [
@@ -346,10 +320,7 @@ def save_shipping_method_data(request, shipping_method_id):
     This is called via an AJAX request and returns JSON encoded data.
     """
     shipping_method = ShippingMethod.objects.get(pk=shipping_method_id)
-    shipping_form = ShippingMethodForm(
-        instance=shipping_method,
-        data=request.POST,
-        files=request.FILES)
+    shipping_form = ShippingMethodForm(instance=shipping_method, data=request.POST, files=request.FILES)
 
     if shipping_form.is_valid():
         shipping_form.save()
@@ -387,10 +358,8 @@ def delete_shipping_method(request, shipping_method_id):
     except ObjectDoesNotExist:
         pass
     else:
-        for customer in Customer.objects.filter(
-                selected_shipping_method=shipping_method_id):
-            customer.selected_shipping_method = shipping_utils.get_default_shipping_method(
-                request)
+        for customer in Customer.objects.filter(selected_shipping_method=shipping_method_id):
+            customer.selected_shipping_method = shipping_utils.get_default_shipping_method(request)
             customer.save()
 
         shipping_method.delete()

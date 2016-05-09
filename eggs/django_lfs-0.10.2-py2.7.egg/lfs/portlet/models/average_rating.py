@@ -31,8 +31,11 @@ class AverageRatingPortlet(Portlet):
         else:
             average, amount = reviews.utils.get_average_for_instance(product)
 
-        return render_to_string("lfs/portlets/average_rating.html", RequestContext(
-            request, {"title": self.title, "average": average, "amount": amount, }))
+        return render_to_string("lfs/portlets/average_rating.html", RequestContext(request, {
+            "title": self.title,
+            "average": average,
+            "amount": amount,
+        }))
 
     def form(self, **kwargs):
         return AverageRatingForm(instance=self, **kwargs)

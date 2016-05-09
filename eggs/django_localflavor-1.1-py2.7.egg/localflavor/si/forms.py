@@ -55,8 +55,7 @@ class SIEMSOField(CharField):
             raise ValidationError(self.error_messages['checksum'])
 
         # Extract extra info in the identification number
-        day, month, year, nationality, gender, chksum = [
-            int(i) for i in m.groups()]
+        day, month, year, nationality, gender, chksum = [int(i) for i in m.groups()]
 
         if year < 890:
             year += 2000
@@ -122,7 +121,6 @@ class SIPostalCodeField(ChoiceField):
     """
     Slovenian post codes field.
     """
-
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('choices', SI_POSTALCODES_CHOICES)
         super(SIPostalCodeField, self).__init__(*args, **kwargs)
@@ -132,10 +130,9 @@ class SIPostalCodeSelect(Select):
     """
     A Select widget that uses Slovenian postal codes as its choices.
     """
-
     def __init__(self, attrs=None):
-        super(SIPostalCodeSelect, self).__init__(
-            attrs, choices=SI_POSTALCODES_CHOICES)
+        super(SIPostalCodeSelect, self).__init__(attrs,
+                                                 choices=SI_POSTALCODES_CHOICES)
 
 
 class SIPhoneNumberField(CharField):

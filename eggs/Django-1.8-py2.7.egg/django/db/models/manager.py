@@ -132,16 +132,13 @@ class BaseManager(object):
         new_methods = {}
         # Refs http://bugs.python.org/issue1785.
         predicate = inspect.isfunction if six.PY3 else inspect.ismethod
-        for name, method in inspect.getmembers(
-                queryset_class, predicate=predicate):
+        for name, method in inspect.getmembers(queryset_class, predicate=predicate):
             # Only copy missing methods.
             if hasattr(cls, name):
                 continue
-            # Only copy public methods or methods with the attribute
-            # `queryset_only=False`.
+            # Only copy public methods or methods with the attribute `queryset_only=False`.
             queryset_only = getattr(method, 'queryset_only', None)
-            if queryset_only or (
-                    queryset_only is None and name.startswith('_')):
+            if queryset_only or (queryset_only is None and name.startswith('_')):
                 continue
             # Copy the method onto the manager.
             new_methods[name] = create_method(name, method)
@@ -158,8 +155,7 @@ class BaseManager(object):
         return type(class_name, (cls,), class_dict)
 
     def contribute_to_class(self, model, name):
-        # TODO: Use weakref because of possible memory leak / circular
-        # reference.
+        # TODO: Use weakref because of possible memory leak / circular reference.
         self.model = model
         if not self.name:
             self.name = name
@@ -176,8 +172,7 @@ class BaseManager(object):
             model._default_manager = self
 
         abstract = False
-        if model._meta.abstract or (
-                self._inherited and not self.model._meta.proxy):
+        if model._meta.abstract or (self._inherited and not self.model._meta.proxy):
             abstract = True
         model._meta.managers.append((self.creation_counter, self, abstract))
 
@@ -221,8 +216,7 @@ class BaseManager(object):
         Returns a new QuerySet object.  Subclasses can override this method to
         easily customize the behavior of the Manager.
         """
-        return self._queryset_class(
-            self.model, using=self._db, hints=self._hints)
+        return self._queryset_class(self.model, using=self._db, hints=self._hints)
 
     def all(self):
         # We can't proxy this method through the `QuerySet` like we do for the
@@ -249,24 +243,19 @@ class Manager(BaseManager.from_queryset(QuerySet)):
 
 class ManagerDescriptor(object):
     # This class ensures managers aren't accessible via model instances.
-    # For example, Poll.objects works, but poll_obj.objects raises
-    # AttributeError.
-
+    # For example, Poll.objects works, but poll_obj.objects raises AttributeError.
     def __init__(self, manager):
         self.manager = manager
 
     def __get__(self, instance, type=None):
         if instance is not None:
-            raise AttributeError(
-                "Manager isn't accessible via %s instances" %
-                type.__name__)
+            raise AttributeError("Manager isn't accessible via %s instances" % type.__name__)
         return self.manager
 
 
 class AbstractManagerDescriptor(object):
     # This class provides a better error message when you try to access a
     # manager on an abstract model.
-
     def __init__(self, model):
         self.model = model
 
@@ -279,18 +268,16 @@ class AbstractManagerDescriptor(object):
 class SwappedManagerDescriptor(object):
     # This class provides a better error message when you try to access a
     # manager on a swapped model.
-
     def __init__(self, model):
         self.model = model
 
     def __get__(self, instance, type=None):
-        raise AttributeError(
-            "Manager isn't available; %s has been swapped for '%s'" %
-            (self.model._meta.object_name, self.model._meta.swapped))
+        raise AttributeError("Manager isn't available; %s has been swapped for '%s'" % (
+            self.model._meta.object_name, self.model._meta.swapped
+        ))
 
 
 class EmptyManager(Manager):
-
     def __init__(self, model):
         super(EmptyManager, self).__init__()
         self.model = model

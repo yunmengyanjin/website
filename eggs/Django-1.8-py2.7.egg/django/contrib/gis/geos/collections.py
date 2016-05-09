@@ -21,9 +21,7 @@ class GeometryCollection(GEOSGeometry):
 
         # Checking the arguments
         if not args:
-            raise TypeError(
-                'Must provide at least one Geometry to initialize %s.' %
-                self.__class__.__name__)
+            raise TypeError('Must provide at least one Geometry to initialize %s.' % self.__class__.__name__)
 
         if len(args) == 1:
             # If only one geometry provided or a list of geometries is provided
@@ -61,11 +59,7 @@ class GeometryCollection(GEOSGeometry):
             # allow GEOSGeometry types (python wrappers) or pointer types
             geoms[i] = capi.geom_clone(getattr(g, 'ptr', g))
 
-        return capi.create_collection(
-            c_int(
-                self._typeid),
-            byref(geoms),
-            c_uint(length))
+        return capi.create_collection(c_int(self._typeid), byref(geoms), c_uint(length))
 
     def _get_single_internal(self, index):
         return capi.get_geomn(self.ptr, index)
@@ -73,10 +67,7 @@ class GeometryCollection(GEOSGeometry):
     def _get_single_external(self, index):
         "Returns the Geometry from this Collection at the given index (0-based)."
         # Checking the index and returning the corresponding GEOS geometry.
-        return GEOSGeometry(
-            capi.geom_clone(
-                self._get_single_internal(index)),
-            srid=self.srid)
+        return GEOSGeometry(capi.geom_clone(self._get_single_internal(index)), srid=self.srid)
 
     def _set_list(self, length, items):
         "Create a new collection, and destroy the contents of the previous pointer."
@@ -93,8 +84,7 @@ class GeometryCollection(GEOSGeometry):
     @property
     def kml(self):
         "Returns the KML for this Geometry Collection."
-        return '<MultiGeometry>%s</MultiGeometry>' % ''.join(
-            g.kml for g in self)
+        return '<MultiGeometry>%s</MultiGeometry>' % ''.join(g.kml for g in self)
 
     @property
     def tuple(self):
@@ -133,11 +123,4 @@ class MultiPolygon(GeometryCollection):
 
 # Setting the allowed types here since GeometryCollection is defined before
 # its subclasses.
-GeometryCollection._allowed = (
-    Point,
-    LineString,
-    LinearRing,
-    Polygon,
-    MultiPoint,
-    MultiLineString,
-    MultiPolygon)
+GeometryCollection._allowed = (Point, LineString, LinearRing, Polygon, MultiPoint, MultiLineString, MultiPolygon)

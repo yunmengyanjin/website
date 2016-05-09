@@ -82,7 +82,7 @@ class IptcImageFile(ImageFile.ImageFile):
         elif size == 128:
             size = 0
         elif size > 128:
-            size = i(self.fp.read(size - 128))
+            size = i(self.fp.read(size-128))
         else:
             size = i16(s[3:])
 
@@ -114,7 +114,7 @@ class IptcImageFile(ImageFile.ImageFile):
         layers = i8(self.info[(3, 60)][0])
         component = i8(self.info[(3, 60)][1])
         if (3, 65) in self.info:
-            id = i8(self.info[(3, 65)][0]) - 1
+            id = i8(self.info[(3, 65)][0])-1
         else:
             id = 0
         if layers == 1 and not component:
@@ -136,7 +136,7 @@ class IptcImageFile(ImageFile.ImageFile):
         # tile
         if tag == (8, 10):
             self.tile = [("iptc", (compression, offset),
-                          (0, 0, self.size[0], self.size[1]))]
+                         (0, 0, self.size[0], self.size[1]))]
 
     def load(self):
 
@@ -215,14 +215,14 @@ def getiptcinfo(im):
                 app = app[14:]
                 # parse the image resource block
                 offset = 0
-                while app[offset:offset + 4] == b"8BIM":
+                while app[offset:offset+4] == b"8BIM":
                     offset += 4
                     # resource code
                     code = JpegImagePlugin.i16(app, offset)
                     offset += 2
                     # resource name (usually empty)
                     name_len = i8(app[offset])
-                    name = app[offset + 1:offset + 1 + name_len]
+                    name = app[offset+1:offset+1+name_len]
                     offset = 1 + offset + name_len
                     if offset & 1:
                         offset += 1
@@ -231,7 +231,7 @@ def getiptcinfo(im):
                     offset += 4
                     if code == 0x0404:
                         # 0x0404 contains IPTC/NAA data
-                        data = app[offset:offset + size]
+                        data = app[offset:offset+size]
                         break
                     offset = offset + size
                     if offset & 1:

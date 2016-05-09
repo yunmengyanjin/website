@@ -46,8 +46,7 @@ class MigrationRecorder(object):
         """
         # If the table's there, that's fine - we've never changed its schema
         # in the codebase.
-        if self.Migration._meta.db_table in self.connection.introspection.table_names(
-                self.connection.cursor()):
+        if self.Migration._meta.db_table in self.connection.introspection.table_names(self.connection.cursor()):
             return
         # Make the table
         with self.connection.schema_editor() as editor:
@@ -58,8 +57,7 @@ class MigrationRecorder(object):
         Returns a set of (app, name) of applied migrations.
         """
         self.ensure_schema()
-        return set(tuple(x)
-                   for x in self.migration_qs.values_list("app", "name"))
+        return set(tuple(x) for x in self.migration_qs.values_list("app", "name"))
 
     def record_applied(self, app, name):
         """

@@ -28,15 +28,8 @@ class AUPostCodeField(RegexField):
     }
 
     def __init__(self, max_length=4, min_length=None, *args, **kwargs):
-        super(
-            AUPostCodeField,
-            self).__init__(
-            r'^\d{4}$',
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(AUPostCodeField, self).__init__(r'^\d{4}$',
+                                              max_length, min_length, *args, **kwargs)
 
 
 class AUPhoneNumberField(CharField):
@@ -68,6 +61,5 @@ class AUStateSelect(Select):
     A Select widget that uses a list of Australian states/territories as its
     choices.
     """
-
     def __init__(self, attrs=None):
         super(AUStateSelect, self).__init__(attrs, choices=STATE_CHOICES)

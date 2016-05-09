@@ -23,10 +23,7 @@ from lfs.manufacturer.models import Manufacturer
 
 
 @permission_required("core.manage_shop")
-def manage_products(
-        request,
-        manufacturer_id,
-        template_name="manage/manufacturers/products.html"):
+def manage_products(request, manufacturer_id, template_name="manage/manufacturers/products.html"):
     """
     """
     manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
@@ -49,11 +46,7 @@ def manage_products(
 
 # Parts
 @permission_required("core.manage_shop")
-def products_inline(
-        request,
-        manufacturer_id,
-        as_string=False,
-        template_name="manage/manufacturers/products_inline.html"):
+def products_inline(request, manufacturer_id, as_string=False, template_name="manage/manufacturers/products_inline.html"):
     """Displays the products-tab of a manufacturer.
 
     This is called at start from the manage_products view to assemble the
@@ -63,15 +56,9 @@ def products_inline(
     manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
 
     if request.REQUEST.get("keep-session"):
-        page = request.REQUEST.get(
-            "manufacturer_page", request.session.get(
-                "manufacturer_page", 1))
-        filter_ = request.REQUEST.get(
-            "manufacturer_filter", request.session.get(
-                "manufacturer_filter", ""))
-        category_filter = request.REQUEST.get(
-            "manufacturer_category_filter", request.session.get(
-                "manufacturer_category_filter", ""))
+        page = request.REQUEST.get("manufacturer_page", request.session.get("manufacturer_page", 1))
+        filter_ = request.REQUEST.get("manufacturer_filter", request.session.get("manufacturer_filter", ""))
+        category_filter = request.REQUEST.get("manufacturer_category_filter", request.session.get("manufacturer_category_filter", ""))
     else:
         page = 1
         filter_ = ""
@@ -83,10 +70,8 @@ def products_inline(
     s["manufacturer_category_filter"] = category_filter
 
     try:
-        s["manufacturer-products-amount"] = int(
-            request.REQUEST.get(
-                "manufacturer-products-amount",
-                s.get("manufacturer-products-amount")))
+        s["manufacturer-products-amount"] = int(request.REQUEST.get("manufacturer-products-amount",
+                                                                    s.get("manufacturer-products-amount")))
     except TypeError:
         s["manufacturer-products-amount"] = 25
 
@@ -105,12 +90,11 @@ def products_inline(
 
             filters &= Q(categories__in=categories_temp)
 
-    selectable_products = Product.objects.filter(filters).exclude(
-        sub_type=VARIANT).exclude(manufacturer=manufacturer).distinct()
 
-    paginator = Paginator(
-        selectable_products,
-        s["manufacturer-products-amount"])
+    selectable_products = Product.objects.filter(
+        filters).exclude(sub_type=VARIANT).exclude(manufacturer=manufacturer).distinct()
+
+    paginator = Paginator(selectable_products, s["manufacturer-products-amount"])
     try:
         page = paginator.page(page)
     except (EmptyPage, InvalidPage):
@@ -141,11 +125,7 @@ def products_tab(request, manufacturer_id):
 
 
 @permission_required("core.manage_shop")
-def selected_products(
-        request,
-        manufacturer_id,
-        as_string=False,
-        template_name="manage/manufacturers/selected_products.html"):
+def selected_products(request, manufacturer_id, as_string=False, template_name="manage/manufacturers/selected_products.html"):
     """The selected products part of the products-tab of a manufacturer.
 
     This is called at start from the products_inline method to assemble the
@@ -155,12 +135,8 @@ def selected_products(
     manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
 
     if request.REQUEST.get("keep-session"):
-        page_2 = request.REQUEST.get(
-            "manufacturer_page_2", request.session.get(
-                "manufacturer_page_2", 2))
-        filter_2 = request.REQUEST.get(
-            "manufacturer_filter_2", request.session.get(
-                "manufacturer_filter_2", ""))
+        page_2 = request.REQUEST.get("manufacturer_page_2", request.session.get("manufacturer_page_2", 2))
+        filter_2 = request.REQUEST.get("manufacturer_filter_2", request.session.get("manufacturer_filter_2", ""))
     else:
         page_2 = 1
         filter_2 = ""
@@ -169,10 +145,7 @@ def selected_products(
     request.session["manufacturer_filter_2"] = filter_2
 
     try:
-        request.session["manufacturer-products-amount"] = int(
-            request.REQUEST.get(
-                "manufacturer-products-amount",
-                request.session.get("manufacturer-products-amount")))
+        request.session["manufacturer-products-amount"] = int(request.REQUEST.get("manufacturer-products-amount", request.session.get("manufacturer-products-amount")))
     except TypeError:
         request.session["manufacturer-products-amount"] = 25
 
@@ -180,11 +153,9 @@ def selected_products(
     if filter_2:
         filters &= (Q(name__icontains=filter_2) | Q(sku__icontains=filter_2))
 
-    products = Product.objects.filter(
-        filters).exclude(sub_type=VARIANT).distinct()
+    products = Product.objects.filter(filters).exclude(sub_type=VARIANT).distinct()
 
-    paginator_2 = Paginator(products, request.session[
-                            "manufacturer-products-amount"])
+    paginator_2 = Paginator(products, request.session["manufacturer-products-amount"])
     try:
         page_2 = paginator_2.page(page_2)
     except (EmptyPage, InvalidPage):
@@ -226,10 +197,7 @@ def add_products(request, manufacturer_id):
             continue
     manufacturer_changed.send(manufacturer)
 
-    html = [["#products-inline",
-             products_inline(request,
-                             manufacturer_id,
-                             as_string=True)]]
+    html = [["#products-inline", products_inline(request, manufacturer_id, as_string=True)]]
 
     result = json.dumps({
         "html": html,
@@ -256,10 +224,7 @@ def remove_products(request, manufacturer_id):
         product_changed.send(product)
     manufacturer_changed.send(manufacturer)
 
-    html = [["#products-inline",
-             products_inline(request,
-                             manufacturer_id,
-                             as_string=True)]]
+    html = [["#products-inline", products_inline(request, manufacturer_id, as_string=True)]]
 
     result = json.dumps({
         "html": html,

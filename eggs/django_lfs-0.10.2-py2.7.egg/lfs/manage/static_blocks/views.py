@@ -38,10 +38,7 @@ def manage_static_blocks(request):
 
 
 @permission_required("core.manage_shop")
-def manage_static_block(
-        request,
-        id,
-        template_name="manage/static_block/static_block.html"):
+def manage_static_block(request, id, template_name="manage/static_block/static_block.html"):
     """Displays the main form to manage static blocks.
     """
     sb = get_object_or_404(StaticBlock, pk=id)
@@ -66,9 +63,7 @@ def manage_static_block(
 
 
 @permission_required("core.manage_shop")
-def no_static_blocks(
-        request,
-        template_name="manage/static_block/no_static_blocks.html"):
+def no_static_blocks(request, template_name="manage/static_block/no_static_blocks.html"):
     """Displays that no static blocks exist.
     """
     return render_to_response(template_name, RequestContext(request, {}))
@@ -83,19 +78,13 @@ def files(request, sb, template_name="manage/static_block/files.html"):
         "static_block": sb,
     }))
 
-
 @permission_required("core.manage_shop")
-def list_files(
-        request,
-        sb,
-        template_name="manage/static_block/files-list.html"):
+def list_files(request, sb, template_name="manage/static_block/files-list.html"):
     """Displays the files tab of the passed static block.
     """
     return files(request, sb, template_name=template_name)
 
 # actions
-
-
 @permission_required("core.manage_shop")
 def update_files(request, id):
     """
@@ -180,20 +169,16 @@ def add_files(request, id):
     ctype = ContentType.objects.get_for_model(static_block)
 
     # Refresh positions
-    for i, file in enumerate(File.objects.filter(
-            content_type=ctype, content_id=static_block.id)):
+    for i, file in enumerate(File.objects.filter(content_type=ctype, content_id=static_block.id)):
         file.position = (i + 1) * 10
         file.save()
 
-    result = json.dumps(
-        {"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
+    result = json.dumps({"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
     return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
-def add_static_block(
-        request,
-        template_name="manage/static_block/add_static_block.html"):
+def add_static_block(request, template_name="manage/static_block/add_static_block.html"):
     """Provides a form to add a new static block.
     """
     if request.method == "POST":
@@ -201,10 +186,7 @@ def add_static_block(
         if form.is_valid():
             new_sb = form.save()
             return lfs.core.utils.set_message_cookie(
-                url=reverse(
-                    "lfs_manage_static_block",
-                    kwargs={
-                        "id": new_sb.id}),
+                url=reverse("lfs_manage_static_block", kwargs={"id": new_sb.id}),
                 msg=_(u"Static block has been added."),
             )
     else:
@@ -218,10 +200,7 @@ def add_static_block(
 
 
 @permission_required("core.manage_shop")
-def preview_static_block(
-        request,
-        id,
-        template_name="manage/static_block/preview.html"):
+def preview_static_block(request, id, template_name="manage/static_block/preview.html"):
     """Displays a preview of an static block
     """
     sb = get_object_or_404(StaticBlock, pk=id)

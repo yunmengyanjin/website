@@ -22,7 +22,8 @@ class DatabaseCreation(BaseDatabaseCreation):
             if 'mode=memory' in test_database_name:
                 raise ImproperlyConfigured(
                     "Using `mode=memory` parameter in the database name is not allowed, "
-                    "use `:memory:` instead.")
+                    "use `:memory:` instead."
+                )
             return test_database_name
         if self.connection.features.can_share_in_memory_db:
             return 'file:memorydb_%s?mode=memory&cache=shared' % self.connection.alias
@@ -36,21 +37,18 @@ class DatabaseCreation(BaseDatabaseCreation):
         if not self.connection.is_in_memory_db(test_database_name):
             # Erase the old test database
             if verbosity >= 1:
-                print(
-                    "Destroying old test database '%s'..." %
-                    self.connection.alias)
+                print("Destroying old test database '%s'..." % self.connection.alias)
             if os.access(test_database_name, os.F_OK):
                 if not autoclobber:
                     confirm = input(
                         "Type 'yes' if you would like to try deleting the test "
-                        "database '%s', or 'no' to cancel: " %
-                        test_database_name)
+                        "database '%s', or 'no' to cancel: " % test_database_name
+                    )
                 if autoclobber or confirm == 'yes':
                     try:
                         os.remove(test_database_name)
                     except Exception as e:
-                        sys.stderr.write(
-                            "Got an error deleting the old test database: %s\n" % e)
+                        sys.stderr.write("Got an error deleting the old test database: %s\n" % e)
                         sys.exit(2)
                 else:
                     print("Tests cancelled.")
@@ -58,8 +56,7 @@ class DatabaseCreation(BaseDatabaseCreation):
         return test_database_name
 
     def _destroy_test_db(self, test_database_name, verbosity):
-        if test_database_name and not self.connection.is_in_memory_db(
-                test_database_name):
+        if test_database_name and not self.connection.is_in_memory_db(test_database_name):
             # Remove the SQLite database file
             os.remove(test_database_name)
 

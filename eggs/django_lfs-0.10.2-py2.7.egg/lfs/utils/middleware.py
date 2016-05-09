@@ -21,7 +21,6 @@ class ProfileMiddleware(object):
     but you really shouldn't add this middleware to any production configuration.
     * Only tested on Linux
     """
-
     def process_request(self, request):
         if 'prof' in request.GET:
             self.tmpfile = tempfile.NamedTemporaryFile()
@@ -29,8 +28,7 @@ class ProfileMiddleware(object):
 
     def process_view(self, request, callback, callback_args, callback_kwargs):
         if 'prof' in request.GET:
-            return self.prof.runcall(
-                callback, request, *callback_args, **callback_kwargs)
+            return self.prof.runcall(callback, request, *callback_args, **callback_kwargs)
 
     def process_response(self, request, response):
         if 'prof' in request.GET:
@@ -56,7 +54,6 @@ class ProfileMiddleware(object):
 
 
 class AJAXSimpleExceptionResponse:
-
     def process_exception(self, request, exception):
         if settings.DEBUG:
             if request.is_ajax():

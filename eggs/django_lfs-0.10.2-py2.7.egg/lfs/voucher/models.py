@@ -20,10 +20,7 @@ class VoucherOptions(models.Model):
     number_prefix = models.CharField(max_length=20, blank=True, default="")
     number_suffix = models.CharField(max_length=20, blank=True, default="")
     number_length = models.IntegerField(blank=True, null=True, default=5)
-    number_letters = models.CharField(
-        max_length=100,
-        blank=True,
-        default="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    number_letters = models.CharField(max_length=100, blank=True, default="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 
 class VoucherGroup(models.Model):
@@ -151,7 +148,7 @@ class Voucher(models.Model):
     def is_effective(self, request, cart):
         """Returns True if the voucher is effective.
         """
-        if not self.active:
+        if self.active == False:
             return (False, MESSAGES[1])
         if (self.limit > 0) and (self.used_amount >= self.limit):
             return (False, MESSAGES[2])

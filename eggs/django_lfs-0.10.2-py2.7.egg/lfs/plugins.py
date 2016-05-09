@@ -68,7 +68,6 @@ class OrderNumberGenerator(models.Model):
         All parameters are passed to the form.
         """
         class OrderNumberGeneratorForm(forms.ModelForm):
-
             class Meta:
                 model = self
                 exclude = self.exclude_form_fields()
@@ -92,7 +91,6 @@ class PaymentMethodProcessor(object):
         The current order. This is only set, when create order time is
         IMMEDIATELY.
     """
-
     def __init__(self, request, cart=None, order=None):
         self.request = request
         self.cart = cart
@@ -166,7 +164,6 @@ class PriceCalculator(object):
     request
         The current request.
     """
-
     def __init__(self, request, product, **kwargs):
         self.request = request
         self.product = product
@@ -196,11 +193,9 @@ class PriceCalculator(object):
 
         if object.get_for_sale():
             if object.is_variant() and not object.active_for_sale_price:
-                price = object.parent.get_for_sale_price(
-                    self.request, with_properties)
+                price = object.parent.get_for_sale_price(self.request, with_properties)
             else:
-                price = object.get_for_sale_price(
-                    self.request, with_properties)
+                price = object.get_for_sale_price(self.request, with_properties)
         else:
             if object.is_variant() and not object.active_price:
                 price = object.parent.price
@@ -347,8 +342,7 @@ class PriceCalculator(object):
             True the prices of the default properties are added to the price.
         """
         try:
-            return self.get_price(with_properties) / \
-                self.product.get_base_price_amount()
+            return self.get_price(with_properties) / self.product.get_base_price_amount()
         except (TypeError, ZeroDivisionError):
             return 0.0
 
@@ -363,8 +357,7 @@ class PriceCalculator(object):
             True the prices of the default properties are added to the price.
         """
         try:
-            return self.get_price_net(
-                with_properties) / self.product.get_base_price_amount()
+            return self.get_price_net(with_properties) / self.product.get_base_price_amount()
         except (TypeError, ZeroDivisionError):
             return 0.0
 
@@ -379,8 +372,7 @@ class PriceCalculator(object):
             True the prices of the default properties are added to the price.
         """
         try:
-            return self.get_price_gross(
-                with_properties) / self.product.get_base_price_amount()
+            return self.get_price_gross(with_properties) / self.product.get_base_price_amount()
         except (TypeError, ZeroDivisionError):
             return 0.0
 
@@ -406,8 +398,7 @@ class PriceCalculator(object):
             If the instance is a configurable product and with_properties is
             True the prices of the default properties are added to the price.
         """
-        return self.get_price_net(with_properties) * \
-            self._calc_packing_amount()
+        return self.get_price_net(with_properties) * self._calc_packing_amount()
 
     def get_base_packing_price_gross(self, with_properties=True):
         """
@@ -419,8 +410,7 @@ class PriceCalculator(object):
             If the instance is a configurable product and with_properties is
             True the prices of the default properties are added to the price.
         """
-        return self.get_price_gross(
-            with_properties) * self._calc_packing_amount()
+        return self.get_price_gross(with_properties) * self._calc_packing_amount()
 
     def get_customer_tax_rate(self):
         """
@@ -439,8 +429,7 @@ class PriceCalculator(object):
             If the instance is a configurable product and with_properties is
             True the taxes of the default properties are added to the price.
         """
-        return self.get_price_gross(
-            with_properties) - self.get_price_net(with_properties)
+        return self.get_price_gross(with_properties) - self.get_price_net(with_properties)
 
     def get_product_tax_rate(self):
         """
@@ -501,7 +490,6 @@ class ShippingMethodPriceCalculator(object):
     shipping_method
         The shipping method for which the price is calculated.
     """
-
     def __init__(self, request, shipping_method):
         self.shipping_method = shipping_method
         self.request = request
@@ -510,10 +498,7 @@ class ShippingMethodPriceCalculator(object):
         from lfs.criteria.utils import get_first_valid
         from lfs.customer_tax.models import CustomerTax
 
-        customer_tax = get_first_valid(
-            self.request,
-            CustomerTax.objects.all(),
-            self.shipping_method)
+        customer_tax = get_first_valid(self.request, CustomerTax.objects.all(), self.shipping_method)
         if customer_tax:
             return customer_tax.rate
         if self.shipping_method.tax is None:
@@ -525,8 +510,8 @@ class ShippingMethodPriceCalculator(object):
         Returns the stored price without any calculations.
         """
         from lfs.criteria import utils as criteria_utils
-        price = criteria_utils.get_first_valid(
-            self.request, self.shipping_method.prices.all())
+        price = criteria_utils.get_first_valid(self.request,
+                                               self.shipping_method.prices.all())
         if price:
             return price.price
         return self.shipping_method.price

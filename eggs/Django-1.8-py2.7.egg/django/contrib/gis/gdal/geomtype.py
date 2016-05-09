@@ -39,14 +39,10 @@ class OGRGeomType(object):
                 type_input = 'unknown'
             num = self._str_types.get(type_input, None)
             if num is None:
-                raise GDALException(
-                    'Invalid OGR String Type "%s"' %
-                    type_input)
+                raise GDALException('Invalid OGR String Type "%s"' % type_input)
         elif isinstance(type_input, int):
             if type_input not in self._types:
-                raise GDALException(
-                    'Invalid OGR Integer Type: %d' %
-                    type_input)
+                raise GDALException('Invalid OGR Integer Type: %d' % type_input)
             num = type_input
         else:
             raise TypeError('Invalid OGR input type given.')

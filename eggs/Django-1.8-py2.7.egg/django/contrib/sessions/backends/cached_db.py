@@ -45,11 +45,11 @@ class SessionStore(DBStore):
                 )
                 data = self.decode(s.session_data)
                 self._cache.set(self.cache_key, data,
-                                self.get_expiry_age(expiry=s.expire_date))
+                    self.get_expiry_age(expiry=s.expire_date))
             except (Session.DoesNotExist, SuspiciousOperation) as e:
                 if isinstance(e, SuspiciousOperation):
                     logger = logging.getLogger('django.security.%s' %
-                                               e.__class__.__name__)
+                            e.__class__.__name__)
                     logger.warning(force_text(e))
                 self.create()
                 data = {}

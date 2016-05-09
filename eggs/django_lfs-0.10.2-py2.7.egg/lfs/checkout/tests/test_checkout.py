@@ -22,7 +22,6 @@ from lfs.tax.models import Tax
 # 3rd party imports
 from postal.library import form_factory
 
-
 class CheckoutTestCase(TestCase):
     """
     """
@@ -166,9 +165,10 @@ class CheckoutTestCase(TestCase):
         """Tests the login view.
         """
         email = 'testverylongemailaddressthatislongerthanusername1@example.com'
-        response = self.client.post(
-            reverse('lfs_checkout_login'), {
-                'email': email, 'action': 'register', 'password_1': 'test', 'password_2': 'test'})
+        response = self.client.post(reverse('lfs_checkout_login'), {'email': email,
+                                                                    'action': 'register',
+                                                                    'password_1': 'test',
+                                                                    'password_2': 'test'})
         self.assertEqual(User.objects.filter(email=email).count(), 1)
         self.client.logout()
 
@@ -188,9 +188,7 @@ class CheckoutTestCase(TestCase):
         """Tests that checkout page gets populated with correct details
         """
         # login as our customer
-        logged_in = self.client.login(
-            username=self.username,
-            password=self.password)
+        logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
         cart_response = self.client.get(reverse('lfs_cart'))
@@ -203,9 +201,7 @@ class CheckoutTestCase(TestCase):
         """Tests that checkout page gets populated with correct details
         """
         # login as our customer
-        logged_in = self.client.login(
-            username=self.username,
-            password=self.password)
+        logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
         cart_response = self.client.get(reverse('lfs_cart'))
@@ -217,35 +213,21 @@ class CheckoutTestCase(TestCase):
 
         # change the country in the cart
         de = Country.objects.get(code="de")
-        cart_response = self.client.post(
-            '/refresh-cart',
-            {
-                'country': de.code.lower(),
-                "amount-cart-item_%s" %
-                self.item1.id: 1,
-                "amount-cart-item_%s" %
-                self.item2.id: 1})
+        cart_response = self.client.post('/refresh-cart', {'country': de.code.lower(), "amount-cart-item_%s" % self.item1.id: 1, "amount-cart-item_%s" % self.item2.id: 1})
 
         customer = Customer.objects.get(user=user)
-        self.assertEquals(
-            customer.selected_shipping_address.country.code.lower(), "de")
-        self.assertEquals(
-            customer.selected_invoice_address.country.code.lower(), "de")
+        self.assertEquals(customer.selected_shipping_address.country.code.lower(), "de")
+        self.assertEquals(customer.selected_invoice_address.country.code.lower(), "de")
 
         cart_response = self.client.get(reverse('lfs_cart'))
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
 
         checkout_response = self.client.get(reverse('lfs_checkout'))
-        self.assertContains(
-            checkout_response,
-            '<option value="DE" selected="selected">Deutschland</option>',
-            status_code=200)
+        self.assertContains(checkout_response, '<option value="DE" selected="selected">Deutschland</option>', status_code=200)
 
     def test_order_phone_email_set_after_checkout(self):
         # login as our customer
-        logged_in = self.client.login(
-            username=self.username,
-            password=self.password)
+        logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
         # check initial database quantities
@@ -283,28 +265,12 @@ class CheckoutTestCase(TestCase):
                          'payment_method': self.by_invoice.id,
                          }
 
-        checkout_post_response = self.client.post(
-            reverse('lfs_checkout'), checkout_data)
-        self.assertRedirects(
-            checkout_post_response,
-            reverse('lfs_thank_you'),
-            status_code=302,
-            target_status_code=200,
-        )
+        checkout_post_response = self.client.post(reverse('lfs_checkout'), checkout_data)
+        self.assertRedirects(checkout_post_response, reverse('lfs_thank_you'), status_code=302, target_status_code=200,)
 
         # check that an order email got sent
-        self.assertEqual(
-            getattr(
-                settings,
-                'LFS_SEND_ORDER_MAIL_ON_CHECKOUT',
-                True),
-            True)
-        self.assertEqual(
-            getattr(
-                settings,
-                'LFS_SEND_ORDER_MAIL_ON_PAYMENT',
-                False),
-            False)
+        self.assertEqual(getattr(settings, 'LFS_SEND_ORDER_MAIL_ON_CHECKOUT', True), True)
+        self.assertEqual(getattr(settings, 'LFS_SEND_ORDER_MAIL_ON_PAYMENT', False), False)
         self.assertEqual(len(mail.outbox), 1)
 
         # check database quantities post-checkout
@@ -314,24 +280,14 @@ class CheckoutTestCase(TestCase):
 
         # check our customer details post checkout
         our_customer = Customer.objects.all()[0]
-        self.assertEqual(
-            our_customer.selected_invoice_address.phone,
-            "1234567")
-        self.assertEqual(
-            our_customer.selected_invoice_address.email,
-            "a@a.com")
-        self.assertEqual(
-            our_customer.selected_shipping_address.phone,
-            '7654321')
-        self.assertEqual(
-            our_customer.selected_shipping_address.email,
-            "b@b.com")
+        self.assertEqual(our_customer.selected_invoice_address.phone, "1234567")
+        self.assertEqual(our_customer.selected_invoice_address.email, "a@a.com")
+        self.assertEqual(our_customer.selected_shipping_address.phone, '7654321')
+        self.assertEqual(our_customer.selected_shipping_address.email, "b@b.com")
 
     def test_checkout_with_4_line_shipping_address(self):
         # login as our customer
-        logged_in = self.client.login(
-            username=self.username,
-            password=self.password)
+        logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
         # test that our Netherlands form has only 4 address line fields
@@ -375,14 +331,8 @@ class CheckoutTestCase(TestCase):
                          'payment_method': self.by_invoice.id,
                          }
 
-        checkout_post_response = self.client.post(
-            reverse('lfs_checkout'), checkout_data)
-        self.assertRedirects(
-            checkout_post_response,
-            reverse('lfs_thank_you'),
-            status_code=302,
-            target_status_code=200,
-        )
+        checkout_post_response = self.client.post(reverse('lfs_checkout'), checkout_data)
+        self.assertRedirects(checkout_post_response, reverse('lfs_thank_you'), status_code=302, target_status_code=200,)
 
         # check database quantities post-checkout
         self.assertEquals(Address.objects.count(), 4)
@@ -391,15 +341,7 @@ class CheckoutTestCase(TestCase):
 
         # check our customer details post checkout
         our_customer = Customer.objects.all()[0]
-        self.assertEqual(
-            our_customer.selected_invoice_address.phone,
-            "1234567")
-        self.assertEqual(
-            our_customer.selected_invoice_address.email,
-            "a@a.com")
-        self.assertEqual(
-            our_customer.selected_shipping_address.phone,
-            '7654321')
-        self.assertEqual(
-            our_customer.selected_shipping_address.email,
-            "b@b.com")
+        self.assertEqual(our_customer.selected_invoice_address.phone, "1234567")
+        self.assertEqual(our_customer.selected_invoice_address.email, "a@a.com")
+        self.assertEqual(our_customer.selected_shipping_address.phone, '7654321')
+        self.assertEqual(our_customer.selected_shipping_address.email, "b@b.com")

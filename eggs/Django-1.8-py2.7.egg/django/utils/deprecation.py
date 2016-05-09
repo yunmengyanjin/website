@@ -14,13 +14,7 @@ RemovedInNextVersionWarning = RemovedInDjango19Warning
 
 
 class warn_about_renamed_method(object):
-
-    def __init__(
-            self,
-            class_name,
-            old_method_name,
-            new_method_name,
-            deprecation_warning):
+    def __init__(self, class_name, old_method_name, new_method_name, deprecation_warning):
         self.class_name = class_name
         self.old_method_name = old_method_name
         self.new_method_name = new_method_name
@@ -51,13 +45,7 @@ class RenameMethodsBase(type):
     renamed_methods = ()
 
     def __new__(cls, name, bases, attrs):
-        new_class = super(
-            RenameMethodsBase,
-            cls).__new__(
-            cls,
-            name,
-            bases,
-            attrs)
+        new_class = super(RenameMethodsBase, cls).__new__(cls, name, bases, attrs)
 
         for base in inspect.getmro(new_class):
             class_name = base.__name__
@@ -67,8 +55,7 @@ class RenameMethodsBase(type):
                 new_method_name = renamed_method[1]
                 new_method = base.__dict__.get(new_method_name)
                 deprecation_warning = renamed_method[2]
-                wrapper = warn_about_renamed_method(
-                    class_name, *renamed_method)
+                wrapper = warn_about_renamed_method(class_name, *renamed_method)
 
                 # Define the new method if missing and complain about it
                 if not new_method and old_method:

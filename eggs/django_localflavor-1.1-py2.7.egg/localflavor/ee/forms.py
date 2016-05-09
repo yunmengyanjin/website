@@ -25,22 +25,13 @@ class EEZipCodeField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            EEZipCodeField,
-            self).__init__(
-            zipcode,
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(EEZipCodeField, self).__init__(zipcode, max_length, min_length, *args, **kwargs)
 
 
 class EECountySelect(Select):
     """
     A Select widget that uses a list of Estonian counties as its choices.
     """
-
     def __init__(self, attrs=None):
         super(EECountySelect, self).__init__(attrs, choices=COUNTY_CHOICES)
 

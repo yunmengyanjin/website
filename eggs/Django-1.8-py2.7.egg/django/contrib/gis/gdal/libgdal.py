@@ -27,7 +27,7 @@ elif os.name == 'nt':
 elif os.name == 'posix':
     # *NIX library names.
     lib_names = ['gdal', 'GDAL', 'gdal1.11.0', 'gdal1.10.0', 'gdal1.9.0',
-                 'gdal1.8.0', 'gdal1.7.0']
+        'gdal1.8.0', 'gdal1.7.0']
 else:
     raise GDALException('Unsupported OS "%s"' % os.name)
 
@@ -41,8 +41,8 @@ if lib_names:
 
 if lib_path is None:
     raise GDALException('Could not find the GDAL library (tried "%s"). '
-                        'Try setting GDAL_LIBRARY_PATH in your settings.' %
-                        '", "'.join(lib_names))
+                       'Try setting GDAL_LIBRARY_PATH in your settings.' %
+                       '", "'.join(lib_names))
 
 # This loads the GDAL/OGR C library
 lgdal = CDLL(lib_path)
@@ -83,8 +83,7 @@ def gdal_full_version():
     "Returns the full GDAL version information."
     return _version_info('')
 
-version_regex = re.compile(
-    r'^(?P<major>\d+)\.(?P<minor>\d+)(\.(?P<subminor>\d+))?')
+version_regex = re.compile(r'^(?P<major>\d+)\.(?P<minor>\d+)(\.(?P<subminor>\d+))?')
 
 
 def gdal_version_info():
@@ -116,8 +115,5 @@ def function(name, args, restype):
     func.restype = restype
     return func
 
-set_error_handler = function(
-    'CPLSetErrorHandler',
-    [CPLErrorHandler],
-    CPLErrorHandler)
+set_error_handler = function('CPLSetErrorHandler', [CPLErrorHandler], CPLErrorHandler)
 set_error_handler(err_handler)

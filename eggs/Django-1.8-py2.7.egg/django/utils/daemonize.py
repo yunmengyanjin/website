@@ -14,9 +14,7 @@ if os.name == 'posix':
             if os.fork() > 0:
                 sys.exit(0)     # kill off parent
         except OSError as e:
-            sys.stderr.write(
-                "fork #1 failed: (%d) %s\n" %
-                (e.errno, e.strerror))
+            sys.stderr.write("fork #1 failed: (%d) %s\n" % (e.errno, e.strerror))
             sys.exit(1)
         os.setsid()
         os.chdir(our_home_dir)
@@ -27,9 +25,7 @@ if os.name == 'posix':
             if os.fork() > 0:
                 os._exit(0)
         except OSError as e:
-            sys.stderr.write(
-                "fork #2 failed: (%d) %s\n" %
-                (e.errno, e.strerror))
+            sys.stderr.write("fork #2 failed: (%d) %s\n" % (e.errno, e.strerror))
             os._exit(1)
 
         si = open('/dev/null', 'r')
@@ -41,11 +37,7 @@ if os.name == 'posix':
         # Set custom file descriptors so that they get proper buffering.
         sys.stdout, sys.stderr = so, se
 else:
-    def become_daemon(
-            our_home_dir='.',
-            out_log=None,
-            err_log=None,
-            umask=0o022):
+    def become_daemon(our_home_dir='.', out_log=None, err_log=None, umask=0o022):
         """
         If we're not running under a POSIX system, just simulate the daemon
         mode by doing redirections and directory changing.
@@ -66,6 +58,5 @@ else:
 
     class NullDevice:
         "A writeable object that writes to nowhere -- like /dev/null."
-
         def write(self, s):
             pass

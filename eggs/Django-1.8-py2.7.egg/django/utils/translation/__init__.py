@@ -106,17 +106,15 @@ def lazy_number(func, resultclass, number=None, **kwargs):
         proxy = lazy(func, resultclass)(**kwargs)
     else:
         class NumberAwareString(resultclass):
-
             def __mod__(self, rhs):
                 if isinstance(rhs, dict) and number:
                     try:
                         number_value = rhs[number]
                     except KeyError:
-                        raise KeyError(
-                            'Your dictionary lacks key \'%s\'. '
+                        raise KeyError('Your dictionary lacks key \'%s\'. '
                             'Please provide it, because it is required to '
-                            'determine whether string is singular or plural.' %
-                            number)
+                            'determine whether string is singular or plural.'
+                            % number)
                 else:
                     number_value = rhs
                 kwargs['number'] = number_value
@@ -128,39 +126,20 @@ def lazy_number(func, resultclass, number=None, **kwargs):
                     pass
                 return translated
 
-        proxy = lazy(
-            lambda **kwargs: NumberAwareString(),
-            NumberAwareString)(
-            **kwargs)
+        proxy = lazy(lambda **kwargs: NumberAwareString(), NumberAwareString)(**kwargs)
     return proxy
 
 
 def ngettext_lazy(singular, plural, number=None):
-    return lazy_number(
-        ngettext,
-        str,
-        singular=singular,
-        plural=plural,
-        number=number)
+    return lazy_number(ngettext, str, singular=singular, plural=plural, number=number)
 
 
 def ungettext_lazy(singular, plural, number=None):
-    return lazy_number(
-        ungettext,
-        six.text_type,
-        singular=singular,
-        plural=plural,
-        number=number)
+    return lazy_number(ungettext, six.text_type, singular=singular, plural=plural, number=number)
 
 
 def npgettext_lazy(context, singular, plural, number=None):
-    return lazy_number(
-        npgettext,
-        six.text_type,
-        context=context,
-        singular=singular,
-        plural=plural,
-        number=number)
+    return lazy_number(npgettext, six.text_type, context=context, singular=singular, plural=plural, number=number)
 
 
 def activate(language):
@@ -172,7 +151,6 @@ def deactivate():
 
 
 class override(ContextDecorator):
-
     def __init__(self, language, deactivate=False):
         self.language = language
         self.deactivate = deactivate
@@ -246,9 +224,7 @@ def get_language_info(lang_code):
         try:
             return LANG_INFO[generic_lang_code]
         except KeyError:
-            raise KeyError(
-                "Unknown language code %s and %s." %
-                (lang_code, generic_lang_code))
+            raise KeyError("Unknown language code %s and %s." % (lang_code, generic_lang_code))
 
 trim_whitespace_re = re.compile('\s*\n\s*')
 

@@ -62,7 +62,6 @@ We should be able to deal with setup scripts that aren't setuptools based.
 
     """
 
-
 def develop_verbose():
     """
 We should be able to deal with setup scripts that aren't setuptools based.
@@ -102,7 +101,6 @@ We should be able to deal with setup scripts that aren't setuptools based.
 
 
     """
-
 
 def buildout_error_handling():
     r"""Buildout error handling
@@ -267,14 +265,12 @@ setup(name=%r, version=%r,
       )
 """
 
-
 def make_dist_that_requires(dest, name, requires=[], version=1, egg=''):
     os.mkdir(os.path.join(dest, name))
     open(os.path.join(dest, name, 'setup.py'), 'w').write(
         make_dist_that_requires_setup_py_template
         % (name, version, requires)
-    )
-
+        )
 
 def show_who_requires_when_there_is_a_conflict():
     """
@@ -372,7 +368,6 @@ If we use the verbose switch, we can see where requirements are coming from:
     but sampley 1 requires 'demoneeded==1.0'.
     """
 
-
 def version_conflict_rendering():
     """
 
@@ -396,7 +391,6 @@ Extracting the original arguments fails in that case, so we just show the string
     pkg1 2.1 is simply wrong
 
     """
-
 
 def show_who_requires_missing_distributions():
     """
@@ -441,7 +435,6 @@ that we can't find. when run in verbose mode
     Error: Couldn't find a distribution for 'demoneeded'.
     """
 
-
 def show_who_requires_picked_versions():
     """
 
@@ -476,7 +469,6 @@ We do not need to run in verbose mode for that to work:
     # sampley==1
     setuptools = 0.7
     """
-
 
 def test_comparing_saved_options_with_funny_characters():
     """
@@ -553,7 +545,6 @@ uninstalling anything because the configuration hasn't changed.
     Updating debug.
 """
 
-
 def finding_eggs_as_local_directories():
     r"""
 It is possible to set up find-links so that we could install from
@@ -594,7 +585,6 @@ Then try to install it again:
 
     """
 
-
 def create_sections_on_command_line():
     """
     >>> write('buildout.cfg',
@@ -613,7 +603,6 @@ def create_sections_on_command_line():
     ...
 
     """
-
 
 def test_help():
     """
@@ -637,7 +626,6 @@ def test_help():
     ...
     """
 
-
 def test_version():
     """
     >>> buildout = os.path.join(sample_buildout, 'bin', 'buildout')
@@ -646,7 +634,6 @@ def test_version():
     buildout version ...
 
     """
-
 
 def test_bootstrap_with_extension():
     """
@@ -703,7 +690,6 @@ def bug_92891_bootstrap_crashes_with_egg_recipe_in_buildout_section():
     Unused options for buildout: 'scripts' 'eggs'.
 
     """
-
 
 def removing_eggs_from_develop_section_causes_egg_link_to_be_removed():
     '''
@@ -919,7 +905,6 @@ namespace package.
 
     '''
 
-
 def develop_preserves_existing_setup_cfg():
     """
 
@@ -964,7 +949,6 @@ existing setup.cfg:
     define = X,Y
 
 """
-
 
 def uninstall_recipes_used_for_removal():
     r"""
@@ -1039,7 +1023,6 @@ Uninstall recipes need to be called when a part is removed too:
 
 """
 
-
 def extensions_installed_as_eggs_work_in_offline_mode():
     '''
     >>> mkdir('demo')
@@ -1080,7 +1063,6 @@ def extensions_installed_as_eggs_work_in_offline_mode():
 
 
     '''
-
 
 def changes_in_svn_or_CVS_dont_affect_sig():
     """
@@ -1181,7 +1163,6 @@ because of the missing target file.
 
     """
 
-
 def unicode_filename_doesnt_break_hash():
     """
 Buildout's _dir_hash() used to break on non-ascii filenames on python 2.
@@ -1196,7 +1177,6 @@ Buildout's _dir_hash() used to break on non-ascii filenames on python 2.
 
     """
 
-
 def o_option_sets_offline():
     """
     >>> print_(system(join(sample_buildout, 'bin', 'buildout')+' -vvo'), end='')
@@ -1206,7 +1186,6 @@ def o_option_sets_offline():
     offline = true
     ...
     """
-
 
 def recipe_upgrade():
     r"""
@@ -1327,7 +1306,6 @@ We can also select a particular recipe version:
 
     """
 
-
 def update_adds_to_uninstall_list():
     """
 
@@ -1383,14 +1361,13 @@ uninstall
     ...
     [foo]
     __buildout_installed__ = a
-        b
-        c
-        d
-        e
+    	b
+    	c
+    	d
+    	e
     __buildout_signature__ = ...
 
 """
-
 
 def log_when_there_are_not_local_distros():
     """
@@ -1418,7 +1395,6 @@ def log_when_there_are_not_local_distros():
     >>> logger.propagate = old_propogate
 
     """
-
 
 def internal_errors():
     """Internal errors are clearly marked and don't generate tracebacks:
@@ -1468,7 +1444,6 @@ def internal_errors():
     NameError: global name 'os' is not defined
     """
 
-
 def whine_about_unused_options():
     '''
 
@@ -1513,7 +1488,6 @@ def whine_about_unused_options():
     Installing foo.
     Unused options for foo: 'z'.
     '''
-
 
 def abnormal_exit():
     """
@@ -1716,7 +1690,6 @@ Now let's look at 3 cases:
 
     """
 
-
 def install_source_dist_with_bad_py():
     r"""
 
@@ -1782,7 +1755,6 @@ def install_source_dist_with_bad_py():
     -  buildout
     """
 
-
 def version_requirements_in_build_honored():
     '''
 
@@ -1802,7 +1774,6 @@ def version_requirements_in_build_honored():
     ['/sample-install/extdemo-1.4-py2.4-linux-i686.egg']
 
     '''
-
 
 def bug_105081_Specific_egg_versions_are_ignored_when_newer_eggs_are_around():
     """
@@ -1929,7 +1900,6 @@ if sys.version_info > (2, 4):
         Exit: True
         """
 
-
 def bug_59270_recipes_always_start_in_buildout_dir():
     r"""
     Recipes can rely on running from buildout directory
@@ -1982,7 +1952,6 @@ def bug_59270_recipes_always_start_in_buildout_dir():
     /sample-buildout/bad_start
     """
 
-
 def bug_61890_file_urls_dont_seem_to_work_in_find_dash_links():
     """
 
@@ -2009,7 +1978,6 @@ def bug_61890_file_urls_dont_seem_to_work_in_find_dash_links():
 
     """
 
-
 def bug_75607_buildout_should_not_run_if_it_creates_an_empty_buildout_cfg():
     """
     >>> remove('buildout.cfg')
@@ -2021,7 +1989,6 @@ def bug_75607_buildout_should_not_run_if_it_creates_an_empty_buildout_cfg():
 
 
     """
-
 
 def dealing_with_extremely_insane_dependencies():
     r"""
@@ -2111,7 +2078,6 @@ def dealing_with_extremely_insane_dependencies():
     Error: Couldn't find a distribution for 'pack5'.
     """
 
-
 def read_find_links_to_load_extensions():
     r"""
 We'll create a wacky buildout extension that just announces itself when used:
@@ -2160,7 +2126,6 @@ directory and then use the wacky extension to load the demo package
 
     """
 
-
 def distributions_from_local_find_links_make_it_to_download_cache():
     """
 
@@ -2192,11 +2157,10 @@ need to make it to the download cache.
 
     """
 
-
 def create_egg(name, version, dest, install_requires=None,
                dependency_links=None):
     d = tempfile.mkdtemp()
-    if dest == 'available':
+    if dest=='available':
         extras = dict(x=['x'])
     else:
         extras = {}
@@ -2214,11 +2178,10 @@ def create_egg(name, version, dest, install_requires=None,
             'setup(name=%r, version=%r, extras_require=%r, zip_safe=True,\n'
             '      %s %s py_modules=["setup"]\n)'
             % (name, str(version), extras, requires, links)
-        )
+            )
         zc.buildout.testing.bdist_egg(d, sys.executable, os.path.abspath(dest))
     finally:
         shutil.rmtree(d)
-
 
 def prefer_final_permutation(existing, available):
     for d in ('existing', 'available'):
@@ -2233,14 +2196,13 @@ def prefer_final_permutation(existing, available):
     zc.buildout.easy_install.clear_index_cache()
     [dist] = list(
         zc.buildout.easy_install.install(['spam'], 'existing', ['available'])
-    )
+        )
 
     if dist.extras:
         print_('downloaded', dist.version)
     else:
         print_('had', dist.version)
     sys.path_importer_cache.clear()
-
 
 def prefer_final():
     """
@@ -2338,7 +2300,6 @@ Using different version numbers to work around zip importer cache problems. :(
 
     """
 
-
 def buildout_prefer_final_option():
     """
 The prefer-final buildout option can be used for override the default
@@ -2428,7 +2389,6 @@ We get an error if we specify anything but true or false:
     Error: Invalid value for 'prefer-final' option: 'no'
     """
 
-
 def wont_downgrade_due_to_prefer_final():
     r"""
     If we install a non-final buildout version, we don't want to
@@ -2476,7 +2436,6 @@ def wont_downgrade_due_to_prefer_final():
 
     """
 
-
 def develop_with_modules():
     """
 Distribution setup scripts can import modules in the distribution directory:
@@ -2508,7 +2467,6 @@ Distribution setup scripts can import modules in the distribution directory:
     -  zc.recipe.egg.egg-link
 
     """
-
 
 def dont_pick_setuptools_if_version_is_specified_when_required_by_src_dist():
     """
@@ -2549,7 +2507,6 @@ honoring our version specification.
 
     """
 
-
 def pyc_and_pyo_files_have_correct_paths():
     r"""
 
@@ -2583,7 +2540,6 @@ def pyc_and_pyo_files_have_correct_paths():
     /sample-buildout/eggs/demoneeded-1.1-py2.4.egg/eggrecipedemoneeded.py
     """
 
-
 def dont_mess_with_standard_dirs_with_variable_refs():
     """
     >>> write('buildout.cfg',
@@ -2595,7 +2551,6 @@ def dont_mess_with_standard_dirs_with_variable_refs():
     >>> print_(system(buildout), end='')
 
     """
-
 
 def expand_shell_patterns_in_develop_paths():
     """
@@ -2631,7 +2586,6 @@ def expand_shell_patterns_in_develop_paths():
 
     """
 
-
 def warn_users_when_expanding_shell_patterns_yields_no_results():
     """
     Sometimes shell patterns do not match anything, so we want to warn
@@ -2664,7 +2618,6 @@ def warn_users_when_expanding_shell_patterns_yields_no_results():
 
     """
 
-
 def make_sure_versions_dont_cancel_extras():
     """
     There was a bug that caused extras in requirements to be lost.
@@ -2687,7 +2640,6 @@ def make_sure_versions_dont_cancel_extras():
     >>> sorted(dist.key for dist in ws)
     ['demo', 'demoneeded', 'extraversiondemo']
     """
-
 
 def increment_buildout_options():
     r"""
@@ -2722,7 +2674,6 @@ def increment_buildout_options():
       foo='1\n2 b'
       recipe='zc.buildout:debug'
     """
-
 
 def increment_buildout_with_multiple_extended_files_421022():
     r"""
@@ -2765,7 +2716,6 @@ def increment_buildout_with_multiple_extended_files_421022():
       recipe='zc.buildout:debug'
     """
 
-
 def increment_on_command_line():
     r"""
     >>> write('buildout.cfg', '''
@@ -2791,7 +2741,6 @@ def increment_on_command_line():
       foo='1 a\nb\nbar'
       recipe='zc.buildout:debug'
     """
-
 
 def test_constrained_requirement():
     """
@@ -2821,7 +2770,6 @@ def test_constrained_requirement():
     ...     if str(g) != str(e):
     ...         print_('failed', o, c, g, '!=', e)
     """
-
 
 def test_distutils_scripts_using_import_are_properly_parsed():
     """
@@ -2864,7 +2812,6 @@ def test_distutils_scripts_using_import_are_properly_parsed():
 
     >>> sys.executable = original_executable
     """
-
 
 def test_distutils_scripts_using_from_are_properly_parsed():
     """
@@ -2930,7 +2877,6 @@ def want_new_zcrecipeegg():
     Error: Couldn't find a distribution for 'zc.recipe.egg<2dev,>=2.0.0a3'.
     """
 
-
 def macro_inheritance_bug():
     """
 
@@ -2964,7 +2910,6 @@ now works.
     -  python
     """
 
-
 def bootstrap_honors_relative_paths():
     """
     >>> working = tmpdir('working')
@@ -2997,7 +2942,6 @@ def bootstrap_honors_relative_paths():
         sys.exit(zc.buildout.buildout.main())
     """
 
-
 def cant_use_install_from_cache_and_offline_together():
     r"""
     >>> write('buildout.cfg',
@@ -3016,7 +2960,6 @@ def cant_use_install_from_cache_and_offline_together():
     <BLANKLINE>
     """
 
-
 def error_installing_in_offline_mode_if_dont_have_needed_dist():
     r"""
     >>> import zc.buildout.easy_install
@@ -3030,7 +2973,6 @@ def error_installing_in_offline_mode_if_dont_have_needed_dist():
     <BLANKLINE>
     """
 
-
 def error_building_in_offline_mode_if_dont_have_needed_dist():
     r"""
     >>> zc.buildout.easy_install.build(
@@ -3043,13 +2985,11 @@ def error_building_in_offline_mode_if_dont_have_needed_dist():
     <BLANKLINE>
     """
 
-
 def test_buildout_section_shorthand_for_command_line_assignments():
     r"""
     >>> write('buildout.cfg', '')
     >>> print_(system(buildout+' parts='), end='') # doctest: +ELLIPSIS
     """
-
 
 def buildout_honors_umask():
     """
@@ -3064,7 +3004,6 @@ def buildout_honors_umask():
     True
     >>> tmp = os.umask(orig_umask)  # Reset umask to the original value.
     """
-
 
 def parse_with_section_expr():
     r"""
@@ -3087,10 +3026,9 @@ def parse_with_section_expr():
     """
 
 if sys.platform == 'win32':
-    del buildout_honors_umask  # umask on dohs is academic
+    del buildout_honors_umask # umask on dohs is academic
 
 ######################################################################
-
 
 def create_sample_eggs(test, executable=sys.executable):
     assert executable == sys.executable, (executable, sys.executable)
@@ -3102,7 +3040,7 @@ def create_sample_eggs(test, executable=sys.executable):
 
         for i in (0, 1, 2):
             write(tmp, 'eggrecipedemoneeded.py', 'y=%s\ndef f():\n  pass' % i)
-            rc1 = i == 2 and 'rc1' or ''
+            rc1 = i==2 and 'rc1' or ''
             write(
                 tmp, 'setup.py',
                 "from setuptools import setup\n"
@@ -3110,7 +3048,7 @@ def create_sample_eggs(test, executable=sys.executable):
                 " zip_safe=True, version='1.%s%s', author='bob', url='bob', "
                 "author_email='bob')\n"
                 % (i, rc1)
-            )
+                )
             zc.buildout.testing.sdist(tmp, dest)
 
         write(
@@ -3121,14 +3059,14 @@ def create_sample_eggs(test, executable=sys.executable):
             'from __future__ import print_statement\n'
             'import os\n'
             'import sys; sys.stdout.write("distutils!\\n")\n'
-        )
+            )
         write(
             tmp, 'setup.py',
             "from setuptools import setup\n"
             "setup(name='other', zip_safe=False, version='1.0', "
             "scripts=['distutilsscript'],"
             "py_modules=['eggrecipedemoneeded'])\n"
-        )
+            )
         zc.buildout.testing.bdist_egg(tmp, sys.executable, dest)
 
         write(
@@ -3137,7 +3075,7 @@ def create_sample_eggs(test, executable=sys.executable):
             "setup(name='du_zipped', zip_safe=True, version='1.0', "
             "scripts=['distutilsscript'],"
             "py_modules=['eggrecipedemoneeded'])\n"
-        )
+            )
         zc.buildout.testing.bdist_egg(tmp, executable, dest)
 
         os.remove(os.path.join(tmp, 'distutilsscript'))
@@ -3153,7 +3091,7 @@ def create_sample_eggs(test, executable=sys.executable):
                 'def main():\n'
                 '   print_(x, eggrecipedemoneeded.y)\n'
                 % i)
-            rc1 = i == 4 and 'rc1' or ''
+            rc1 = i==4 and 'rc1' or ''
             write(
                 tmp, 'setup.py',
                 "from setuptools import setup\n"
@@ -3162,7 +3100,7 @@ def create_sample_eggs(test, executable=sys.executable):
                 " entry_points={'console_scripts': "
                      "['demo = eggrecipedemo:main']},"
                 " zip_safe=True, version='0.%s%s')\n" % (i, rc1)
-            )
+                )
             zc.buildout.testing.bdist_egg(tmp, dest)
 
         write(tmp, 'eggrecipebigdemo.py', 'import eggrecipedemo')
@@ -3173,7 +3111,7 @@ def create_sample_eggs(test, executable=sys.executable):
             " install_requires = 'demo',"
             " py_modules=['eggrecipebigdemo'], "
             " zip_safe=True, version='0.1')\n"
-        )
+            )
         zc.buildout.testing.bdist_egg(tmp, sys.executable, dest)
 
     finally:
@@ -3242,7 +3180,6 @@ setup(name = "extdemo", version = "%s", url="http://www.zope.org",
       )
 """
 
-
 def add_source_dist(test, version=1.4):
     if 'extdemo' not in test.globs:
         test.globs['extdemo'] = test.globs['tmpdir']('extdemo')
@@ -3250,14 +3187,13 @@ def add_source_dist(test, version=1.4):
     tmp = test.globs['extdemo']
     write = test.globs['write']
     try:
-        write(tmp, 'extdemo.c', extdemo_c)
-        write(tmp, 'setup.py', extdemo_setup_py % version)
-        write(tmp, 'README', "")
-        write(tmp, 'MANIFEST.in', "include *.c\n")
+        write(tmp, 'extdemo.c', extdemo_c);
+        write(tmp, 'setup.py', extdemo_setup_py % version);
+        write(tmp, 'README', "");
+        write(tmp, 'MANIFEST.in', "include *.c\n");
         test.globs['sdist'](tmp, test.globs['sample_eggs'])
     except:
         shutil.rmtree(tmp)
-
 
 def easy_install_SetUp(test):
     zc.buildout.testing.buildoutSetUp(test)
@@ -3268,9 +3204,8 @@ def easy_install_SetUp(test):
     add_source_dist(test)
     test.globs['link_server'] = test.globs['start_server'](
         test.globs['sample_eggs'])
-    test.globs['update_extdemo'] = lambda: add_source_dist(test, 1.5)
+    test.globs['update_extdemo'] = lambda : add_source_dist(test, 1.5)
     zc.buildout.testing.install_develop('zc.recipe.egg', test)
-
 
 def buildout_txt_setup(test):
     zc.buildout.testing.buildoutSetUp(test)
@@ -3293,17 +3228,15 @@ def buildout_txt_setup(test):
     zc.buildout.testing.sdist(
         os.path.dirname(dist.location),
         os.path.join(eggs, 'zc.recipe.egg'),
-    )
+        )
 
 egg_parse = re.compile('([0-9a-zA-Z_.]+)-([0-9a-zA-Z_.]+)-py(\d[.]\d).egg$'
                        ).match
-
-
 def makeNewRelease(project, ws, dest, version='99.99'):
     dist = ws.find(pkg_resources.Requirement.parse(project))
     eggname, oldver, pyver = egg_parse(
         os.path.basename(dist.location)
-    ).groups()
+        ).groups()
     dest = os.path.join(dest, "%s-%s-py%s.egg" % (eggname, version, pyver))
     if os.path.isfile(dist.location):
         shutil.copy(dist.location, dest)
@@ -3314,7 +3247,7 @@ def makeNewRelease(project, ws, dest, version='99.99'):
               ).replace("Version: %s" % oldver,
                         "Version: %s" % version)
              ).encode('ISO-8859-1')
-        )
+            )
         zip.close()
     else:
         shutil.copytree(dist.location, dest)
@@ -3322,7 +3255,6 @@ def makeNewRelease(project, ws, dest, version='99.99'):
         info = open(info_path).read().replace("Version: %s" % oldver,
                                               "Version: %s" % version)
         open(info_path, 'w').write(info)
-
 
 def getWorkingSetWithBuildoutEgg(test):
     sample_buildout = test.globs['sample_buildout']
@@ -3343,9 +3275,9 @@ def getWorkingSetWithBuildoutEgg(test):
             env=dict(os.environ,
                      PYTHONPATH=pkg_resources.working_set.find(
                          pkg_resources.Requirement.parse('setuptools')
-                     ).location,
+                         ).location,
                      ),
-        )
+            )
         os.chdir(here)
         os.remove(os.path.join(eggs, 'zc.buildout.egg-link'))
 
@@ -3358,7 +3290,6 @@ def getWorkingSetWithBuildoutEgg(test):
     else:
         ws = pkg_resources.working_set
     return ws
-
 
 def updateSetup(test):
     zc.buildout.testing.buildoutSetUp(test)
@@ -3376,7 +3307,6 @@ bootstrap_py = os.path.join(
         os.path.dirname(__file__)))),
     'bootstrap', 'bootstrap.py')
 
-
 def bootstrapSetup(test):
     buildout_txt_setup(test)
     test.globs['link_server'] = test.globs['start_server'](
@@ -3389,16 +3319,15 @@ def bootstrapSetup(test):
     test.globs['bootstrap_py'] = bootstrap_py
 
 normalize_bang = (
-    re.compile(re.escape('#!' +
+    re.compile(re.escape('#!'+
                          zc.buildout.easy_install._safe_arg(sys.executable))),
     '#!/usr/local/bin/python2.7',
-)
+    )
 
 normalize_S = (
     re.compile(r'#!/usr/local/bin/python2.7 -S'),
     '#!/usr/local/bin/python2.7',
-)
-
+    )
 
 def test_suite():
     test_suite = [
@@ -3439,50 +3368,50 @@ def test_suite():
                     (re.compile('Got zc.recipe.egg \S+'), 'Got zc.recipe.egg'),
                     (re.compile(r'zc\.(buildout|recipe\.egg)\s*= >=\S+'),
                      'zc.\1 = >=1.99'),
-                ])
-            ) + manuel.capture.Manuel(),
+                    ])
+                ) + manuel.capture.Manuel(),
             'buildout.txt', 'meta-recipes.txt',
             setUp=buildout_txt_setup,
             tearDown=zc.buildout.testing.buildoutTearDown,
-        ),
+            ),
         doctest.DocFileSuite(
             'runsetup.txt', 'repeatable.txt', 'setup.txt',
             setUp=zc.buildout.testing.buildoutSetUp,
             tearDown=zc.buildout.testing.buildoutTearDown,
             checker=renormalizing.RENormalizing([
-                zc.buildout.testing.normalize_path,
-                zc.buildout.testing.normalize_endings,
-                zc.buildout.testing.normalize_script,
-                zc.buildout.testing.normalize_egg_py,
-                zc.buildout.testing.not_found,
-                zc.buildout.testing.adding_find_link,
-                # (re.compile(r"Installing 'zc.buildout >=\S+"), ''),
-                # (re.compile(r"Getting distribution for 'zc.buildout >=\S+"),
-                #  ''),
-                (re.compile('__buildout_signature__ = recipes-\S+'),
-                 '__buildout_signature__ = recipes-SSSSSSSSSSS'),
-                (re.compile('[-d]  setuptools-\S+[.]egg'), 'setuptools.egg'),
-                (re.compile('zc.buildout(-\S+)?[.]egg(-link)?'),
-                    'zc.buildout.egg'),
-                (re.compile('creating \S*setup.cfg'), 'creating setup.cfg'),
-                (re.compile('hello\%ssetup' % os.path.sep), 'hello/setup'),
-                (re.compile('Picked: (\S+) = \S+'),
-                    'Picked: \\1 = V.V'),
-                (re.compile(r'We have a develop egg: zc.buildout (\S+)'),
-                    'We have a develop egg: zc.buildout X.X.'),
-                (re.compile(r'\\[\\]?'), '/'),
-                (re.compile('WindowsError'), 'OSError'),
-                (re.compile('setuptools = \S+'), 'setuptools = 0.7.99'),
-                (re.compile(r'\[Error 17\] Cannot create a file '
-                            r'when that file already exists: '),
-                    '[Errno 17] File exists: '
-                 ),
-                (re.compile('executable = %s' % re.escape(sys.executable)),
-                    'executable = python'),
-                (re.compile(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6}'),
-                    'YYYY-MM-DD hh:mm:ss.dddddd'),
-            ]),
-        ),
+               zc.buildout.testing.normalize_path,
+               zc.buildout.testing.normalize_endings,
+               zc.buildout.testing.normalize_script,
+               zc.buildout.testing.normalize_egg_py,
+               zc.buildout.testing.not_found,
+               zc.buildout.testing.adding_find_link,
+               # (re.compile(r"Installing 'zc.buildout >=\S+"), ''),
+               # (re.compile(r"Getting distribution for 'zc.buildout >=\S+"),
+               #  ''),
+               (re.compile('__buildout_signature__ = recipes-\S+'),
+                '__buildout_signature__ = recipes-SSSSSSSSSSS'),
+               (re.compile('[-d]  setuptools-\S+[.]egg'), 'setuptools.egg'),
+               (re.compile('zc.buildout(-\S+)?[.]egg(-link)?'),
+                'zc.buildout.egg'),
+               (re.compile('creating \S*setup.cfg'), 'creating setup.cfg'),
+               (re.compile('hello\%ssetup' % os.path.sep), 'hello/setup'),
+               (re.compile('Picked: (\S+) = \S+'),
+                'Picked: \\1 = V.V'),
+               (re.compile(r'We have a develop egg: zc.buildout (\S+)'),
+                'We have a develop egg: zc.buildout X.X.'),
+               (re.compile(r'\\[\\]?'), '/'),
+               (re.compile('WindowsError'), 'OSError'),
+               (re.compile('setuptools = \S+'), 'setuptools = 0.7.99'),
+               (re.compile(r'\[Error 17\] Cannot create a file '
+                           r'when that file already exists: '),
+                '[Errno 17] File exists: '
+                ),
+               (re.compile('executable = %s' % re.escape(sys.executable)),
+                'executable = python'),
+               (re.compile(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6}'),
+                'YYYY-MM-DD hh:mm:ss.dddddd'),
+               ]),
+            ),
         doctest.DocFileSuite(
             'debugging.txt',
             setUp=zc.buildout.testing.buildoutSetUp,
@@ -3498,8 +3427,8 @@ def test_suite():
                 (re.compile(r'\S+buildout.py'), 'buildout.py'),
                 (re.compile(r'line \d+'), 'line NNN'),
                 (re.compile(r'py\(\d+\)'), 'py(NNN)'),
-            ])
-        ),
+                ])
+            ),
 
         doctest.DocFileSuite(
             'update.txt',
@@ -3525,9 +3454,9 @@ def test_suite():
                     r'(zc.buildout|setuptools)( version)? \d+[.]\d+\S*'),
                  '\\1 V.V'),
                 (re.compile('[-d]  setuptools'), '-  setuptools'),
-                (re.compile(re.escape(os.path.sep) + '+'), '/'),
-            ])
-        ),
+                (re.compile(re.escape(os.path.sep)+'+'), '/'),
+               ])
+            ),
 
         doctest.DocFileSuite(
             'easy_install.txt', 'downloadcache.txt', 'dependencylinks.txt',
@@ -3548,14 +3477,14 @@ def test_suite():
                 (re.compile(r'\\[\\]?'), '/'),
                 (re.compile('(\n?)-  ([a-zA-Z_.-]+)\n-  \\2.exe\n'),
                  '\\1-  \\2\n'),
-            ] + (sys.version_info < (2, 5) and [
-                (re.compile('.*No module named runpy.*', re.S), ''),
-                (re.compile('.*usage: pdb.py scriptfile .*', re.S), ''),
-                (re.compile('.*Error: what does not exist.*', re.S), ''),
-            ] or [])),
+                ]+(sys.version_info < (2, 5) and [
+                  (re.compile('.*No module named runpy.*', re.S), ''),
+                  (re.compile('.*usage: pdb.py scriptfile .*', re.S), ''),
+                  (re.compile('.*Error: what does not exist.*', re.S), ''),
+                  ] or [])),
 
 
-        ),
+            ),
 
         doctest.DocFileSuite(
             'download.txt', 'extends-cache.txt',
@@ -3563,17 +3492,17 @@ def test_suite():
             tearDown=zc.buildout.testing.buildoutTearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS,
             checker=renormalizing.RENormalizing([
-                zc.buildout.testing.normalize_exception_type_for_python_2_and_3,
-                zc.buildout.testing.not_found,
-                zc.buildout.testing.adding_find_link,
-                (re.compile(' at -?0x[^>]+'), '<MEM ADDRESS>'),
-                (re.compile('http://localhost:[0-9]{4,5}/'),
-                    'http://localhost/'),
-                (re.compile('[0-9a-f]{32}'), '<MD5 CHECKSUM>'),
-                zc.buildout.testing.normalize_path,
-                zc.buildout.testing.ignore_not_upgrading,
-            ]),
-        ),
+              zc.buildout.testing.normalize_exception_type_for_python_2_and_3,
+              zc.buildout.testing.not_found,
+              zc.buildout.testing.adding_find_link,
+              (re.compile(' at -?0x[^>]+'), '<MEM ADDRESS>'),
+              (re.compile('http://localhost:[0-9]{4,5}/'),
+               'http://localhost/'),
+              (re.compile('[0-9a-f]{32}'), '<MD5 CHECKSUM>'),
+              zc.buildout.testing.normalize_path,
+              zc.buildout.testing.ignore_not_upgrading,
+              ]),
+            ),
 
         doctest.DocTestSuite(
             setUp=easy_install_SetUp,
@@ -3620,39 +3549,39 @@ def test_suite():
                 # and test_distutils_scripts_using_from_are_properly_parsed
                 # win32 apparently adds a " around sys.executable
                 (re.compile('#!"python"'), '#!python'),
-            ]),
-        ),
+                ]),
+            ),
         zc.buildout.rmtree.test_suite(),
         doctest.DocFileSuite(
             'windows.txt',
             setUp=zc.buildout.testing.buildoutSetUp,
             tearDown=zc.buildout.testing.buildoutTearDown,
             checker=renormalizing.RENormalizing([
-                zc.buildout.testing.normalize_path,
-                zc.buildout.testing.normalize_endings,
-                zc.buildout.testing.normalize_script,
-                zc.buildout.testing.normalize_egg_py,
-                zc.buildout.testing.not_found,
-                zc.buildout.testing.adding_find_link,
-                (re.compile('__buildout_signature__ = recipes-\S+'),
-                 '__buildout_signature__ = recipes-SSSSSSSSSSS'),
-                (re.compile('[-d]  setuptools-\S+[.]egg'), 'setuptools.egg'),
-                (re.compile('zc.buildout(-\S+)?[.]egg(-link)?'),
-                    'zc.buildout.egg'),
-                (re.compile('creating \S*setup.cfg'), 'creating setup.cfg'),
-                (re.compile('hello\%ssetup' % os.path.sep), 'hello/setup'),
-                (re.compile('Picked: (\S+) = \S+'),
-                    'Picked: \\1 = V.V'),
-                (re.compile(r'We have a develop egg: zc.buildout (\S+)'),
-                    'We have a develop egg: zc.buildout X.X.'),
-                (re.compile(r'\\[\\]?'), '/'),
-                (re.compile('WindowsError'), 'OSError'),
-                (re.compile(r'\[Error 17\] Cannot create a file '
-                            r'when that file already exists: '),
-                    '[Errno 17] File exists: '
-                 ),
-            ])
-        ),
+               zc.buildout.testing.normalize_path,
+               zc.buildout.testing.normalize_endings,
+               zc.buildout.testing.normalize_script,
+               zc.buildout.testing.normalize_egg_py,
+               zc.buildout.testing.not_found,
+               zc.buildout.testing.adding_find_link,
+               (re.compile('__buildout_signature__ = recipes-\S+'),
+                '__buildout_signature__ = recipes-SSSSSSSSSSS'),
+               (re.compile('[-d]  setuptools-\S+[.]egg'), 'setuptools.egg'),
+               (re.compile('zc.buildout(-\S+)?[.]egg(-link)?'),
+                'zc.buildout.egg'),
+               (re.compile('creating \S*setup.cfg'), 'creating setup.cfg'),
+               (re.compile('hello\%ssetup' % os.path.sep), 'hello/setup'),
+               (re.compile('Picked: (\S+) = \S+'),
+                'Picked: \\1 = V.V'),
+               (re.compile(r'We have a develop egg: zc.buildout (\S+)'),
+                'We have a develop egg: zc.buildout X.X.'),
+               (re.compile(r'\\[\\]?'), '/'),
+               (re.compile('WindowsError'), 'OSError'),
+               (re.compile(r'\[Error 17\] Cannot create a file '
+                           r'when that file already exists: '),
+                '[Errno 17] File exists: '
+                ),
+               ])
+            ),
         doctest.DocFileSuite(
             'testing_bugfix.txt'),
     ]
@@ -3665,14 +3594,14 @@ def test_suite():
             setUp=bootstrapSetup,
             tearDown=zc.buildout.testing.buildoutTearDown,
             checker=renormalizing.RENormalizing([
-                zc.buildout.testing.normalize_path,
-                zc.buildout.testing.normalize_endings,
-                zc.buildout.testing.normalize_script,
-                zc.buildout.testing.not_found,
-                normalize_bang,
-                zc.buildout.testing.adding_find_link,
-                (re.compile('Downloading.*setuptools.*egg\n'), ''),
-            ]),
-        ))
+               zc.buildout.testing.normalize_path,
+               zc.buildout.testing.normalize_endings,
+               zc.buildout.testing.normalize_script,
+               zc.buildout.testing.not_found,
+               normalize_bang,
+               zc.buildout.testing.adding_find_link,
+               (re.compile('Downloading.*setuptools.*egg\n'), ''),
+               ]),
+            ))
 
     return unittest.TestSuite(test_suite)

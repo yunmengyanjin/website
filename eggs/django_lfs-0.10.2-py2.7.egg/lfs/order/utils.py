@@ -28,10 +28,7 @@ def add_order(request):
     customer = customer_utils.get_customer(request)
     order = None
 
-    not_required_address = getattr(
-        settings,
-        'LFS_CHECKOUT_NOT_REQUIRED_ADDRESS',
-        'shipping')
+    not_required_address = getattr(settings, 'LFS_CHECKOUT_NOT_REQUIRED_ADDRESS', 'shipping')
 
     invoice_address = customer.selected_invoice_address
     shipping_address = customer.selected_shipping_address
@@ -51,8 +48,7 @@ def add_order(request):
         return order
 
     shipping_method = shipping_utils.get_selected_shipping_method(request)
-    shipping_costs = shipping_utils.get_shipping_costs(
-        request, shipping_method)
+    shipping_costs = shipping_utils.get_shipping_costs(request, shipping_method)
 
     payment_method = payment_utils.get_selected_payment_method(request)
     payment_costs = payment_utils.get_payment_costs(request, payment_method)
@@ -72,8 +68,7 @@ def add_order(request):
         customer_email = customer.selected_invoice_address.email
 
     # Calculate the totals
-    price = cart.get_price_gross(
-        request) + shipping_costs["price_gross"] + payment_costs["price"]
+    price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
     tax = cart.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
 
     # Discounts
@@ -90,8 +85,7 @@ def add_order(request):
     except Voucher.DoesNotExist:
         voucher = None
     else:
-        is_voucher_effective, voucher_message = voucher.is_effective(
-            request, cart)
+        is_voucher_effective, voucher_message = voucher.is_effective(request, cart)
         if is_voucher_effective:
             voucher_number = voucher.number
             voucher_price = voucher.get_price_gross(request, cart)
@@ -143,10 +137,7 @@ def add_order(request):
 
     delivery_time = cart.get_delivery_time(request)
     if delivery_time:
-        OrderDeliveryTime.objects.create(
-            order=order,
-            min=delivery_time.min,
-            max=delivery_time.max)
+        OrderDeliveryTime.objects.create(order=order, min=delivery_time.min, max=delivery_time.max)
 
     invoice_address.order = order
     invoice_address.save()
@@ -218,8 +209,7 @@ def add_order(request):
             product_tax=-discount["tax"],
         )
 
-    # Re-initialize selected addresses to be equal to default addresses for
-    # next order
+    # Re-initialize selected addresses to be equal to default addresses for next order
     customer.sync_default_to_selected_addresses()
     customer.save()
 

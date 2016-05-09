@@ -11,6 +11,5 @@ def parse_properties(request):
                 continue
             else:
                 property_group_id, property_id = prop_group_id.split("|")
-                properties.append("%s|%s|%s" %
-                                  (property_group_id, property_id, option_id))
+                properties.append("%s|%s|%s" % (property_group_id, property_id, option_id))
     return properties

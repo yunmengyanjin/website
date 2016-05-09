@@ -23,7 +23,6 @@ import logging
 
 logger = logging.getLogger('zc.buildout')
 
-
 class Error(Exception):
     """Base class for ConfigParser exceptions."""
 
@@ -51,7 +50,6 @@ class Error(Exception):
 
     __str__ = __repr__
 
-
 class ParsingError(Error):
     """Raised when a configuration file does not follow legal syntax."""
 
@@ -63,7 +61,6 @@ class ParsingError(Error):
     def append(self, lineno, line):
         self.errors.append((lineno, line))
         self.message += '\n\t[line %2d]: %s' % (lineno, line)
-
 
 class MissingSectionHeaderError(ParsingError):
     """Raised when a key-value pair is found before any section header."""
@@ -95,7 +92,7 @@ class MissingSectionHeaderError(ParsingError):
 # the always returned wrapped in a list with a single item that contains the
 # original expression
 
-section_header = re.compile(
+section_header  = re.compile(
     r'(?P<head>\[)'
     r'\s*'
     r'(?P<name>[^\s#[\]:;{}]+)'
@@ -105,7 +102,7 @@ section_header = re.compile(
     r'(?P<tail>]'
     r'\s*'
     r'([#;].*)?$)'
-).match
+    ).match
 
 option_start = re.compile(
     r'(?P<name>[^\s{}[\]=:]+\s*[-+]?)'
@@ -113,7 +110,6 @@ option_start = re.compile(
     r'(?P<value>.*)$').match
 
 leading_blank_lines = re.compile(r"^(\s*\n)+")
-
 
 def parse(fp, fpname, exp_globals=dict):
     """Parse a sectioned setup file.
@@ -148,16 +144,16 @@ def parse(fp, fpname, exp_globals=dict):
     while True:
         line = fp.readline()
         if not line:
-            break  # EOF
+            break # EOF
 
         lineno = lineno + 1
 
         if line[0] in '#;':
-            continue  # comment
+            continue # comment
 
         if line[0].isspace() and cursect is not None and optname:
             if not section_condition:
-                # skip section based on its expression condition
+                #skip section based on its expression condition
                 continue
             # continuation line
             if blockmode:
@@ -174,17 +170,15 @@ def parse(fp, fpname, exp_globals=dict):
                 section_condition = True
                 sectname = header.group('name')
 
-                head = header.group('head')  # the starting [
+                head = header.group('head') # the starting [
                 expression = header.group('expression')
-                tail = header.group('tail')  # closing ]and comment
+                tail = header.group('tail') # closing ]and comment
                 if expression:
                     # normalize tail comments to Python style
                     tail = tail.replace(';', '#') if tail else ''
                     # un-escape literal # and ; . Do not use a
                     # string-escape decode
-                    expr = expression.replace(
-                        r'\x23', '#').replace(
-                        r'x3b', ';')
+                    expr = expression.replace(r'\x23','#').replace(r'x3b', ';')
                     # rebuild a valid Python expression wrapped in a list
                     expr = head + expr + tail
                     # lazily populate context only expression

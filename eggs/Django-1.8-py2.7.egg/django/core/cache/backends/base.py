@@ -50,7 +50,6 @@ def get_key_func(key_func):
 
 
 class BaseCache(object):
-
     def __init__(self, params):
         timeout = params.get('timeout', params.get('TIMEOUT', 300))
         if timeout is not None:
@@ -61,17 +60,13 @@ class BaseCache(object):
         self.default_timeout = timeout
 
         options = params.get('OPTIONS', {})
-        max_entries = params.get(
-            'max_entries', options.get(
-                'MAX_ENTRIES', 300))
+        max_entries = params.get('max_entries', options.get('MAX_ENTRIES', 300))
         try:
             self._max_entries = int(max_entries)
         except (ValueError, TypeError):
             self._max_entries = 300
 
-        cull_frequency = params.get(
-            'cull_frequency', options.get(
-                'CULL_FREQUENCY', 3))
+        cull_frequency = params.get('cull_frequency', options.get('CULL_FREQUENCY', 3))
         try:
             self._cull_frequency = int(cull_frequency)
         except (ValueError, TypeError):
@@ -115,31 +110,27 @@ class BaseCache(object):
 
         Returns True if the value was stored, False otherwise.
         """
-        raise NotImplementedError(
-            'subclasses of BaseCache must provide an add() method')
+        raise NotImplementedError('subclasses of BaseCache must provide an add() method')
 
     def get(self, key, default=None, version=None):
         """
         Fetch a given key from the cache. If the key does not exist, return
         default, which itself defaults to None.
         """
-        raise NotImplementedError(
-            'subclasses of BaseCache must provide a get() method')
+        raise NotImplementedError('subclasses of BaseCache must provide a get() method')
 
     def set(self, key, value, timeout=DEFAULT_TIMEOUT, version=None):
         """
         Set a value in the cache. If timeout is given, that timeout will be
         used for the key; otherwise the default cache timeout will be used.
         """
-        raise NotImplementedError(
-            'subclasses of BaseCache must provide a set() method')
+        raise NotImplementedError('subclasses of BaseCache must provide a set() method')
 
     def delete(self, key, version=None):
         """
         Delete a key from the cache, failing silently.
         """
-        raise NotImplementedError(
-            'subclasses of BaseCache must provide a delete() method')
+        raise NotImplementedError('subclasses of BaseCache must provide a delete() method')
 
     def get_many(self, keys, version=None):
         """
@@ -188,7 +179,7 @@ class BaseCache(object):
         # This is a separate method, rather than just a copy of has_key(),
         # so that it always has the same functionality as has_key(), even
         # if a subclass overrides it.
-        return key in self
+        return self.has_key(key)
 
     def set_many(self, data, timeout=DEFAULT_TIMEOUT, version=None):
         """
@@ -213,8 +204,7 @@ class BaseCache(object):
 
     def clear(self):
         """Remove *all* values from the cache at once."""
-        raise NotImplementedError(
-            'subclasses of BaseCache must provide a clear() method')
+        raise NotImplementedError('subclasses of BaseCache must provide a clear() method')
 
     def validate_key(self, key):
         """
@@ -224,14 +214,13 @@ class BaseCache(object):
 
         """
         if len(key) > MEMCACHE_MAX_KEY_LENGTH:
-            warnings.warn(
-                'Cache key will cause errors if used with memcached: '
-                '%s (longer than %s)' %
-                (key, MEMCACHE_MAX_KEY_LENGTH), CacheKeyWarning)
+            warnings.warn('Cache key will cause errors if used with memcached: '
+                    '%s (longer than %s)' % (key, MEMCACHE_MAX_KEY_LENGTH),
+                    CacheKeyWarning)
         for char in key:
             if ord(char) < 33 or ord(char) == 127:
                 warnings.warn('Cache key contains characters that will cause '
-                              'errors if used with memcached: %r' % key,
+                        'errors if used with memcached: %r' % key,
                               CacheKeyWarning)
 
     def incr_version(self, key, delta=1, version=None):

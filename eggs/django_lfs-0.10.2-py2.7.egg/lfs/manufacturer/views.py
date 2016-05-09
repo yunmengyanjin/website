@@ -33,8 +33,7 @@ def manufacturers(request,
     except (EmptyPage, InvalidPage):
         current_page = paginator.page(paginator.num_pages)
 
-    pagination_data = lfs_pagination(
-        request, current_page, url=reverse('lfs_manufacturers'))
+    pagination_data = lfs_pagination(request, current_page, url=reverse('lfs_manufacturers'))
 
     count = manufacturers.count()
 
@@ -90,11 +89,11 @@ def manufacturer_products(request, slug, start=1,
     product_filter = product_filter.items()
 
     cache_key = "%s-manufacturer-products-%s" % (
-        settings.CACHE_MIDDLEWARE_KEY_PREFIX,
-        slug)
+                            settings.CACHE_MIDDLEWARE_KEY_PREFIX,
+                            slug)
     sub_cache_key = "%s-start-%s-sorting-%s" % (
-        settings.CACHE_MIDDLEWARE_KEY_PREFIX,
-        start, sorting)
+                            settings.CACHE_MIDDLEWARE_KEY_PREFIX,
+                            start, sorting)
 
     filter_key = ["%s-%s" % (i[0], i[1]) for i in product_filter]
     if filter_key:
@@ -173,11 +172,9 @@ def manufacturer_products(request, slug, start=1,
                                      current_page,
                                      url=manufacturer.get_absolute_url())
 
-    pagination_data['total_text'] = ungettext(
-        '%(count)d product',
-        '%(count)d products',
-        amount_of_products) % {
-        'count': amount_of_products}
+    pagination_data['total_text'] = ungettext('%(count)d product',
+                                              '%(count)d products',
+                                              amount_of_products) % {'count': amount_of_products}
 
     result = render_to_string(template_name, RequestContext(request, {
         "manufacturer": manufacturer,

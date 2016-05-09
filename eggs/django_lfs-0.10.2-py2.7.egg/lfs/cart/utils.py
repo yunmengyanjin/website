@@ -49,8 +49,7 @@ def get_cart(request):
 
     if user.is_authenticated():
         try:
-            cache_key = "%s-cart-%s" % (
-                settings.CACHE_MIDDLEWARE_KEY_PREFIX, user.pk)
+            cache_key = "%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, user.pk)
             cart = cache.get(cache_key)
             if cart is None:
                 try:
@@ -65,8 +64,7 @@ def get_cart(request):
             return None
     else:
         try:
-            cache_key = "%s-cart-%s" % (
-                settings.CACHE_MIDDLEWARE_KEY_PREFIX, session_key)
+            cache_key = "%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, session_key)
             cart = cache.get(cache_key)
             if cart is None:
                 try:
@@ -85,11 +83,8 @@ def get_go_on_shopping_url(request):
     """
     Calculates the go on shopping url based on the last visited category or last visited manufacturer
     """
-    # visiting category clears last_manufacturer so manufacturer has higher
-    # priority
-    lc = request.session.get(
-        "last_manufacturer",
-        request.session.get("last_category"))
+    # visiting category clears last_manufacturer so manufacturer has higher priority
+    lc = request.session.get("last_manufacturer", request.session.get("last_category"))
     if lc:
         return lc.get_absolute_url()
     else:
@@ -118,10 +113,7 @@ def update_cart_after_login(request):
                 properties = {}
                 for pv in session_cart_item.properties.all():
                     properties[unicode(pv.property.id)] = pv.value
-                user_cart.add(
-                    session_cart_item.product,
-                    properties_dict=properties,
-                    amount=session_cart_item.amount)
+                user_cart.add(session_cart_item.product, properties_dict=properties, amount=session_cart_item.amount)
             session_cart.delete()
     except ObjectDoesNotExist:
         pass

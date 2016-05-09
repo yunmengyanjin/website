@@ -11,8 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from localflavor.generic.checksums import luhn
 
 id_number_re = re.compile(r'^(?P<number>\d{1,8})-?(?P<check>\d)$')
-# including palestinian mobile carriers
-mobile_phone_number_re = re.compile(r'^(\()?0?(5[02-9])(?(1)\))-?\d{7}$')
+mobile_phone_number_re = re.compile(r'^(\()?0?(5[02-9])(?(1)\))-?\d{7}$')  # including palestinian mobile carriers
 
 
 class ILPostalCodeField(RegexField):
@@ -20,17 +19,12 @@ class ILPostalCodeField(RegexField):
     A form field that validates its input as an Israeli postal code.
     Valid form is XXXXX where X represents integer.
     """
-    default_error_messages = {'invalid': _(
-        'Enter a postal code in the format XXXXXXX (or XXXXX) - digits only'), }
+    default_error_messages = {
+        'invalid': _('Enter a postal code in the format XXXXXXX (or XXXXX) - digits only'),
+    }
 
     def __init__(self, *args, **kwargs):
-        super(
-            ILPostalCodeField,
-            self).__init__(
-            r'^\d{5}$|^\d{7}$',
-            *
-            args,
-            **kwargs)
+        super(ILPostalCodeField, self).__init__(r'^\d{5}$|^\d{7}$', *args, **kwargs)
 
     def clean(self, value):
         if value not in EMPTY_VALUES:
@@ -85,9 +79,4 @@ class ILMobilePhoneNumberField(RegexField):
     }
 
     def __init__(self, *args, **kwargs):
-        super(
-            ILMobilePhoneNumberField,
-            self).__init__(
-            mobile_phone_number_re,
-            *args,
-            **kwargs)
+        super(ILMobilePhoneNumberField, self).__init__(mobile_phone_number_re, *args, **kwargs)

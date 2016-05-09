@@ -48,5 +48,4 @@ class OrderRatingMail(models.Model):
     send_date = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return u"%s (%s)" % (self.order.id,
-                             self.send_date.strftime(ugettext('DATE_FORMAT')))
+        return u"%s (%s)" % (self.order.id, self.send_date.strftime(ugettext('DATE_FORMAT')))

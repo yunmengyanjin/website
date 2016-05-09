@@ -17,7 +17,6 @@ class ShippingMethodAddForm(ModelForm):
 class ShippingMethodForm(ModelForm):
     """
     """
-
     def __init__(self, *args, **kwargs):
         super(ShippingMethodForm, self).__init__(*args, **kwargs)
         self.fields["image"].widget = LFSImageInput()

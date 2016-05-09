@@ -28,9 +28,7 @@ def property_option_deleted_listener(sender, instance, **kwargs):
     instance) selected which is about to be deleted.
     """
     prop = instance.property
-    ProductPropertyValue.objects.filter(
-        property=prop, value=str(
-            instance.id)).delete()
+    ProductPropertyValue.objects.filter(property=prop, value=str(instance.id)).delete()
 pre_delete.connect(property_option_deleted_listener, sender=PropertyOption)
 
 
@@ -53,12 +51,8 @@ def property_removed_from_property_group_listener(sender, instance, **kwargs):
     Deletes all ProductPropertyValue which are assigned to the property and
     the property group from which the property is about to be removed.
     """
-    ProductPropertyValue.objects.filter(
-        property_group=instance.group,
-        property=instance.property).delete()
-pre_delete.connect(
-    property_removed_from_property_group_listener,
-    sender=GroupsPropertiesRelation)
+    ProductPropertyValue.objects.filter(property_group=instance.group, property=instance.property).delete()
+pre_delete.connect(property_removed_from_property_group_listener, sender=GroupsPropertiesRelation)
 
 
 def product_removed_from_property_group_listener(sender, **kwargs):
@@ -71,22 +65,18 @@ def product_removed_from_property_group_listener(sender, **kwargs):
     property_group = sender
     product = kwargs.get("product")
 
-    ProductPropertyValue.objects.filter(
-        product=product, property_group=property_group).delete()
-product_removed_property_group.connect(
-    product_removed_from_property_group_listener)
+    ProductPropertyValue.objects.filter(product=product, property_group=property_group).delete()
+product_removed_property_group.connect(product_removed_from_property_group_listener)
 
 
-def property_changed_to_not_filterable_listener(
-        sender, instance, created, **kwargs):
+def property_changed_to_not_filterable_listener(sender, instance, created, **kwargs):
     """
     This is called when a property that was filterable is set to not filterable
 
     Deletes all ProductPropertyValue for this property
     """
     if not instance.filterable:
-        ProductPropertyValue.objects.filter(
-            property=instance, type=PROPERTY_VALUE_TYPE_FILTER).delete()
+        ProductPropertyValue.objects.filter(property=instance, type=PROPERTY_VALUE_TYPE_FILTER).delete()
 post_save.connect(property_changed_to_not_filterable_listener, sender=Property)
 
 

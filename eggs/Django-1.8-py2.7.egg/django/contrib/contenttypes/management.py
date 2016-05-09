@@ -4,12 +4,7 @@ from django.utils import six
 from django.utils.six.moves import input
 
 
-def update_contenttypes(
-        app_config,
-        verbosity=2,
-        interactive=True,
-        using=DEFAULT_DB_ALIAS,
-        **kwargs):
+def update_contenttypes(app_config, verbosity=2, interactive=True, using=DEFAULT_DB_ALIAS, **kwargs):
     """
     Creates content types for models in the given app, removing any model
     entries that no longer have a matching model class.
@@ -82,9 +77,7 @@ If you're unsure, answer 'no'.
         if ok_to_delete == 'yes':
             for ct in to_remove:
                 if verbosity >= 2:
-                    print(
-                        "Deleting stale content type '%s | %s'" %
-                        (ct.app_label, ct.model))
+                    print("Deleting stale content type '%s | %s'" % (ct.app_label, ct.model))
                 ct.delete()
         else:
             if verbosity >= 2:

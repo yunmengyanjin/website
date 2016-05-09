@@ -61,10 +61,9 @@ def _save(im, fp, filename):
     # make sure image data is available
     im.load()
 
-    xref = [0] * (5 + 1)  # placeholders
+    xref = [0]*(5+1)  # placeholders
 
     class TextWriter:
-
         def __init__(self, fp):
             self.fp = fp
 
@@ -106,9 +105,9 @@ def _save(im, fp, filename):
         colorspace = "[ /Indexed /DeviceRGB 255 <"
         palette = im.im.getpalette("RGB")
         for i in range(256):
-            r = i8(palette[i * 3])
-            g = i8(palette[i * 3 + 1])
-            b = i8(palette[i * 3 + 2])
+            r = i8(palette[i*3])
+            g = i8(palette[i*3+1])
+            b = i8(palette[i*3+2])
             colorspace += "%02x%02x%02x " % (r, g, b)
         colorspace += "> ]"
         procset = "/ImageI"  # indexed color
@@ -156,13 +155,13 @@ def _save(im, fp, filename):
             data = im.tobytes("raw", "1")
             im = Image.new("L", (len(data), 1), None)
             im.putdata(data)
-        ImageFile._save(im, op, [("hex", (0, 0) + im.size, 0, im.mode)])
+        ImageFile._save(im, op, [("hex", (0, 0)+im.size, 0, im.mode)])
     elif filter == "/DCTDecode":
         Image.SAVE["JPEG"](im, op, filename)
     elif filter == "/FlateDecode":
-        ImageFile._save(im, op, [("zip", (0, 0) + im.size, 0, im.mode)])
+        ImageFile._save(im, op, [("zip", (0, 0)+im.size, 0, im.mode)])
     elif filter == "/RunLengthDecode":
-        ImageFile._save(im, op, [("packbits", (0, 0) + im.size, 0, im.mode)])
+        ImageFile._save(im, op, [("packbits", (0, 0)+im.size, 0, im.mode)])
     else:
         raise ValueError("unsupported PDF filter (%s)" % filter)
 

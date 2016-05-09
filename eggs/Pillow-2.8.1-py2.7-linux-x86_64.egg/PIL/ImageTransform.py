@@ -17,7 +17,6 @@ from PIL import Image
 
 
 class Transform(Image.ImageTransformHandler):
-
     def __init__(self, data):
         self.data = data
 

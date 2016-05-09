@@ -39,14 +39,10 @@ class TopsellerPortlet(Portlet):
             topseller = lfs.marketing.utils.get_topseller_for_category(
                 object, self.limit)
 
-        return render_to_string(
-            "lfs/portlets/topseller.html",
-            RequestContext(
-                request,
-                {
-                    "title": self.title,
-                    "topseller": topseller,
-                }))
+        return render_to_string("lfs/portlets/topseller.html", RequestContext(request, {
+            "title": self.title,
+            "topseller": topseller,
+        }))
 
     def form(self, **kwargs):
         return TopsellerForm(instance=self, **kwargs)

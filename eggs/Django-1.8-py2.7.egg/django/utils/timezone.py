@@ -258,7 +258,6 @@ class override(ContextDecorator):
     time zone name, or ``None``. If is it a time zone name, pytz is required.
     If it is ``None``, Django enables the default time zone.
     """
-
     def __init__(self, timezone):
         self.timezone = timezone
 
@@ -288,9 +287,9 @@ def template_localtime(value, use_tz=None):
     This function is designed for use by the template engine.
     """
     should_convert = (isinstance(value, datetime)
-                      and (settings.USE_TZ if use_tz is None else use_tz)
-                      and not is_naive(value)
-                      and getattr(value, 'convert_to_local_time', True))
+        and (settings.USE_TZ if use_tz is None else use_tz)
+        and not is_naive(value)
+        and getattr(value, 'convert_to_local_time', True))
     return localtime(value) if should_convert else value
 
 
@@ -335,8 +334,7 @@ def is_aware(value):
     The logic is described in Python's docs:
     http://docs.python.org/library/datetime.html#datetime.tzinfo
     """
-    return value.tzinfo is not None and value.tzinfo.utcoffset(
-        value) is not None
+    return value.tzinfo is not None and value.tzinfo.utcoffset(value) is not None
 
 
 def is_naive(value):

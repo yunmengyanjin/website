@@ -117,12 +117,10 @@ else:
         except KeyError:
             pass
         try:
-            # No __path__, then not a package.
-            package_path = package.__path__
+            package_path = package.__path__   # No __path__, then not a package.
         except AttributeError:
             # Since the remainder of this function assumes that we're dealing with
-            # a package (module with a __path__), so if it's not, then bail
-            # here.
+            # a package (module with a __path__), so if it's not, then bail here.
             return False
         for finder in sys.meta_path:
             if finder.find_module(name, package_path):
@@ -161,8 +159,7 @@ else:
                         continue
                 else:
                     # No finder found.
-                    # Try the implicit import machinery if searching a
-                    # directory.
+                    # Try the implicit import machinery if searching a directory.
                     if os.path.isdir(entry):
                         try:
                             file_, _, _ = imp.find_module(module_name, [entry])

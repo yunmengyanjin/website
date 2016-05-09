@@ -80,10 +80,10 @@ def read_32(fobj, start_length, size):
             if bytesleft != 0:
                 raise SyntaxError(
                     "Error reading channel [%r left]" % bytesleft
-                )
+                    )
             band = Image.frombuffer(
                 "L", pixel_size, b"".join(data), "raw", "L", 0, 1
-            )
+                )
             im.im.putband(band.im, band_ix)
     return {"RGB": im}
 
@@ -96,7 +96,7 @@ def read_mk(fobj, start_length, size):
     sizesq = pixel_size[0] * pixel_size[1]
     band = Image.frombuffer(
         "L", pixel_size, fobj.read(sizesq), "raw", "L", 0, 1
-    )
+        )
     return {"A": band}
 
 

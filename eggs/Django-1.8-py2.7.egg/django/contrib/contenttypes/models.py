@@ -41,8 +41,7 @@ class ContentTypeManager(models.Manager):
             del kwargs['name']
             warnings.warn(
                 "ContentType.name field doesn't exist any longer. Please remove it from your code.",
-                RemovedInDjango20Warning,
-                stacklevel=2)
+                RemovedInDjango20Warning, stacklevel=2)
         return super(ContentTypeManager, self).create(**kwargs)
 
     def get_for_model(self, model, for_concrete_model=True):
@@ -77,7 +76,8 @@ class ContentTypeManager(models.Manager):
             # Have a nice error for this.
             raise RuntimeError(
                 "Error creating new content types. Please make sure contenttypes "
-                "is migrated before trying to migrate apps individually.")
+                "is migrated before trying to migrate apps individually."
+            )
         self._add_to_cache(self.db, ct)
         return ct
 
@@ -149,8 +149,7 @@ class ContentTypeManager(models.Manager):
     def _add_to_cache(self, using, ct):
         """Insert a ContentType into the cache."""
         # Note it's possible for ContentType objects to be stale; model_class() will return None.
-        # Hence, there is no reliance on model._meta.app_label here, just using
-        # the model fields instead.
+        # Hence, there is no reliance on model._meta.app_label here, just using the model fields instead.
         key = (ct.app_label, ct.model)
         self.__class__._cache.setdefault(using, {})[key] = ct
         self.__class__._cache.setdefault(using, {})[ct.id] = ct

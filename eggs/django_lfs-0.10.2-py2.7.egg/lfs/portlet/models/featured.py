@@ -22,8 +22,7 @@ class FeaturedPortlet(Portlet):
     name = _("Featured products")
 
     limit = models.IntegerField(_(u"Limit"), default=5)
-    current_category = models.BooleanField(
-        _(u"Use current category"), default=False)
+    current_category = models.BooleanField(_(u"Use current category"), default=False)
     slideshow = models.BooleanField(_(u"Slideshow"), default=False)
 
     @property
@@ -38,27 +37,22 @@ class FeaturedPortlet(Portlet):
         if self.current_category:
             obj = context.get("category") or context.get("product")
             if obj:
-                category = obj if isinstance(
-                    obj, Category) else obj.get_current_category(request)
+                category = obj if isinstance(obj, Category) else obj.get_current_category(request)
                 categories = [category]
                 categories.extend(category.get_all_children())
                 filters = {"product__categories__in": categories}
-                products = [x.product for x in FeaturedProduct.objects.filter(
-                    **filters)[:self.limit]]
+                products = [x.product for x in FeaturedProduct.objects.filter(**filters)[:self.limit]]
             else:
                 products = None
         else:
-            products = [
-                x.product for x in FeaturedProduct.objects.all()[
-                    :self.limit]]
+            products = [x.product for x in FeaturedProduct.objects.all()[:self.limit]]
 
-        return render_to_string("lfs/portlets/featured.html",
-                                RequestContext(request,
-                                               {"title": self.rendered_title,
-                                                "slideshow": self.slideshow,
-                                                "products": products,
-                                                "MEDIA_URL": context.get("MEDIA_URL"),
-                                                }))
+        return render_to_string("lfs/portlets/featured.html", RequestContext(request, {
+            "title": self.rendered_title,
+            "slideshow": self.slideshow,
+            "products": products,
+            "MEDIA_URL": context.get("MEDIA_URL"),
+        }))
 
     def form(self, **kwargs):
         """

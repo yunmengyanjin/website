@@ -28,10 +28,8 @@ def trim_docstring(docstring):
         return ''
     # Convert tabs to spaces and split into lines
     lines = docstring.expandtabs().splitlines()
-    indent = min(len(line) - len(line.lstrip())
-                 for line in lines if line.lstrip())
-    trimmed = [lines[0].lstrip()] + [line[indent:].rstrip()
-                                     for line in lines[1:]]
+    indent = min(len(line) - len(line.lstrip()) for line in lines if line.lstrip())
+    trimmed = [lines[0].lstrip()] + [line[indent:].rstrip() for line in lines[1:]]
     return "\n".join(trimmed).strip()
 
 
@@ -82,13 +80,9 @@ def parse_rst(text, default_reference_context, thing_being_parsed=None):
 
 .. default-role::
 """
-    parts = docutils.core.publish_parts(
-        source %
-        text,
-        source_path=thing_being_parsed,
-        destination_path=None,
-        writer_name='html',
-        settings_overrides=overrides)
+    parts = docutils.core.publish_parts(source % text,
+                source_path=thing_being_parsed, destination_path=None,
+                writer_name='html', settings_overrides=overrides)
     return mark_safe(parts['fragment'])
 
 #
@@ -104,14 +98,7 @@ ROLES = {
 
 
 def create_reference_role(rolename, urlbase):
-    def _role(
-            name,
-            rawtext,
-            text,
-            lineno,
-            inliner,
-            options=None,
-            content=None):
+    def _role(name, rawtext, text, lineno, inliner, options=None, content=None):
         if options is None:
             options = {}
         if content is None:
@@ -129,14 +116,7 @@ def create_reference_role(rolename, urlbase):
     docutils.parsers.rst.roles.register_canonical_role(rolename, _role)
 
 
-def default_reference_role(
-        name,
-        rawtext,
-        text,
-        lineno,
-        inliner,
-        options=None,
-        content=None):
+def default_reference_role(name, rawtext, text, lineno, inliner, options=None, content=None):
     if options is None:
         options = {}
     if content is None:
@@ -154,8 +134,7 @@ def default_reference_role(
     return [node], []
 
 if docutils_is_available:
-    docutils.parsers.rst.roles.register_canonical_role(
-        'cmsreference', default_reference_role)
+    docutils.parsers.rst.roles.register_canonical_role('cmsreference', default_reference_role)
 
     for name, urlbase in ROLES.items():
         create_reference_role(name, urlbase)

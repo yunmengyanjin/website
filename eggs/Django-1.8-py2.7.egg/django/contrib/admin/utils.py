@@ -24,8 +24,7 @@ def lookup_needs_distinct(opts, lookup_path):
     """
     field_name = lookup_path.split('__', 1)[0]
     field = opts.get_field(field_name)
-    if hasattr(field, 'get_path_info') and any(
-            path.m2m for path in field.get_path_info()):
+    if hasattr(field, 'get_path_info') and any(path.m2m for path in field.get_path_info()):
         return True
     return False
 
@@ -37,8 +36,7 @@ def prepare_lookup_value(key, value):
     # if key ends with __in, split parameter into separate values
     if key.endswith('__in'):
         value = value.split(',')
-    # if key ends with __isnull, special case '' and the string literals
-    # 'false' and '0'
+    # if key ends with __isnull, special case '' and the string literals 'false' and '0'
     if key.endswith('__isnull'):
         if value.lower() in ('', 'false', '0'):
             value = False
@@ -160,7 +158,6 @@ def get_deleted_objects(objs, opts, user, admin_site, using):
 
 
 class NestedObjects(Collector):
-
     def __init__(self, *args, **kwargs):
         super(NestedObjects, self).__init__(*args, **kwargs)
         self.edges = {}  # {from_instance: [to_instances]}
@@ -182,12 +179,7 @@ class NestedObjects(Collector):
                 self.add_edge(None, obj)
             self.model_count[obj._meta.verbose_name_plural] += 1
         try:
-            return super(
-                NestedObjects,
-                self).collect(
-                objs,
-                source_attr=source_attr,
-                **kwargs)
+            return super(NestedObjects, self).collect(objs, source_attr=source_attr, **kwargs)
         except models.ProtectedError as e:
             self.protected.update(e.protected_objects)
 
@@ -339,8 +331,7 @@ def label_for_field(name, model, model_admin=None, return_attr=False):
             elif hasattr(model, name):
                 attr = getattr(model, name)
             else:
-                message = "Unable to lookup '%s' on %s" % (
-                    name, model._meta.object_name)
+                message = "Unable to lookup '%s' on %s" % (name, model._meta.object_name)
                 if model_admin:
                     message += " or %s" % (model_admin.__class__.__name__,)
                 raise AttributeError(message)
@@ -453,8 +444,7 @@ def reverse_field_path(model, path):
                 break
 
         # Field should point to another model
-        if field.is_relation and not (
-                field.auto_created and not field.concrete):
+        if field.is_relation and not (field.auto_created and not field.concrete):
             related_name = field.related_query_name()
             parent = field.rel.to
         else:

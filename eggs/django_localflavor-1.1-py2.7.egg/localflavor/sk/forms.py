@@ -15,7 +15,6 @@ class SKRegionSelect(Select):
     """
     A select widget widget with list of Slovak regions as choices.
     """
-
     def __init__(self, attrs=None):
         super(SKRegionSelect, self).__init__(attrs, choices=REGION_CHOICES)
 
@@ -24,7 +23,6 @@ class SKDistrictSelect(Select):
     """
     A select widget with list of Slovak districts as choices.
     """
-
     def __init__(self, attrs=None):
         super(SKDistrictSelect, self).__init__(attrs, choices=DISTRICT_CHOICES)
 
@@ -39,14 +37,8 @@ class SKPostalCodeField(RegexField):
     }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            SKPostalCodeField,
-            self).__init__(
-            r'^\d{5}$|^\d{3} \d{2}$',
-            max_length,
-            min_length,
-            *args,
-            **kwargs)
+        super(SKPostalCodeField, self).__init__(r'^\d{5}$|^\d{3} \d{2}$',
+                                                max_length, min_length, *args, **kwargs)
 
     def clean(self, value):
         """

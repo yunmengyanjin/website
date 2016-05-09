@@ -33,12 +33,9 @@ try:
         from sqlite3 import dbapi2 as Database
 except ImportError as exc:
     from django.core.exceptions import ImproperlyConfigured
-    raise ImproperlyConfigured(
-        "Error loading either pysqlite2 or sqlite3 modules (tried in that order): %s" %
-        exc)
+    raise ImproperlyConfigured("Error loading either pysqlite2 or sqlite3 modules (tried in that order): %s" % exc)
 
-# Some of these import sqlite3, so import them after checking if it's
-# installed.
+# Some of these import sqlite3, so import them after checking if it's installed.
 from .client import DatabaseClient                          # isort:skip
 from .creation import DatabaseCreation                      # isort:skip
 from .features import DatabaseFeatures                      # isort:skip
@@ -74,19 +71,12 @@ def decoder(conv_func):
 Database.register_converter(str("bool"), decoder(lambda s: s == '1'))
 Database.register_converter(str("time"), decoder(parse_time))
 Database.register_converter(str("date"), decoder(parse_date))
-Database.register_converter(str("datetime"),
-                            decoder(parse_datetime_with_timezone_support))
-Database.register_converter(str("timestamp"),
-                            decoder(parse_datetime_with_timezone_support))
-Database.register_converter(str("TIMESTAMP"),
-                            decoder(parse_datetime_with_timezone_support))
-Database.register_converter(
-    str("decimal"), decoder(
-        backend_utils.typecast_decimal))
+Database.register_converter(str("datetime"), decoder(parse_datetime_with_timezone_support))
+Database.register_converter(str("timestamp"), decoder(parse_datetime_with_timezone_support))
+Database.register_converter(str("TIMESTAMP"), decoder(parse_datetime_with_timezone_support))
+Database.register_converter(str("decimal"), decoder(backend_utils.typecast_decimal))
 
-Database.register_adapter(
-    datetime.datetime,
-    adapt_datetime_with_timezone_support)
+Database.register_adapter(datetime.datetime, adapt_datetime_with_timezone_support)
 Database.register_adapter(decimal.Decimal, backend_utils.rev_typecast_decimal)
 if six.PY2:
     Database.register_adapter(str, lambda s: s.decode('utf-8'))
@@ -214,17 +204,10 @@ class DatabaseWrapper(BaseDatabaseWrapper):
         conn = Database.connect(**conn_params)
         conn.create_function("django_date_extract", 2, _sqlite_date_extract)
         conn.create_function("django_date_trunc", 2, _sqlite_date_trunc)
-        conn.create_function("django_datetime_extract",
-                             3, _sqlite_datetime_extract)
-        conn.create_function(
-            "django_datetime_trunc",
-            3,
-            _sqlite_datetime_trunc)
+        conn.create_function("django_datetime_extract", 3, _sqlite_datetime_extract)
+        conn.create_function("django_datetime_trunc", 3, _sqlite_datetime_trunc)
         conn.create_function("regexp", 2, _sqlite_regexp)
-        conn.create_function(
-            "django_format_dtdelta",
-            3,
-            _sqlite_format_dtdelta)
+        conn.create_function("django_format_dtdelta", 3, _sqlite_format_dtdelta)
         conn.create_function("django_power", 2, _sqlite_power)
         return conn
 
@@ -285,38 +268,23 @@ class DatabaseWrapper(BaseDatabaseWrapper):
         if table_names is None:
             table_names = self.introspection.table_names(cursor)
         for table_name in table_names:
-            primary_key_column_name = self.introspection.get_primary_key_column(
-                cursor, table_name)
+            primary_key_column_name = self.introspection.get_primary_key_column(cursor, table_name)
             if not primary_key_column_name:
                 continue
-            key_columns = self.introspection.get_key_columns(
-                cursor, table_name)
+            key_columns = self.introspection.get_key_columns(cursor, table_name)
             for column_name, referenced_table_name, referenced_column_name in key_columns:
-                cursor.execute(
-                    """
+                cursor.execute("""
                     SELECT REFERRING.`%s`, REFERRING.`%s` FROM `%s` as REFERRING
                     LEFT JOIN `%s` as REFERRED
                     ON (REFERRING.`%s` = REFERRED.`%s`)
-                    WHERE REFERRING.`%s` IS NOT NULL AND REFERRED.`%s` IS NULL""" %
-                    (primary_key_column_name,
-                     column_name,
-                     table_name,
-                     referenced_table_name,
-                     column_name,
-                     referenced_column_name,
-                     column_name,
-                     referenced_column_name))
+                    WHERE REFERRING.`%s` IS NOT NULL AND REFERRED.`%s` IS NULL"""
+                    % (primary_key_column_name, column_name, table_name, referenced_table_name,
+                    column_name, referenced_column_name, column_name, referenced_column_name))
                 for bad_row in cursor.fetchall():
-                    raise utils.IntegrityError(
-                        "The row in table '%s' with primary key '%s' has an invalid "
-                        "foreign key: %s.%s contains a value '%s' that does not have a corresponding value in %s.%s." %
-                        (table_name,
-                         bad_row[0],
-                            table_name,
-                            column_name,
-                            bad_row[1],
-                            referenced_table_name,
-                            referenced_column_name))
+                    raise utils.IntegrityError("The row in table '%s' with primary key '%s' has an invalid "
+                        "foreign key: %s.%s contains a value '%s' that does not have a corresponding value in %s.%s."
+                        % (table_name, bad_row[0], table_name, column_name, bad_row[1],
+                        referenced_table_name, referenced_column_name))
 
     def is_usable(self):
         return True
@@ -343,7 +311,6 @@ class SQLiteCursorWrapper(Database.Cursor):
     This fixes it -- but note that if you want to use a literal "%s" in a query,
     you'll need to use "%%s".
     """
-
     def execute(self, query, params=None):
         if params is None:
             return Database.Cursor.execute(self, query)
@@ -415,11 +382,9 @@ def _sqlite_datetime_trunc(lookup_type, dt, tzname):
     elif lookup_type == 'hour':
         return "%i-%02i-%02i %02i:00:00" % (dt.year, dt.month, dt.day, dt.hour)
     elif lookup_type == 'minute':
-        return "%i-%02i-%02i %02i:%02i:00" % (dt.year,
-                                              dt.month, dt.day, dt.hour, dt.minute)
+        return "%i-%02i-%02i %02i:%02i:00" % (dt.year, dt.month, dt.day, dt.hour, dt.minute)
     elif lookup_type == 'second':
-        return "%i-%02i-%02i %02i:%02i:%02i" % (
-            dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
+        return "%i-%02i-%02i %02i:%02i:%02i" % (dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
 
 
 def _sqlite_format_dtdelta(conn, lhs, rhs):
@@ -452,8 +417,7 @@ def _sqlite_format_dtdelta(conn, lhs, rhs):
 
 
 def _sqlite_regexp(re_pattern, re_string):
-    return bool(re.search(re_pattern, force_text(re_string))
-                ) if re_string is not None else False
+    return bool(re.search(re_pattern, force_text(re_string))) if re_string is not None else False
 
 
 def _sqlite_power(x, y):

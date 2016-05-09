@@ -294,7 +294,7 @@ class ImageFileDirectory(collections.MutableMapping):
 
     def named(self):
         """
-        Returns the complete tag dictionary, with named tags where possible.
+        Returns the complete tag dictionary, with named tags where posible.
         """
         from PIL import TiffTags
         result = {}
@@ -391,7 +391,7 @@ class ImageFileDirectory(collections.MutableMapping):
     def load_rational(self, data):
         l = []
         for i in range(0, len(data), 8):
-            l.append((self.i32(data, i), self.i32(data, i + 4)))
+            l.append((self.i32(data, i), self.i32(data, i+4)))
         return tuple(l)
     load_dispatch[5] = (8, load_rational)
 
@@ -458,7 +458,7 @@ class ImageFileDirectory(collections.MutableMapping):
                 data = ImageFile._safe_read(fp, size)
                 fp.seek(here)
             else:
-                data = ifd[8:8 + size]
+                data = ifd[8:8+size]
 
             if len(data) != size:
                 warnings.warn("Possibly corrupt EXIF data.  "
@@ -567,8 +567,7 @@ class ImageFileDirectory(collections.MutableMapping):
             if len(data) == 4:
                 append((tag, typ, len(value), data, b""))
             elif len(data) < 4:
-                append((tag, typ, len(value), data +
-                        (4 - len(data)) * b"\0", b""))
+                append((tag, typ, len(value), data + (4-len(data))*b"\0", b""))
             else:
                 count = len(value)
                 if typ == 5:
@@ -662,9 +661,8 @@ class TiffImageFile(ImageFile.ImageFile):
             if not self.__next:
                 raise EOFError("no more images in TIFF file")
             if Image.DEBUG:
-                print(
-                    "Seeking to frame %s, on frame %s, __next %s, location: %s" %
-                    (frame, self.__frame, self.__next, self.fp.tell()))
+                print("Seeking to frame %s, on frame %s, __next %s, location: %s" %
+                      (frame, self.__frame, self.__next, self.fp.tell()))
             # reset python3 buffered io handle in case fp
             # was passed to libtiff, invalidating the buffer
             self.fp.tell()
@@ -815,7 +813,7 @@ class TiffImageFile(ImageFile.ImageFile):
             self.tag.prefix, photo, format, fillorder,
             self.tag.get(BITSPERSAMPLE, (1,)),
             self.tag.get(EXTRASAMPLES, ())
-        )
+            )
         if Image.DEBUG:
             print("format key:", key)
         try:
@@ -905,7 +903,7 @@ class TiffImageFile(ImageFile.ImageFile):
                         self.tag.prefix, photo, format, 1,
                         self.tag.get(BITSPERSAMPLE, (1,)),
                         self.tag.get(EXTRASAMPLES, ())
-                    )
+                        )
                     if Image.DEBUG:
                         print("format key:", key)
                     # this should always work, since all the
@@ -933,7 +931,7 @@ class TiffImageFile(ImageFile.ImageFile):
                     a = self._decoder(rawmode, l, i)
                     self.tile.append(
                         (self._compression,
-                            (0, min(y, ysize), w, min(y + h, ysize)),
+                            (0, min(y, ysize), w, min(y+h, ysize)),
                             offsets[i], a))
                     if Image.DEBUG:
                         print ("tiles: ", self.tile)
@@ -954,7 +952,7 @@ class TiffImageFile(ImageFile.ImageFile):
                 # is not a multiple of the tile size...
                 self.tile.append(
                     (self._compression,
-                        (x, y, x + w, y + h),
+                        (x, y, x+w, y+h),
                         o, a))
                 x = x + w
                 if x >= self.size[0]:
@@ -978,7 +976,7 @@ class TiffImageFile(ImageFile.ImageFile):
 # Write TIFF files
 
 # little endian is default except for image modes with
-# explicit big endian byte-order
+# explict big endian byte-order
 
 SAVE_INFO = {
     # mode => rawmode, byteorder, photometrics,
@@ -1027,7 +1025,7 @@ def _save(im, fp, filename):
     ifd = ImageFileDirectory(prefix)
 
     compression = im.encoderinfo.get('compression', im.info.get('compression',
-                                                                'raw'))
+                                     'raw'))
 
     libtiff = WRITE_LIBTIFF or compression != 'raw'
 
@@ -1112,7 +1110,7 @@ def _save(im, fp, filename):
         ifd[COLORMAP] = tuple(i8(v) * 256 for v in lut)
 
     # data orientation
-    stride = len(bits) * ((im.size[0] * bits[0] + 7) // 8)
+    stride = len(bits) * ((im.size[0]*bits[0]+7)//8)
     ifd[ROWSPERSTRIP] = im.size[1]
     ifd[STRIPBYTECOUNTS] = stride * im.size[1]
     ifd[STRIPOFFSETS] = 0  # this is adjusted by IFD writer
@@ -1142,19 +1140,19 @@ def _save(im, fp, filename):
         for k, v in itertools.chain(ifd.items(),
                                     getattr(im, 'ifd', {}).items()):
             if k not in atts and k not in blocklist:
-                if isinstance(v[0], tuple) and len(v) > 1:
+                if type(v[0]) == tuple and len(v) > 1:
                     # A tuple of more than one rational tuples
                     # flatten to floats,
                     # following tiffcp.c->cpTag->TIFF_RATIONAL
-                    atts[k] = [float(elt[0]) / float(elt[1]) for elt in v]
+                    atts[k] = [float(elt[0])/float(elt[1]) for elt in v]
                     continue
-                if isinstance(v[0], tuple) and len(v) == 1:
+                if type(v[0]) == tuple and len(v) == 1:
                     # A tuple of one rational tuples
                     # flatten to floats,
                     # following tiffcp.c->cpTag->TIFF_RATIONAL
-                    atts[k] = float(v[0][0]) / float(v[0][1])
+                    atts[k] = float(v[0][0])/float(v[0][1])
                     continue
-                if (isinstance(v, tuple) and
+                if (type(v) == tuple and
                         (len(v) > 2 or
                             (len(v) == 2 and v[1] == 0))):
                     # List of ints?
@@ -1162,13 +1160,13 @@ def _save(im, fp, filename):
                     if type(v[0]) in (int, float):
                         atts[k] = list(v)
                     continue
-                if isinstance(v, tuple) and len(v) == 2:
+                if type(v) == tuple and len(v) == 2:
                     # one rational tuple
                     # flatten to float,
                     # following tiffcp.c->cpTag->TIFF_RATIONAL
-                    atts[k] = float(v[0]) / float(v[1])
+                    atts[k] = float(v[0])/float(v[1])
                     continue
-                if isinstance(v, tuple) and len(v) == 1:
+                if type(v) == tuple and len(v) == 1:
                     v = v[0]
                     # drop through
                 if isStringType(v):
@@ -1191,10 +1189,10 @@ def _save(im, fp, filename):
         a = (rawmode, compression, _fp, filename, atts)
         # print (im.mode, compression, a, im.encoderconfig)
         e = Image._getencoder(im.mode, 'libtiff', a, im.encoderconfig)
-        e.setimage(im.im, (0, 0) + im.size)
+        e.setimage(im.im, (0, 0)+im.size)
         while True:
             # undone, change to self.decodermaxblock:
-            l, s, d = e.encode(16 * 1024)
+            l, s, d = e.encode(16*1024)
             if not _fp:
                 fp.write(d)
             if s:
@@ -1206,8 +1204,8 @@ def _save(im, fp, filename):
         offset = ifd.save(fp)
 
         ImageFile._save(im, fp, [
-            ("raw", (0, 0) + im.size, offset, (rawmode, stride, 1))
-        ])
+            ("raw", (0, 0)+im.size, offset, (rawmode, stride, 1))
+            ])
 
     # -- helper for multi-page save --
     if "_debug_multipage" in im.encoderinfo:

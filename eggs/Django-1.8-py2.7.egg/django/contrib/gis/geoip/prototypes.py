@@ -23,9 +23,7 @@ class GeoIPRecord(Structure):
                 ('charset', c_int),
                 ('continent_code', c_char_p),
                 ]
-geoip_char_fields = [
-    name for name,
-    ctype in GeoIPRecord._fields_ if ctype is c_char_p]
+geoip_char_fields = [name for name, ctype in GeoIPRecord._fields_ if ctype is c_char_p]
 GEOIP_DEFAULT_ENCODING = 'iso-8859-1'
 geoip_encodings = {
     0: 'iso-8859-1',

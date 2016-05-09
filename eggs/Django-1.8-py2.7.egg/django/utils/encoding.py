@@ -15,7 +15,6 @@ if six.PY3:
 
 
 class DjangoUnicodeDecodeError(UnicodeDecodeError):
-
     def __init__(self, obj, *args):
         self.obj = obj
         UnicodeDecodeError.__init__(self, *args)
@@ -23,7 +22,7 @@ class DjangoUnicodeDecodeError(UnicodeDecodeError):
     def __str__(self):
         original = UnicodeDecodeError.__str__(self)
         return '%s. You passed in %r (%s)' % (original, self.obj,
-                                              type(self.obj))
+                type(self.obj))
 
 
 def python_2_unicode_compatible(klass):
@@ -57,8 +56,8 @@ def smart_text(s, encoding='utf-8', strings_only=False, errors='strict'):
     return force_text(s, encoding, strings_only, errors)
 
 
-_PROTECTED_TYPES = six.integer_types + \
-    (type(None), float, Decimal, datetime.datetime, datetime.date, datetime.time)
+_PROTECTED_TYPES = six.integer_types + (type(None), float, Decimal,
+    datetime.datetime, datetime.date, datetime.time)
 
 
 def is_protected_type(obj):
@@ -154,12 +153,8 @@ def force_bytes(s, encoding='utf-8', strings_only=False, errors='strict'):
                 # An Exception subclass containing non-ASCII data that doesn't
                 # know how to print itself properly. We shouldn't raise a
                 # further exception.
-                return b' '.join(
-                    force_bytes(
-                        arg,
-                        encoding,
-                        strings_only,
-                        errors) for arg in s)
+                return b' '.join(force_bytes(arg, encoding, strings_only, errors)
+                                 for arg in s)
             return six.text_type(s).encode(encoding, errors)
     else:
         return s.encode(encoding, errors)

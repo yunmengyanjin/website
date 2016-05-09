@@ -44,14 +44,12 @@ def get_related_models_recursive(model):
     """
     def _related_models(m):
         return [
-            f.related_model for f in m._meta.get_fields(
-                include_parents=True,
-                include_hidden=True) if f.is_relation and not isinstance(
-                f.related_model,
-                six.string_types)] + [
-            subclass for subclass in m.__subclasses__() if issubclass(
-                subclass,
-                models.Model)]
+            f.related_model for f in m._meta.get_fields(include_parents=True, include_hidden=True)
+            if f.is_relation and not isinstance(f.related_model, six.string_types)
+        ] + [
+            subclass for subclass in m.__subclasses__()
+            if issubclass(subclass, models.Model)
+        ]
 
     seen = set()
     queue = _related_models(model)
@@ -104,8 +102,7 @@ class ProjectState(object):
                 if field.is_relation:
                     if field.rel.to == RECURSIVE_RELATIONSHIP_CONSTANT:
                         continue
-                    rel_app_label, rel_model_name = _get_app_label_and_model_name(
-                        field.rel.to, app_label)
+                    rel_app_label, rel_model_name = _get_app_label_and_model_name(field.rel.to, app_label)
                     related_models.add((rel_app_label, rel_model_name.lower()))
 
             # Unregister all related models
@@ -127,8 +124,7 @@ class ProjectState(object):
 
             # 2. All related models of unmigrated apps
             for model_state in self.apps.real_models:
-                if (model_state.app_label,
-                        model_state.name_lower) in related_models:
+                if (model_state.app_label, model_state.name_lower) in related_models:
                     states_to_be_rendered.append(model_state)
 
             # 3. All related models of migrated apps
@@ -159,10 +155,7 @@ class ProjectState(object):
 
     @property
     def concrete_apps(self):
-        self.apps = StateApps(
-            self.real_apps,
-            self.models,
-            ignore_swappable=True)
+        self.apps = StateApps(self.real_apps, self.models, ignore_swappable=True)
         return self.apps
 
     @classmethod
@@ -171,8 +164,7 @@ class ProjectState(object):
         app_models = {}
         for model in apps.get_models(include_swapped=True):
             model_state = ModelState.from_model(model)
-            app_models[(model_state.app_label,
-                        model_state.name_lower)] = model_state
+            app_models[(model_state.app_label, model_state.name_lower)] = model_state
         return cls(app_models)
 
     def __eq__(self, other):
@@ -180,8 +172,7 @@ class ProjectState(object):
             return False
         if set(self.real_apps) != set(other.real_apps):
             return False
-        return all(model == other.models[key]
-                   for key, model in self.models.items())
+        return all(model == other.models[key] for key, model in self.models.items())
 
     def __ne__(self, other):
         return not (self == other)
@@ -210,7 +201,6 @@ class StateApps(Apps):
     Subclass of the global Apps registry class to better handle dynamic model
     additions and removals.
     """
-
     def __init__(self, real_apps, models, ignore_swappable=False):
         # Any apps in self.real_apps should have all their models included
         # in the render. We don't use the original model instances as there
@@ -221,14 +211,10 @@ class StateApps(Apps):
         for app_label in real_apps:
             app = global_apps.get_app_config(app_label)
             for model in app.get_models():
-                self.real_models.append(
-                    ModelState.from_model(
-                        model, exclude_rels=True))
+                self.real_models.append(ModelState.from_model(model, exclude_rels=True))
         # Populate the app registry with a stub for each application.
         app_labels = {model_state.app_label for model_state in models.values()}
-        app_configs = [
-            AppConfigStub(label) for label in sorted(
-                real_apps + list(app_labels))]
+        app_configs = [AppConfigStub(label) for label in sorted(real_apps + list(app_labels))]
         super(StateApps, self).__init__(app_configs)
 
         self.render_multiple(list(models.values()) + self.real_models)
@@ -247,10 +233,7 @@ class StateApps(Apps):
                 # "ValueError: Lookup failed for model referenced by
                 # field migrations.Book.author: migrations.Author"
                 msg = "Lookup failed for model referenced by field {field}: {model[0]}.{model[1]}"
-                raise ValueError(
-                    msg.format(
-                        field=operations[0][1],
-                        model=lookup_model))
+                raise ValueError(msg.format(field=operations[0][1], model=lookup_model))
             else:
                 do_pending_lookups(model)
 
@@ -272,8 +255,8 @@ class StateApps(Apps):
                     "Cannot resolve bases for %r\nThis can happen if you are inheriting models from an "
                     "app with migrations (e.g. contrib.auth)\n in an app with no migrations; see "
                     "https://docs.djangoproject.com/en/%s/topics/migrations/#dependencies "
-                    "for more" %
-                    (new_unrendered_models, get_docs_version()))
+                    "for more" % (new_unrendered_models, get_docs_version())
+                )
             unrendered_models = new_unrendered_models
 
     def clone(self):
@@ -315,14 +298,7 @@ class ModelState(object):
     assign new ones, as these are not detached during a clone.
     """
 
-    def __init__(
-            self,
-            app_label,
-            name,
-            fields,
-            options=None,
-            bases=None,
-            managers=None):
+    def __init__(self, app_label, name, fields, options=None, bases=None, managers=None):
         self.app_label = app_label
         self.name = force_text(name)
         self.fields = fields
@@ -331,14 +307,13 @@ class ModelState(object):
         self.managers = managers or []
         # Sanity-check that fields is NOT a dict. It must be ordered.
         if isinstance(self.fields, dict):
-            raise ValueError(
-                "ModelState.fields cannot be a dict - it must be a list of 2-tuples.")
+            raise ValueError("ModelState.fields cannot be a dict - it must be a list of 2-tuples.")
         # Sanity-check that fields are NOT already bound to a model.
         for name, field in fields:
             if hasattr(field, 'model'):
                 raise ValueError(
-                    'ModelState.fields cannot be bound to a model - "%s" is.' %
-                    name)
+                    'ModelState.fields cannot be bound to a model - "%s" is.' % name
+                )
 
     @cached_property
     def name_lower(self):
@@ -361,9 +336,12 @@ class ModelState(object):
             try:
                 fields.append((name, field_class(*args, **kwargs)))
             except TypeError as e:
-                raise TypeError(
-                    "Couldn't reconstruct field %s on %s.%s: %s" %
-                    (name, model._meta.app_label, model._meta.object_name, e, ))
+                raise TypeError("Couldn't reconstruct field %s on %s.%s: %s" % (
+                    name,
+                    model._meta.app_label,
+                    model._meta.object_name,
+                    e,
+                ))
         if not exclude_rels:
             for field in model._meta.local_many_to_many:
                 name, path, args, kwargs = field.deconstruct()
@@ -371,9 +349,11 @@ class ModelState(object):
                 try:
                     fields.append((name, field_class(*args, **kwargs)))
                 except TypeError as e:
-                    raise TypeError(
-                        "Couldn't reconstruct m2m field %s on %s: %s" %
-                        (name, model._meta.object_name, e, ))
+                    raise TypeError("Couldn't reconstruct m2m field %s on %s: %s" % (
+                        name,
+                        model._meta.object_name,
+                        e,
+                    ))
         # Extract the options
         options = {}
         for name in DEFAULT_NAMES:
@@ -394,10 +374,7 @@ class ModelState(object):
         # If we're ignoring relationships, remove all field-listing model
         # options (that option basically just means "make a stub model")
         if exclude_rels:
-            for key in [
-                    "unique_together",
-                    "index_together",
-                    "order_with_respect_to"]:
+            for key in ["unique_together", "index_together", "order_with_respect_to"]:
                 if key in options:
                     del options[key]
 
@@ -415,8 +392,7 @@ class ModelState(object):
         # __bases__ we may end up with duplicates and ordering issues, we
         # therefore discard any duplicates and reorder the bases according
         # to their index in the MRO.
-        flattened_bases = sorted(
-            set(flatten_bases(model)), key=lambda x: model.__mro__.index(x))
+        flattened_bases = sorted(set(flatten_bases(model)), key=lambda x: model.__mro__.index(x))
 
         # Make our record
         bases = tuple(
@@ -428,12 +404,7 @@ class ModelState(object):
             for base in flattened_bases
         )
         # Ensure at least one base inherits from models.Model
-        if not any(
-            (isinstance(
-                base,
-                six.string_types) or issubclass(
-                base,
-                models.Model)) for base in bases):
+        if not any((isinstance(base, six.string_types) or issubclass(base, models.Model)) for base in bases):
             bases = (models.Model,)
 
         # Constructs all managers on the model
@@ -512,9 +483,7 @@ class ModelState(object):
     def construct_managers(self):
         "Deep-clone the managers using deconstruction"
         # Sort all managers by their creation counter
-        sorted_managers = sorted(
-            self.managers,
-            key=lambda v: v[1].creation_counter)
+        sorted_managers = sorted(self.managers, key=lambda v: v[1].creation_counter)
         for mgr_name, manager in sorted_managers:
             as_manager, manager_path, qs_path, args, kwargs = manager.deconstruct()
             if as_manager:
@@ -548,9 +517,7 @@ class ModelState(object):
                 for base in self.bases
             )
         except LookupError:
-            raise InvalidBasesError(
-                "Cannot resolve one or more bases from %r" %
-                (self.bases,))
+            raise InvalidBasesError("Cannot resolve one or more bases from %r" % (self.bases,))
         # Turn fields into a dict for the body, add other bits
         body = dict(self.construct_fields())
         body['Meta'] = meta

@@ -15,15 +15,9 @@ class Export(models.Model):
     """
     name = models.CharField(_(u"Name"), max_length=100)
     slug = models.SlugField(_(u"Slug"), unique=True)
-    products = models.ManyToManyField(
-        Product,
-        verbose_name=_(u"Products"),
-        blank=True,
-        related_name="exports")
+    products = models.ManyToManyField(Product, verbose_name=_(u"Products"), blank=True, related_name="exports")
     script = models.ForeignKey("Script", verbose_name=_(u"Script"))
-    variants_option = models.PositiveSmallIntegerField(
-        _(u"Variants"), choices=CATEGORY_VARIANTS_CHOICES[
-            1:], default=CATEGORY_VARIANTS_DEFAULT)
+    variants_option = models.PositiveSmallIntegerField(_(u"Variants"), choices=CATEGORY_VARIANTS_CHOICES[1:], default=CATEGORY_VARIANTS_DEFAULT)
     position = models.IntegerField(default=1)
 
     class Meta:
@@ -75,5 +69,4 @@ class CategoryOption(models.Model):
     """
     category = models.ForeignKey(Category, verbose_name=_(u"Category"))
     export = models.ForeignKey(Export, verbose_name=_(u"Export"))
-    variants_option = models.PositiveSmallIntegerField(
-        _(u"Variant"), choices=CATEGORY_VARIANTS_CHOICES)
+    variants_option = models.PositiveSmallIntegerField(_(u"Variant"), choices=CATEGORY_VARIANTS_CHOICES)

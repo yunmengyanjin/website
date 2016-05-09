@@ -40,11 +40,7 @@ class TokenBase(object):
         return self.id
 
     def __repr__(self):
-        out = [
-            str(x) for x in [
-                self.id,
-                self.first,
-                self.second] if x is not None]
+        out = [str(x) for x in [self.id, self.first, self.second] if x is not None]
         return "(" + " ".join(out) + ")"
 
 
@@ -185,8 +181,8 @@ class IfParser(object):
             if token == '=':
                 warnings.warn(
                     "Operator '=' is deprecated and will be removed in Django 2.0. Use '==' instead.",
-                    RemovedInDjango20Warning,
-                    stacklevel=2)
+                    RemovedInDjango20Warning, stacklevel=2
+                )
             return op()
 
     def next_token(self):

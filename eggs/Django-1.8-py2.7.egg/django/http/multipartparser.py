@@ -49,7 +49,6 @@ class MultiPartParser(object):
     ``MultiValueDict.parse()`` reads the input stream in ``chunk_size`` chunks
     and returns a tuple of ``(MultiValueDict(POST), MultiValueDict(FILES))``.
     """
-
     def __init__(self, META, input_data, upload_handlers, encoding=None):
         """
         Initialize the MultiPartParser object.
@@ -69,39 +68,26 @@ class MultiPartParser(object):
         # Content-Type should contain multipart and the boundary information.
         #
 
-        content_type = META.get(
-            'HTTP_CONTENT_TYPE', META.get(
-                'CONTENT_TYPE', ''))
+        content_type = META.get('HTTP_CONTENT_TYPE', META.get('CONTENT_TYPE', ''))
         if not content_type.startswith('multipart/'):
-            raise MultiPartParserError(
-                'Invalid Content-Type: %s' %
-                content_type)
+            raise MultiPartParserError('Invalid Content-Type: %s' % content_type)
 
         # Parse the header to get the boundary to split the parts.
         ctypes, opts = parse_header(content_type.encode('ascii'))
         boundary = opts.get('boundary')
         if not boundary or not cgi.valid_boundary(boundary):
-            raise MultiPartParserError(
-                'Invalid boundary in multipart: %s' %
-                boundary)
+            raise MultiPartParserError('Invalid boundary in multipart: %s' % boundary)
 
         # Content-Length should contain the length of the body we are about
         # to receive.
         try:
-            content_length = int(
-                META.get(
-                    'HTTP_CONTENT_LENGTH',
-                    META.get(
-                        'CONTENT_LENGTH',
-                        0)))
+            content_length = int(META.get('HTTP_CONTENT_LENGTH', META.get('CONTENT_LENGTH', 0)))
         except (ValueError, TypeError):
             content_length = 0
 
         if content_length < 0:
             # This means we shouldn't continue...raise an error.
-            raise MultiPartParserError(
-                "Invalid content length: %r" %
-                content_length)
+            raise MultiPartParserError("Invalid content length: %r" % content_length)
 
         if isinstance(boundary, six.text_type):
             boundary = boundary.encode('ascii')
@@ -110,8 +96,7 @@ class MultiPartParser(object):
 
         # For compatibility with low-level network APIs (with 32-bit integers),
         # the chunk size should be < 2^31, but still divisible by 4.
-        possible_sizes = [
-            x.chunk_size for x in upload_handlers if x.chunk_size]
+        possible_sizes = [x.chunk_size for x in upload_handlers if x.chunk_size]
         self._chunk_size = min([2 ** 31 - 4] + possible_sizes)
 
         self._meta = META
@@ -156,14 +141,12 @@ class MultiPartParser(object):
         # Instantiate the parser and stream:
         stream = LazyStream(ChunkIter(self._input_data, self._chunk_size))
 
-        # Whether or not to signal a file-completion at the beginning of the
-        # loop.
+        # Whether or not to signal a file-completion at the beginning of the loop.
         old_field_name = None
         counters = [0] * len(handlers)
 
         try:
-            for item_type, meta_data, field_stream in Parser(
-                    stream, self._boundary):
+            for item_type, meta_data, field_stream in Parser(stream, self._boundary):
                 if old_field_name:
                     # We run this at the beginning of the next loop
                     # since we cannot be sure a file is complete until
@@ -193,26 +176,22 @@ class MultiPartParser(object):
                     else:
                         data = field_stream.read()
 
-                    self._post.appendlist(
-                        field_name, force_text(
-                            data, encoding, errors='replace'))
+                    self._post.appendlist(field_name,
+                                          force_text(data, encoding, errors='replace'))
                 elif item_type == FILE:
                     # This is a file, use the handler...
                     file_name = disposition.get('filename')
                     if not file_name:
                         continue
-                    file_name = force_text(
-                        file_name, encoding, errors='replace')
+                    file_name = force_text(file_name, encoding, errors='replace')
                     file_name = self.IE_sanitize(unescape_entities(file_name))
 
-                    content_type, content_type_extra = meta_data.get(
-                        'content-type', ('', {}))
+                    content_type, content_type_extra = meta_data.get('content-type', ('', {}))
                     content_type = content_type.strip()
                     charset = content_type_extra.get('charset')
 
                     try:
-                        content_length = int(
-                            meta_data.get('content-length')[0])
+                        content_length = int(meta_data.get('content-length')[0])
                     except (IndexError, TypeError, ValueError):
                         content_length = None
 
@@ -236,22 +215,16 @@ class MultiPartParser(object):
 
                                 remaining = len(stripped_chunk) % 4
                                 while remaining != 0:
-                                    over_chunk = field_stream.read(
-                                        4 - remaining)
-                                    stripped_chunk += b"".join(
-                                        over_chunk.split())
+                                    over_chunk = field_stream.read(4 - remaining)
+                                    stripped_chunk += b"".join(over_chunk.split())
                                     remaining = len(stripped_chunk) % 4
 
                                 try:
                                     chunk = base64.b64decode(stripped_chunk)
                                 except Exception as e:
-                                    # Since this is only a chunk, any error is
-                                    # an unfixable error.
+                                    # Since this is only a chunk, any error is an unfixable error.
                                     msg = "Could not decode base64 data: %r" % e
-                                    six.reraise(
-                                        MultiPartParserError,
-                                        MultiPartParserError(msg),
-                                        sys.exc_info()[2])
+                                    six.reraise(MultiPartParserError, MultiPartParserError(msg), sys.exc_info()[2])
 
                             for i, handler in enumerate(handlers):
                                 chunk_length = len(chunk)
@@ -259,8 +232,7 @@ class MultiPartParser(object):
                                                                    counters[i])
                                 counters[i] += chunk_length
                                 if chunk is None:
-                                    # If the chunk received by the handler is
-                                    # None, then don't continue.
+                                    # If the chunk received by the handler is None, then don't continue.
                                     break
 
                     except SkipFile:
@@ -271,8 +243,7 @@ class MultiPartParser(object):
                         # Handle file upload completions on next iteration.
                         old_field_name = field_name
                 else:
-                    # If this is neither a FIELD or a FILE, just exhaust the
-                    # stream.
+                    # If this is neither a FIELD or a FILE, just exhaust the stream.
                     exhaust(stream)
         except StopUpload as e:
             self._close_files()
@@ -299,10 +270,7 @@ class MultiPartParser(object):
             if file_obj:
                 # If it returns a file object, then set the files dict.
                 self._files.appendlist(
-                    force_text(
-                        old_field_name,
-                        self._encoding,
-                        errors='replace'),
+                    force_text(old_field_name, self._encoding, errors='replace'),
                     file_obj)
                 break
 
@@ -313,8 +281,7 @@ class MultiPartParser(object):
     def _close_files(self):
         # Free up all file handles.
         # FIXME: this currently assumes that upload handlers store the file as 'file'
-        # We should document that... (Maybe add handler.free_file to complement
-        # new_file)
+        # We should document that... (Maybe add handler.free_file to complement new_file)
         for handler in self._upload_handlers:
             if hasattr(handler, 'file'):
                 handler.file.close()
@@ -328,7 +295,6 @@ class LazyStream(six.Iterator):
     LazyStream object will support iteration, reading, and keeping a "look-back"
     variable in case you need to "unget" some bytes.
     """
-
     def __init__(self, producer, length=None):
         """
         Every LazyStream must have a producer when instantiated.
@@ -439,7 +405,6 @@ class ChunkIter(six.Iterator):
     constructor, this object will yield chunks of read operations from that
     object.
     """
-
     def __init__(self, flo, chunk_size=64 * 1024):
         self.flo = flo
         self.chunk_size = chunk_size
@@ -462,7 +427,6 @@ class InterBoundaryIter(six.Iterator):
     """
     A Producer that will iterate over boundaries.
     """
-
     def __init__(self, stream, boundary):
         self._stream = stream
         self._boundary = boundary
@@ -540,8 +504,7 @@ class BoundaryIter(six.Iterator):
         else:
             # make sure we don't treat a partial boundary (and
             # its separators) as data
-            # and len(chunk) >= (len(self._boundary) + 6):
-            if not chunk[:-rollback]:
+            if not chunk[:-rollback]:  # and len(chunk) >= (len(self._boundary) + 6):
                 # There's nothing left, we should just return and mark as done.
                 self._done = True
                 return chunk
@@ -588,8 +551,7 @@ def exhaust(stream_or_iterable):
         iterator = ChunkIter(stream_or_iterable, 16384)
 
     if iterator is None:
-        raise MultiPartParserError(
-            'multipartparser.exhaust() was passed a non-iterable or stream parameter')
+        raise MultiPartParserError('multipartparser.exhaust() was passed a non-iterable or stream parameter')
 
     for __ in iterator:
         pass
@@ -655,7 +617,6 @@ def parse_boundary_stream(stream, max_header_size):
 
 
 class Parser(object):
-
     def __init__(self, stream, boundary):
         self._stream = stream
         self._separator = b'--' + boundary

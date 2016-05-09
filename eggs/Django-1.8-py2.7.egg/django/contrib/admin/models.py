@@ -16,14 +16,7 @@ DELETION = 3
 class LogEntryManager(models.Manager):
     use_in_migrations = True
 
-    def log_action(
-            self,
-            user_id,
-            content_type_id,
-            object_id,
-            object_repr,
-            action_flag,
-            change_message=''):
+    def log_action(self, user_id, content_type_id, object_id, object_repr, action_flag, change_message=''):
         e = self.model(
             None, None, user_id, content_type_id, smart_text(object_id),
             object_repr[:200], action_flag, change_message
@@ -54,16 +47,14 @@ class LogEntry(models.Model):
 
     def __str__(self):
         if self.action_flag == ADDITION:
-            return ugettext('Added "%(object)s".') % {
-                'object': self.object_repr}
+            return ugettext('Added "%(object)s".') % {'object': self.object_repr}
         elif self.action_flag == CHANGE:
             return ugettext('Changed "%(object)s" - %(changes)s') % {
                 'object': self.object_repr,
                 'changes': self.change_message,
             }
         elif self.action_flag == DELETION:
-            return ugettext('Deleted "%(object)s."') % {
-                'object': self.object_repr}
+            return ugettext('Deleted "%(object)s."') % {'object': self.object_repr}
 
         return ugettext('LogEntry Object')
 
@@ -85,8 +76,7 @@ class LogEntry(models.Model):
         Returns the admin URL to edit the object represented by this log entry.
         """
         if self.content_type and self.object_id:
-            url_name = 'admin:%s_%s_change' % (
-                self.content_type.app_label, self.content_type.model)
+            url_name = 'admin:%s_%s_change' % (self.content_type.app_label, self.content_type.model)
             try:
                 return reverse(url_name, args=(quote(self.object_id),))
             except NoReverseMatch:

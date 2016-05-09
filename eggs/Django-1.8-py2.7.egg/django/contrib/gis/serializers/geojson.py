@@ -14,7 +14,6 @@ class Serializer(JSONSerializer):
     """
     Convert a queryset to GeoJSON, http://geojson.org/
     """
-
     def _init_options(self):
         super(Serializer, self)._init_options()
         self.geometry_field = self.json_kwargs.pop('geometry_field', None)
@@ -23,14 +22,12 @@ class Serializer(JSONSerializer):
     def start_serialization(self):
         if not HAS_GDAL:
             # GDAL is needed for the geometry.geojson call
-            raise SerializationError(
-                "The geojson serializer requires the GDAL library.")
+            raise SerializationError("The geojson serializer requires the GDAL library.")
         self._init_options()
         self._cts = {}  # cache of CoordTransform's
         self.stream.write(
             '{"type": "FeatureCollection", "crs": {"type": "name", "properties": {"name": "EPSG:%d"}},'
-            ' "features": [' %
-            self.srs.srid)
+            ' "features": [' % self.srs.srid)
 
     def end_serialization(self):
         self.stream.write(']}')
@@ -52,12 +49,9 @@ class Serializer(JSONSerializer):
         }
         if self._geometry:
             if self._geometry.srid != self.srs.srid:
-                # If needed, transform the geometry in the srid of the global
-                # geojson srid
+                # If needed, transform the geometry in the srid of the global geojson srid
                 if self._geometry.srid not in self._cts:
-                    self._cts[
-                        self._geometry.srid] = CoordTransform(
-                        self._geometry.srs, self.srs)
+                    self._cts[self._geometry.srid] = CoordTransform(self._geometry.srs, self.srs)
                 self._geometry.transform(self._cts[self._geometry.srid])
             data["geometry"] = eval(self._geometry.geojson)
         else:
@@ -72,7 +66,5 @@ class Serializer(JSONSerializer):
 
 
 class Deserializer(object):
-
     def __init__(self, *args, **kwargs):
-        raise SerializerDoesNotExist(
-            "geojson is a serialization-only serializer")
+        raise SerializerDoesNotExist("geojson is a serialization-only serializer")

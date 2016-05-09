@@ -29,7 +29,6 @@ class Signal(object):
         receivers
             { receiverkey (id) : weakref(receiver) }
     """
-
     def __init__(self, providing_args=None, use_caching=False):
         """
         Create a new signal.
@@ -134,12 +133,7 @@ class Signal(object):
                 self.receivers.append((lookup_key, receiver))
             self.sender_receivers_cache.clear()
 
-    def disconnect(
-            self,
-            receiver=None,
-            sender=None,
-            weak=True,
-            dispatch_uid=None):
+    def disconnect(self, receiver=None, sender=None, weak=True, dispatch_uid=None):
         """
         Disconnect receiver from sender for signal.
 
@@ -200,8 +194,7 @@ class Signal(object):
         Returns a list of tuple pairs [(receiver, response), ... ].
         """
         responses = []
-        if not self.receivers or self.sender_receivers_cache.get(
-                sender) is NO_RECEIVERS:
+        if not self.receivers or self.sender_receivers_cache.get(sender) is NO_RECEIVERS:
             return responses
 
         for receiver in self._live_receivers(sender):
@@ -234,8 +227,7 @@ class Signal(object):
         ``__traceback__``.
         """
         responses = []
-        if not self.receivers or self.sender_receivers_cache.get(
-                sender) is NO_RECEIVERS:
+        if not self.receivers or self.sender_receivers_cache.get(sender) is NO_RECEIVERS:
             return responses
 
         # Call each receiver with whatever arguments it can accept.

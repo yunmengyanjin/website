@@ -27,19 +27,11 @@ class DatabaseSchemaEditor(BaseDatabaseSchemaEditor):
                 # needed when performing correct LIKE queries outside the
                 # C locale. See #12234.
                 if db_type.startswith('varchar'):
-                    output.append(
-                        self._create_index_sql(
-                            model,
-                            [field],
-                            suffix='_like',
-                            sql=self.sql_create_varchar_index))
+                    output.append(self._create_index_sql(
+                        model, [field], suffix='_like', sql=self.sql_create_varchar_index))
                 elif db_type.startswith('text'):
-                    output.append(
-                        self._create_index_sql(
-                            model,
-                            [field],
-                            suffix='_like',
-                            sql=self.sql_create_text_index))
+                    output.append(self._create_index_sql(
+                        model, [field], suffix='_like', sql=self.sql_create_text_index))
         return output
 
     def _alter_column_type_sql(self, table, column, type):
@@ -90,9 +82,4 @@ class DatabaseSchemaEditor(BaseDatabaseSchemaEditor):
                 ],
             )
         else:
-            return super(
-                DatabaseSchemaEditor,
-                self)._alter_column_type_sql(
-                table,
-                column,
-                type)
+            return super(DatabaseSchemaEditor, self)._alter_column_type_sql(table, column, type)

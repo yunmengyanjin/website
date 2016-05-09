@@ -23,9 +23,7 @@ class GDALBase(object):
         if self._ptr:
             return self._ptr
         else:
-            raise GDALException(
-                'GDAL %s pointer no longer valid.' %
-                self.__class__.__name__)
+            raise GDALException('GDAL %s pointer no longer valid.' % self.__class__.__name__)
 
     def _set_ptr(self, ptr):
         # Only allow the pointer to be set with pointers of the

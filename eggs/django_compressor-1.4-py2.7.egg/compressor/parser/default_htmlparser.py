@@ -6,7 +6,6 @@ from compressor.parser import ParserBase
 
 
 class DefaultHtmlParser(ParserBase, six.moves.html_parser.HTMLParser):
-
     def __init__(self, content):
         six.moves.html_parser.HTMLParser.__init__(self)
         self.content = content
@@ -19,9 +18,7 @@ class DefaultHtmlParser(ParserBase, six.moves.html_parser.HTMLParser):
         except Exception as err:
             lineno = err.lineno
             line = self.content.splitlines()[lineno]
-            raise ParserError(
-                "Error while initializing HtmlParser: %s (line: %s)" %
-                (err, repr(line)))
+            raise ParserError("Error while initializing HtmlParser: %s (line: %s)" % (err, repr(line)))
 
     def handle_starttag(self, tag, attrs):
         tag = tag.lower()
@@ -75,8 +72,7 @@ class DefaultHtmlParser(ParserBase, six.moves.html_parser.HTMLParser):
         tag.update(elem)
         tag['attrs'] = ''
         if len(elem['attrs']):
-            tag['attrs'] = ' %s' % ' '.join(
-                ['%s="%s"' % (name, value) for name, value in elem['attrs']])
+            tag['attrs'] = ' %s' % ' '.join(['%s="%s"' % (name, value) for name, value in elem['attrs']])
         if elem['tag'] == 'link':
             return '<%(tag)s%(attrs)s />' % tag
         else:

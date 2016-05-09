@@ -30,16 +30,13 @@ class MigrationExecutor(object):
         else:
             applied = set(self.loader.applied_migrations)
         for target in targets:
-            # If the target is (app_label, None), that means unmigrate
-            # everything
+            # If the target is (app_label, None), that means unmigrate everything
             if target[1] is None:
                 for root in self.loader.graph.root_nodes():
                     if root[0] == target[0]:
-                        for migration in self.loader.graph.backwards_plan(
-                                root):
+                        for migration in self.loader.graph.backwards_plan(root):
                             if migration in applied:
-                                plan.append(
-                                    (self.loader.graph.nodes[migration], True))
+                                plan.append((self.loader.graph.nodes[migration], True))
                                 applied.remove(migration)
             # If the migration is already applied, do backwards mode,
             # otherwise do forwards mode.
@@ -56,14 +53,12 @@ class MigrationExecutor(object):
                 for node in next_in_app:
                     for migration in self.loader.graph.backwards_plan(node):
                         if migration in applied:
-                            plan.append(
-                                (self.loader.graph.nodes[migration], True))
+                            plan.append((self.loader.graph.nodes[migration], True))
                             applied.remove(migration)
             else:
                 for migration in self.loader.graph.forwards_plan(target):
                     if migration not in applied:
-                        plan.append(
-                            (self.loader.graph.nodes[migration], False))
+                        plan.append((self.loader.graph.nodes[migration], False))
                         applied.add(migration)
         return plan
 
@@ -78,8 +73,7 @@ class MigrationExecutor(object):
             plan = self.migration_plan(targets)
         migrations_to_run = {m[0] for m in plan}
         # Create the forwards plan Django would follow on an empty database
-        full_plan = self.migration_plan(
-            self.loader.graph.leaf_nodes(), clean_start=True)
+        full_plan = self.migration_plan(self.loader.graph.leaf_nodes(), clean_start=True)
         # Holds all states right before a migration is applied
         # if the migration is being run.
         states = {}
@@ -113,11 +107,7 @@ class MigrationExecutor(object):
         # Phase 2 -- Run the migrations
         for migration, backwards in plan:
             if not backwards:
-                self.apply_migration(
-                    states[migration],
-                    migration,
-                    fake=fake,
-                    fake_initial=fake_initial)
+                self.apply_migration(states[migration], migration, fake=fake, fake_initial=fake_initial)
             else:
                 self.unapply_migration(states[migration], migration, fake=fake)
 
@@ -131,23 +121,15 @@ class MigrationExecutor(object):
         for migration, backwards in plan:
             with self.connection.schema_editor(collect_sql=True) as schema_editor:
                 if state is None:
-                    state = self.loader.project_state(
-                        (migration.app_label, migration.name), at_end=False)
+                    state = self.loader.project_state((migration.app_label, migration.name), at_end=False)
                 if not backwards:
-                    state = migration.apply(
-                        state, schema_editor, collect_sql=True)
+                    state = migration.apply(state, schema_editor, collect_sql=True)
                 else:
-                    state = migration.unapply(
-                        state, schema_editor, collect_sql=True)
+                    state = migration.unapply(state, schema_editor, collect_sql=True)
             statements.extend(schema_editor.collected_sql)
         return statements
 
-    def apply_migration(
-            self,
-            state,
-            migration,
-            fake=False,
-            fake_initial=False):
+    def apply_migration(self, state, migration, fake=False, fake_initial=False):
         """
         Runs a migration forwards.
         """
@@ -201,12 +183,10 @@ class MigrationExecutor(object):
         on initial migrations (as it only looks for CreateModel).
         """
         # Bail if the migration isn't the first one in its app
-        if [name for app, name in migration.dependencies if app ==
-                migration.app_label]:
+        if [name for app, name in migration.dependencies if app == migration.app_label]:
             return False, project_state
         if project_state is None:
-            after_state = self.loader.project_state(
-                (migration.app_label, migration.name), at_end=True)
+            after_state = self.loader.project_state((migration.app_label, migration.name), at_end=True)
         else:
             after_state = migration.mutate_state(project_state)
         apps = after_state.apps
@@ -219,8 +199,7 @@ class MigrationExecutor(object):
                     # We have to fetch the model to test with from the
                     # main app cache, as it's not a direct dependency.
                     model = global_apps.get_model(model._meta.swapped)
-                if model._meta.db_table not in self.connection.introspection.table_names(
-                        self.connection.cursor()):
+                if model._meta.db_table not in self.connection.introspection.table_names(self.connection.cursor()):
                     return False, project_state
                 found_create_migration = True
         # If we get this far and we found at least one CreateModel migration,

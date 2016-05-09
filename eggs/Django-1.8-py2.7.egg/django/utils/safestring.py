@@ -34,7 +34,6 @@ else:
 
 
 class SafeData(object):
-
     def __html__(self):
         """
         Returns the html representation of a string for interoperability.
@@ -49,7 +48,6 @@ class SafeBytes(bytes, SafeData):
     A bytes subclass that has been specifically marked as "safe" (requires no
     further escaping) for HTML output purposes.
     """
-
     def __add__(self, rhs):
         """
         Concatenating a safe byte string with another safe byte string or safe
@@ -83,7 +81,6 @@ class SafeText(six.text_type, SafeData):
     A unicode (Python 2) / str (Python 3) subclass that has been specifically
     marked as "safe" for HTML output purposes.
     """
-
     def __add__(self, rhs):
         """
         Concatenating a safe unicode string with another safe byte string or

@@ -34,8 +34,10 @@ class PTCitizenCardNumberField(Field):
     - The input string may or may not have an hyphen separating the identity number from the document's check-digits.
     - This field does NOT validate old ID card numbers (locally BI - 'Bilhete de Identidade').
     """
-    default_error_messages = {'badchecksum': _('The specified value is not a valid Citizen Card number.'), 'invalid': _(
-        'Citizen Card numbers have the format XXXXXXXXXYYX or XXXXXXXX-XYYX (where X is a digit and Y is an alphanumeric character).'), }
+    default_error_messages = {
+        'badchecksum': _('The specified value is not a valid Citizen Card number.'),
+        'invalid': _('Citizen Card numbers have the format XXXXXXXXXYYX or XXXXXXXX-XYYX (where X is a digit and Y is an alphanumeric character).'),
+    }
 
     def clean(self, value):
         super(PTCitizenCardNumberField, self).clean(value)
@@ -54,8 +56,7 @@ class PTCitizenCardNumberField(Field):
         decoded = [int(digit, 36) for digit in encoded]
 
         rectify = lambda value: value if value < 10 else value - 9
-        compute = lambda index, value: value if index % 2 else rectify(
-            2 * value)
+        compute = lambda index, value: value if index % 2 else rectify(2 * value)
 
         checksum = sum([compute(index, decoded_value)
                         for index, decoded_value in enumerate(decoded)])
@@ -73,8 +74,9 @@ class PTPhoneNumberField(Field):
     - Phone numbers have at least 3 and at most 9 digits and may optionally be prefixed with '00351' or '+351'.
     - The input string is allowed to contain spaces (though they will be stripped).
     """
-    default_error_messages = {'invalid': _(
-        'Phone numbers have at least 3 and at most 9 digits and may optionally be prefixed with \'00351\' or \'+351\'.'), }
+    default_error_messages = {
+        'invalid': _('Phone numbers have at least 3 and at most 9 digits and may optionally be prefixed with \'00351\' or \'+351\'.'),
+    }
 
     def clean(self, value):
         super(PTPhoneNumberField, self).clean(value)
@@ -97,7 +99,6 @@ class PTRegionSelect(Select):
 
     - Regions correspond to the Portuguese 'distritos' and 'regiões autónomas' as per ISO3166:2-PT.
     """
-
     def __init__(self, attrs=None):
         super(PTRegionSelect, self).__init__(attrs, choices=REGION_CHOICES)
 
@@ -108,8 +109,10 @@ class PTSocialSecurityNumberField(Field):
 
     - Social Security numbers must be in the format XYYYYYYYYYY (where X is either 1 or 2 and Y is any other digit).
     """
-    default_error_messages = {'badchecksum': _('The specified number is not a valid Social Security number.'), 'invalid': _(
-        'Social Security numbers must be in the format XYYYYYYYYYY (where X is either 1 or 2 and Y is any other digit).'), }
+    default_error_messages = {
+        'badchecksum': _('The specified number is not a valid Social Security number.'),
+        'invalid': _('Social Security numbers must be in the format XYYYYYYYYYY (where X is either 1 or 2 and Y is any other digit).'),
+    }
 
     def clean(self, value):
         super(PTSocialSecurityNumberField, self).clean(value)
@@ -143,16 +146,9 @@ class PTZipCodeField(RegexField):
     NOTE
     - Zip codes have the format XYYY-YYY (where X is a digit between 1 and 9 and Y is any other digit).
     """
-    default_error_messages = {'invalid': _(
-        'Zip codes must be in the format XYYY-YYY (where X is a digit between 1 and 9 and Y is any other digit).'), }
+    default_error_messages = {
+        'invalid': _('Zip codes must be in the format XYYY-YYY (where X is a digit between 1 and 9 and Y is any other digit).'),
+    }
 
     def __init__(self, max_length=None, min_length=None, *args, **kwargs):
-        super(
-            PTZipCodeField,
-            self).__init__(
-            ZIP_CODE_REGEX,
-            max_length,
-            min_length,
-            *
-            args,
-            **kwargs)
+        super(PTZipCodeField, self).__init__(ZIP_CODE_REGEX, max_length, min_length, *args, **kwargs)

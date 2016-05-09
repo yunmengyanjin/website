@@ -37,18 +37,14 @@ logger = logging.getLogger("default")
 register = template.Library()
 
 
-@register.inclusion_tag(
-    'lfs/portlets/category_children.html',
-    takes_context=True)
+@register.inclusion_tag('lfs/portlets/category_children.html', takes_context=True)
 def category_children(context, categories):
     """
     """
     return {"categories": categories}
 
 
-@register.inclusion_tag(
-    'lfs/shop/google_analytics_tracking.html',
-    takes_context=True)
+@register.inclusion_tag('lfs/shop/google_analytics_tracking.html', takes_context=True)
 def google_analytics_tracking(context):
     """Returns google analytics tracking code which has been entered to the
     shop.
@@ -60,9 +56,7 @@ def google_analytics_tracking(context):
     }
 
 
-@register.inclusion_tag(
-    'lfs/shop/google_analytics_ecommerce.html',
-    takes_context=True)
+@register.inclusion_tag('lfs/shop/google_analytics_ecommerce.html', takes_context=True)
 def google_analytics_ecommerce(context, clear_session=True):
     """Returns google analytics e-commerce tracking code. This should be
     displayed on the thank-you page.
@@ -93,15 +87,13 @@ def _get_shipping(context, product):
     if product.is_deliverable() == False:
         return {
             "deliverable": False,
-            "delivery_time": shipping_utils.get_product_delivery_time(
-                request,
-                product)}
+            "delivery_time": shipping_utils.get_product_delivery_time(request, product)
+        }
     else:
         return {
             "deliverable": True,
-            "delivery_time": shipping_utils.get_product_delivery_time(
-                request,
-                product)}
+            "delivery_time": shipping_utils.get_product_delivery_time(request, product)
+        }
 
 
 @register.inclusion_tag('lfs/shipping/shipping_tag.html', takes_context=True)
@@ -127,8 +119,7 @@ def breadcrumbs(context, obj, current_page=''):
     """
     """
     if isinstance(obj, Category):
-        cache_key = "%s-category-breadcrumbs-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, obj.slug)
+        cache_key = "%s-category-breadcrumbs-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, obj.slug)
         objects = cache.get(cache_key)
         if objects is not None:
             return objects
@@ -206,9 +197,7 @@ def breadcrumbs(context, obj, current_page=''):
     return result
 
 
-@register.inclusion_tag(
-    'lfs/catalog/product_navigation.html',
-    takes_context=True)
+@register.inclusion_tag('lfs/catalog/product_navigation.html', takes_context=True)
 def product_navigation(context, product):
     """Provides previous and next product links.
     """
@@ -240,8 +229,9 @@ def product_navigation(context, product):
     # as category view removes last_manufacturer from the session
     lm = request.session.get('last_manufacturer')
     if lm and product.manufacturer == lm:
-        cache_key = "%s-%s-product-navigation-manufacturer-%s" % (
-            settings.CACHE_MIDDLEWARE_KEY_PREFIX, pn_cache_key, slug)
+        cache_key = "%s-%s-product-navigation-manufacturer-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX,
+                                                                  pn_cache_key,
+                                                                  slug)
         res = cache.get(cache_key)
         if res and sorting in res:
             return res[sorting]
@@ -252,8 +242,9 @@ def product_navigation(context, product):
         if category is None:
             return {"display": False}
         else:
-            cache_key = "%s-%s-product-navigation-%s" % (
-                settings.CACHE_MIDDLEWARE_KEY_PREFIX, pn_cache_key, slug)
+            cache_key = "%s-%s-product-navigation-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX,
+                                                         pn_cache_key,
+                                                         slug)
             res = cache.get(cache_key)
             if res and sorting in res:
                 return res[sorting]
@@ -305,14 +296,12 @@ class ActionsNode(Node):
     """
     Node for do_actions.
     """
-
     def __init__(self, group_name):
         self.group_name = group_name
 
     def render(self, context):
         request = context.get("request")
-        context["actions"] = Action.objects.filter(
-            active=True, group__name=self.group_name)
+        context["actions"] = Action.objects.filter(active=True, group__name=self.group_name)
         return ''
 
 
@@ -323,9 +312,7 @@ def do_actions(parser, token):
     bits = token.contents.split()
     len_bits = len(bits)
     if len_bits != 2:
-        raise TemplateSyntaxError(
-            _('%s tag needs group id as argument') %
-            bits[0])
+        raise TemplateSyntaxError(_('%s tag needs group id as argument') % bits[0])
     return ActionsNode(bits[1])
 register.tag('actions', do_actions)
 
@@ -334,7 +321,6 @@ class CheapestVariantNode(Node):
     """
     Node for do_cheapest_variant.
     """
-
     def __init__(self, product_id):
         self.product_id = template.Variable(product_id)
 
@@ -362,9 +348,7 @@ def do_cheapest_variant(parser, token):
     bits = token.contents.split()
     len_bits = len(bits)
     if len_bits != 2:
-        raise TemplateSyntaxError(
-            '%s tag needs product id as argument' %
-            bits[0])
+        raise TemplateSyntaxError('%s tag needs product id as argument' % bits[0])
     return CheapestVariantNode(bits[1])
 register.tag('cheapest_variant', do_cheapest_variant)
 
@@ -397,9 +381,7 @@ def tabs(context, obj=None):
     }
 
 
-@register.inclusion_tag(
-    'lfs/catalog/top_level_categories.html',
-    takes_context=True)
+@register.inclusion_tag('lfs/catalog/top_level_categories.html', takes_context=True)
 def top_level_categories(context):
     """Displays the top level categories.
     """
@@ -430,13 +412,11 @@ def top_level_categories(context):
 class TopLevelCategory(Node):
     """Calculates the current top level category.
     """
-
     def render(self, context):
         request = context.get("request")
         obj = context.get("product") or context.get("category")
 
-        top_level_category = lfs.catalog.utils.get_current_top_category(
-            request, obj)
+        top_level_category = lfs.catalog.utils.get_current_top_category(request, obj)
         context["top_level_category"] = top_level_category.name
         return ''
 
@@ -456,7 +436,6 @@ register.tag('top_level_category', do_top_level_category)
 class CartInformationNode(Node):
     """
     """
-
     def render(self, context):
         request = context.get("request")
         cart = lfs.cart.utils.get_cart(request)
@@ -473,7 +452,7 @@ class CartInformationNode(Node):
 
 
 def do_cart_information(parser, token):
-    """Calculates cart information.
+    """Calculates cart informations.
     """
     bits = token.contents.split()
     len_bits = len(bits)
@@ -487,7 +466,6 @@ register.tag('cart_information', do_cart_information)
 class CurrentCategoryNode(Node):
     """
     """
-
     def render(self, context):
         request = context.get("request")
         product = context.get("product")
@@ -503,9 +481,7 @@ def do_current_category(parser, token):
     bits = token.contents.split()
     len_bits = len(bits)
     if len_bits != 2:
-        raise TemplateSyntaxError(
-            _('%s tag needs product as argument') %
-            bits[0])
+        raise TemplateSyntaxError(_('%s tag needs product as argument') % bits[0])
 
     return CurrentCategoryNode()
 register.tag('current_category', do_current_category)
@@ -514,7 +490,6 @@ register.tag('current_category', do_current_category)
 class ComeFromPageNode(Node):
     """
     """
-
     def render(self, context):
         request = context.get("request")
         product = context.get("product")
@@ -530,9 +505,7 @@ def do_come_from_page(parser, token):
     bits = token.contents.split()
     len_bits = len(bits)
     if len_bits != 2:
-        raise TemplateSyntaxError(
-            _('%s tag needs product as argument') %
-            bits[0])
+        raise TemplateSyntaxError(_('%s tag needs product as argument') % bits[0])
 
     return ComeFromPageNode()
 register.tag('come_from_page', do_come_from_page)
@@ -573,11 +546,8 @@ def currency_text(value, request=None, grouping=True):
 
     shop = lfs.core.utils.get_default_shop(request)
     try:
-        result = locale.currency(
-            value,
-            grouping=grouping,
-            international=shop.use_international_currency_code)
-    except ValueError as e:
+        result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
+    except ValueError, e:
         result = value
         logger.error("currency filter: %s" % e)
 
@@ -609,11 +579,8 @@ def currency(value, request=None, grouping=True):
 
     shop = lfs.core.utils.get_default_shop(request)
     try:
-        result = locale.currency(
-            value,
-            grouping=grouping,
-            international=shop.use_international_currency_code)
-    except ValueError as e:
+        result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
+    except ValueError, e:
         result = str(value)
         logger.error("currency filter: %s" % e)
 
@@ -724,7 +691,6 @@ def packages(cart_item):
 
 
 class CategoryProductPricesGrossNode(Node):
-
     def __init__(self, product_id):
         self.product_id = template.Variable(product_id)
 
@@ -754,8 +720,7 @@ class CategoryProductPricesGrossNode(Node):
             context["base_price_starting_from"] = info["starting_from"]
         else:
             if product.get_for_sale():
-                context["standard_price"] = product.get_standard_price_gross(
-                    request)
+                context["standard_price"] = product.get_standard_price_gross(request)
             context["price"] = product.get_price_gross(request)
             context["price_starting_from"] = False
 
@@ -763,8 +728,7 @@ class CategoryProductPricesGrossNode(Node):
             context["base_price_starting_from"] = False
 
         if product.get_active_packing_unit():
-            context["base_packing_price"] = product.get_base_packing_price_gross(
-                request)
+            context["base_packing_price"] = product.get_base_packing_price_gross(request)
 
         return ""
 
@@ -776,15 +740,12 @@ def do_category_product_prices_gross(parser, token):
     """
     bits = token.contents.split()
     if len(bits) != 2:
-        raise TemplateSyntaxError(
-            '%s tag needs product id as argument' %
-            bits[0])
+        raise TemplateSyntaxError('%s tag needs product id as argument' % bits[0])
     return CategoryProductPricesGrossNode(bits[1])
 register.tag('category_product_prices_gross', do_category_product_prices_gross)
 
 
 class CategoryProductPricesNetNode(Node):
-
     def __init__(self, product_id):
         self.product_id = template.Variable(product_id)
 
@@ -814,8 +775,7 @@ class CategoryProductPricesNetNode(Node):
             context["base_price_starting_from"] = info["starting_from"]
         else:
             if product.get_for_sale():
-                context["standard_price"] = product.get_standard_price_net(
-                    request)
+                context["standard_price"] = product.get_standard_price_net(request)
             context["price"] = product.get_price_net(request)
             context["price_starting_from"] = False
 
@@ -823,8 +783,7 @@ class CategoryProductPricesNetNode(Node):
             context["base_price_starting_from"] = False
 
         if product.get_active_packing_unit():
-            context["base_packing_price"] = product.get_base_packing_price_net(
-                request)
+            context["base_packing_price"] = product.get_base_packing_price_net(request)
 
         return ""
 
@@ -836,15 +795,12 @@ def do_category_product_prices_net(parser, token):
     """
     bits = token.contents.split()
     if len(bits) != 2:
-        raise TemplateSyntaxError(
-            '%s tag needs product id as argument' %
-            bits[0])
+        raise TemplateSyntaxError('%s tag needs product id as argument' % bits[0])
     return CategoryProductPricesNetNode(bits[1])
 register.tag('category_product_prices_net', do_category_product_prices_net)
 
 
 class CategoryProductPricesNode(Node):
-
     def __init__(self, product_id):
         self.product_id = template.Variable(product_id)
 
@@ -882,8 +838,7 @@ class CategoryProductPricesNode(Node):
             context["base_price_starting_from"] = False
 
         if product.get_active_packing_unit():
-            context["base_packing_price"] = product.get_base_packing_price(
-                request)
+            context["base_packing_price"] = product.get_base_packing_price(request)
 
         return ""
 
@@ -895,9 +850,7 @@ def do_category_product_prices(parser, token):
     """
     bits = token.contents.split()
     if len(bits) != 2:
-        raise TemplateSyntaxError(
-            '%s tag needs product id as argument' %
-            bits[0])
+        raise TemplateSyntaxError('%s tag needs product id as argument' % bits[0])
     return CategoryProductPricesNode(bits[1])
 register.tag('category_product_prices', do_category_product_prices)
 

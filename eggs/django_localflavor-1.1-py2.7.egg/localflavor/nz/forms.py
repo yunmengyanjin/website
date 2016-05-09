@@ -33,7 +33,6 @@ class NZRegionSelect(Select):
     A select widget with list of New Zealand regions as its choices.
 
     """
-
     def __init__(self, attrs=None):
         super(NZRegionSelect, self).__init__(attrs, choices=REGION_CHOICES)
 
@@ -43,7 +42,6 @@ class NZProvinceSelect(Select):
     A select widget with list of New Zealand provinces as its choices.
 
     """
-
     def __init__(self, attrs=None):
         super(NZProvinceSelect, self).__init__(attrs, choices=PROVINCE_CHOICES)
 
@@ -53,10 +51,8 @@ class NZNorthIslandCouncilSelect(Select):
     A select widget with list of New Zealand North Island city and district councils as its choices.
 
     """
-
     def __init__(self, attrs=None):
-        super(NZNorthIslandCouncilSelect, self).__init__(
-            attrs, choices=NORTH_ISLAND_COUNCIL_CHOICES)
+        super(NZNorthIslandCouncilSelect, self).__init__(attrs, choices=NORTH_ISLAND_COUNCIL_CHOICES)
 
 
 class NZSouthIslandCouncilSelect(Select):
@@ -64,10 +60,8 @@ class NZSouthIslandCouncilSelect(Select):
     A select widget with list of New Zealand South Island city and district councils as its choices.
 
     """
-
     def __init__(self, attrs=None):
-        super(NZSouthIslandCouncilSelect, self).__init__(
-            attrs, choices=SOUTH_ISLAND_COUNCIL_CHOICES)
+        super(NZSouthIslandCouncilSelect, self).__init__(attrs, choices=SOUTH_ISLAND_COUNCIL_CHOICES)
 
 
 class NZPostCodeField(RegexField):
@@ -81,7 +75,7 @@ class NZPostCodeField(RegexField):
 
     def __init__(self, *args, **kwargs):
         super(NZPostCodeField, self).__init__(r'^\d{4}$',
-                                              *args, **kwargs)
+            *args, **kwargs)
 
 
 class NZPhoneNumberField(Field):
@@ -144,8 +138,7 @@ class NZBankAccountNumberField(Field):
         match = BANK_ACCOUNT_NUMBER_RE.search(value)
         if match:
             # normalize the last part
-            last = '0%s' % match.group(4) if len(
-                match.group(4)) == 2 else match.group(4)
+            last = '0%s' % match.group(4) if len(match.group(4)) == 2 else match.group(4)
             return '%s-%s-%s-%s' % (match.group(1),
-                                    match.group(2), match.group(3), last)
+                match.group(2), match.group(3), last)
         raise ValidationError(self.error_messages['invalid'])

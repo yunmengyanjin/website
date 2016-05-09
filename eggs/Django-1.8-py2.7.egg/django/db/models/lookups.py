@@ -10,7 +10,6 @@ from .query_utils import QueryWrapper
 
 
 class RegisterLookupMixin(object):
-
     def _get_lookup(self, lookup_name):
         try:
             return self.class_lookups[lookup_name]
@@ -105,8 +104,7 @@ class Lookup(RegisterLookupMixin):
             # We need to import QuerySet here so as to avoid circular
             from django.db.models.query import QuerySet
             if isinstance(rhs, QuerySet):
-                raise NotImplementedError(
-                    "Bilateral transformations on nested querysets are not supported.")
+                raise NotImplementedError("Bilateral transformations on nested querysets are not supported.")
         self.bilateral_transforms = bilateral_transforms
 
     def apply_bilateral_transforms(self, value):
@@ -120,10 +118,8 @@ class Lookup(RegisterLookupMixin):
         if self.bilateral_transforms:
             sqls, sqls_params = [], []
             for p in rhs:
-                value = QueryWrapper(
-                    '%s', [
-                        self.lhs.output_field.get_db_prep_value(
-                            p, connection)])
+                value = QueryWrapper('%s',
+                    [self.lhs.output_field.get_db_prep_value(p, connection)])
                 value = self.apply_bilateral_transforms(value)
                 sql, sql_params = compiler.compile(value)
                 sqls.append(sql)
@@ -135,8 +131,7 @@ class Lookup(RegisterLookupMixin):
         return sqls, sqls_params
 
     def get_prep_lookup(self):
-        return self.lhs.output_field.get_prep_lookup(
-            self.lookup_name, self.rhs)
+        return self.lhs.output_field.get_prep_lookup(self.lookup_name, self.rhs)
 
     def get_db_prep_lookup(self, value, connection):
         return (
@@ -153,10 +148,8 @@ class Lookup(RegisterLookupMixin):
             if self.rhs_is_direct_value():
                 # Do not call get_db_prep_lookup here as the value will be
                 # transformed before being used for lookup
-                value = QueryWrapper(
-                    "%s", [
-                        self.lhs.output_field.get_db_prep_value(
-                            value, connection)])
+                value = QueryWrapper("%s",
+                    [self.lhs.output_field.get_db_prep_value(value, connection)])
             value = self.apply_bilateral_transforms(value)
         # Due to historical reasons there are a couple of different
         # ways to produce sql here. get_compiler is likely a Query
@@ -198,7 +191,6 @@ class Lookup(RegisterLookupMixin):
 
 
 class BuiltinLookup(Lookup):
-
     def process_lhs(self, compiler, connection, lhs=None):
         lhs_sql, params = super(BuiltinLookup, self).process_lhs(
             compiler, connection, lhs)
@@ -206,8 +198,7 @@ class BuiltinLookup(Lookup):
         db_type = self.lhs.output_field.db_type(connection=connection)
         lhs_sql = connection.ops.field_cast_sql(
             db_type, field_internal_type) % lhs_sql
-        lhs_sql = connection.ops.lookup_cast(
-            self.lookup_name, field_internal_type) % lhs_sql
+        lhs_sql = connection.ops.lookup_cast(self.lookup_name, field_internal_type) % lhs_sql
         return lhs_sql, params
 
     def as_sql(self, compiler, connection):
@@ -273,8 +264,7 @@ class In(BuiltinLookup):
             if not rhs:
                 from django.db.models.sql.datastructures import EmptyResultSet
                 raise EmptyResultSet
-            sqls, sqls_params = self.batch_process_rhs(
-                compiler, connection, rhs)
+            sqls, sqls_params = self.batch_process_rhs(compiler, connection, rhs)
             placeholder = '(' + ', '.join(sqls) + ')'
             return (placeholder, sqls_params)
         else:
@@ -327,9 +317,7 @@ class PatternLookup(BuiltinLookup):
         # pattern added.
         if (hasattr(self.rhs, 'get_compiler') or hasattr(self.rhs, 'as_sql')
                 or hasattr(self.rhs, '_as_sql') or self.bilateral_transforms):
-            pattern = connection.pattern_ops[
-                self.lookup_name].format(
-                connection.pattern_esc)
+            pattern = connection.pattern_ops[self.lookup_name].format(connection.pattern_esc)
             return pattern.format(rhs)
         else:
             return super(PatternLookup, self).get_rhs_op(connection, rhs)
@@ -341,8 +329,7 @@ class Contains(PatternLookup):
     def process_rhs(self, qn, connection):
         rhs, params = super(Contains, self).process_rhs(qn, connection)
         if params and not self.bilateral_transforms:
-            params[0] = "%%%s%%" % connection.ops.prep_for_like_query(params[
-                                                                      0])
+            params[0] = "%%%s%%" % connection.ops.prep_for_like_query(params[0])
         return rhs, params
 
 
@@ -409,7 +396,6 @@ default_lookups['iendswith'] = IEndsWith
 
 
 class Between(BuiltinLookup):
-
     def get_rhs_op(self, connection, rhs):
         return "BETWEEN %s AND %s" % (rhs, rhs)
 
@@ -437,18 +423,13 @@ default_lookups['range'] = Range
 
 
 class DateLookup(BuiltinLookup):
-
     def process_lhs(self, compiler, connection, lhs=None):
         from django.db.models import DateTimeField
-        lhs, params = super(
-            DateLookup, self).process_lhs(
-            compiler, connection, lhs)
+        lhs, params = super(DateLookup, self).process_lhs(compiler, connection, lhs)
         if isinstance(self.lhs.output_field, DateTimeField):
             tzname = timezone.get_current_timezone_name() if settings.USE_TZ else None
-            sql, tz_params = connection.ops.datetime_extract_sql(
-                self.extract_type, lhs, tzname)
-            return connection.ops.lookup_cast(
-                self.lookup_name) % sql, tz_params
+            sql, tz_params = connection.ops.datetime_extract_sql(self.extract_type, lhs, tzname)
+            return connection.ops.lookup_cast(self.lookup_name) % sql, tz_params
         else:
             return connection.ops.date_extract_sql(self.lookup_name, lhs), []
 

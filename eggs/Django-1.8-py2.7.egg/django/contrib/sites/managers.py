@@ -28,23 +28,24 @@ class CurrentSiteManager(models.Manager):
         except FieldDoesNotExist:
             return [
                 checks.Error(
-                    "CurrentSiteManager could not find a field named '%s'." %
-                    field_name,
+                    "CurrentSiteManager could not find a field named '%s'." % field_name,
                     hint=None,
                     obj=self,
                     id='sites.E001',
-                )]
+                )
+            ]
 
         if not isinstance(field, (models.ForeignKey, models.ManyToManyField)):
             return [
                 checks.Error(
-                    "CurrentSiteManager cannot use '%s.%s' as it is not a ForeignKey or ManyToManyField." %
-                    (self.model._meta.object_name,
-                     field_name),
+                    "CurrentSiteManager cannot use '%s.%s' as it is not a ForeignKey or ManyToManyField." % (
+                        self.model._meta.object_name, field_name
+                    ),
                     hint=None,
                     obj=self,
                     id='sites.E002',
-                )]
+                )
+            ]
 
         return []
 

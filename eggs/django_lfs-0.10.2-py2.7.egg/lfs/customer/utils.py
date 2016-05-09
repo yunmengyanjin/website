@@ -34,14 +34,10 @@ def create_customer(request):
     shop = lfs.core.utils.get_default_shop(request)
 
     address_model = lfs.core.utils.import_symbol(ADDRESS_MODEL)
-    customer.default_invoice_address = address_model.objects.create(
-        customer=customer, country=shop.default_country)
-    customer.default_shipping_address = address_model.objects.create(
-        customer=customer, country=shop.default_country)
-    customer.selected_invoice_address = address_model.objects.create(
-        customer=customer, country=shop.default_country)
-    customer.selected_shipping_address = address_model.objects.create(
-        customer=customer, country=shop.default_country)
+    customer.default_invoice_address = address_model.objects.create(customer=customer, country=shop.default_country)
+    customer.default_shipping_address = address_model.objects.create(customer=customer, country=shop.default_country)
+    customer.selected_invoice_address = address_model.objects.create(customer=customer, country=shop.default_country)
+    customer.selected_shipping_address = address_model.objects.create(customer=customer, country=shop.default_country)
     customer.save()
 
     customer.default_invoice_address.customer = customer
@@ -82,8 +78,7 @@ def _get_customer(request):
         except ObjectDoesNotExist:
             return None
         except MultipleObjectsReturned:
-            customers = Customer.objects.filter(
-                session=session_key, user__isnull=True)
+            customers = Customer.objects.filter(session=session_key, user__isnull=True)
             customer = customers[0]
             customers.exclude(pk=customer.pk).delete()
             return customer
@@ -99,8 +94,7 @@ def update_customer_after_login(request):
        customer information to the user customer and delete the session customer
     """
     try:
-        session_customer = Customer.objects.get(
-            session=request.session.session_key)
+        session_customer = Customer.objects.get(session=request.session.session_key)
         try:
             user_customer = Customer.objects.get(user=request.user)
         except ObjectDoesNotExist:

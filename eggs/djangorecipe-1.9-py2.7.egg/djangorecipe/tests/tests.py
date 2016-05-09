@@ -53,7 +53,7 @@ class TestRecipe(BaseTestRecipe):
     def test_consistent_options(self):
         # Buildout is pretty clever in detecting changing options. If
         # the recipe modifies it's options during initialisation it
-        # will store this to determine whether it needs to update or do
+        # will store this to determine wheter it needs to update or do
         # a uninstall & install. We need to make sure that we normally
         # do not trigger this. That means running the recipe with the
         # same options should give us the same results.
@@ -173,9 +173,9 @@ class TestRecipeScripts(BaseTestRecipe):
 
         # The contents should list our paths
         contents = open(wsgi_script).read()
-        # It should also have a reference to our settings module
+         # It should also have a reference to our settings module
         self.assertTrue('project.development' in contents)
-        # and a line which set's up the WSGI app
+         # and a line which set's up the WSGI app
         self.assertTrue("application = "
                         "djangorecipe.wsgi.main('project.development', "
                         "logfile='')"
@@ -324,22 +324,22 @@ class TestTesTRunner(BaseTestRecipe):
 
     def test_relative_paths_true(self):
         recipe = Recipe({
-            'buildout': {
-                'eggs-directory': self.eggs_dir,
-                'develop-eggs-directory': self.develop_eggs_dir,
-                'python': 'python-version',
-                'bin-directory': self.bin_dir,
-                'parts-directory': self.parts_dir,
-                'directory': self.buildout_dir,
-                'find-links': '',
-                'allow-hosts': '',
-                'develop': '.',
-                'relative-paths': 'true'
-            },
-            'python-version': {'executable': sys.executable}},
-            'django',
-            {'recipe': 'djangorecipe',
-             'wsgi': 'true'})
+                'buildout': {
+                    'eggs-directory': self.eggs_dir,
+                    'develop-eggs-directory': self.develop_eggs_dir,
+                    'python': 'python-version',
+                    'bin-directory': self.bin_dir,
+                    'parts-directory': self.parts_dir,
+                    'directory': self.buildout_dir,
+                    'find-links': '',
+                    'allow-hosts': '',
+                    'develop': '.',
+                    'relative-paths': 'true'
+                    },
+                'python-version': {'executable': sys.executable}},
+                             'django',
+                             {'recipe': 'djangorecipe',
+                              'wsgi': 'true'})
         recipe.make_scripts([], [])
         recipe.create_manage_script([], [])
 
@@ -369,7 +369,7 @@ class TestBoilerplate(BaseTestRecipe):
                          }
         from djangorecipe.boilerplate import versions
         self.assertEqual(versions['Newest']['settings'] % settings_dict,
-                         settings)
+                          settings)
 
     def test_boilerplate_1_2(self):
         """Test the boilerplate for django 1.2."""
@@ -392,4 +392,4 @@ class TestBoilerplate(BaseTestRecipe):
         from djangorecipe.boilerplate import versions
 
         self.assertEqual(versions['1.2']['settings'] % settings_dict,
-                         settings)
+                          settings)

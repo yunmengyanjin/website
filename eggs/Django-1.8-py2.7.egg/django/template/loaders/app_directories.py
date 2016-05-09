@@ -33,8 +33,7 @@ class Loader(BaseLoader):
                 pass
 
     def load_template_source(self, template_name, template_dirs=None):
-        for filepath in self.get_template_sources(
-                template_name, template_dirs):
+        for filepath in self.get_template_sources(template_name, template_dirs):
             try:
                 with io.open(filepath, encoding=self.engine.file_charset) as fp:
                     return fp.read(), filepath

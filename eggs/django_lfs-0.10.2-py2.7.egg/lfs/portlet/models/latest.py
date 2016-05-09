@@ -22,8 +22,7 @@ class LatestPortlet(Portlet):
     name = _("Latest products")
 
     limit = models.IntegerField(_(u"Limit"), default=5)
-    current_category = models.BooleanField(
-        _(u"Use current category"), default=False)
+    current_category = models.BooleanField(_(u"Use current category"), default=False)
     slideshow = models.BooleanField(_(u"Slideshow"), default=False)
 
     @property
@@ -36,19 +35,15 @@ class LatestPortlet(Portlet):
         request = context.get("request")
 
         latest_products = []
-        products = Product.objects.filter(
-            active=True).exclude(
-            sub_type=VARIANT)
+        products = Product.objects.filter(active=True).exclude(sub_type=VARIANT)
         if self.current_category:
             obj = context.get("category") or context.get("product")
             if obj:
-                category = obj if isinstance(
-                    obj, Category) else obj.get_current_category(request)
+                category = obj if isinstance(obj, Category) else obj.get_current_category(request)
                 categories = [category]
                 categories.extend(category.get_all_children())
                 filters = {"product__categories__in": categories}
-                products = products.filter(
-                    **filters).order_by('-creation_date')[:self.limit]
+                products = products.filter(**filters).order_by('-creation_date')[:self.limit]
         else:
             products = products.order_by('-creation_date')[:self.limit]
 
@@ -58,11 +53,11 @@ class LatestPortlet(Portlet):
             else:
                 latest_products.append(product)
 
-        return render_to_string("lfs/portlets/latest.html",
-                                RequestContext(request,
-                                               {"title": self.rendered_title,
-                                                "slideshow": self.slideshow,
-                                                "products": latest_products}))
+        return render_to_string("lfs/portlets/latest.html", RequestContext(request, {
+            "title": self.rendered_title,
+            "slideshow": self.slideshow,
+            "products": latest_products
+        }))
 
     def form(self, **kwargs):
         """

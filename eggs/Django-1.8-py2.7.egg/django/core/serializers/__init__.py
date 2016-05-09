@@ -109,8 +109,7 @@ def get_serializer_formats():
 def get_public_serializer_formats():
     if not _serializers:
         _load_serializers()
-    return [k for k, v in six.iteritems(
-        _serializers) if not v.Serializer.internal_use_only]
+    return [k for k, v in six.iteritems(_serializers) if not v.Serializer.internal_use_only]
 
 
 def get_deserializer(format):
@@ -154,10 +153,7 @@ def _load_serializers():
         register_serializer(format, BUILTIN_SERIALIZERS[format], serializers)
     if hasattr(settings, "SERIALIZATION_MODULES"):
         for format in settings.SERIALIZATION_MODULES:
-            register_serializer(
-                format,
-                settings.SERIALIZATION_MODULES[format],
-                serializers)
+            register_serializer(format, settings.SERIALIZATION_MODULES[format], serializers)
     _serializers = serializers
 
 
@@ -190,8 +186,7 @@ def sort_dependencies(app_list):
             for field in model._meta.fields:
                 if hasattr(field.rel, 'to'):
                     rel_model = field.rel.to
-                    if hasattr(rel_model,
-                               'natural_key') and rel_model != model:
+                    if hasattr(rel_model, 'natural_key') and rel_model != model:
                         deps.append(rel_model)
             # Also add a dependency for any simple M2M relation with a model
             # that defines a natural key.  M2M relations with explicit through
@@ -199,8 +194,7 @@ def sort_dependencies(app_list):
             for field in model._meta.many_to_many:
                 if field.rel.through._meta.auto_created:
                     rel_model = field.rel.to
-                    if hasattr(rel_model,
-                               'natural_key') and rel_model != model:
+                    if hasattr(rel_model, 'natural_key') and rel_model != model:
                         deps.append(rel_model)
             model_dependencies.append((model, deps))
 
@@ -222,11 +216,9 @@ def sort_dependencies(app_list):
 
             # If all of the models in the dependency list are either already
             # on the final model list, or not on the original serialization list,
-            # then we've found another model with all it's dependencies
-            # satisfied.
+            # then we've found another model with all it's dependencies satisfied.
             found = True
-            for candidate in ((d not in models or d in model_list)
-                              for d in deps):
+            for candidate in ((d not in models or d in model_list) for d in deps):
                 if not candidate:
                     found = False
             if found:
@@ -235,12 +227,10 @@ def sort_dependencies(app_list):
             else:
                 skipped.append((model, deps))
         if not changed:
-            raise RuntimeError(
-                "Can't resolve dependencies for %s in serialized app list." %
-                ', '.join(
-                    '%s.%s' %
-                    (model._meta.app_label, model._meta.object_name) for model, deps in sorted(
-                        skipped, key=lambda obj: obj[0].__name__)))
+            raise RuntimeError("Can't resolve dependencies for %s in serialized app list." %
+                ', '.join('%s.%s' % (model._meta.app_label, model._meta.object_name)
+                for model, deps in sorted(skipped, key=lambda obj: obj[0].__name__))
+            )
         model_dependencies = skipped
 
     return model_list

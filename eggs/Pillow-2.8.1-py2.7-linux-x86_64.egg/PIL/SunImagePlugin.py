@@ -71,10 +71,9 @@ class SunImageFile(ImageFile.ImageFile):
         stride = (((self.size[0] * depth + 7) // 8) + 3) & (~3)
 
         if compression == 1:
-            self.tile = [
-                ("raw", (0, 0) + self.size, offset, (rawmode, stride))]
+            self.tile = [("raw", (0, 0)+self.size, offset, (rawmode, stride))]
         elif compression == 2:
-            self.tile = [("sun_rle", (0, 0) + self.size, offset, rawmode)]
+            self.tile = [("sun_rle", (0, 0)+self.size, offset, rawmode)]
 
 #
 # registry

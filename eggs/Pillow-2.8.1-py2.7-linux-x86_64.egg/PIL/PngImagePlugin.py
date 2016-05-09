@@ -52,20 +52,20 @@ _MAGIC = b"\211PNG\r\n\032\n"
 
 _MODES = {
     # supported bits/color combinations, and corresponding modes/rawmodes
-    (1, 0): ("1", "1"),
-    (2, 0): ("L", "L;2"),
-    (4, 0): ("L", "L;4"),
-    (8, 0): ("L", "L"),
+    (1, 0):  ("1", "1"),
+    (2, 0):  ("L", "L;2"),
+    (4, 0):  ("L", "L;4"),
+    (8, 0):  ("L", "L"),
     (16, 0): ("I", "I;16B"),
-    (8, 2): ("RGB", "RGB"),
+    (8, 2):  ("RGB", "RGB"),
     (16, 2): ("RGB", "RGB;16B"),
-    (1, 3): ("P", "P;1"),
-    (2, 3): ("P", "P;2"),
-    (4, 3): ("P", "P;4"),
-    (8, 3): ("P", "P"),
-    (8, 4): ("LA", "LA"),
+    (1, 3):  ("P", "P;1"),
+    (2, 3):  ("P", "P;2"),
+    (4, 3):  ("P", "P;4"),
+    (8, 3):  ("P", "P"),
+    (8, 4):  ("LA", "LA"),
     (16, 4): ("RGBA", "LA;16B"),  # LA;16B->LA not yet available
-    (8, 6): ("RGBA", "RGBA"),
+    (8, 6):  ("RGBA", "RGBA"),
     (16, 6): ("RGBA", "RGBA;16B"),
 }
 
@@ -77,7 +77,6 @@ _simple_palette = re.compile(b'^\xff+\x00\xff*$')
 MAX_TEXT_CHUNK = ImageFile.SAFEBLOCK
 # Set the maximum total text chunk size.
 MAX_TEXT_MEMORY = 64 * MAX_TEXT_CHUNK
-
 
 def _safe_zlib_decompress(s):
     dobj = zlib.decompressobj()
@@ -279,9 +278,8 @@ class PngStream(ChunkStream):
     def check_text_memory(self, chunklen):
         self.text_memory += chunklen
         if self.text_memory > MAX_TEXT_MEMORY:
-            raise ValueError(
-                "Too much memory used in text chunks: %s>MAX_TEXT_MEMORY" %
-                self.text_memory)
+            raise ValueError("Too much memory used in text chunks: %s>MAX_TEXT_MEMORY" %
+                             self.text_memory)
 
     def chunk_iCCP(self, pos, length):
 
@@ -301,7 +299,7 @@ class PngStream(ChunkStream):
             raise SyntaxError("Unknown compression method %s in iCCP chunk" %
                               comp_method)
         try:
-            icc_profile = _safe_zlib_decompress(s[i + 2:])
+            icc_profile = _safe_zlib_decompress(s[i+2:])
         except zlib.error:
             icc_profile = None  # FIXME
         self.im_info["icc_profile"] = icc_profile
@@ -325,7 +323,7 @@ class PngStream(ChunkStream):
     def chunk_IDAT(self, pos, length):
 
         # image data
-        self.im_tile = [("zip", (0, 0) + self.im_size, pos, self.im_rawmode)]
+        self.im_tile = [("zip", (0, 0)+self.im_size, pos, self.im_rawmode)]
         self.im_idat = length
         raise EOFError
 
@@ -594,19 +592,19 @@ o32 = _binary.o32be
 
 _OUTMODES = {
     # supported PIL modes, and corresponding rawmodes/bits/color combinations
-    "1": ("1", b'\x01\x00'),
-    "L;1": ("L;1", b'\x01\x00'),
-    "L;2": ("L;2", b'\x02\x00'),
-    "L;4": ("L;4", b'\x04\x00'),
-    "L": ("L", b'\x08\x00'),
-    "LA": ("LA", b'\x08\x04'),
-    "I": ("I;16B", b'\x10\x00'),
-    "P;1": ("P;1", b'\x01\x03'),
-    "P;2": ("P;2", b'\x02\x03'),
-    "P;4": ("P;4", b'\x04\x03'),
-    "P": ("P", b'\x08\x03'),
-    "RGB": ("RGB", b'\x08\x02'),
-    "RGBA": ("RGBA", b'\x08\x06'),
+    "1":    ("1",       b'\x01\x00'),
+    "L;1":  ("L;1",     b'\x01\x00'),
+    "L;2":  ("L;2",     b'\x02\x00'),
+    "L;4":  ("L;4",     b'\x04\x00'),
+    "L":    ("L",       b'\x08\x00'),
+    "LA":   ("LA",      b'\x08\x04'),
+    "I":    ("I;16B",   b'\x10\x00'),
+    "P;1":  ("P;1",     b'\x01\x03'),
+    "P;2":  ("P;2",     b'\x02\x03'),
+    "P;4":  ("P;4",     b'\x04\x03'),
+    "P":    ("P",       b'\x08\x03'),
+    "RGB":  ("RGB",     b'\x08\x02'),
+    "RGBA": ("RGBA",    b'\x08\x06'),
 }
 
 
@@ -647,7 +645,7 @@ def _save(im, fp, filename, chunk=putchunk, check=0):
         else:
             # check palette contents
             if im.palette:
-                colors = max(min(len(im.palette.getdata()[1]) // 3, 256), 2)
+                colors = max(min(len(im.palette.getdata()[1])//3, 256), 2)
             else:
                 colors = 256
 
@@ -756,7 +754,7 @@ def _save(im, fp, filename, chunk=putchunk, check=0):
         chunk(fp, b"iCCP", data)
 
     ImageFile._save(im, _idat(fp, chunk),
-                    [("zip", (0, 0) + im.size, 0, rawmode)])
+                    [("zip", (0, 0)+im.size, 0, rawmode)])
 
     chunk(fp, b"IEND", b"")
 

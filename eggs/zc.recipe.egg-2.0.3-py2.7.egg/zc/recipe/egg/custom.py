@@ -59,7 +59,8 @@ class Custom(Base):
             self.environment = buildout[environment_section]
         else:
             self.environment = {}
-        environment_data = sorted(self.environment.items())
+        environment_data = list(self.environment.items())
+        environment_data.sort()
         options['_environment-data'] = repr(environment_data)
 
         options['_e'] = buildout['buildout']['eggs-directory']
@@ -79,6 +80,7 @@ class Custom(Base):
             else:
                 logger.warn("The eggs option is deprecated. Use egg instead")
 
+
         distribution = options.get('egg', options.get('eggs', self.name)
                                    ).strip()
         self._set_environment()
@@ -87,9 +89,10 @@ class Custom(Base):
                 distribution, options['_d'], self.build_ext,
                 self.links, self.index, sys.executable,
                 [options['_e']], newest=self.newest,
-            )
+                )
         finally:
             self._restore_environment()
+
 
     def _set_environment(self):
         self._saved_environment = {}
@@ -135,7 +138,7 @@ def build_ext(buildout, options):
             os.path.join(
                 buildout['buildout']['directory'],
                 v.strip()
-            )
+                )
             for v in value.strip().split('\n')
             if v.strip()
         ]
@@ -147,18 +150,17 @@ def build_ext(buildout, options):
     # http://man7.org/linux/man-pages/man8/ld.so.8.html
     RPATH_SPECIAL = [
         '$ORIGIN', '$LIB', '$PLATFORM', '${ORIGIN}', '${LIB}', '${PLATFORM}']
-
     def _prefix_non_special(x):
         x = x.strip()
         for special in RPATH_SPECIAL:
             if x.startswith(special):
                 return x
-        return os.path.join(buildout['buildout']['directory'], x)
+        return os.path.join( buildout['buildout']['directory'], x)
 
     value = options.get('rpath')
     if value is not None:
         values = [_prefix_non_special(v)
-                  for v in value.strip().split('\n') if v.strip()]
+                    for v in value.strip().split('\n') if v.strip()]
         result['rpath'] = os.pathsep.join(values)
         options['rpath'] = os.pathsep.join(values)
 
@@ -167,7 +169,7 @@ def build_ext(buildout, options):
         options['swig'] = result['swig'] = os.path.join(
             buildout['buildout']['directory'],
             swig,
-        )
+            )
 
     for be_option in ('define', 'undef', 'libraries', 'link-objects',
                       'debug', 'force', 'compiler', 'swig-cpp', 'swig-opts',

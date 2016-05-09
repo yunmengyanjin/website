@@ -12,7 +12,6 @@ __all__ = ['ArrayField']
 
 
 class AttributeSetter(object):
-
     def __init__(self, name, value):
         setattr(self, name, value)
 
@@ -47,9 +46,7 @@ class ArrayField(Field):
             # Remove the field name checks as they are not needed here.
             base_errors = self.base_field.check()
             if base_errors:
-                messages = '\n    '.join(
-                    '%s (%s)' %
-                    (error.msg, error.id) for error in base_errors)
+                messages = '\n    '.join('%s (%s)' % (error.msg, error.id) for error in base_errors)
                 errors.append(
                     checks.Error(
                         'Base field for array has errors:\n    %s' % messages,
@@ -74,8 +71,7 @@ class ArrayField(Field):
 
     def get_db_prep_value(self, value, connection, prepared=False):
         if isinstance(value, list) or isinstance(value, tuple):
-            return [self.base_field.get_db_prep_value(
-                i, connection, prepared) for i in value]
+            return [self.base_field.get_db_prep_value(i, connection, prepared) for i in value]
         return value
 
     def deconstruct(self):
@@ -119,8 +115,7 @@ class ArrayField(Field):
         try:
             start, end = name.split('_')
             start = int(start) + 1
-            # don't add one here because postgres slices are weird
-            end = int(end)
+            end = int(end)  # don't add one here because postgres slices are weird
         except ValueError:
             pass
         else:
@@ -133,12 +128,9 @@ class ArrayField(Field):
                 self.base_field.validate(part, model_instance)
             except exceptions.ValidationError as e:
                 raise exceptions.ValidationError(
-                    string_concat(
-                        self.error_messages['item_invalid'],
-                        e.message),
+                    string_concat(self.error_messages['item_invalid'], e.message),
                     code='item_invalid',
-                    params={
-                        'nth': i},
+                    params={'nth': i},
                 )
         if isinstance(self.base_field, ArrayField):
             if len({len(i) for i in value}) > 1:
@@ -154,13 +146,9 @@ class ArrayField(Field):
                 self.base_field.run_validators(part)
             except exceptions.ValidationError as e:
                 raise exceptions.ValidationError(
-                    string_concat(
-                        self.error_messages['item_invalid'],
-                        ' '.join(
-                            e.messages)),
+                    string_concat(self.error_messages['item_invalid'], ' '.join(e.messages)),
                     code='item_invalid',
-                    params={
-                        'nth': i},
+                    params={'nth': i},
                 )
 
     def formfield(self, **kwargs):
@@ -175,7 +163,6 @@ class ArrayField(Field):
 
 @ArrayField.register_lookup
 class ArrayContains(lookups.DataContains):
-
     def as_sql(self, qn, connection):
         sql, params = super(ArrayContains, self).as_sql(qn, connection)
         sql += '::%s' % self.lhs.output_field.db_type(connection)
@@ -184,7 +171,6 @@ class ArrayContains(lookups.DataContains):
 
 @ArrayField.register_lookup
 class ArrayContainedBy(lookups.ContainedBy):
-
     def as_sql(self, qn, connection):
         sql, params = super(ArrayContainedBy, self).as_sql(qn, connection)
         sql += '::%s' % self.lhs.output_field.db_type(connection)
@@ -193,7 +179,6 @@ class ArrayContainedBy(lookups.ContainedBy):
 
 @ArrayField.register_lookup
 class ArrayOverlap(lookups.Overlap):
-
     def as_sql(self, qn, connection):
         sql, params = super(ArrayOverlap, self).as_sql(qn, connection)
         sql += '::%s' % self.lhs.output_field.db_type(connection)

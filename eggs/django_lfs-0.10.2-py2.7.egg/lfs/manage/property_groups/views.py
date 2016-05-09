@@ -42,10 +42,7 @@ def manage_property_groups(request):
 
 
 @permission_required("core.manage_shop")
-def manage_property_group(
-        request,
-        id,
-        template_name="manage/property_groups/property_group.html"):
+def manage_property_group(request, id, template_name="manage/property_groups/property_group.html"):
     """Edits property group with given id.
     """
     property_group = get_object_or_404(PropertyGroup, pk=id)
@@ -54,10 +51,7 @@ def manage_property_group(
         if form.is_valid():
             form.save()
             return lfs.core.utils.set_message_cookie(
-                url=reverse(
-                    "lfs_manage_property_group",
-                    kwargs={
-                        "id": property_group.id}),
+                url=reverse("lfs_manage_property_group", kwargs={"id": property_group.id}),
                 msg=_(u"Property group has been saved."),
             )
     else:
@@ -74,34 +68,26 @@ def manage_property_group(
 
 
 @permission_required("core.manage_shop")
-def no_property_groups(
-        request,
-        template_name="manage/property_groups/no_property_groups.html"):
+def no_property_groups(request, template_name="manage/property_groups/no_property_groups.html"):
     """Displays that there are no property groups.
     """
     return render_to_response(template_name, RequestContext(request, {}))
 
 
 @permission_required("core.manage_shop")
-def properties_inline(
-        request,
-        id,
-        template_name="manage/property_groups/properties_inline.html"):
+def properties_inline(request, id, template_name="manage/property_groups/properties_inline.html"):
     """
     """
     property_group = get_object_or_404(PropertyGroup, pk=id)
 
-    gps = GroupsPropertiesRelation.objects.filter(
-        group=id).select_related('property')
+    gps = GroupsPropertiesRelation.objects.filter(group=id).select_related('property')
 
     # Calculate assignable properties
     #assigned_property_ids = [p.property.id for p in gps]
-    # assignable_properties = Property.objects.exclude(
+    #assignable_properties = Property.objects.exclude(
     #    pk__in=assigned_property_ids).exclude(local=True)
 
-    assignable_properties = Property.objects.exclude(
-        local=True).exclude(
-        groupspropertiesrelation__in=gps)
+    assignable_properties = Property.objects.exclude(local=True).exclude(groupspropertiesrelation__in=gps)
     assignable_properties = assignable_properties.order_by('name')
 
     return render_to_string(template_name, RequestContext(request, {
@@ -112,9 +98,7 @@ def properties_inline(
 
 
 @permission_required("core.manage_shop")
-def add_property_group(
-        request,
-        template_name="manage/property_groups/add_property_group.html"):
+def add_property_group(request, template_name="manage/property_groups/add_property_group.html"):
     """Adds a new property group
     """
     if request.method == "POST":
@@ -122,22 +106,17 @@ def add_property_group(
         if form.is_valid():
             property_group = form.save()
             return lfs.core.utils.set_message_cookie(
-                url=reverse(
-                    "lfs_manage_property_group",
-                    kwargs={
-                        "id": property_group.id}),
+                url=reverse("lfs_manage_property_group", kwargs={"id": property_group.id}),
                 msg=_(u"Property group has been added."),
             )
     else:
         form = PropertyGroupForm()
 
-    return render_to_response(template_name,
-                              RequestContext(request,
-                                             {"form": form,
-                                              "property_groups": PropertyGroup.objects.all(),
-                                              "came_from": request.REQUEST.get("came_from",
-                                                                               reverse("lfs_manage_property_groups")),
-                                              }))
+    return render_to_response(template_name, RequestContext(request, {
+        "form": form,
+        "property_groups": PropertyGroup.objects.all(),
+        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_property_groups")),
+    }))
 
 
 @permission_required("core.manage_shop")
@@ -159,8 +138,7 @@ def assign_properties(request, group_id):
     """Assignes given properties (via request body) to passed group id.
     """
     for property_id in request.POST.getlist("property-id"):
-        GroupsPropertiesRelation.objects.get_or_create(
-            group_id=group_id, property_id=property_id)
+        GroupsPropertiesRelation.objects.get_or_create(group_id=group_id, property_id=property_id)
 
     _udpate_positions(group_id)
 
@@ -180,8 +158,7 @@ def update_properties(request, group_id):
     if request.POST.get("action") == "remove":
         for property_id in request.POST.getlist("property-id"):
             try:
-                gp = GroupsPropertiesRelation.objects.get(
-                    group=group_id, property=property_id)
+                gp = GroupsPropertiesRelation.objects.get(group=group_id, property=property_id)
             except GroupsPropertiesRelation.DoesNotExist:
                 pass
             else:
@@ -210,10 +187,7 @@ def update_properties(request, group_id):
 
 # Product tab
 @permission_required("core.manage_shop")
-def products_tab(
-        request,
-        product_group_id,
-        template_name="manage/property_groups/products.html"):
+def products_tab(request, product_group_id, template_name="manage/property_groups/products.html"):
     """Renders the products tab of the property groups management views.
     """
     property_group = PropertyGroup.objects.get(pk=product_group_id)
@@ -226,11 +200,8 @@ def products_tab(
 
 
 @permission_required("core.manage_shop")
-def products_inline(
-        request,
-        product_group_id,
-        as_string=False,
-        template_name="manage/property_groups/products_inline.html"):
+def products_inline(request, product_group_id, as_string=False,
+                    template_name="manage/property_groups/products_inline.html"):
     """Renders the products tab of the property groups management views.
     """
     property_group = PropertyGroup.objects.get(pk=product_group_id)
@@ -251,7 +222,7 @@ def products_inline(
         page = r.get("page", s.get("property_group_page", 1))
         filter_ = r.get("filter", s.get("filter"))
         category_filter = r.get("products_category_filter",
-                                s.get("products_category_filter"))
+                          s.get("products_category_filter"))
     else:
         page = r.get("page", 1)
         filter_ = r.get("filter")
@@ -315,8 +286,7 @@ def assign_products(request, group_id):
             product = Product.objects.get(pk=temp_id)
             property_group.products.add(product)
 
-    html = [["#products-inline",
-             products_inline(request, group_id, as_string=True)]]
+    html = [["#products-inline", products_inline(request, group_id, as_string=True)]]
     result = json.dumps({
         "html": html,
         "message": _(u"Products have been assigned.")
@@ -338,11 +308,9 @@ def remove_products(request, group_id):
             property_group.products.remove(product)
 
             # Notify removing
-            product_removed_property_group.send(
-                sender=property_group, product=product)
+            product_removed_property_group.send(sender=property_group, product=product)
 
-    html = [["#products-inline",
-             products_inline(request, group_id, as_string=True)]]
+    html = [["#products-inline", products_inline(request, group_id, as_string=True)]]
     result = json.dumps({
         "html": html,
         "message": _(u"Products have been removed.")
@@ -354,9 +322,7 @@ def remove_products(request, group_id):
 def _udpate_positions(group_id):
     """
     """
-    for i, gp in enumerate(
-            GroupsPropertiesRelation.objects.filter(
-            group=group_id)):
+    for i, gp in enumerate(GroupsPropertiesRelation.objects.filter(group=group_id)):
         gp.position = (i + 1) * 10
         gp.save()
 

@@ -83,7 +83,6 @@ NON_FIELD_ERRORS = '__all__'
 
 class ValidationError(Exception):
     """An error while validating data."""
-
     def __init__(self, message, code=None, params=None):
         """
         The `message` argument can be a single error, a list of errors, or a
@@ -94,8 +93,7 @@ class ValidationError(Exception):
         of ValidationError with its `error_list` or `error_dict` attribute set.
         """
 
-        # PY2 can't pickle naive exception:
-        # http://bugs.python.org/issue1692335.
+        # PY2 can't pickle naive exception: http://bugs.python.org/issue1692335.
         super(ValidationError, self).__init__(message, code, params)
 
         if isinstance(message, ValidationError):
@@ -123,8 +121,7 @@ class ValidationError(Exception):
                 if not isinstance(message, ValidationError):
                     message = ValidationError(message)
                 if hasattr(message, 'error_dict'):
-                    self.error_list.extend(
-                        sum(message.error_dict.values(), []))
+                    self.error_list.extend(sum(message.error_dict.values(), []))
                 else:
                     self.error_list.extend(message.error_list)
 

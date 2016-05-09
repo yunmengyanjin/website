@@ -224,14 +224,12 @@ def get_javascript_catalog(locale, domain, packages):
     if default_locale != 'en':
         for path in paths:
             try:
-                catalog = gettext_module.translation(
-                    domain, path, [default_locale])
+                catalog = gettext_module.translation(domain, path, [default_locale])
             except IOError:
                 catalog = None
             if catalog is not None:
                 t.update(catalog._catalog)
-    # last load the currently selected language, if it isn't identical to the
-    # default.
+    # last load the currently selected language, if it isn't identical to the default.
     if locale != default_locale:
         # If the currently selected language is English but it doesn't have a
         # translation catalog (presumably due to being the language translated
@@ -243,8 +241,7 @@ def get_javascript_catalog(locale, domain, packages):
             locale_t = {}
             for path in paths:
                 try:
-                    catalog = gettext_module.translation(
-                        domain, path, [locale])
+                    catalog = gettext_module.translation(domain, path, [locale])
                 except IOError:
                     catalog = None
                 if catalog is not None:
@@ -260,8 +257,7 @@ def get_javascript_catalog(locale, domain, packages):
         # this should actually be a compiled function of a typical plural-form:
         # Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 :
         #               n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;
-        plural = [el.strip() for el in plural.split(
-            ';') if el.strip().startswith('plural=')][0].split('=', 1)[1]
+        plural = [el.strip() for el in plural.split(';') if el.strip().startswith('plural=')][0].split('=', 1)[1]
 
     pdict = {}
     maxcnts = {}

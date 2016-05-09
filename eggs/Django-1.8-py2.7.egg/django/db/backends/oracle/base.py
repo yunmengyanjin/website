@@ -54,8 +54,7 @@ except ImportError as e:
     from django.core.exceptions import ImproperlyConfigured
     raise ImproperlyConfigured("Error loading cx_Oracle module: %s" % e)
 
-# Some of these import cx_Oracle, so import them after checking if it's
-# installed.
+# Some of these import cx_Oracle, so import them after checking if it's installed.
 from .client import DatabaseClient                          # isort:skip
 from .creation import DatabaseCreation                      # isort:skip
 from .features import DatabaseFeatures                      # isort:skip
@@ -183,8 +182,7 @@ class DatabaseWrapper(BaseDatabaseWrapper):
         super(DatabaseWrapper, self).__init__(*args, **kwargs)
 
         self.features = DatabaseFeatures(self)
-        use_returning_into = self.settings_dict[
-            "OPTIONS"].get('use_returning_into', True)
+        use_returning_into = self.settings_dict["OPTIONS"].get('use_returning_into', True)
         self.features.can_return_id_from_insert = use_returning_into
         self.ops = DatabaseOperations(self)
         self.client = DatabaseClient(self)
@@ -274,18 +272,11 @@ class DatabaseWrapper(BaseDatabaseWrapper):
                 #  message = 'ORA-02091: transaction rolled back
                 #            'ORA-02291: integrity constraint (TEST_DJANGOTEST.SYS
                 #               _C00102056) violated - parent key not found'
-                # We convert that particular case to our IntegrityError
-                # exception
+                # We convert that particular case to our IntegrityError exception
                 x = e.args[0]
                 if hasattr(x, 'code') and hasattr(x, 'message') \
                    and x.code == 2091 and 'ORA-02291' in x.message:
-                    six.reraise(
-                        utils.IntegrityError,
-                        utils.IntegrityError(
-                            *
-                            tuple(
-                                e.args)),
-                        sys.exc_info()[2])
+                    six.reraise(utils.IntegrityError, utils.IntegrityError(*tuple(e.args)), sys.exc_info()[2])
                 raise
 
     # Oracle doesn't support releasing savepoints. But we fake them when query
@@ -351,8 +342,7 @@ class OracleParam(object):
                               RuntimeWarning)
                 default_timezone = timezone.get_default_timezone()
                 param = timezone.make_aware(param, default_timezone)
-            param = Oracle_datetime.from_datetime(
-                param.astimezone(timezone.utc))
+            param = Oracle_datetime.from_datetime(param.astimezone(timezone.utc))
 
         if isinstance(param, datetime.timedelta):
             param = duration_string(param)
@@ -374,14 +364,10 @@ class OracleParam(object):
             # To transmit to the database, we need Unicode if supported
             # To get size right, we must consider bytes.
             self.force_bytes = convert_unicode(param, cursor.charset,
-                                               strings_only)
+                                             strings_only)
             if isinstance(self.force_bytes, six.string_types):
                 # We could optimize by only converting up to 4000 bytes here
-                string_size = len(
-                    force_bytes(
-                        param,
-                        cursor.charset,
-                        strings_only))
+                string_size = len(force_bytes(param, cursor.charset, strings_only))
         if hasattr(param, 'input_size'):
             # If parameter has `input_size` attribute, use that.
             self.input_size = param.input_size
@@ -492,18 +478,8 @@ class FormatStylePlaceholderCursor(object):
             return self.cursor.execute(query, self._param_generator(params))
         except Database.DatabaseError as e:
             # cx_Oracle <= 4.4.0 wrongly raises a DatabaseError for ORA-01400.
-            if hasattr(
-                    e.args[0],
-                    'code') and e.args[0].code == 1400 and not isinstance(
-                    e,
-                    IntegrityError):
-                six.reraise(
-                    utils.IntegrityError,
-                    utils.IntegrityError(
-                        *
-                        tuple(
-                            e.args)),
-                    sys.exc_info()[2])
+            if hasattr(e.args[0], 'code') and e.args[0].code == 1400 and not isinstance(e, IntegrityError):
+                six.reraise(utils.IntegrityError, utils.IntegrityError(*tuple(e.args)), sys.exc_info()[2])
             raise
 
     def executemany(self, query, params=None):
@@ -515,26 +491,15 @@ class FormatStylePlaceholderCursor(object):
         query, firstparams = self._fix_for_params(query, next(params_iter))
         # we build a list of formatted params; as we're going to traverse it
         # more than once, we can't make it lazy by using a generator
-        formatted = [firstparams] + \
-            [self._format_params(p) for p in params_iter]
+        formatted = [firstparams] + [self._format_params(p) for p in params_iter]
         self._guess_input_sizes(formatted)
         try:
-            return self.cursor.executemany(
-                query, [self._param_generator(p) for p in formatted])
+            return self.cursor.executemany(query,
+                                [self._param_generator(p) for p in formatted])
         except Database.DatabaseError as e:
             # cx_Oracle <= 4.4.0 wrongly raises a DatabaseError for ORA-01400.
-            if hasattr(
-                    e.args[0],
-                    'code') and e.args[0].code == 1400 and not isinstance(
-                    e,
-                    IntegrityError):
-                six.reraise(
-                    utils.IntegrityError,
-                    utils.IntegrityError(
-                        *
-                        tuple(
-                            e.args)),
-                    sys.exc_info()[2])
+            if hasattr(e.args[0], 'code') and e.args[0].code == 1400 and not isinstance(e, IntegrityError):
+                six.reraise(utils.IntegrityError, utils.IntegrityError(*tuple(e.args)), sys.exc_info()[2])
             raise
 
     def fetchone(self):
@@ -546,12 +511,10 @@ class FormatStylePlaceholderCursor(object):
     def fetchmany(self, size=None):
         if size is None:
             size = self.arraysize
-        return tuple(_rowfactory(r, self.cursor)
-                     for r in self.cursor.fetchmany(size))
+        return tuple(_rowfactory(r, self.cursor) for r in self.cursor.fetchmany(size))
 
     def fetchall(self):
-        return tuple(_rowfactory(r, self.cursor)
-                     for r in self.cursor.fetchall())
+        return tuple(_rowfactory(r, self.cursor) for r in self.cursor.fetchall())
 
     def close(self):
         try:
@@ -629,8 +592,7 @@ def _rowfactory(row, cursor):
         # of "dates" queries, which are returned as DATETIME.
         elif desc[1] in (Database.TIMESTAMP, Database.DATETIME):
             # Confirm that dt is naive before overwriting its tzinfo.
-            if settings.USE_TZ and value is not None and timezone.is_naive(
-                    value):
+            if settings.USE_TZ and value is not None and timezone.is_naive(value):
                 value = value.replace(tzinfo=timezone.utc)
         elif desc[1] in (Database.STRING, Database.FIXED_CHAR,
                          Database.LONG_STRING):

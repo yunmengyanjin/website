@@ -21,8 +21,7 @@ from .html_parser import HTMLParseError, HTMLParser
 
 # Configuration for urlize() function.
 TRAILING_PUNCTUATION = ['.', ',', ':', ';', '.)', '"', '\'', '!']
-WRAPPING_PUNCTUATION = [('(', ')'), ('<', '>'), ('[', ']'),
-                        ('&lt;', '&gt;'), ('"', '"'), ('\'', '\'')]
+WRAPPING_PUNCTUATION = [('(', ')'), ('<', '>'), ('[', ']'), ('&lt;', '&gt;'), ('"', '"'), ('\'', '\'')]
 
 # List of possible strings used for bullets in bulleted lists.
 DOTS = ['&middot;', '*', '\u2022', '&#149;', '&bull;', '&#8226;']
@@ -30,21 +29,16 @@ DOTS = ['&middot;', '*', '\u2022', '&#149;', '&bull;', '&#8226;']
 unencoded_ampersands_re = re.compile(r'&(?!(\w+|#\d+);)')
 word_split_re = re.compile(r'(\s+)')
 simple_url_re = re.compile(r'^https?://\[?\w', re.IGNORECASE)
-simple_url_2_re = re.compile(
-    r'^www\.|^(?!http)\w[^@]+\.(com|edu|gov|int|mil|net|org)($|/.*)$',
-    re.IGNORECASE)
+simple_url_2_re = re.compile(r'^www\.|^(?!http)\w[^@]+\.(com|edu|gov|int|mil|net|org)($|/.*)$', re.IGNORECASE)
 simple_email_re = re.compile(r'^\S+@\S+\.\S+$')
 link_target_attribute_re = re.compile(r'(<a [^>]*?)target=[^\s>]+')
 html_gunk_re = re.compile(
     r'(?:<br clear="all">|<i><\/i>|<b><\/b>|<em><\/em>|<strong><\/strong>|'
     '<\/?smallcaps>|<\/?uppercase>)', re.IGNORECASE)
 hard_coded_bullets_re = re.compile(
-    r'((?:<p>(?:%s).*?[a-zA-Z].*?</p>\s*)+)' %
-    '|'.join(
-        re.escape(x) for x in DOTS),
-    re.DOTALL)
-trailing_empty_content_re = re.compile(
-    r'(?:<p>(?:&nbsp;|\s|<br \/>)*?</p>\s*)+\Z')
+    r'((?:<p>(?:%s).*?[a-zA-Z].*?</p>\s*)+)' % '|'.join(re.escape(x)
+    for x in DOTS), re.DOTALL)
+trailing_empty_content_re = re.compile(r'(?:<p>(?:&nbsp;|\s|<br \/>)*?</p>\s*)+\Z')
 
 
 def escape(text):
@@ -56,18 +50,8 @@ def escape(text):
     marked as such. This may result in double-escaping. If this is a concern,
     use conditional_escape() instead.
     """
-    return mark_safe(
-        force_text(text).replace(
-            '&',
-            '&amp;').replace(
-            '<',
-            '&lt;') .replace(
-                '>',
-                '&gt;').replace(
-                    '"',
-                    '&quot;').replace(
-                        "'",
-            '&#39;'))
+    return mark_safe(force_text(text).replace('&', '&amp;').replace('<', '&lt;')
+        .replace('>', '&gt;').replace('"', '&quot;').replace("'", '&#39;'))
 escape = allow_lazy(escape, six.text_type, SafeText)
 
 _js_escapes = {
@@ -114,8 +98,7 @@ def format_html(format_string, *args, **kwargs):
     of str.format or % interpolation to build up small HTML fragments.
     """
     args_safe = map(conditional_escape, args)
-    kwargs_safe = {k: conditional_escape(v)
-                   for (k, v) in six.iteritems(kwargs)}
+    kwargs_safe = {k: conditional_escape(v) for (k, v) in six.iteritems(kwargs)}
     return mark_safe(format_string.format(*args_safe, **kwargs_safe))
 
 
@@ -144,11 +127,7 @@ def linebreaks(value, autoescape=False):
     value = normalize_newlines(value)
     paras = re.split('\n{2,}', value)
     if autoescape:
-        paras = [
-            '<p>%s</p>' %
-            escape(p).replace(
-                '\n',
-                '<br />') for p in paras]
+        paras = ['<p>%s</p>' % escape(p).replace('\n', '<br />') for p in paras]
     else:
         paras = ['<p>%s</p>' % p.replace('\n', '<br />') for p in paras]
     return '\n\n'.join(paras)
@@ -156,7 +135,6 @@ linebreaks = allow_lazy(linebreaks, six.text_type)
 
 
 class MLStripper(HTMLParser):
-
     def __init__(self):
         # The strict parameter was added in Python 3.2 with a default of True.
         # The default changed to False in Python 3.3 and was deprecated.
@@ -235,8 +213,7 @@ remove_tags = allow_lazy(remove_tags, six.text_type)
 def strip_spaces_between_tags(value):
     """Returns the given HTML with spaces between tags removed."""
     return re.sub(r'>\s+<', '><', force_text(value))
-strip_spaces_between_tags = allow_lazy(
-    strip_spaces_between_tags, six.text_type)
+strip_spaces_between_tags = allow_lazy(strip_spaces_between_tags, six.text_type)
 
 
 def strip_entities(value):
@@ -256,11 +233,7 @@ def smart_urlquote(url):
         # Tilde is part of RFC3986 Unreserved Characters
         # http://tools.ietf.org/html/rfc3986#section-2.3
         # See also http://bugs.python.org/issue16285
-        segment = quote(
-            segment,
-            safe=RFC3986_SUBDELIMS +
-            RFC3986_GENDELIMS +
-            str('~'))
+        segment = quote(segment, safe=RFC3986_SUBDELIMS + RFC3986_GENDELIMS + str('~'))
         return force_text(segment)
 
     # Handle IDN before quoting.
@@ -326,8 +299,7 @@ def urlize(text, trim_url_limit=None, nofollow=False, autoescape=False):
             # Remove trail for unescaped if it was not consumed by unescape
             unescaped = unescaped[:-len(trail)]
         elif trail == ';':
-            # Trail was consumed by unescape (as end-of-entity marker), move it
-            # to text
+            # Trail was consumed by unescape (as end-of-entity marker), move it to text
             text += trail
             trail = ''
         return text, unescaped, trail
@@ -346,8 +318,8 @@ def urlize(text, trim_url_limit=None, nofollow=False, autoescape=False):
                     middle = middle[len(opening):]
                     lead = lead + opening
                 # Keep parentheses at the end only if they're balanced.
-                if (middle.endswith(closing) and middle.count(
-                        closing) == middle.count(opening) + 1):
+                if (middle.endswith(closing)
+                        and middle.count(closing) == middle.count(opening) + 1):
                     middle = middle[:-len(closing)]
                     trail = closing + trail
 
@@ -375,8 +347,7 @@ def urlize(text, trim_url_limit=None, nofollow=False, autoescape=False):
                 if autoescape and not safe_input:
                     lead, trail = escape(lead), escape(trail)
                     trimmed = escape(trimmed)
-                middle = '<a href="%s"%s>%s</a>' % (
-                    escape(url), nofollow_attr, trimmed)
+                middle = '<a href="%s"%s>%s</a>' % (escape(url), nofollow_attr, trimmed)
                 words[i] = mark_safe('%s%s%s' % (lead, middle, trail))
             else:
                 if safe_input:

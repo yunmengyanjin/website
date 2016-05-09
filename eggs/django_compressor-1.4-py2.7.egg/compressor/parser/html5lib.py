@@ -28,11 +28,9 @@ class Html5LibParser(ParserBase):
     @cached_property
     def html(self):
         try:
-            return self.html5lib.parseFragment(
-                self.content, treebuilder="etree")
+            return self.html5lib.parseFragment(self.content, treebuilder="etree")
         except ImportError as err:
-            raise ImproperlyConfigured(
-                "Error while importing html5lib: %s" % err)
+            raise ImproperlyConfigured("Error while importing html5lib: %s" % err)
         except Exception as err:
             raise ParserError("Error while initializing Parser: %s" % err)
 

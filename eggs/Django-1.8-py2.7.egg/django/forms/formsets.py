@@ -36,17 +36,14 @@ class ManagementForm(Form):
     are displayed on the page. If adding new forms via javascript, you should
     increment the count field of this form as well.
     """
-
     def __init__(self, *args, **kwargs):
         self.base_fields[TOTAL_FORM_COUNT] = IntegerField(widget=HiddenInput)
         self.base_fields[INITIAL_FORM_COUNT] = IntegerField(widget=HiddenInput)
         # MIN_NUM_FORM_COUNT and MAX_NUM_FORM_COUNT are output with the rest of
         # the management form, but only for the convenience of client-side
         # code. The POST value of them returned from the client is not checked.
-        self.base_fields[MIN_NUM_FORM_COUNT] = IntegerField(
-            required=False, widget=HiddenInput)
-        self.base_fields[MAX_NUM_FORM_COUNT] = IntegerField(
-            required=False, widget=HiddenInput)
+        self.base_fields[MIN_NUM_FORM_COUNT] = IntegerField(required=False, widget=HiddenInput)
+        self.base_fields[MAX_NUM_FORM_COUNT] = IntegerField(required=False, widget=HiddenInput)
         super(ManagementForm, self).__init__(*args, **kwargs)
 
 
@@ -56,7 +53,6 @@ class BaseFormSet(object):
     """
     A collection of instances of the same Form class.
     """
-
     def __init__(self, data=None, files=None, auto_id='id_%s', prefix=None,
                  initial=None, error_class=ErrorList):
         self.is_bound = data is not None or files is not None
@@ -94,24 +90,19 @@ class BaseFormSet(object):
     def management_form(self):
         """Returns the ManagementForm instance for this FormSet."""
         if self.is_bound:
-            form = ManagementForm(
-                self.data,
-                auto_id=self.auto_id,
-                prefix=self.prefix)
+            form = ManagementForm(self.data, auto_id=self.auto_id, prefix=self.prefix)
             if not form.is_valid():
                 raise ValidationError(
                     _('ManagementForm data is missing or has been tampered with'),
                     code='missing_management_form',
                 )
         else:
-            form = ManagementForm(
-                auto_id=self.auto_id,
-                prefix=self.prefix,
-                initial={
-                    TOTAL_FORM_COUNT: self.total_form_count(),
-                    INITIAL_FORM_COUNT: self.initial_form_count(),
-                    MIN_NUM_FORM_COUNT: self.min_num,
-                    MAX_NUM_FORM_COUNT: self.max_num})
+            form = ManagementForm(auto_id=self.auto_id, prefix=self.prefix, initial={
+                TOTAL_FORM_COUNT: self.total_form_count(),
+                INITIAL_FORM_COUNT: self.initial_form_count(),
+                MIN_NUM_FORM_COUNT: self.min_num,
+                MAX_NUM_FORM_COUNT: self.max_num
+            })
         return form
 
     def total_form_count(self):
@@ -121,8 +112,7 @@ class BaseFormSet(object):
             # count in the data; this is DoS protection to prevent clients
             # from forcing the server to instantiate arbitrary numbers of
             # forms
-            return min(self.management_form.cleaned_data[
-                       TOTAL_FORM_COUNT], self.absolute_max)
+            return min(self.management_form.cleaned_data[TOTAL_FORM_COUNT], self.absolute_max)
         else:
             initial_forms = self.initial_form_count()
             total_forms = max(initial_forms, self.min_num) + self.extra
@@ -149,8 +139,7 @@ class BaseFormSet(object):
         Instantiate forms at first property access.
         """
         # DoS protection is included in total_form_count()
-        forms = [self._construct_form(i)
-                 for i in range(self.total_form_count())]
+        forms = [self._construct_form(i) for i in range(self.total_form_count())]
         return forms
 
     def _construct_form(self, i, **kwargs):
@@ -205,9 +194,7 @@ class BaseFormSet(object):
         Returns a list of form.cleaned_data dicts for every form in self.forms.
         """
         if not self.is_valid():
-            raise AttributeError(
-                "'%s' object has no attribute 'cleaned_data'" %
-                self.__class__.__name__)
+            raise AttributeError("'%s' object has no attribute 'cleaned_data'" % self.__class__.__name__)
         return [form.cleaned_data for form in self.forms]
 
     @property
@@ -223,8 +210,7 @@ class BaseFormSet(object):
             self._deleted_form_indexes = []
             for i in range(0, self.total_form_count()):
                 form = self.forms[i]
-                # if this is an extra form and hasn't changed, don't consider
-                # it
+                # if this is an extra form and hasn't changed, don't consider it
                 if i >= self.initial_form_count() and not form.has_changed():
                     continue
                 if self._should_delete_form(form):
@@ -238,9 +224,7 @@ class BaseFormSet(object):
         Raises an AttributeError if ordering is not allowed.
         """
         if not self.is_valid() or not self.can_order:
-            raise AttributeError(
-                "'%s' object has no attribute 'ordered_forms'" %
-                self.__class__.__name__)
+            raise AttributeError("'%s' object has no attribute 'ordered_forms'" % self.__class__.__name__)
         # Construct _ordering, which is a list of (form_index, order_field_value)
         # tuples. After constructing this list, we'll sort it by order_field_value
         # so we have a way to get to the form indexes in the order specified
@@ -249,15 +233,13 @@ class BaseFormSet(object):
             self._ordering = []
             for i in range(0, self.total_form_count()):
                 form = self.forms[i]
-                # if this is an extra form and hasn't changed, don't consider
-                # it
+                # if this is an extra form and hasn't changed, don't consider it
                 if i >= self.initial_form_count() and not form.has_changed():
                     continue
                 # don't add data marked for deletion to self.ordered_data
                 if self.can_delete and self._should_delete_form(form):
                     continue
-                self._ordering.append(
-                    (i, form.cleaned_data[ORDERING_FIELD_NAME]))
+                self._ordering.append((i, form.cleaned_data[ORDERING_FIELD_NAME]))
             # After we're done populating self._ordering, sort it.
             # A sort function to order things numerically ascending, but
             # None should be sorted below anything else. Allowing None as
@@ -347,22 +329,16 @@ class BaseFormSet(object):
             if (self.validate_max and
                     self.total_form_count() - len(self.deleted_forms) > self.max_num) or \
                     self.management_form.cleaned_data[TOTAL_FORM_COUNT] > self.absolute_max:
-                raise ValidationError(
-                    ungettext(
-                        "Please submit %d or fewer forms.",
-                        "Please submit %d or fewer forms.",
-                        self.max_num) %
-                    self.max_num,
+                raise ValidationError(ungettext(
+                    "Please submit %d or fewer forms.",
+                    "Please submit %d or fewer forms.", self.max_num) % self.max_num,
                     code='too_many_forms',
                 )
-            if (self.validate_min and self.total_form_count() -
-                    len(self.deleted_forms) < self.min_num):
-                raise ValidationError(
-                    ungettext(
-                        "Please submit %d or more forms.",
-                        "Please submit %d or more forms.",
-                        self.min_num) %
-                    self.min_num,
+            if (self.validate_min and
+                    self.total_form_count() - len(self.deleted_forms) < self.min_num):
+                raise ValidationError(ungettext(
+                    "Please submit %d or more forms.",
+                    "Please submit %d or more forms.", self.min_num) % self.min_num,
                     code='too_few_forms')
             # Give self.clean() a chance to do cross-form validation.
             self.clean()
@@ -389,14 +365,11 @@ class BaseFormSet(object):
         if self.can_order:
             # Only pre-fill the ordering field for initial forms.
             if index is not None and index < self.initial_form_count():
-                form.fields[ORDERING_FIELD_NAME] = IntegerField(
-                    label=_('Order'), initial=index + 1, required=False)
+                form.fields[ORDERING_FIELD_NAME] = IntegerField(label=_('Order'), initial=index + 1, required=False)
             else:
-                form.fields[ORDERING_FIELD_NAME] = IntegerField(
-                    label=_('Order'), required=False)
+                form.fields[ORDERING_FIELD_NAME] = IntegerField(label=_('Order'), required=False)
         if self.can_delete:
-            form.fields[DELETION_FIELD_NAME] = BooleanField(
-                label=_('Delete'), required=False)
+            form.fields[DELETION_FIELD_NAME] = BooleanField(label=_('Delete'), required=False)
 
     def add_prefix(self, index):
         return '%s-%s' % (self.prefix, index)
@@ -426,20 +399,17 @@ class BaseFormSet(object):
         # probably should be. It might make sense to render each form as a
         # table row with each field as a td.
         forms = ' '.join(form.as_table() for form in self)
-        return mark_safe(
-            '\n'.join([six.text_type(self.management_form), forms]))
+        return mark_safe('\n'.join([six.text_type(self.management_form), forms]))
 
     def as_p(self):
         "Returns this formset rendered as HTML <p>s."
         forms = ' '.join(form.as_p() for form in self)
-        return mark_safe(
-            '\n'.join([six.text_type(self.management_form), forms]))
+        return mark_safe('\n'.join([six.text_type(self.management_form), forms]))
 
     def as_ul(self):
         "Returns this formset rendered as HTML <li>s."
         forms = ' '.join(form.as_ul() for form in self)
-        return mark_safe(
-            '\n'.join([six.text_type(self.management_form), forms]))
+        return mark_safe('\n'.join([six.text_type(self.management_form), forms]))
 
 
 def formset_factory(form, formset=BaseFormSet, extra=1, can_order=False,

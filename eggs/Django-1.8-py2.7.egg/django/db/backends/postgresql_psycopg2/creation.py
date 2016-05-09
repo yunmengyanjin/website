@@ -28,18 +28,12 @@ class DatabaseCreation(BaseDatabaseCreation):
                 tablespace_sql = ''
 
             def get_index_sql(index_name, opclass=''):
-                return (style.SQL_KEYWORD('CREATE INDEX') +
-                        ' ' +
-                        style.SQL_TABLE(qn(truncate_name(index_name, self.connection.ops.max_name_length()))) +
-                        ' ' +
-                        style.SQL_KEYWORD('ON') +
-                        ' ' +
-                        style.SQL_TABLE(qn(db_table)) +
-                        ' ' +
-                        "(%s%s)" %
-                        (style.SQL_FIELD(qn(f.column)), opclass) +
-                        "%s;" %
-                        tablespace_sql)
+                return (style.SQL_KEYWORD('CREATE INDEX') + ' ' +
+                        style.SQL_TABLE(qn(truncate_name(index_name, self.connection.ops.max_name_length()))) + ' ' +
+                        style.SQL_KEYWORD('ON') + ' ' +
+                        style.SQL_TABLE(qn(db_table)) + ' ' +
+                        "(%s%s)" % (style.SQL_FIELD(qn(f.column)), opclass) +
+                        "%s;" % tablespace_sql)
 
             if not f.unique:
                 output = [get_index_sql('%s_%s' % (db_table, f.column))]
@@ -49,13 +43,9 @@ class DatabaseCreation(BaseDatabaseCreation):
             # needed when performing correct LIKE queries outside the
             # C locale. See #12234.
             if db_type.startswith('varchar'):
-                output.append(
-                    get_index_sql(
-                        '%s_%s_like' %
-                        (db_table, f.column), ' varchar_pattern_ops'))
+                output.append(get_index_sql('%s_%s_like' % (db_table, f.column),
+                                            ' varchar_pattern_ops'))
             elif db_type.startswith('text'):
-                output.append(
-                    get_index_sql(
-                        '%s_%s_like' %
-                        (db_table, f.column), ' text_pattern_ops'))
+                output.append(get_index_sql('%s_%s_like' % (db_table, f.column),
+                                            ' text_pattern_ops'))
         return output

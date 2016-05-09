@@ -22,13 +22,7 @@ class RegexValidator(object):
     inverse_match = False
     flags = 0
 
-    def __init__(
-            self,
-            regex=None,
-            message=None,
-            code=None,
-            inverse_match=None,
-            flags=None):
+    def __init__(self, regex=None, message=None, code=None, inverse_match=None, flags=None):
         if regex is not None:
             self.regex = regex
         if message is not None:
@@ -40,8 +34,7 @@ class RegexValidator(object):
         if flags is not None:
             self.flags = flags
         if self.flags and not isinstance(self.regex, six.string_types):
-            raise TypeError(
-                "If the flags are set, regex must be a regular expression string.")
+            raise TypeError("If the flags are set, regex must be a regular expression string.")
 
         # Compile the regex if it was not passed pre-compiled.
         if isinstance(self.regex, six.string_types):
@@ -72,18 +65,15 @@ class RegexValidator(object):
 
 @deconstructible
 class URLValidator(RegexValidator):
-    # unicode letters range (must be a unicode string, not a raw string)
-    ul = '\u00a1-\uffff'
+    ul = '\u00a1-\uffff'  # unicode letters range (must be a unicode string, not a raw string)
 
     # IP patterns
     ipv4_re = r'(?:25[0-5]|2[0-4]\d|[0-1]?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}'
     ipv6_re = r'\[[0-9a-f:\.]+\]'  # (simple regex, validated later)
 
     # Host patterns
-    hostname_re = r'[a-z' + ul + \
-        r'0-9](?:[a-z' + ul + r'0-9-]*[a-z' + ul + r'0-9])?'
-    domain_re = r'(?:\.[a-z' + ul + r'0-9]+(?:[a-z' + \
-        ul + r'0-9-]*[a-z' + ul + r'0-9]+)*)*'
+    hostname_re = r'[a-z' + ul + r'0-9](?:[a-z' + ul + r'0-9-]*[a-z' + ul + r'0-9])?'
+    domain_re = r'(?:\.[a-z' + ul + r'0-9]+(?:[a-z' + ul + r'0-9-]*[a-z' + ul + r'0-9]+)*)*'
     tld_re = r'\.[a-z' + ul + r']{2,}\.?'
     host_re = '(' + hostname_re + domain_re + tld_re + '|localhost)'
 
@@ -117,8 +107,7 @@ class URLValidator(RegexValidator):
             if value:
                 scheme, netloc, path, query, fragment = urlsplit(value)
                 try:
-                    netloc = netloc.encode('idna').decode(
-                        'ascii')  # IDN -> ACE
+                    netloc = netloc.encode('idna').decode('ascii')  # IDN -> ACE
                 except UnicodeError:  # invalid domain part
                     raise e
                 url = urlunsplit((scheme, netloc, path, query, fragment))
@@ -127,9 +116,7 @@ class URLValidator(RegexValidator):
                 raise
         else:
             # Now verify IPv6 in the netloc part
-            host_match = re.search(
-                r'^\[(.+)\](?::\d{2,5})?$',
-                urlsplit(value).netloc)
+            host_match = re.search(r'^\[(.+)\](?::\d{2,5})?$', urlsplit(value).netloc)
             if host_match:
                 potential_ip = host_match.groups()[0]
                 try:
@@ -152,8 +139,7 @@ class EmailValidator(object):
     code = 'invalid'
     user_regex = re.compile(
         r"(^[-!#$%&'*+/=?^_`{}|~0-9A-Z]+(\.[-!#$%&'*+/=?^_`{}|~0-9A-Z]+)*$"  # dot-atom
-        # quoted-string
-        r'|^"([\001-\010\013\014\016-\037!#-\[\]-\177]|\\[\001-\011\013\014\016-\177])*"$)',
+        r'|^"([\001-\010\013\014\016-\037!#-\[\]-\177]|\\[\001-\011\013\014\016-\177])*"$)',  # quoted-string
         re.IGNORECASE)
     domain_regex = re.compile(
         # max length of the domain is 249: 254 (max email length) minus one
@@ -224,12 +210,11 @@ slug_re = re.compile(r'^[-a-zA-Z0-9_]+$')
 validate_slug = RegexValidator(
     slug_re,
     _("Enter a valid 'slug' consisting of letters, numbers, underscores or hyphens."),
-    'invalid')
+    'invalid'
+)
 
-ipv4_re = re.compile(
-    r'^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}$')
-validate_ipv4_address = RegexValidator(
-    ipv4_re, _('Enter a valid IPv4 address.'), 'invalid')
+ipv4_re = re.compile(r'^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}$')
+validate_ipv4_address = RegexValidator(ipv4_re, _('Enter a valid IPv4 address.'), 'invalid')
 
 
 def validate_ipv6_address(value):
@@ -244,9 +229,7 @@ def validate_ipv46_address(value):
         try:
             validate_ipv6_address(value)
         except ValidationError:
-            raise ValidationError(
-                _('Enter a valid IPv4 or IPv6 address.'),
-                code='invalid')
+            raise ValidationError(_('Enter a valid IPv4 or IPv6 address.'), code='invalid')
 
 ip_address_validator_map = {
     'both': ([validate_ipv46_address], _('Enter a valid IPv4 or IPv6 address.')),
@@ -293,10 +276,7 @@ class BaseValidator(object):
 
     def __call__(self, value):
         cleaned = self.clean(value)
-        params = {
-            'limit_value': self.limit_value,
-            'show_value': cleaned,
-            'value': value}
+        params = {'limit_value': self.limit_value, 'show_value': cleaned, 'value': value}
         if self.compare(cleaned, self.limit_value):
             raise ValidationError(self.message, code=self.code, params=params)
 

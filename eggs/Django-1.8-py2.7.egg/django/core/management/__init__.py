@@ -11,7 +11,7 @@ from django.apps import apps
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import (BaseCommand, CommandError,
-                                         CommandParser, handle_default_options)
+    CommandParser, handle_default_options)
 from django.core.management.color import color_style
 from django.utils import lru_cache, six
 from django.utils._os import npath, upath
@@ -27,8 +27,8 @@ def find_commands(management_dir):
     command_dir = os.path.join(management_dir, 'commands')
     # Workaround for a Python 3.2 bug with pkgutil.iter_modules
     sys.path_importer_cache.pop(command_dir, None)
-    return [name for _, name, is_pkg in pkgutil.iter_modules(
-        [npath(command_dir)]) if not is_pkg and not name.startswith('_')]
+    return [name for _, name, is_pkg in pkgutil.iter_modules([npath(command_dir)])
+            if not is_pkg and not name.startswith('_')]
 
 
 def load_command_class(app_name, name):
@@ -64,18 +64,14 @@ def get_commands():
     The dictionary is cached on the first call and reused on subsequent
     calls.
     """
-    commands = {
-        name: 'django.core' for name in find_commands(
-            upath(
-                __path__[0]))}
+    commands = {name: 'django.core' for name in find_commands(upath(__path__[0]))}
 
     if not settings.configured:
         return commands
 
     for app_config in reversed(list(apps.get_app_configs())):
         path = os.path.join(app_config.path, 'management')
-        commands.update(
-            {name: app_config.name for name in find_commands(path)})
+        commands.update({name: app_config.name for name in find_commands(path)})
 
     return commands
 
@@ -103,18 +99,13 @@ def call_command(name, *args, **options):
     else:
         command = load_command_class(app_name, name)
 
-    # Simulate argument parsing to get the option defaults (see #10080 for
-    # details).
+    # Simulate argument parsing to get the option defaults (see #10080 for details).
     parser = command.create_parser('', name)
     if command.use_argparse:
         # Use the `dest` option name from the parser option
         opt_mapping = {sorted(s_opt.option_strings)[0].lstrip('-').replace('-', '_'): s_opt.dest
                        for s_opt in parser._actions if s_opt.option_strings}
-        arg_options = {
-            opt_mapping.get(
-                key,
-                key): value for key,
-            value in options.items()}
+        arg_options = {opt_mapping.get(key, key): value for key, value in options.items()}
         defaults = parser.parse_args(args=args)
         defaults = dict(defaults._get_kwargs(), **arg_options)
         # Move positional args out of options to mimic legacy optparse
@@ -136,7 +127,6 @@ class ManagementUtility(object):
     A ManagementUtility has a number of commands, which can be manipulated
     by editing the self.commands dictionary.
     """
-
     def __init__(self, argv=None):
         self.argv = argv or sys.argv[:]
         self.prog_name = os.path.basename(self.argv[0])
@@ -150,8 +140,11 @@ class ManagementUtility(object):
             usage = sorted(get_commands().keys())
         else:
             usage = [
-                "", "Type '%s help <subcommand>' for help on a specific subcommand." %
-                self.prog_name, "", "Available subcommands:", ]
+                "",
+                "Type '%s help <subcommand>' for help on a specific subcommand." % self.prog_name,
+                "",
+                "Available subcommands:",
+            ]
             commands_dict = collections.defaultdict(lambda: [])
             for name, app in six.iteritems(get_commands()):
                 if app == 'django.core':
@@ -187,8 +180,7 @@ class ManagementUtility(object):
         except KeyError:
             # This might trigger ImproperlyConfigured (masked in get_commands)
             settings.INSTALLED_APPS
-            sys.stderr.write(
-                "Unknown command: %r\nType '%s help' for usage.\n" %
+            sys.stderr.write("Unknown command: %r\nType '%s help' for usage.\n" %
                 (subcommand, self.prog_name))
             sys.exit(1)
         if isinstance(app_name, BaseCommand):
@@ -236,12 +228,7 @@ class ManagementUtility(object):
 
         # subcommand
         if cword == 1:
-            print(
-                ' '.join(
-                    sorted(
-                        filter(
-                            lambda x: x.startswith(curr),
-                            subcommands))))
+            print(' '.join(sorted(filter(lambda x: x.startswith(curr), subcommands))))
         # subcommand options
         # special case: the 'help' subcommand has no options
         elif cwords[0] in subcommands and cwords[0] != 'help':
@@ -253,25 +240,22 @@ class ManagementUtility(object):
                 options.extend((k, 1) for k in FASTCGI_OPTIONS)
             # special case: add the names of installed apps to options
             elif cwords[0] in ('dumpdata', 'sql', 'sqlall', 'sqlclear',
-                               'sqlcustom', 'sqlindexes', 'sqlmigrate', 'sqlsequencereset', 'test'):
+                    'sqlcustom', 'sqlindexes', 'sqlmigrate', 'sqlsequencereset', 'test'):
                 try:
                     app_configs = apps.get_app_configs()
                     # Get the last part of the dotted path as the app name.
-                    options.extend((app_config.label, 0)
-                                   for app_config in app_configs)
+                    options.extend((app_config.label, 0) for app_config in app_configs)
                 except ImportError:
                     # Fail silently if DJANGO_SETTINGS_MODULE isn't set. The
                     # user will find out once they execute the command.
                     pass
             parser = subcommand_cls.create_parser('', cwords[0])
             if subcommand_cls.use_argparse:
-                options.extend(
-                    (sorted(
-                        s_opt.option_strings)[0],
-                        s_opt.nargs != 0) for s_opt in parser._actions if s_opt.option_strings)
+                options.extend((sorted(s_opt.option_strings)[0], s_opt.nargs != 0) for s_opt in
+                               parser._actions if s_opt.option_strings)
             else:
-                options.extend((s_opt.get_opt_string(), s_opt.nargs)
-                               for s_opt in parser.option_list)
+                options.extend((s_opt.get_opt_string(), s_opt.nargs) for s_opt in
+                               parser.option_list)
             # filter out previously specified options from available options
             prev_opts = [x.split('=')[0] for x in cwords[1:cword - 1]]
             options = [opt for opt in options if opt[0] not in prev_opts]
@@ -299,10 +283,7 @@ class ManagementUtility(object):
         # Preprocess options to extract --settings and --pythonpath.
         # These options could affect the commands that are available, so they
         # must be processed early.
-        parser = CommandParser(
-            None,
-            usage="%(prog)s subcommand [options] [args]",
-            add_help=False)
+        parser = CommandParser(None, usage="%(prog)s subcommand [options] [args]", add_help=False)
         parser.add_argument('--settings')
         parser.add_argument('--pythonpath')
         parser.add_argument('args', nargs='*')  # catch-all
@@ -334,16 +315,11 @@ class ManagementUtility(object):
 
         if subcommand == 'help':
             if '--commands' in args:
-                sys.stdout.write(
-                    self.main_help_text(
-                        commands_only=True) + '\n')
+                sys.stdout.write(self.main_help_text(commands_only=True) + '\n')
             elif len(options.args) < 1:
                 sys.stdout.write(self.main_help_text() + '\n')
             else:
-                self.fetch_command(
-                    options.args[0]).print_help(
-                    self.prog_name,
-                    options.args[0])
+                self.fetch_command(options.args[0]).print_help(self.prog_name, options.args[0])
         # Special-cases: We want 'django-admin --version' and
         # 'django-admin --help' to work, for backwards compatibility.
         elif subcommand == 'version' or self.argv[1:] == ['--version']:

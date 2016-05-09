@@ -18,18 +18,14 @@ class ManageTestCase(TestCase):
 
     def setUp(self):
         for i in range(1, 4):
-            cat, created = Category.objects.get_or_create(
-                pk=i, name="cat" + str(i), slug="cat" + str(i), position=10, parent=None)
+            cat, created = Category.objects.get_or_create(pk=i, name="cat" + str(i), slug="cat" + str(i), position=10,
+                                                          parent=None)
 
         self.username = 'joe'
         self.password = 'bloggs'
         self.email = 'joe@example.com'
 
-        new_user = User(
-            username=self.username,
-            email=self.email,
-            is_active=True,
-            is_superuser=True)
+        new_user = User(username=self.username, email=self.email, is_active=True, is_superuser=True)
         new_user.set_password(self.password)
         new_user.save()
 
@@ -74,99 +70,56 @@ class ManageTestCase(TestCase):
     #     self.assertEqual(cat3.parent, cat2)
 
     def test_add_product(self):
-        logged_in = self.client.login(
-            username=self.username,
-            password=self.password)
+        logged_in = self.client.login(username=self.username, password=self.password)
         products_count = Product.objects.count()
         url = reverse('lfs_manage_add_product')
-        response = self.client.post(
-            url, {'name': 'Product name', 'slug': 'productslug'}, follow=True)
+        response = self.client.post(url, {'name': 'Product name', 'slug': 'productslug'}, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(products_count + 1, Product.objects.count())
 
     def test_change_product_subtype(self):
         p = Product.objects.create(name='Product1', slug='product1')
 
-        logged_in = self.client.login(
-            username=self.username,
-            password=self.password)
-        url = reverse(
-            'lfs_change_product_subtype',
-            kwargs={
-                'product_id': p.pk})
-        response = self.client.post(
-            url, {'sub_type': PRODUCT_WITH_VARIANTS}, follow=True)
+        logged_in = self.client.login(username=self.username, password=self.password)
+        url = reverse('lfs_change_product_subtype', kwargs={'product_id': p.pk})
+        response = self.client.post(url, {'sub_type': PRODUCT_WITH_VARIANTS}, follow=True)
         self.assertEqual(response.status_code, 200)
         p = Product.objects.get(pk=p.pk)
         self.assertEqual(p.sub_type, PRODUCT_WITH_VARIANTS)
 
     def test_manage_add_property(self):
-        p = Product.objects.create(
-            name='Product1',
-            slug='product1',
-            sub_type=PRODUCT_WITH_VARIANTS)
-        logged_in = self.client.login(
-            username=self.username,
-            password=self.password)
+        p = Product.objects.create(name='Product1', slug='product1', sub_type=PRODUCT_WITH_VARIANTS)
+        logged_in = self.client.login(username=self.username, password=self.password)
         url = reverse('lfs_manage_add_property', kwargs={'product_id': p.pk})
         response = self.client.post(url, {'name': 'testproperty'}, follow=True)
         self.assertEqual(response.status_code, 200)
         new_property = Property.objects.latest('id')
         self.assertEqual(new_property.name, 'testproperty')
         self.assertTrue(new_property.local)
-        self.assertTrue(
-            ProductsPropertiesRelation.objects.filter(
-                product=p, property=new_property).exists())
+        self.assertTrue(ProductsPropertiesRelation.objects.filter(product=p, property=new_property).exists())
 
     def test_manage_add_property_option(self):
-        product = Product.objects.create(
-            name='Product1',
-            slug='product1',
-            sub_type=PRODUCT_WITH_VARIANTS)
-        pproperty = Property.objects.create(
-            name='property 1',
-            type=PROPERTY_SELECT_FIELD,
-            local=True,
-            filterable=False)
-        product_property = ProductsPropertiesRelation.objects.create(
-            product=product, property=pproperty, position=10)
+        product = Product.objects.create(name='Product1', slug='product1', sub_type=PRODUCT_WITH_VARIANTS)
+        pproperty = Property.objects.create(name='property 1', type=PROPERTY_SELECT_FIELD, local=True, filterable=False)
+        product_property = ProductsPropertiesRelation.objects.create(product=product, property=pproperty, position=10)
 
         self.client.login(username=self.username, password=self.password)
-        url = reverse(
-            'lfs_manage_add_property_option', kwargs={
-                'product_id': product.pk})
-        response = self.client.post(
-            url, {'name': 'testpropertyoption', 'property_id': pproperty.pk}, follow=True)
+        url = reverse('lfs_manage_add_property_option', kwargs={'product_id': product.pk})
+        response = self.client.post(url, {'name': 'testpropertyoption', 'property_id': pproperty.pk}, follow=True)
         self.assertEqual(response.status_code, 200)
         new_property_option = PropertyOption.objects.latest('id')
         self.assertEqual(new_property_option.name, 'testpropertyoption')
 
     def test_manage_variants(self):
-        product = Product.objects.create(
-            name='Product1',
-            slug='product1',
-            sub_type=PRODUCT_WITH_VARIANTS)
-        pproperty = Property.objects.create(
-            name='property1',
-            type=PROPERTY_SELECT_FIELD,
-            local=True,
-            filterable=False)
-        product_property = ProductsPropertiesRelation.objects.create(
-            product=product, property=pproperty, position=10)
-        property_option = PropertyOption.objects.create(
-            name='property option 1', property=pproperty, position=10)
+        product = Product.objects.create(name='Product1', slug='product1', sub_type=PRODUCT_WITH_VARIANTS)
+        pproperty = Property.objects.create(name='property1', type=PROPERTY_SELECT_FIELD, local=True, filterable=False)
+        product_property = ProductsPropertiesRelation.objects.create(product=product, property=pproperty, position=10)
+        property_option = PropertyOption.objects.create(name='property option 1', property=pproperty, position=10)
 
-        variant = Product.objects.create(
-            name='variant',
-            slug='vslug',
-            parent=product,
-            variant_position=10,
-            sub_type=VARIANT)
-        ppv = ProductPropertyValue.objects.create(
-            product=variant,
-            property_id=pproperty.pk,
-            value=property_option.pk,
-            type=PROPERTY_VALUE_TYPE_VARIANT)
+        variant = Product.objects.create(name='variant', slug='vslug', parent=product, variant_position=10,
+                                         sub_type=VARIANT)
+        ppv = ProductPropertyValue.objects.create(product=variant, property_id=pproperty.pk,
+                                                  value=property_option.pk, type=PROPERTY_VALUE_TYPE_VARIANT)
 
         self.client.login(username=self.username, password=self.password)
         url = reverse('lfs_manage_variants', kwargs={'product_id': product.pk})
@@ -175,23 +128,17 @@ class ManageTestCase(TestCase):
         outvariants = response.context['variants']
         self.assertEqual(len(outvariants), 1)
         self.assertEqual(len(outvariants[0]['properties']), 1)
-        self.assertEqual(
-            outvariants[0]['properties'][0]['name'],
-            pproperty.name)
-        self.assertEqual(outvariants[0]['properties'][0]['options'][
-                         0]['name'], property_option.name)
+        self.assertEqual(outvariants[0]['properties'][0]['name'], pproperty.name)
+        self.assertEqual(outvariants[0]['properties'][0]['options'][0]['name'], property_option.name)
 
     def test_manage_add_price_criteria(self):
         self.client.login(username=self.username, password=self.password)
-        shipping_method = ShippingMethod.objects.create(
-            name='Standard', active=True)
-        smp = ShippingMethodPrice.objects.create(
-            shipping_method=shipping_method, price=10)
+        shipping_method = ShippingMethod.objects.create(name='Standard', active=True)
+        smp = ShippingMethodPrice.objects.create(shipping_method=shipping_method, price=10)
 
         country_id = Country.objects.all()[0].pk
 
-        url = reverse('lfs_manage_save_shipping_price_criteria',
-                      kwargs=dict(shipping_price_id=smp.pk))
+        url = reverse('lfs_manage_save_shipping_price_criteria', kwargs=dict(shipping_price_id=smp.pk))
         data = {'type-123': 'lfs.criteria.models.CountryCriterion',
                 'operator-123': Criterion.IS_SELECTED,
                 'position-123': '10',

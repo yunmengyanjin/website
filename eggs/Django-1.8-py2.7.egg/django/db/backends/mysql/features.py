@@ -36,8 +36,7 @@ class DatabaseFeatures(BaseDatabaseFeatures):
     def _mysql_storage_engine(self):
         "Internal method used in Django tests. Don't rely on this from your code"
         with self.connection.cursor() as cursor:
-            cursor.execute(
-                "SELECT ENGINE FROM INFORMATION_SCHEMA.ENGINES WHERE SUPPORT = 'DEFAULT'")
+            cursor.execute("SELECT ENGINE FROM INFORMATION_SCHEMA.ENGINES WHERE SUPPORT = 'DEFAULT'")
             result = cursor.fetchone()
         return result[0]
 
@@ -50,9 +49,7 @@ class DatabaseFeatures(BaseDatabaseFeatures):
     def supports_microsecond_precision(self):
         # See https://github.com/farcepest/MySQLdb1/issues/24 for the reason
         # about requiring MySQLdb 1.2.5
-        return self.connection.mysql_version >= (
-            5, 6, 4) and Database.version_info >= (
-            1, 2, 5)
+        return self.connection.mysql_version >= (5, 6, 4) and Database.version_info >= (1, 2, 5)
 
     @cached_property
     def has_zoneinfo_database(self):

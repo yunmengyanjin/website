@@ -26,10 +26,8 @@ class HandlerMetaClass(type):
         if hasattr(new_mcs, 'model'):
             if already_registered(new_mcs.model, new_mcs.is_anonymous):
                 if not getattr(settings, 'PISTON_IGNORE_DUPE_MODELS', False):
-                    warnings.warn(
-                        "Handler already registered for model %s, "
-                        "you may experience inconsistent results." %
-                        new_mcs.model.__name__)
+                    warnings.warn("Handler already registered for model %s, "
+                                  "you may experience inconsistent results." % new_mcs.model.__name__)
 
             typemapper[new_mcs] = (new_mcs.model, new_mcs.is_anonymous)
         else:
@@ -94,7 +92,7 @@ class BaseHandler(object):
                 return self.queryset(request).get(pk=kwargs.get(pkfield))
             except ObjectDoesNotExist:
                 return rc.NOT_FOUND
-            except MultipleObjectsReturned:  # should never happen, since we're using a PK
+            except MultipleObjectsReturned: # should never happen, since we're using a PK
                 return rc.BAD_REQUEST
         else:
             return self.queryset(request).filter(*args, **kwargs)
@@ -129,12 +127,12 @@ class BaseHandler(object):
             inst = self.queryset(request).get(pk=kwargs.get(pkfield))
         except ObjectDoesNotExist:
             return rc.NOT_FOUND
-        except MultipleObjectsReturned:  # should never happen, since we're using a PK
+        except MultipleObjectsReturned: # should never happen, since we're using a PK
             return rc.BAD_REQUEST
 
         attrs = self.flatten_dict(request.data)
-        for k, v in attrs.iteritems():
-            setattr(inst, k, v)
+        for k,v in attrs.iteritems():
+            setattr( inst, k, v )
 
         inst.save()
         return rc.ALL_OK

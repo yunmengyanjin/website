@@ -139,13 +139,11 @@ def normalize(pattern):
                     elif ch != 'P':
                         # Anything else, other than a named group, is something
                         # we cannot reverse.
-                        raise ValueError(
-                            "Non-reversible reg-exp portion: '(?%s'" % ch)
+                        raise ValueError("Non-reversible reg-exp portion: '(?%s'" % ch)
                     else:
                         ch, escaped = next(pattern_iter)
                         if ch not in ('<', '='):
-                            raise ValueError(
-                                "Non-reversible reg-exp portion: '(?P%s'" % ch)
+                            raise ValueError("Non-reversible reg-exp portion: '(?P%s'" % ch)
                         # We are in a named capturing group. Extra the name and
                         # then skip to the end.
                         if ch == '<':

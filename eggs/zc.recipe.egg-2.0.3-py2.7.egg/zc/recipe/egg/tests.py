@@ -27,17 +27,14 @@ os_path_sep = os.path.sep
 if os_path_sep == '\\':
     os_path_sep *= 2
 
-
 def dirname(d, level=1):
     if level == 0:
         return d
-    return dirname(os.path.dirname(d), level - 1)
-
+    return dirname(os.path.dirname(d), level-1)
 
 def setUp(test):
     zc.buildout.tests.easy_install_SetUp(test)
     zc.buildout.testing.install_develop('zc.recipe.egg', test)
-
 
 def test_suite():
     suite = unittest.TestSuite((
@@ -45,40 +42,40 @@ def test_suite():
             'README.rst',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
             checker=renormalizing.RENormalizing([
-                zc.buildout.testing.normalize_path,
-                zc.buildout.testing.normalize_endings,
-                zc.buildout.testing.normalize_script,
-                zc.buildout.testing.normalize_egg_py,
-                zc.buildout.tests.normalize_bang,
-                zc.buildout.tests.normalize_S,
-                zc.buildout.testing.not_found,
-                (re.compile('[d-]  zc.buildout(-\S+)?[.]egg(-link)?'),
-                 'zc.buildout.egg'),
-                (re.compile('[d-]  setuptools-[^-]+-'), 'setuptools-X-'),
-                (re.compile(r'eggs\\\\demo'), 'eggs/demo'),
-                (re.compile(r'[a-zA-Z]:\\\\foo\\\\bar'), '/foo/bar'),
-            ])
-        ),
+               zc.buildout.testing.normalize_path,
+               zc.buildout.testing.normalize_endings,
+               zc.buildout.testing.normalize_script,
+               zc.buildout.testing.normalize_egg_py,
+               zc.buildout.tests.normalize_bang,
+               zc.buildout.tests.normalize_S,
+               zc.buildout.testing.not_found,
+               (re.compile('[d-]  zc.buildout(-\S+)?[.]egg(-link)?'),
+                'zc.buildout.egg'),
+               (re.compile('[d-]  setuptools-[^-]+-'), 'setuptools-X-'),
+               (re.compile(r'eggs\\\\demo'), 'eggs/demo'),
+               (re.compile(r'[a-zA-Z]:\\\\foo\\\\bar'), '/foo/bar'),
+               ])
+            ),
         doctest.DocFileSuite(
             'api.rst',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
             checker=renormalizing.RENormalizing([
-                zc.buildout.testing.normalize_path,
-                zc.buildout.testing.normalize_endings,
-                zc.buildout.testing.not_found,
-                (re.compile('__buildout_signature__ = '
-                            'sample-\S+\s+'
-                            'zc.recipe.egg-\S+\s+'
-                            'setuptools-\S+\s+'
-                            'zc.buildout-\S+\s*'
-                            ),
-                 '__buildout_signature__ = sample- zc.recipe.egg-'),
-                (re.compile('find-links = http://localhost:\d+/'),
-                    'find-links = http://localhost:8080/'),
-                (re.compile('index = http://localhost:\d+/index'),
-                    'index = http://localhost:8080/index'),
-            ])
-        ),
+               zc.buildout.testing.normalize_path,
+               zc.buildout.testing.normalize_endings,
+               zc.buildout.testing.not_found,
+               (re.compile('__buildout_signature__ = '
+                           'sample-\S+\s+'
+                           'zc.recipe.egg-\S+\s+'
+                           'setuptools-\S+\s+'
+                           'zc.buildout-\S+\s*'
+                           ),
+                '__buildout_signature__ = sample- zc.recipe.egg-'),
+               (re.compile('find-links = http://localhost:\d+/'),
+                'find-links = http://localhost:8080/'),
+               (re.compile('index = http://localhost:\d+/index'),
+                'index = http://localhost:8080/index'),
+               ])
+            ),
         doctest.DocFileSuite(
             'custom.rst',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
@@ -107,9 +104,9 @@ def test_suite():
                     "build\\\\temp[.]win-amd64-2[.][4567]\\\\Re"
                     "lease\\\\extdemo[.]exp\n"),
                  ''),
-            ]),
-        ),
-    ))
+                ]),
+            ),
+        ))
     return suite
 
 if __name__ == '__main__':

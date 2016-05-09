@@ -42,16 +42,10 @@ class Discount(models.Model, Criteria):
     name = models.CharField(_(u"Name"), max_length=100)
     active = models.BooleanField(_("Active"), default=False)
     value = models.FloatField(_(u"Value"))
-    type = models.PositiveSmallIntegerField(
-        _(u"Type"),
-        choices=DISCOUNT_TYPE_CHOICES,
-        default=DISCOUNT_TYPE_ABSOLUTE)
+    type = models.PositiveSmallIntegerField(_(u"Type"), choices=DISCOUNT_TYPE_CHOICES, default=DISCOUNT_TYPE_ABSOLUTE)
     tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
     sku = models.CharField(_(u"SKU"), blank=True, max_length=50)
-    products = models.ManyToManyField(
-        Product,
-        verbose_name=_(u"Products"),
-        related_name="discounts")
+    products = models.ManyToManyField(Product, verbose_name=_(u"Products"), related_name="discounts")
 
     def __unicode__(self):
         return self.name
@@ -72,8 +66,7 @@ class Discount(models.Model, Criteria):
     def get_price_net(self, request, product=None):
         """Returns the net price of the discount.
         """
-        return self.get_price_gross(
-            request, product) - self.get_tax(request, product)
+        return self.get_price_gross(request, product) - self.get_tax(request, product)
 
     def get_price_gross(self, request, product=None):
         """Returns the gross price of the discount.
@@ -90,14 +83,12 @@ class Discount(models.Model, Criteria):
                         if self.type == DISCOUNT_TYPE_ABSOLUTE:
                             total += self.value
                         else:
-                            total += item.get_price_gross(request) * \
-                                (self.value / 100)
+                            total += item.get_price_gross(request) * (self.value / 100)
                 return total
 
             elif product is not None:
                 if self.products.filter(pk=product.pk).exists():
-                    return product.get_price_gross(
-                        request) * (self.value / 100)
+                    return product.get_price_gross(request) * (self.value / 100)
 
         else:
             if self.type == DISCOUNT_TYPE_ABSOLUTE:
