@@ -105,6 +105,8 @@ def lazy_number(func, resultclass, number=None, **kwargs):
         kwargs['number'] = number
         proxy = lazy(func, resultclass)(**kwargs)
     else:
+        original_kwargs = kwargs.copy()
+
         class NumberAwareString(resultclass):
             def __mod__(self, rhs):
                 if isinstance(rhs, dict) and number:
@@ -127,7 +129,12 @@ def lazy_number(func, resultclass, number=None, **kwargs):
                 return translated
 
         proxy = lazy(lambda **kwargs: NumberAwareString(), NumberAwareString)(**kwargs)
+        proxy.__reduce__ = lambda: (_lazy_number_unpickle, (func, resultclass, number, original_kwargs))
     return proxy
+
+
+def _lazy_number_unpickle(func, resultclass, number, kwargs):
+    return lazy_number(func, resultclass, number=number, **kwargs)
 
 
 def ngettext_lazy(singular, plural, number=None):
@@ -163,7 +170,9 @@ class override(ContextDecorator):
             deactivate_all()
 
     def __exit__(self, exc_type, exc_value, traceback):
-        if self.deactivate:
+        if self.old_language is None:
+            deactivate_all()
+        elif self.deactivate:
             deactivate()
         else:
             activate(self.old_language)

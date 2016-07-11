@@ -4,10 +4,14 @@ PostgreSQL database backend for Django.
 Requires psycopg 2: http://initd.org/projects/psycopg2
 """
 
+import warnings
+
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.db import DEFAULT_DB_ALIAS
 from django.db.backends.base.base import BaseDatabaseWrapper
 from django.db.backends.base.validation import BaseDatabaseValidation
+from django.db.utils import DatabaseError as WrappedDatabaseError
 from django.utils.encoding import force_str
 from django.utils.functional import cached_property
 from django.utils.safestring import SafeBytes, SafeText
@@ -194,7 +198,7 @@ class DatabaseWrapper(BaseDatabaseWrapper):
         tz = self.settings_dict['TIME_ZONE']
         conn_tz = self.connection.get_parameter_status('TimeZone')
 
-        if conn_tz != tz:
+        if tz and conn_tz != tz:
             cursor = self.connection.cursor()
             try:
                 cursor.execute(self.ops.set_time_zone_sql(), [tz])
@@ -229,6 +233,28 @@ class DatabaseWrapper(BaseDatabaseWrapper):
             return False
         else:
             return True
+
+    @cached_property
+    def _nodb_connection(self):
+        nodb_connection = super(DatabaseWrapper, self)._nodb_connection
+        try:
+            nodb_connection.ensure_connection()
+        except (DatabaseError, WrappedDatabaseError):
+            warnings.warn(
+                "Normally Django will use a connection to the 'postgres' database "
+                "to avoid running initialization queries against the production "
+                "database when it's not needed (for example, when running tests). "
+                "Django was unable to create a connection to the 'postgres' database "
+                "and will use the default database instead.",
+                RuntimeWarning
+            )
+            settings_dict = self.settings_dict.copy()
+            settings_dict['NAME'] = settings.DATABASES[DEFAULT_DB_ALIAS]['NAME']
+            nodb_connection = self.__class__(
+                self.settings_dict.copy(),
+                alias=self.alias,
+                allow_thread_sharing=False)
+        return nodb_connection
 
     @cached_property
     def psycopg2_version(self):

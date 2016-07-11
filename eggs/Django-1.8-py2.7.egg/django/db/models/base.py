@@ -630,7 +630,7 @@ class Model(six.with_metaclass(ModelBase)):
                 rel_instance = getattr(self, field.get_cache_name())
                 local_val = getattr(db_instance, field.attname)
                 related_val = None if rel_instance is None else getattr(rel_instance, field.related_field.attname)
-                if local_val != related_val:
+                if local_val != related_val or (local_val is None and related_val is None):
                     del self.__dict__[field.get_cache_name()]
         self._state.db = db_instance._state.db
 
@@ -661,6 +661,30 @@ class Model(six.with_metaclass(ModelBase)):
         that the "save" must be an SQL insert or update (or equivalent for
         non-SQL backends), respectively. Normally, they should not be set.
         """
+        # Ensure that a model instance without a PK hasn't been assigned to
+        # a ForeignKey or OneToOneField on this model. If the field is
+        # nullable, allowing the save() would result in silent data loss.
+        for field in self._meta.concrete_fields:
+            if field.is_relation:
+                # If the related field isn't cached, then an instance hasn't
+                # been assigned and there's no need to worry about this check.
+                try:
+                    getattr(self, field.get_cache_name())
+                except AttributeError:
+                    continue
+                obj = getattr(self, field.name, None)
+                # A pk may have been assigned manually to a model instance not
+                # saved to the database (or auto-generated in a case like
+                # UUIDField), but we allow the save to proceed and rely on the
+                # database to raise an IntegrityError if applicable. If
+                # constraints aren't supported by the database, there's the
+                # unavoidable risk of data corruption.
+                if obj and obj.pk is None:
+                    raise ValueError(
+                        "save() prohibited to prevent data loss due to "
+                        "unsaved related object '%s'." % field.name
+                    )
+
         using = using or router.db_for_write(self.__class__, instance=self)
         if force_insert and (force_update or update_fields):
             raise ValueError("Cannot force both insert and updating in model saving.")
@@ -912,7 +936,7 @@ class Model(six.with_metaclass(ModelBase)):
     def prepare_database_save(self, field):
         if self.pk is None:
             raise ValueError("Unsaved model instance %r cannot be used in an ORM query." % self)
-        return getattr(self, field.rel.field_name)
+        return getattr(self, field.rel.get_related_field().attname)
 
     def clean(self):
         """
@@ -1650,13 +1674,13 @@ class Model(six.with_metaclass(ModelBase)):
 def method_set_order(ordered_obj, self, id_list, using=None):
     if using is None:
         using = DEFAULT_DB_ALIAS
-    rel_val = getattr(self, ordered_obj._meta.order_with_respect_to.rel.field_name)
-    order_name = ordered_obj._meta.order_with_respect_to.name
+    order_wrt = ordered_obj._meta.order_with_respect_to
+    filter_args = order_wrt.get_forward_related_filter(self)
     # FIXME: It would be nice if there was an "update many" version of update
     # for situations like this.
     with transaction.atomic(using=using, savepoint=False):
         for i, j in enumerate(id_list):
-            ordered_obj.objects.filter(**{'pk': j, order_name: rel_val}).update(_order=i)
+            ordered_obj.objects.filter(pk=j, **filter_args).update(_order=i)
 
 
 def method_get_order(ordered_obj, self):

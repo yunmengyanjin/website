@@ -67,7 +67,7 @@ class PostGISOperations(BaseSpatialOperations, DatabaseOperations):
         'left': PostGISOperator(op='<<'),
         'right': PostGISOperator(op='>>'),
         'strictly_below': PostGISOperator(op='<<|'),
-        'stricly_above': PostGISOperator(op='|>>'),
+        'strictly_above': PostGISOperator(op='|>>'),
         'same_as': PostGISOperator(op='~='),
         'exact': PostGISOperator(op='~='),  # alias of same_as
         'contains_properly': PostGISOperator(func='ST_ContainsProperly'),
@@ -208,7 +208,7 @@ class PostGISOperations(BaseSpatialOperations, DatabaseOperations):
 
     def convert_geom(self, hex, geo_field):
         """
-        Converts the geometry returned from PostGIS aggretates.
+        Converts the geometry returned from PostGIS aggregates.
         """
         if hex:
             return Geometry(hex, srid=geo_field.srid)

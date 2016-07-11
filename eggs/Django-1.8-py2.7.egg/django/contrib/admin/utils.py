@@ -293,9 +293,14 @@ def _get_non_gfk_field(opts, name):
     """
     For historical reasons, the admin app relies on GenericForeignKeys as being
     "not found" by get_field(). This could likely be cleaned up.
+
+    Reverse relations should also be excluded as these aren't attributes of the
+    model (rather something like `foo_set`).
     """
     field = opts.get_field(name)
-    if field.is_relation and field.many_to_one and not field.related_model:
+    if (field.is_relation and
+            # Generic foreign keys OR reverse relations
+            ((field.many_to_one and not field.related_model) or field.one_to_many)):
         raise FieldDoesNotExist()
     return field
 
@@ -371,7 +376,7 @@ def display_for_field(value, field):
     from django.contrib.admin.templatetags.admin_list import _boolean_icon
     from django.contrib.admin.views.main import EMPTY_CHANGELIST_VALUE
 
-    if field.flatchoices:
+    if getattr(field, 'flatchoices', None):
         return dict(field.flatchoices).get(value, EMPTY_CHANGELIST_VALUE)
     # NullBooleanField needs special-case null-handling, so it comes
     # before the general null test.

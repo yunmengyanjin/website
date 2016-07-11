@@ -302,7 +302,7 @@ class BaseExpression(object):
         Does this expression contain a reference to some of the
         existing aggregates? If so, returns the aggregate and also
         the lookup parts that *weren't* found. So, if
-            exsiting_aggregates = {'max_id': Max('id')}
+            existing_aggregates = {'max_id': Max('id')}
             self.name = 'max_id'
             queryset.filter(max_id__range=[10,100])
         then this method will return Max('id') and those parts of the
@@ -338,6 +338,17 @@ class BaseExpression(object):
 
     def reverse_ordering(self):
         return self
+
+    def flatten(self):
+        """
+        Recursively yield this expression and all subexpressions, in
+        depth-first order.
+        """
+        yield self
+        for expr in self.get_source_expressions():
+            if expr:
+                for inner_expr in expr.flatten():
+                    yield inner_expr
 
 
 class Expression(BaseExpression, Combinable):
@@ -584,6 +595,14 @@ class RawSQL(Expression):
         return [self]
 
 
+class Star(Expression):
+    def __repr__(self):
+        return "'*'"
+
+    def as_sql(self, compiler, connection):
+        return '*', []
+
+
 class Random(Expression):
     def __init__(self):
         super(Random, self).__init__(output_field=fields.FloatField())
@@ -710,7 +729,8 @@ class When(Expression):
     def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
         c = self.copy()
         c.is_summary = summarize
-        c.condition = c.condition.resolve_expression(query, allow_joins, reuse, summarize, False)
+        if hasattr(c.condition, 'resolve_expression'):
+            c.condition = c.condition.resolve_expression(query, allow_joins, reuse, summarize, False)
         c.result = c.result.resolve_expression(query, allow_joins, reuse, summarize, for_save)
         return c
 
@@ -778,6 +798,11 @@ class Case(Expression):
         for pos, case in enumerate(c.cases):
             c.cases[pos] = case.resolve_expression(query, allow_joins, reuse, summarize, for_save)
         c.default = c.default.resolve_expression(query, allow_joins, reuse, summarize, for_save)
+        return c
+
+    def copy(self):
+        c = super(Case, self).copy()
+        c.cases = c.cases[:]
         return c
 
     def as_sql(self, compiler, connection, template=None, extra=None):

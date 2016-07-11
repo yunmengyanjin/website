@@ -19,7 +19,7 @@ from django.db.models.lookups import IsNull
 from django.db.models.query import QuerySet
 from django.db.models.query_utils import PathInfo
 from django.utils import six
-from django.utils.deprecation import RemovedInDjango20Warning
+from django.utils.deprecation import RemovedInDjango110Warning
 from django.utils.encoding import force_text, smart_text
 from django.utils.functional import cached_property, curry
 from django.utils.translation import ugettext_lazy as _
@@ -122,10 +122,18 @@ class RelatedField(Field):
         import re
         import keyword
         related_name = self.rel.related_name
-
-        is_valid_id = (related_name and re.match('^[a-zA-Z_][a-zA-Z0-9_]*$', related_name)
-                       and not keyword.iskeyword(related_name))
-        if related_name and not (is_valid_id or related_name.endswith('+')):
+        if not related_name:
+            return []
+        is_valid_id = True
+        if keyword.iskeyword(related_name):
+            is_valid_id = False
+        if six.PY3:
+            if not related_name.isidentifier():
+                is_valid_id = False
+        else:
+            if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*\Z', related_name):
+                is_valid_id = False
+        if not (is_valid_id or related_name.endswith('+')):
             return [
                 checks.Error(
                     "The name '%s' is invalid related_name for field %s.%s" %
@@ -186,12 +194,6 @@ class RelatedField(Field):
         if not isinstance(self.rel.to, ModelBase):
             return []
 
-        # If the field doesn't install backward relation on the target model (so
-        # `is_hidden` returns True), then there are no clashes to check and we
-        # can skip these fields.
-        if self.rel.is_hidden():
-            return []
-
         try:
             self.rel
         except AttributeError:
@@ -208,12 +210,15 @@ class RelatedField(Field):
         #         foreign = models.ForeignKey(Target)
         #         m2m = models.ManyToManyField(Target)
 
-        rel_opts = self.rel.to._meta
         # rel_opts.object_name == "Target"
+        rel_opts = self.rel.to._meta
+        # If the field doesn't install a backward relation on the target model
+        # (so `is_hidden` returns True), then there are no clashes to check
+        # and we can skip these fields.
+        rel_is_hidden = self.rel.is_hidden()
         rel_name = self.rel.get_accessor_name()  # i. e. "model_set"
         rel_query_name = self.related_query_name()  # i. e. "model"
-        field_name = "%s.%s" % (opts.object_name,
-            self.name)  # i. e. "Model.field"
+        field_name = "%s.%s" % (opts.object_name, self.name)  # i. e. "Model.field"
 
         # Check clashes between accessor or reverse query name of `field`
         # and any other field name -- i.e. accessor for Model.foreign is
@@ -222,7 +227,7 @@ class RelatedField(Field):
         for clash_field in potential_clashes:
             clash_name = "%s.%s" % (rel_opts.object_name,
                 clash_field.name)  # i. e. "Target.model_set"
-            if clash_field.name == rel_name:
+            if not rel_is_hidden and clash_field.name == rel_name:
                 errors.append(
                     checks.Error(
                         "Reverse accessor for '%s' clashes with field name '%s'." % (field_name, clash_name),
@@ -252,7 +257,7 @@ class RelatedField(Field):
             clash_name = "%s.%s" % (  # i. e. "Model.m2m"
                 clash_field.related_model._meta.object_name,
                 clash_field.field.name)
-            if clash_field.get_accessor_name() == rel_name:
+            if not rel_is_hidden and clash_field.get_accessor_name() == rel_name:
                 errors.append(
                     checks.Error(
                         "Reverse accessor for '%s' clashes with reverse accessor for '%s'." % (field_name, clash_name),
@@ -306,6 +311,19 @@ class RelatedField(Field):
         else:
             self.do_related_class(other, cls)
 
+    def get_forward_related_filter(self, obj):
+        """
+        Return the keyword arguments that when supplied to
+        self.model.object.filter(), would select all instances related through
+        this field to the remote obj. This is used to build the querysets
+        returned by related descriptors. obj is an instance of
+        self.related_field.model.
+        """
+        return {
+            '%s__%s' % (self.name, rh_field.name): getattr(obj, rh_field.attname)
+            for _, rh_field in self.related_fields
+        }
+
     @property
     def swappable_setting(self):
         """
@@ -340,7 +358,7 @@ class RelatedField(Field):
     def related(self):
         warnings.warn(
             "Usage of field.related has been deprecated. Use field.rel instead.",
-            RemovedInDjango20Warning, 2)
+            RemovedInDjango110Warning, 2)
         return self.rel
 
     def do_related_class(self, other, cls):
@@ -498,12 +516,6 @@ class SingleRelatedObjectDescriptor(object):
                     raise ValueError('Cannot assign "%r": the current database router prevents this relation.' % value)
 
         related_pk = tuple(getattr(instance, field.attname) for field in self.related.field.foreign_related_fields)
-        if not self.related.field.allow_unsaved_instance_assignment and None in related_pk:
-            raise ValueError(
-                'Cannot assign "%r": "%s" instance isn\'t saved in the database.' %
-                (value, instance._meta.object_name)
-            )
-
         # Set the value of the related field to the value of the related object's related field
         for index, field in enumerate(self.related.field.local_related_fields):
             setattr(value, field.attname, related_pk[index])
@@ -661,12 +673,6 @@ class ReverseSingleRelatedObjectDescriptor(object):
         # Set the values of the related field.
         else:
             for lh_field, rh_field in self.field.related_fields:
-                pk = value._get_pk_val()
-                if not self.field.allow_unsaved_instance_assignment and pk is None:
-                    raise ValueError(
-                        'Cannot assign "%r": "%s" instance isn\'t saved in the database.' %
-                        (value, self.field.rel.to._meta.object_name)
-                    )
                 setattr(instance, lh_field.attname, getattr(value, rh_field.attname))
 
         # Since we already know what the related object is, seed the related
@@ -954,7 +960,10 @@ def create_many_related_manager(superclass, rel):
                     getattr(result, '_prefetch_related_val_%s' % f.attname)
                     for f in fk.local_related_fields
                 ),
-                lambda inst: tuple(getattr(inst, f.attname) for f in fk.foreign_related_fields),
+                lambda inst: tuple(
+                    f.get_db_prep_value(getattr(inst, f.attname), connection)
+                    for f in fk.foreign_related_fields
+                ),
                 False,
                 self.prefetch_cache_name,
             )
@@ -1407,6 +1416,11 @@ class ManyToOneRel(ForeignObjectRel):
             parent_link=parent_link, on_delete=on_delete, related_query_name=related_query_name)
         self.field_name = field_name
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state.pop('related_model', None)
+        return state
+
     def get_related_field(self):
         """
         Returns the Field in the 'to' object to which this relationship is
@@ -1475,6 +1489,7 @@ class ForeignObject(RelatedField):
     one_to_many = False
     one_to_one = False
 
+    # For backwards compatibility; ignored as of Django 1.8.4.
     allow_unsaved_instance_assignment = False
     requires_unique_target = True
     related_accessor_class = ForeignRelatedObjectsDescriptor
@@ -1516,6 +1531,9 @@ class ForeignObject(RelatedField):
         try:
             self.rel
         except AttributeError:
+            return []
+
+        if not self.foreign_related_fields:
             return []
 
         has_unique_field = any(rel_field.unique
@@ -1617,7 +1635,7 @@ class ForeignObject(RelatedField):
 
     @property
     def foreign_related_fields(self):
-        return tuple(rhs_field for lhs_field, rhs_field in self.related_fields)
+        return tuple(rhs_field for lhs_field, rhs_field in self.related_fields if rhs_field)
 
     def get_local_related_value(self, instance):
         return self.get_instance_value_for_fields(instance, self.local_related_fields)
@@ -1938,6 +1956,9 @@ class ForeignKey(ForeignObject):
             return None
         else:
             return self.related_field.get_db_prep_save(value, connection=connection)
+
+    def get_db_prep_value(self, value, connection, prepared=False):
+        return self.related_field.get_db_prep_value(value, connection, prepared)
 
     def value_to_string(self, obj):
         if not obj:
@@ -2524,6 +2545,12 @@ class ManyToManyField(RelatedField):
         # clash.
         if self.rel.symmetrical and (self.rel.to == "self" or self.rel.to == cls._meta.object_name):
             self.rel.related_name = "%s_rel_+" % name
+        elif self.rel.is_hidden():
+            # If the backwards relation is disabled, replace the original
+            # related_name with one generated from the m2m field name. Django
+            # still uses backwards relations internally and we need to avoid
+            # clashes between multiple m2m fields with related_name == '+'.
+            self.rel.related_name = "_%s_%s_+" % (cls.__name__.lower(), name)
 
         super(ManyToManyField, self).contribute_to_class(cls, name, **kwargs)
 

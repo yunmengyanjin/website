@@ -161,7 +161,7 @@ class RenameModel(Operation):
         # Get all of the related objects we need to repoint
         all_related_objects = (
             f for f in model._meta.get_fields(include_hidden=True)
-            if f.auto_created and not f.concrete and not (f.hidden or f.many_to_many)
+            if f.auto_created and not f.concrete and (not f.hidden or f.many_to_many)
         )
         # Rename the model
         state.models[app_label, self.new_name_lower] = state.models[app_label, self.old_name_lower]
@@ -169,6 +169,10 @@ class RenameModel(Operation):
         state.remove_model(app_label, self.old_name_lower)
         # Repoint the FKs and M2Ms pointing to us
         for related_object in all_related_objects:
+            if related_object.model is not model:
+                # The model being renamed does not participate in this relation
+                # directly. Rather, a superclass does.
+                continue
             # Use the new related key for self referential related objects.
             if related_object.related_model == model:
                 related_key = (app_label, self.new_name_lower)
@@ -559,6 +563,7 @@ class AlterModelManagers(Operation):
     def state_forwards(self, app_label, state):
         model_state = state.models[app_label, self.name_lower]
         model_state.managers = list(self.managers)
+        state.reload_model(app_label, self.name_lower)
 
     def database_forwards(self, app_label, schema_editor, from_state, to_state):
         pass

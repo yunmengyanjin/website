@@ -16,10 +16,10 @@ from django.db import (
 from django.db.models import sql
 from django.db.models.constants import LOOKUP_SEP
 from django.db.models.deletion import Collector
-from django.db.models.expressions import F, Date, DateTime
+from django.db.models.expressions import Date, DateTime, F
 from django.db.models.fields import AutoField, Empty
 from django.db.models.query_utils import (
-    Q, InvalidQuery, deferred_class_factory,
+    InvalidQuery, Q, deferred_class_factory,
 )
 from django.db.models.sql.constants import CURSOR
 from django.utils import six, timezone
@@ -937,10 +937,10 @@ class QuerySet(object):
                                              using=self.db)
 
     def _clone(self, klass=None, setup=False, **kwargs):
+        base_queryset_class = getattr(self, '_base_queryset_class', self.__class__)
         if klass is None:
             klass = self.__class__
-        elif not issubclass(self.__class__, klass):
-            base_queryset_class = getattr(self, '_base_queryset_class', self.__class__)
+        elif not (issubclass(base_queryset_class, klass) or issubclass(klass, base_queryset_class)):
             class_bases = (klass, base_queryset_class)
             class_dict = {
                 '_base_queryset_class': base_queryset_class,
@@ -1267,11 +1267,11 @@ class RawQuerySet(object):
         """
         Resolve the init field names and value positions
         """
-        model_init_names = [f.attname for f in self.model._meta.fields
-                            if f.attname in self.columns]
+        model_init_fields = [f for f in self.model._meta.fields if f.column in self.columns]
         annotation_fields = [(column, pos) for pos, column in enumerate(self.columns)
                              if column not in self.model_fields]
-        model_init_order = [self.columns.index(fname) for fname in model_init_names]
+        model_init_order = [self.columns.index(f.column) for f in model_init_fields]
+        model_init_names = [f.attname for f in model_init_fields]
         return model_init_names, model_init_order, annotation_fields
 
     def __iter__(self):
@@ -1631,10 +1631,24 @@ def prefetch_one_level(instances, prefetcher, lookup, level):
         rel_attr_val = rel_obj_attr(rel_obj)
         rel_obj_cache.setdefault(rel_attr_val, []).append(rel_obj)
 
+    to_attr, as_attr = lookup.get_current_to_attr(level)
+    # Make sure `to_attr` does not conflict with a field.
+    if as_attr and instances:
+        # We assume that objects retrieved are homogeneous (which is the premise
+        # of prefetch_related), so what applies to first object applies to all.
+        model = instances[0].__class__
+        try:
+            model._meta.get_field(to_attr)
+        except exceptions.FieldDoesNotExist:
+            pass
+        else:
+            msg = 'to_attr={} conflicts with a field on the {} model.'
+            raise ValueError(msg.format(to_attr, model.__name__))
+
     for obj in instances:
         instance_attr_val = instance_attr(obj)
         vals = rel_obj_cache.get(instance_attr_val, [])
-        to_attr, as_attr = lookup.get_current_to_attr(level)
+
         if single:
             val = vals[0] if vals else None
             to_attr = to_attr if as_attr else cache_name

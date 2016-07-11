@@ -1,0 +1,1074 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-07-11 11:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:29
+msgid "Brunei"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:30
+msgid "Bolivia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:31
+msgid "United Kingdom"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:32
+msgid "Iran"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:33
+msgid "North Korea"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:34
+msgid "South Korea"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:35
+msgid "Laos"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:36
+msgid "Moldova"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:37
+msgid "Macedonia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:38
+msgid "Russia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:39
+msgid "Syria"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:40
+msgid "Taiwan"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:41
+msgid "Tanzania"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:42
+msgid "Venezuela"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:43
+msgid "Vietnam"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:48
+msgid "Afghanistan"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:49
+msgid "Åland Islands"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:50
+msgid "Albania"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:51
+msgid "Algeria"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:52
+msgid "American Samoa"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:53
+msgid "Andorra"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:54
+msgid "Angola"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:55
+msgid "Anguilla"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:56
+msgid "Antarctica"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:57
+msgid "Antigua and Barbuda"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:58
+msgid "Argentina"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:59
+msgid "Armenia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:60
+msgid "Aruba"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:61
+msgid "Australia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:62
+msgid "Austria"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:63
+msgid "Azerbaijan"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:64
+msgid "Bahamas"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:65
+msgid "Bahrain"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:66
+msgid "Bangladesh"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:67
+msgid "Barbados"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:68
+msgid "Belarus"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:69
+msgid "Belgium"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:70
+msgid "Belize"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:71
+msgid "Benin"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:72
+msgid "Bermuda"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:73
+msgid "Bhutan"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:74
+msgid "Bolivia (Plurinational State of)"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:75
+msgid "Bonaire, Sint Eustatius and Saba"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:76
+msgid "Bosnia and Herzegovina"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:77
+msgid "Botswana"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:78
+msgid "Bouvet Island"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:79
+msgid "Brazil"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:80
+msgid "British Indian Ocean Territory"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:81
+msgid "Brunei Darussalam"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:82
+msgid "Bulgaria"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:83
+msgid "Burkina Faso"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:84
+msgid "Burundi"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:85
+msgid "Cabo Verde"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:86
+msgid "Cambodia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:87
+msgid "Cameroon"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:88
+msgid "Canada"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:89
+msgid "Cayman Islands"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:90
+msgid "Central African Republic"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:91
+msgid "Chad"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:92
+msgid "Chile"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:93
+msgid "China"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:94
+msgid "Christmas Island"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:95
+msgid "Cocos (Keeling) Islands"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:96
+msgid "Colombia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:97
+msgid "Comoros"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:98
+msgid "Congo (the Democratic Republic of the)"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:99
+msgid "Congo"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:100
+msgid "Cook Islands"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:101
+msgid "Costa Rica"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:102
+msgid "Côte d'Ivoire"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:103
+msgid "Croatia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:104
+msgid "Cuba"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:105
+msgid "Curaçao"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:106
+msgid "Cyprus"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:107
+msgid "Czech Republic"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:108
+msgid "Denmark"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:109
+msgid "Djibouti"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:110
+msgid "Dominica"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:111
+msgid "Dominican Republic"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:112
+msgid "Ecuador"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:113
+msgid "Egypt"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:114
+msgid "El Salvador"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:115
+msgid "Equatorial Guinea"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:116
+msgid "Eritrea"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:117
+msgid "Estonia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:118
+msgid "Ethiopia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:119
+msgid "Falkland Islands  [Malvinas]"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:120
+msgid "Faroe Islands"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:121
+msgid "Fiji"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:122
+msgid "Finland"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:123
+msgid "France"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:124
+msgid "French Guiana"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:125
+msgid "French Polynesia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:126
+msgid "French Southern Territories"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:127
+msgid "Gabon"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:128
+msgid "Gambia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:129
+msgid "Georgia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:130
+msgid "Germany"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:131
+msgid "Ghana"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:132
+msgid "Gibraltar"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:133
+msgid "Greece"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:134
+msgid "Greenland"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:135
+msgid "Grenada"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:136
+msgid "Guadeloupe"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:137
+msgid "Guam"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:138
+msgid "Guatemala"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:139
+msgid "Guernsey"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:140
+msgid "Guinea"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:141
+msgid "Guinea-Bissau"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:142
+msgid "Guyana"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:143
+msgid "Haiti"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:144
+msgid "Heard Island and McDonald Islands"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:145
+msgid "Holy See"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:146
+msgid "Honduras"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:147
+msgid "Hong Kong"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:148
+msgid "Hungary"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:149
+msgid "Iceland"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:150
+msgid "India"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:151
+msgid "Indonesia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:152
+msgid "Iran (Islamic Republic of)"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:153
+msgid "Iraq"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:154
+msgid "Ireland"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:155
+msgid "Isle of Man"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:156
+msgid "Israel"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:157
+msgid "Italy"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:158
+msgid "Jamaica"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:159
+msgid "Japan"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:160
+msgid "Jersey"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:161
+msgid "Jordan"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:162
+msgid "Kazakhstan"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:163
+msgid "Kenya"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:164
+msgid "Kiribati"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:165
+msgid "Korea (the Democratic People's Republic of)"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:166
+msgid "Korea (the Republic of)"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:167
+msgid "Kuwait"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:168
+msgid "Kyrgyzstan"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:169
+msgid "Lao People's Democratic Republic"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:170
+msgid "Latvia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:171
+msgid "Lebanon"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:172
+msgid "Lesotho"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:173
+msgid "Liberia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:174
+msgid "Libya"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:175
+msgid "Liechtenstein"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:176
+msgid "Lithuania"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:177
+msgid "Luxembourg"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:178
+msgid "Macao"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:179
+msgid "Macedonia (the former Yugoslav Republic of)"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:180
+msgid "Madagascar"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:181
+msgid "Malawi"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:182
+msgid "Malaysia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:183
+msgid "Maldives"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:184
+msgid "Mali"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:185
+msgid "Malta"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:186
+msgid "Marshall Islands"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:187
+msgid "Martinique"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:188
+msgid "Mauritania"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:189
+msgid "Mauritius"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:190
+msgid "Mayotte"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:191
+msgid "Mexico"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:192
+msgid "Micronesia (Federated States of)"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:193
+msgid "Moldova (the Republic of)"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:194
+msgid "Monaco"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:195
+msgid "Mongolia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:196
+msgid "Montenegro"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:197
+msgid "Montserrat"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:198
+msgid "Morocco"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:199
+msgid "Mozambique"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:200
+msgid "Myanmar"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:201
+msgid "Namibia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:202
+msgid "Nauru"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:203
+msgid "Nepal"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:204
+msgid "Netherlands"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:205
+msgid "New Caledonia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:206
+msgid "New Zealand"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:207
+msgid "Nicaragua"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:208
+msgid "Niger"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:209
+msgid "Nigeria"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:210
+msgid "Niue"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:211
+msgid "Norfolk Island"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:212
+msgid "Northern Mariana Islands"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:213
+msgid "Norway"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:214
+msgid "Oman"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:215
+msgid "Pakistan"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:216
+msgid "Palau"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:217
+msgid "Palestine, State of"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:218
+msgid "Panama"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:219
+msgid "Papua New Guinea"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:220
+msgid "Paraguay"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:221
+msgid "Peru"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:222
+msgid "Philippines"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:223
+msgid "Pitcairn"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:224
+msgid "Poland"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:225
+msgid "Portugal"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:226
+msgid "Puerto Rico"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:227
+msgid "Qatar"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:228
+msgid "Réunion"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:229
+msgid "Romania"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:230
+msgid "Russian Federation"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:231
+msgid "Rwanda"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:232
+msgid "Saint Barthélemy"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:233
+msgid "Saint Helena, Ascension and Tristan da Cunha"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:234
+msgid "Saint Kitts and Nevis"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:235
+msgid "Saint Lucia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:236
+msgid "Saint Martin (French part)"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:237
+msgid "Saint Pierre and Miquelon"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:238
+msgid "Saint Vincent and the Grenadines"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:239
+msgid "Samoa"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:240
+msgid "San Marino"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:241
+msgid "Sao Tome and Principe"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:242
+msgid "Saudi Arabia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:243
+msgid "Senegal"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:244
+msgid "Serbia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:245
+msgid "Seychelles"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:246
+msgid "Sierra Leone"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:247
+msgid "Singapore"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:248
+msgid "Sint Maarten (Dutch part)"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:249
+msgid "Slovakia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:250
+msgid "Slovenia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:251
+msgid "Solomon Islands"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:252
+msgid "Somalia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:253
+msgid "South Africa"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:254
+msgid "South Georgia and the South Sandwich Islands"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:255
+msgid "South Sudan"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:256
+msgid "Spain"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:257
+msgid "Sri Lanka"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:258
+msgid "Sudan"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:259
+msgid "Suriname"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:260
+msgid "Svalbard and Jan Mayen"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:261
+msgid "Swaziland"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:262
+msgid "Sweden"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:263
+msgid "Switzerland"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:264
+msgid "Syrian Arab Republic"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:265
+msgid "Taiwan (Province of China)"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:266
+msgid "Tajikistan"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:267
+msgid "Tanzania, United Republic of"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:268
+msgid "Thailand"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:269
+msgid "Timor-Leste"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:270
+msgid "Togo"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:271
+msgid "Tokelau"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:272
+msgid "Tonga"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:273
+msgid "Trinidad and Tobago"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:274
+msgid "Tunisia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:275
+msgid "Turkey"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:276
+msgid "Turkmenistan"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:277
+msgid "Turks and Caicos Islands"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:278
+msgid "Tuvalu"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:279
+msgid "Uganda"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:280
+msgid "Ukraine"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:281
+msgid "United Arab Emirates"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:282
+msgid "United Kingdom of Great Britain and Northern Ireland"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:283
+msgid "United States Minor Outlying Islands"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:284
+msgid "United States of America"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:285
+msgid "Uruguay"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:286
+msgid "Uzbekistan"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:287
+msgid "Vanuatu"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:288
+msgid "Venezuela (Bolivarian Republic of)"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:289
+msgid "Viet Nam"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:290
+msgid "Virgin Islands (British)"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:291
+msgid "Virgin Islands (U.S.)"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:292
+msgid "Wallis and Futuna"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:293
+msgid "Western Sahara"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:294
+msgid "Yemen"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:295
+msgid "Zambia"
+msgstr ""
+
+#: eggs/django_countries-3.4.1-py2.7.egg/django_countries/data.py:296
+msgid "Zimbabwe"
+msgstr ""

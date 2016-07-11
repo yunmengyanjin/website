@@ -1,3 +1,6 @@
+# coding=utf-8
+
+
 import os
 from django.utils.translation import gettext_lazy as _
 
@@ -5,7 +8,6 @@ DIRNAME = os.path.dirname(__file__)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-
 
 DEFAULT_FROM_EMAIL = 'your_email@domain.com'
 
@@ -15,6 +17,22 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+LANGUAGE_CODE = 'zh_Hans'
+
+TIME_ZONE = 'Asia/Shanghai'
+
+
+
+LANGUAGES = (
+    ('en', ('English')),
+    ('zh_Hans', ('中文简体')),
+)
+
+LOCALE_PATHS = (
+    os.path.join(DIRNAME, 'locale'),
+)
+
+
 DATABASES = {
     'default': {
         # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or
@@ -22,8 +40,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         # Or path to database file if using sqlite3.
         'NAME': 'test_yunmengyanjin',
-        'USER': 'root',                       # Not used with sqlite3.
-        'PASSWORD': 'yunmengyanjin',                   # Not used with sqlite3.
+        'USER': 'root',  # Not used with sqlite3.
+        'PASSWORD': 'yunmengyanjin',  # Not used with sqlite3.
         # Set to empty string for localhost. Not used with sqlite3.
         'HOST': '127.0.0.1',
         # Set to empty string for default. Not used with sqlite3.
@@ -36,17 +54,17 @@ DATABASES = {
 # although not all choices may be available on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'Asia/Shanghai'
+
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'zh-cn'
+
 
 SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
-USE_I18N = True
+
 
 # media files settings
 MEDIA_URL = '/media/'
@@ -65,16 +83,14 @@ STATICFILES_FINDERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     "django.contrib.redirects.middleware.RedirectFallbackMiddleware",
     "pagination.middleware.PaginationMiddleware",
-
-
-
 
 )
 
@@ -141,6 +157,7 @@ LOGIN_REDIRECT_URL = "/manage/"
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.i18n',
     'django.core.context_processors.request',
     'django.core.context_processors.media',
     'django.core.context_processors.static',
