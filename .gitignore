@@ -13,9 +13,9 @@ local_settings.py
 env
 .venv
 gunicorn.sh
-*.iml
-*.so
-*.mo
+
+
+
 media/
 *.pid
 celerybeat-schedule
@@ -39,8 +39,8 @@ coverage.xml
 .hypothesis/
 
 # Translations
-*.mo
-*.pot
+
+
 
 # Django stuff:
 *.log
