@@ -11,58 +11,78 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-18 09:16+0100\n"
+"POT-Creation-Date: 2016-07-14 17:47+0800\n"
 "PO-Revision-Date: 2015-03-18 12:28+0000\n"
 "Last-Translator: Lele Long <schemacs@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/django/"
 "language/zh_CN/)\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/admin.py:46
 msgid "Personal info"
 msgstr "个人信息"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/admin.py:47
 msgid "Permissions"
 msgstr "权限"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/admin.py:49
 msgid "Important dates"
 msgstr "重要日期"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/admin.py:129
 #, python-format
 msgid "%(name)s object with primary key %(key)r does not exist."
 msgstr "具有主键 %(key)r 的对象 %(name)s 不存在。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/admin.py:139
 msgid "Password changed successfully."
 msgstr "密码修改成功。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/admin.py:150
 #, python-format
 msgid "Change password: %s"
 msgstr "修改密码：%s"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/apps.py:12
 msgid "Authentication and Authorization"
 msgstr "认证和授权"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:30
 msgid "No password set."
 msgstr "密码未设置。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:36
 msgid "Invalid password format or unknown hashing algorithm."
 msgstr "不可用的密码格式或未知的哈希算法。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:69
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:265
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:329
 msgid "The two password fields didn't match."
 msgstr "两个密码字段不一致。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:71
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:100
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:128
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:333
 msgid "Password"
 msgstr "密码"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:73
 msgid "Password confirmation"
 msgstr "密码确认"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:75
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:339
 msgid "Enter the same password as above, for verification."
 msgstr "为了校验，输入与上面相同的密码。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:101
 msgid ""
 "Raw passwords are not stored, so there is no way to see this user's "
 "password, but you can change the password using <a href=\"password/\">this "
@@ -71,164 +91,232 @@ msgstr ""
 "原始密码不会存储到数据库，因此没有办法看到这个用户的密码，但您可以使用<a "
 "href=\"password/\">这个表单</a>来更改密码。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:131
 #, python-format
 msgid ""
 "Please enter a correct %(username)s and password. Note that both fields may "
 "be case-sensitive."
 msgstr "请输入一个正确的 %(username)s 和密码. 注意他们都是大区分大小写的."
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:133
 msgid "This account is inactive."
 msgstr "该帐号未激活。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:196
 msgid "Email"
 msgstr "电子邮件"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:267
 msgid "New password"
 msgstr "新密码"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:269
 msgid "New password confirmation"
 msgstr "新密码确认"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:300
 msgid "Your old password was entered incorrectly. Please enter it again."
 msgstr "你的旧密码不正确。请重新输入。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:303
 msgid "Old password"
 msgstr "旧密码"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/forms.py:337
 msgid "Password (again)"
 msgstr "密码(重复)"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:272
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:346
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:404
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:435
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:471
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:507
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:544
 msgid "algorithm"
 msgstr "算法"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:273
 msgid "iterations"
 msgstr "迭代次数"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:274
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:348
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:405
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:436
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:545
 msgid "salt"
 msgstr "盐"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:275
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:406
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:437
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:472
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:508
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:546
 msgid "hash"
 msgstr "哈希"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:347
 msgid "work factor"
 msgstr "加密因子"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/hashers.py:349
 msgid "checksum"
 msgstr "校验和"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:64
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:115
 msgid "name"
 msgstr "名称"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:66
 msgid "codename"
 msgstr "代码名称"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:70
 msgid "permission"
 msgstr "权限"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:71
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:117
 msgid "permissions"
 msgstr "权限"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:122
 msgid "group"
 msgstr "组"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:123
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:311
 msgid "groups"
 msgstr "组"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:196
 msgid "password"
 msgstr "密码"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:197
 msgid "last login"
 msgstr "上次登录"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:308
 msgid "superuser status"
 msgstr "超级用户状态"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:309
 msgid ""
 "Designates that this user has all permissions without explicitly assigning "
 "them."
 msgstr "指明该用户缺省拥有所有权限。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:312
 msgid ""
 "The groups this user belongs to. A user will get all permissions granted to "
 "each of their groups."
 msgstr "该用户归属的组。一个用户将得到其归属的组的所有权限。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:317
 msgid "user permissions"
 msgstr "用户权限"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:318
 msgid "Specific permissions for this user."
 msgstr "为该用户声明权限。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:385
 msgid "username"
 msgstr "用户名"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:386
 msgid "Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "必填。不多于30个字符。只能用字母、数字和字符 @/./+/-/_ 。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:390
 msgid ""
 "Enter a valid username. This value may contain only letters, numbers and @/./"
 "+/-/_ characters."
 msgstr "请输入合法用户名。只能包含字母，数字和@/./+/-/_ 字符。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:395
 msgid "A user with that username already exists."
 msgstr "已存在一位使用该名字的用户。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:397
 msgid "first name"
 msgstr "名字"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:398
 msgid "last name"
 msgstr "姓氏"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:399
 msgid "email address"
 msgstr "电子邮件地址"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:400
 msgid "staff status"
 msgstr "职员状态"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:401
 msgid "Designates whether the user can log into this admin site."
 msgstr "指明用户是否可以登录到这个管理站点。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:403
 msgid "active"
 msgstr "有效"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:404
 msgid ""
 "Designates whether this user should be treated as active. Unselect this "
 "instead of deleting accounts."
 msgstr "指明用户是否被认为活跃的。以反选代替删除帐号。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:406
 msgid "date joined"
 msgstr "加入日期"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:414
 msgid "user"
 msgstr "用户"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/models.py:415
 msgid "users"
 msgstr "用户"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/templates/registration/password_reset_subject.txt:2
 #, python-format
 msgid "Password reset on %(site_name)s"
 msgstr "重置 %(site_name)s 的密码"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/views.py:102
 msgid "Logged out"
 msgstr "退出登录"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/views.py:188
 msgid "Password reset"
 msgstr "密码重置"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/views.py:203
 msgid "Password reset sent"
 msgstr "密码重置链接已经发送。"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/views.py:242
 msgid "Enter new password"
 msgstr "输入新密码"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/views.py:253
 msgid "Password reset unsuccessful"
 msgstr "密码重置失败"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/views.py:273
 msgid "Password reset complete"
 msgstr "密码重置完成"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/views.py:310
 msgid "Password change"
 msgstr "密码更改"
 
+#: eggs/Django-1.8-py2.7.egg/django/contrib/auth/views.py:326
 msgid "Password change successful"
 msgstr "密码更改成功"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-11 12:27+0800\n"
+"POT-Creation-Date: 2016-07-14 17:47+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,60 +42,60 @@ msgstr ""
 msgid "Enter a valid value."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:87
-#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:710
+#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:94
+#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:712
 msgid "Enter a valid URL."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:133
+#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:137
 msgid "Enter a valid integer."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:138
+#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:148
 msgid "Enter a valid email address."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:212
+#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:222
 msgid ""
 "Enter a valid 'slug' consisting of letters, numbers, underscores or hyphens."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:217
-#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:236
+#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:227
+#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:246
 msgid "Enter a valid IPv4 address."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:222
-#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:237
+#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:232
+#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:247
 msgid "Enter a valid IPv6 address."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:232
-#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:235
+#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:242
+#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:245
 msgid "Enter a valid IPv4 or IPv6 address."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:260
+#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:270
 #: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1144
 msgid "Enter only digits separated by commas."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:269
+#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:279
 #, python-format
 msgid "Ensure this value is %(limit_value)s (it is %(show_value)s)."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:295
+#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:305
 #, python-format
 msgid "Ensure this value is less than or equal to %(limit_value)s."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:302
+#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:312
 #, python-format
 msgid "Ensure this value is greater than or equal to %(limit_value)s."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:311
+#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:321
 #, python-format
 msgid ""
 "Ensure this value has at least %(limit_value)d character (it has "
@@ -106,7 +106,7 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:322
+#: eggs/Django-1.8-py2.7.egg/django/core/validators.py:332
 #, python-format
 msgid ""
 "Ensure this value has at most %(limit_value)d character (it has "
@@ -117,12 +117,12 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/base.py:1106
-#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:722
+#: eggs/Django-1.8-py2.7.egg/django/db/models/base.py:1130
+#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:718
 msgid "and"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/base.py:1108
+#: eggs/Django-1.8-py2.7.egg/django/db/models/base.py:1132
 #, python-format
 msgid "%(model_name)s with this %(field_labels)s already exists."
 msgstr ""
@@ -159,12 +159,12 @@ msgid "Field of type: %(field_type)s"
 msgstr ""
 
 #: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:922
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1832
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1833
 msgid "Integer"
 msgstr ""
 
 #: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:926
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1830
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1831
 #, python-format
 msgid "'%(value)s' value must be an integer."
 msgstr ""
@@ -244,120 +244,120 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1705
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1706
 msgid "Email address"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1729
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1730
 msgid "File path"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1796
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1797
 #, python-format
 msgid "'%(value)s' value must be a float."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1798
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1799
 msgid "Floating point number"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1899
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1900
 msgid "Big (8 byte) integer"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1914
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1915
 msgid "IPv4 address"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1950
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:1951
 #: eggs/django_reviews-1.1-py2.7.egg/reviews/models.py:32
 msgid "IP address"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2029
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2030
 #, python-format
 msgid "'%(value)s' value must be either None, True or False."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2031
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2032
 msgid "Boolean (Either True, False or None)"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2091
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2092
 msgid "Positive integer"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2103
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2104
 msgid "Positive small integer"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2116
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2117
 #, python-format
 msgid "Slug (up to %(max_length)s)"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2145
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2146
 msgid "Small integer"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2152
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2153
 #: eggs/django_portlets-1.3-py2.7.egg/portlets/example/models.py:15
 msgid "Text"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2175
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2176
 #, python-format
 msgid ""
 "'%(value)s' value has an invalid format. It must be in HH:MM[:ss[.uuuuuu]] "
 "format."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2177
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2178
 #, python-format
 msgid ""
 "'%(value)s' value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is an "
 "invalid time."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2180
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2181
 msgid "Time"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2308
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2309
 msgid "URL"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2331
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2332
 msgid "Raw binary data"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2375
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/__init__.py:2376
 #, python-format
 msgid "'%(value)s' is not a valid UUID."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/files.py:239
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/files.py:238
 msgid "File"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/files.py:389
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/files.py:388
 msgid "Image"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/related.py:1791
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/related.py:1809
 #, python-format
 msgid "%(model)s instance with %(field)s %(value)r does not exist."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/related.py:1793
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/related.py:1811
 msgid "Foreign Key (type determined by related field)"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/related.py:2020
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/related.py:2041
 msgid "One-to-one relationship"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/related.py:2110
+#: eggs/Django-1.8-py2.7.egg/django/db/models/fields/related.py:2131
 msgid "Many-to-many relationship"
 msgstr ""
 
@@ -398,12 +398,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:438
-#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:1191
+#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:1193
 msgid "Enter a valid date."
 msgstr ""
 
 #: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:462
-#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:1192
+#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:1194
 msgid "Enter a valid time."
 msgstr ""
 
@@ -445,24 +445,24 @@ msgid ""
 "corrupted image."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:825
-#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:919
-#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:1233
+#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:827
+#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:921
+#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:1238
 #, python-format
 msgid "Select a valid choice. %(value)s is not one of the available choices."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:920
-#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:1035
-#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:1232
+#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:922
+#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:1037
+#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:1237
 msgid "Enter a list of values."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:1036
+#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:1038
 msgid "Enter a complete value."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:1262
+#: eggs/Django-1.8-py2.7.egg/django/forms/fields.py:1264
 msgid "Enter a valid UUID."
 msgstr ""
 
@@ -478,7 +478,7 @@ msgstr ""
 
 #. Translators: If found as last label character, these punctuation
 #. characters will prevent the default label_suffix to be appended to the label
-#: eggs/Django-1.8-py2.7.egg/django/forms/forms.py:665
+#: eggs/Django-1.8-py2.7.egg/django/forms/forms.py:659
 msgid ":?.!"
 msgstr ""
 
@@ -509,36 +509,36 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:716
+#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:712
 #, python-format
 msgid "Please correct the duplicate data for %(field)s."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:720
+#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:716
 #, python-format
 msgid "Please correct the duplicate data for %(field)s, which must be unique."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:726
+#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:722
 #, python-format
 msgid ""
 "Please correct the duplicate data for %(field_name)s which must be unique "
 "for the %(lookup)s in %(date_field)s."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:734
+#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:730
 msgid "Please correct the duplicate values below."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:1052
+#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:1053
 msgid "The inline foreign key did not match the parent instance primary key."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:1118
+#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:1123
 msgid "Select a valid choice. That choice is not one of the available choices."
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:1235
+#: eggs/Django-1.8-py2.7.egg/django/forms/models.py:1240
 #, python-format
 msgid "\"%(pk)s\" is not a valid value for a primary key."
 msgstr ""
@@ -574,39 +574,39 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/template/defaultfilters.py:860
+#: eggs/Django-1.8-py2.7.egg/django/template/defaultfilters.py:865
 msgid "yes,no,maybe"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/template/defaultfilters.py:889
-#: eggs/Django-1.8-py2.7.egg/django/template/defaultfilters.py:901
+#: eggs/Django-1.8-py2.7.egg/django/template/defaultfilters.py:894
+#: eggs/Django-1.8-py2.7.egg/django/template/defaultfilters.py:906
 #, python-format
 msgid "%(size)d byte"
 msgid_plural "%(size)d bytes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: eggs/Django-1.8-py2.7.egg/django/template/defaultfilters.py:903
+#: eggs/Django-1.8-py2.7.egg/django/template/defaultfilters.py:908
 #, python-format
 msgid "%s KB"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/template/defaultfilters.py:905
+#: eggs/Django-1.8-py2.7.egg/django/template/defaultfilters.py:910
 #, python-format
 msgid "%s MB"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/template/defaultfilters.py:907
+#: eggs/Django-1.8-py2.7.egg/django/template/defaultfilters.py:912
 #, python-format
 msgid "%s GB"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/template/defaultfilters.py:909
+#: eggs/Django-1.8-py2.7.egg/django/template/defaultfilters.py:914
 #, python-format
 msgid "%s TB"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/template/defaultfilters.py:911
+#: eggs/Django-1.8-py2.7.egg/django/template/defaultfilters.py:916
 #, python-format
 msgid "%s PB"
 msgstr ""
@@ -627,11 +627,11 @@ msgstr ""
 msgid "AM"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/utils/dateformat.py:151
+#: eggs/Django-1.8-py2.7.egg/django/utils/dateformat.py:153
 msgid "midnight"
 msgstr ""
 
-#: eggs/Django-1.8-py2.7.egg/django/utils/dateformat.py:153
+#: eggs/Django-1.8-py2.7.egg/django/utils/dateformat.py:155
 msgid "noon"
 msgstr ""
 
@@ -2104,7 +2104,7 @@ msgid "Active"
 msgstr ""
 
 #: eggs/django_postal-0.96-py2.7.egg/postal/forms/__init__.py:17
-#: lfs_project/settings.py:237
+#: lfs_project/settings.py:233
 msgid "Country"
 msgstr ""
 
@@ -2285,46 +2285,46 @@ msgstr ""
 msgid "Format"
 msgstr ""
 
-#: lfs_project/settings.py:209
+#: lfs_project/settings.py:205
 msgid "PayPal"
 msgstr ""
 
-#: lfs_project/settings.py:213 lfs_project/settings.py:218
+#: lfs_project/settings.py:209 lfs_project/settings.py:214
 msgid "Price includes tax"
 msgstr ""
 
-#: lfs_project/settings.py:214 lfs_project/settings.py:219
+#: lfs_project/settings.py:210 lfs_project/settings.py:215
 msgid "Price excludes tax"
 msgstr ""
 
-#: lfs_project/settings.py:235
+#: lfs_project/settings.py:231
 msgid "Cart Price"
 msgstr ""
 
-#: lfs_project/settings.py:236
+#: lfs_project/settings.py:232
 msgid "Combined Length and Girth"
 msgstr ""
 
-#: lfs_project/settings.py:238
+#: lfs_project/settings.py:234
 msgid "Height"
 msgstr ""
 
-#: lfs_project/settings.py:239
+#: lfs_project/settings.py:235
 msgid "Length"
 msgstr ""
 
-#: lfs_project/settings.py:240
+#: lfs_project/settings.py:236
 msgid "Width"
 msgstr ""
 
-#: lfs_project/settings.py:241
+#: lfs_project/settings.py:237
 msgid "Weight"
 msgstr ""
 
-#: lfs_project/settings.py:242
+#: lfs_project/settings.py:238
 msgid "Shipping Method"
 msgstr ""
 
-#: lfs_project/settings.py:243
+#: lfs_project/settings.py:239
 msgid "Payment Method"
 msgstr ""
