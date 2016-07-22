@@ -1,4 +1,5 @@
 # python imports
+from __future__ import unicode_literals
 import locale
 import math
 import json
@@ -597,7 +598,6 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
         variant_canonical = product.parent.get_variant_for_category(request)
     else:
         variant_canonical = product
-
     result = render_to_response(template_name, RequestContext(request, {
         "product_inline": product_inline(request, product),
         "variant_canonical": variant_canonical,

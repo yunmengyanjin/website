@@ -1,0 +1,17 @@
+{% extends "lfs/base.html" %}
+{% block title %}
+    注册 - {{ block.super }}
+{% endblock %}
+
+{% block wrapper %}
+<div class="form-wrapper">
+    <div class="form">
+<form method="post" action="{% url 'register' %}">
+    {% csrf_token %}
+{{ form.as_p }}
+    <input type="hidden" name="action" value="register">
+    <input type="hidden" name="next" value="{{ next_url }}" />
+    <input type="submit" value="注册">
+</form>
+    </div></div>
+{% endblock %}

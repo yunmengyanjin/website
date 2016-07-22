@@ -71,6 +71,8 @@ urlpatterns += patterns('lfs.checkout.views',
 
 # Customer
 urlpatterns += patterns('lfs.customer.views',
+    url(r'^register',"register", name='register'),
+    url(r'^pic',"pic", name='pic'),
     url(r'^login', "login", name="lfs_login"),
     url(r'^logout', "logout", name="lfs_logout"),
     url(r'^my-account', "account", name="lfs_my_account"),

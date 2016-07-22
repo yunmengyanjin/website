@@ -1,4 +1,5 @@
 # payment imports
+# coding=utf-8
 import datetime
 
 # django imports
@@ -14,6 +15,11 @@ import lfs.payment.settings
 from lfs.customer.models import BankAccount
 from lfs.customer.models import CreditCard
 from lfs.payment.models import PaymentMethod
+from .models import Customer
+
+
+class User_image(forms.Form):
+    image = forms.ImageField(label="头像", required=False)
 
 
 class BankAccountForm(forms.ModelForm):
@@ -21,9 +27,10 @@ class BankAccountForm(forms.ModelForm):
     The default bank account form which is displayed within the checkout form
     if a shop customer selects a payment method of type ``bank``.
     """
+
     class Meta:
         model = BankAccount
-        exclude = ("customer", )
+        exclude = ("customer",)
 
     def clean(self):
         msg = _(u"This field is required.")
@@ -52,11 +59,12 @@ class CreditCardForm(forms.ModelForm):
     The default credit card form which is displayed within the checkout form
     if a shop customer selects a payment method of type ``credit card``.
     """
-    verification = forms.CharField(label=_(u"Verification Number"), max_length=4, required=False, widget=forms.TextInput(attrs={"size": 4}))
+    verification = forms.CharField(label=_(u"Verification Number"), max_length=4, required=False,
+                                   widget=forms.TextInput(attrs={"size": 4}))
 
     class Meta:
         model = CreditCard
-        exclude = ("customer", )
+        exclude = ("customer",)
 
     def __init__(self, *args, **kwargs):
         super(CreditCardForm, self).__init__(*args, **kwargs)
@@ -99,11 +107,12 @@ class CustomerAuthenticationForm(AuthenticationForm):
 class RegisterForm(forms.Form):
     """Form to register a customer.
     """
-    email = forms.EmailField(label=_(u"E-mail"), max_length=75)
+    username = forms.CharField(label=u'用户名', max_length=75)
+    tel = forms.CharField(label=u'手机号码', widget=forms.NumberInput, max_length=11, )
     password_1 = forms.CharField(
         label=_(u"Password"), widget=forms.PasswordInput(), max_length=20)
     password_2 = forms.CharField(
-        label=_(u"Confirm password"), widget=forms.PasswordInput(), max_length=20)
+        label=u'重复密码', widget=forms.PasswordInput(), max_length=20)
 
     def clean_password_2(self):
         """Validates that password 1 and password 2 are the same.
@@ -116,12 +125,20 @@ class RegisterForm(forms.Form):
 
         return p2
 
-    def clean_email(self):
+    def clean_username(self):
         """Validates that the entered e-mail is unique.
         """
-        email = self.cleaned_data.get("email")
-        if email and User.objects.filter(Q(email=email) | Q(username=email)).count() > 0:
-            raise forms.ValidationError(
-                _(u"That email address is already in use."))
+        username = self.cleaned_data.get('username')
 
-        return email
+        if username and User.objects.filter(Q(username=username)).count() > 0:
+            raise forms.ValidationError(
+                u'该用户名已占用')
+        return username
+
+    def clean_tel(self):
+        tel = self.cleaned_data.get('tel')
+        if tel and Customer.objects.filter(Q(tel=tel)).count() > 0:
+            raise forms.ValidationError(
+                u'该手机号已经注册账号'
+            )
+        return tel
