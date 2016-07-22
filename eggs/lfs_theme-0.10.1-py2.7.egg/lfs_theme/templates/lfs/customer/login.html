@@ -61,7 +61,7 @@
                     {% csrf_token %}
                     <div class="form-wrapper">
                         <div class="form">
-                            {% lfs_form register_form %}
+                            {{ register_form }}
                         </div>
                     </div>
                     <input type="hidden"

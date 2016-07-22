@@ -1,5 +1,8 @@
 # python imports
+# coding=utf-8
+from __future__ import unicode_literals
 import datetime
+
 from urlparse import urlparse
 
 # django imports
@@ -8,15 +11,19 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.template import RequestContext
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.utils.translation import ugettext_lazy as _
+
 
 # lfs imports
 import lfs
 from lfs.addresses.utils import AddressManagement
-from lfs.customer import utils as customer_utils
+import utils as customer_utils
+from .models import Customer
 from lfs.customer.forms import EmailForm, CustomerAuthenticationForm
+from .forms import User_image
 from lfs.customer.forms import RegisterForm
 from lfs.customer.utils import create_unique_username
 from lfs.order.models import Order
@@ -39,7 +46,7 @@ def login(request, template_name="lfs/customer/login.html"):
     #     raise Http404()
 
     login_form = CustomerAuthenticationForm()
-    login_form.fields["username"].label = _(u"E-Mail")
+    login_form.fields["username"].label = u'用户名'
     register_form = RegisterForm()
 
     if request.POST.get("action") == "login":
@@ -57,33 +64,33 @@ def login(request, template_name="lfs/customer/login.html"):
 
             return lfs.core.utils.set_message_cookie(
                 redirect_to, msg=_(u"You have been logged in."))
-
-    elif request.POST.get("action") == "register":
+    if request.POST.get("action") == "register":
         register_form = RegisterForm(data=request.POST)
         if register_form.is_valid():
-
-            email = register_form.data.get("email")
+            username = register_form.data.get("username")
+            tel = register_form.data.get("tel")
             password = register_form.data.get("password_1")
-
             # Create user
             user = User.objects.create_user(
-                username=create_unique_username(email), email=email, password=password)
+                username=create_unique_username(username), password=password)
 
             # Create customer
             customer = customer_utils.get_or_create_customer(request)
             customer.user = user
+            Customer.objects.filter()
 
             # Notify
-            lfs.core.signals.customer_added.send(sender=user)
+            # 在此处增加邮箱验证 或者手机验证
 
             # Log in user
             from django.contrib.auth import authenticate
-            user = authenticate(username=email, password=password)
+            user = authenticate(username=username, password=password)
 
             from django.contrib.auth import login
             login(request, user)
 
             redirect_to = request.POST.get("next")
+            Customer.objects.filter(user=user).update(tel=tel, nickname=username)
             if not redirect_to or '//' in redirect_to or ' ' in redirect_to:
                 redirect_to = reverse("lfs_shop_view")
 
@@ -114,6 +121,50 @@ def login(request, template_name="lfs/customer/login.html"):
     }))
 
 
+def register(request):
+    register_form = RegisterForm()
+    if request.POST.get('action') == "register":
+        register_form = RegisterForm(data=request.POST)
+        if register_form.is_valid():
+            username = register_form.data.get("username")
+            tel = register_form.data.get("tel")
+            password = register_form.data.get("password_1")
+            # Create user
+            user = User.objects.create_user(
+                username=create_unique_username(username), password=password)
+            # Create customer
+            customer = customer_utils.get_or_create_customer(request)
+            customer.user = user
+            Customer.objects.filter()
+            # Notify
+            # 在此处增加邮箱验证 或者手机验证
+            # Log in user
+            from django.contrib.auth import authenticate
+            user = authenticate(username=username, password=password)
+            from django.contrib.auth import login
+            login(request, user)
+            redirect_to = request.POST.get("next")
+            Customer.objects.filter(user=user).update(tel=tel, nickname=username)
+            if not redirect_to or '//' in redirect_to or ' ' in redirect_to:
+                redirect_to = reverse("lfs_shop_view")
+            return lfs.core.utils.set_message_cookie(
+                redirect_to, msg=_(u"You have been registered and logged in."))
+    next_url = request.REQUEST.get("next")
+    if next_url is None:
+        next_url = request.META.get("HTTP_REFERER")
+    if next_url is None:
+        next_url = reverse("lfs_shop_view")
+
+    # Get just the path of the url. See django.contrib.auth.views.login for more
+    next_url = urlparse(next_url)
+    next_url = next_url[2]
+
+    return render_to_response('ymyj/register.html', RequestContext(request, {
+        'form': register_form,
+        "next_url": next_url,
+    }))
+
+
 def logout(request):
     """Custom method to logout a user.
 
@@ -124,7 +175,7 @@ def logout(request):
     logout(request)
 
     return lfs.core.utils.set_message_cookie(reverse("lfs_shop_view"),
-        msg=_(u"You have been logged out."))
+                                             msg=_(u"You have been logged out."))
 
 
 @login_required
@@ -188,11 +239,26 @@ def account(request, template_name="lfs/customer/account.html"):
     """Displays the main screen of the current user's account.
     """
     user = request.user
+    user_photo = Customer.objects.get(user=user).people_image
+    user_photo = "/media/%s" % user_photo
 
-    return render_to_response(template_name, RequestContext(request, {
-        "user": user,
-        "current": "welcome"
-    }))
+    if request.method == 'POST':
+        if 'image' in request.FILES:
+            image = request.FILES['image']
+            people_image = Customer.objects.get(user=user)
+            people_image.people_image = image
+            people_image.save()
+            return HttpResponse("修改头像成功")
+        else:
+            return HttpResponse("请提交头像")
+
+    else:
+        return render_to_response(template_name, RequestContext(request, {
+            "user": user,
+            "current": "welcome",
+            "user_photo": user_photo,
+            "form": User_image,
+        }))
 
 
 @login_required
@@ -271,3 +337,17 @@ def password(request, template_name="lfs/customer/password.html"):
         "form": form,
         "current": "password"
     }))
+
+
+def pic(request):
+    if request.method == 'GET':
+        return HttpResponseForbidden
+    else:
+        image = request.FILES['image']
+        user = request.user
+        customer = Customer.objects.get(user=user)
+        customer.people_image = image
+        customer.save()
+        src = "/media/%s" % customer.people_image
+        print src
+        return JsonResponse(src,safe=False)

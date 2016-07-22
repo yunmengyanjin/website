@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 # lfs imports
 from lfs.addresses.settings import ADDRESS_MODEL
-from lfs.customer.models import Customer
+from .models import Customer
 import lfs.core.utils
 
 
@@ -21,7 +21,6 @@ def get_or_create_customer(request):
 def create_customer(request):
     """Creates a customer for the given request (which means for the current
     logged in user/or the session user).
-
     This shouldn't be called directly. Instead get_or_create_customer should be
     called.
     """

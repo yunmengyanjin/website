@@ -74,6 +74,7 @@
                         {% else %}
                             {% if not ANON_ONLY %}
                                 <a href="{% url 'lfs_login' %}">{% trans 'Login' %}</a> |
+                                <a href="{% url 'register' %}">注册</a>
                             {% endif %}
 
                         {% endif %}

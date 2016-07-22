@@ -7,9 +7,213 @@
     {% breadcrumbs _("Your Account") %}
 {% endblock %}
 
+
 {% block content %}
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.Jcrop.css" />
+       <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+    <script>
+    function FitImage(Img){
+var a =new Image;
+a.src = Img.src;
+        alert("pic"+pic.width+'\n'+pic.height);
+        alert("new出来的对象"+a.width+'\n'+a.height);
+　　　　　　　　　　　　　　　　　　var radio = pic.width/pic.height;
+　　　　if(pic.width>0 && pic.height>0){
+
+　　if(radio>=1){
+
+　　if(pic.width>400){
+
+　　　　　　　　pic.width=400;
+　　　　　　　　pic.height=400/radio;
+　　　　　　}else{
+　　　　　　}
+　　　　}else{
+　　　　　　if(pic.height>400){
+　　　　　　　　Img.height=400;
+　　　　　　　　Img.width=pic.height * radio;
+　　　　　　}else{
+　　　　　　}
+　　　　}
+　　}
+}
+
+    </script>
+    <style type="text/css">
+    .jcrop-holder #preview-pane {
+  display: block;
+  position: absolute;
+  z-index: 2000;
+  top: 10px;
+  right: -280px;
+  padding: 6px;
+  border: 1px rgba(0,0,0,.4) solid;
+  background-color: white;
+
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+
+  -webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* The Javascript code will set the aspect ratio of the crop
+   area based on the size of the thumbnail preview,
+   specified here */
+#preview-pane .preview-container {
+  width: 250px;
+  height: 170px;
+  overflow: hidden;
+}
+
+    </style>
 <h1>{% trans "Welcome!" %}</h1>
+    <h1>你的头像</h1>
+    <br>
+
+    <button id="go" class="btn btn-primary btn-lg" data-toggle="modal"
+   data-target="#myModal">选择图片</button>
+    <br>
+    <div id="get"></div>
+    <form id="form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form }}
+    </form>
+    <br>
+    <!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+   aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close"
+               data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="myModalLabel">
+               请裁剪你的头像
+            </h4>
+         </div>
+         <div class="modal-body">
+
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-primary">
+               提交更改
+            </button>
+         </div>
+      </div><!-- /.modal-content -->
+</div><!-- /.modal -->
+</div>
 
 {% trans "Welcome to your account. Here you can find your orders, you can change your addresses, email address and your password." %}
+    <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.js"></script>
+        <script src="{{ STATIC_URL }}js/jquery.Jcrop.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery.Jcrop.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.js"></script>
+   <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script>
 
+    $("#form").on('submit',(function (e) {
+        e.preventDefault();
+        var serializeData = $(this).serialize();
+
+        $(this).ajaxSubmit({
+            type:'POST',
+            url:'/pic',
+            dataType:'json',
+            data:serializeData,
+            contentType:false,
+            cache:false,
+            processData:false,
+            beforeSubmit:function () {
+
+            },
+            uploadProgress:function (event, position, total, percentComplete) {
+
+
+            },
+            error:function (data) {
+                alert("上传头像失败");
+
+            },
+            success:function (data) {
+
+                alert("上传头像成功");
+                var txt= "<img id='pic' src='"+data+"' alt='用户头像' onload='FitImage(this,400,400)'>"
+                +" <div id='preview-pane'> <div class='preview-container'> <img id='pic2' src='"+data+"' class='jcrop-preview' alt='Preview' /> </div> </div>";
+                $(".modal-body").html(txt);
+                $("#myModal").modal('show');
+                 var jcrop_api,
+        boundx,
+        boundy,
+
+        // Grab some information about the preview pane
+        $preview = $('#preview-pane'),
+        $pcnt = $('#preview-pane .preview-container'),
+        $pimg = $('#preview-pane .preview-container img'),
+
+        xsize = $pcnt.width(),
+        ysize = $pcnt.height();
+
+    console.log('init',[xsize,ysize]);
+    $('#pic').Jcrop({
+      onChange: updatePreview,
+      onSelect: updatePreview,
+      aspectRatio: xsize / ysize
+    },function(){
+      // Use the API to get the real image size
+      var bounds = this.getBounds();
+      boundx = bounds[0];
+      boundy = bounds[1];
+      // Store the API in the jcrop_api variable
+      jcrop_api = this;
+
+      // Move the preview into the jcrop container for css positioning
+      $preview.appendTo(jcrop_api.ui.holder);
+    });
+
+    function updatePreview(c)
+    {
+      if (parseInt(c.w) > 0)
+      {
+        var rx = xsize / c.w;
+        var ry = ysize / c.h;
+
+        $pimg.css({
+          width: Math.round(rx * boundx) + 'px',
+          height: Math.round(ry * boundy) + 'px',
+          marginLeft: '-' + Math.round(rx * c.x) + 'px',
+          marginTop: '-' + Math.round(ry * c.y) + 'px'
+        });
+      }
+    }
+
+
+
+
+
+            }})}));
+    $("#go").click(function () {
+        $("#myModal").modal('show');
+
+
+
+    });
+
+
+
+
+
+      $("#id_image").on("change", function() {
+       $(this).parent().submit();
+});
+
+
+
+
+    </script>
 {% endblock %}
