@@ -19,7 +19,9 @@ from .models import Customer
 
 
 class User_image(forms.Form):
-    image = forms.ImageField(label="头像", required=False)
+    image = forms.ImageField(label="头像", required=False, widget=forms.FileInput(attrs={
+        "accept":" image/*"
+    }))
 
 
 class BankAccountForm(forms.ModelForm):

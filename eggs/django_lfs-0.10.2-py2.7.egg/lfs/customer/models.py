@@ -53,12 +53,14 @@ class Customer(models.Model):
         ('2', '白金VIP'),
         ('3', '钻石VIP'),
     )
-    vip = models.CharField(u'会员等级',max_length=1, choices=viplevel)
+    vip = models.CharField(u'会员等级', max_length=1, choices=viplevel)
+
+    discount  = models.DecimalField(u'折扣', max_digits=3, decimal_places=2, default=1)
 
     # 新建一个收藏表
     invoice = models.CharField(u'发票', blank=True, max_length=100)
 
-    people_image = models.ImageField(u'头像', upload_to="images", blank=True, null=True)
+    people_image = models.ImageField(u'头像', upload_to="people", blank=True, null=True)
 
     donation = models.IntegerField(u'捐款', blank=True, default=0)
     point = models.IntegerField(u'积分', default=0)
