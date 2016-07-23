@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 import datetime
 
 from urlparse import urlparse
+from PIL import Image
+import os
 
 # django imports
 from django.contrib.auth.decorators import login_required
@@ -27,6 +29,7 @@ from .forms import User_image
 from lfs.customer.forms import RegisterForm
 from lfs.customer.utils import create_unique_username
 from lfs.order.models import Order
+from lfs_project.settings import MEDIA_ROOT
 
 
 def login(request, template_name="lfs/customer/login.html"):
@@ -341,13 +344,40 @@ def password(request, template_name="lfs/customer/password.html"):
 
 def pic(request):
     if request.method == 'GET':
-        return HttpResponseForbidden
+        return HttpResponseForbidden()
     else:
-        image = request.FILES['image']
-        user = request.user
-        customer = Customer.objects.get(user=user)
-        customer.people_image = image
-        customer.save()
-        src = "/media/%s" % customer.people_image
-        print src
-        return JsonResponse(src,safe=False)
+        if request.POST['action'] == "first":
+            image = request.FILES['image']
+            user = request.user
+            path = MEDIA_ROOT+"/people/"+user.username
+            if image.size > 4096000:
+                return JsonResponse("1")
+            else:
+                if not os.path.exists(path):
+                    os.mkdir(path)
+                with open(path + "/pic_old.jpg", 'wb+') as destination:
+                    for chunk in image.chunks():
+                        destination.write(chunk)
+                src = "/media/people/" + user.username + "/pic_old.jpg"
+                return JsonResponse(src, safe=False)
+
+        if request.POST['action'] == "second":
+            x1 = float(request.POST['x1'])
+            x2 = float(request.POST['x2'])
+            y1 = float(request.POST['y1'])
+            y2 = float(request.POST['y2'])
+            radio = float(request.POST['radio'])
+            user = request.user
+            img = Image.open(MEDIA_ROOT+"/people/"+user.username+"/pic_old.jpg")
+            region = (x1*radio, y1*radio, x2*radio, y2*radio)
+            crop_img = img.crop(region)
+            crop_img.save(MEDIA_ROOT+"/people/"+user.username+"/pic.jpg")
+
+            Customer.objects.filter(user=user).update(people_image="/people/"+user.username+"/pic.jpg")
+
+            src = "/media/people/"+user.username+"/pic.jpg"
+            os.remove(MEDIA_ROOT+"/people/"+user.username+"/pic_old.jpg")
+
+            return JsonResponse(src, safe=False)
+
+

@@ -12,33 +12,60 @@
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.Jcrop.css" />
        <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+        <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.js"></script>
+        <script src="{{ STATIC_URL }}js/jquery.Jcrop.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery.Jcrop.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.js"></script>
+   <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
     <script>
-    function FitImage(Img){
-var a =new Image;
-a.src = Img.src;
-        alert("pic"+pic.width+'\n'+pic.height);
-        alert("new出来的对象"+a.width+'\n'+a.height);
-　　　　　　　　　　　　　　　　　　var radio = pic.width/pic.height;
-　　　　if(pic.width>0 && pic.height>0){
+$(document).ready(function () {
 
-　　if(radio>=1){
+});
+    //------------------------------------------------//
+    function FitImage(Img,Width,Height){
 
-　　if(pic.width>400){
+   　var image=new Image();
+　　image.src=Img.src;
+　　if(image.width>0 && image.height>0){
+　　　　if(image.width/image.height>=Width/Height){
+　　　　　　if(image.width!=Width){
+　　　　　　　　Img.width=Width;
+　　　　　　　　Img.height=(image.height*Width)/image.width;
+　　　　　　}else{
+　　　　　　　　Img.width=image.width;
+　　　　　　　　Img.height=image.height;
+　　　　　　}
+　　　　}else{
+　　　　　　if(image.height!=Height){
+　　　　　　　　Img.height=Height;
+　　　　　　　　Img.width=(image.width*Height)/image.height;
+　　　　　　}else{
+　　　　　　　　Img.width=image.width;
+　　　　　　　　Img.height=image.height;
+　　　　　　}
+　　　　}
+　　}}
 
-　　　　　　　　pic.width=400;
-　　　　　　　　pic.height=400/radio;
+    function Fit(Img) {
+
+        var radio = Img.width/Img.height;
+        if(Img.width>0 && Img.height>0){
+　　　　if(radio>=1){
+　　　　　　if(Img.width!=400){
+　　　　　　　　Img.width=400;
+　　　　　　　　Img.height=Img.width/radio;
 　　　　　　}else{
 　　　　　　}
 　　　　}else{
-　　　　　　if(pic.height>400){
+　　　　　　if(image.height!=400){
 　　　　　　　　Img.height=400;
-　　　　　　　　Img.width=pic.height * radio;
+　　　　　　　　Img.width=Img.height * radio;
 　　　　　　}else{
 　　　　　　}
 　　　　}
 　　}
-}
 
+    }
     </script>
     <style type="text/css">
     .jcrop-holder #preview-pane {
@@ -65,7 +92,7 @@ a.src = Img.src;
    specified here */
 #preview-pane .preview-container {
   width: 250px;
-  height: 170px;
+  height: 250px;
   overflow: hidden;
 }
 
@@ -73,14 +100,15 @@ a.src = Img.src;
 <h1>{% trans "Welcome!" %}</h1>
     <h1>你的头像</h1>
     <br>
-
-    <button id="go" class="btn btn-primary btn-lg" data-toggle="modal"
-   data-target="#myModal">选择图片</button>
+<img id="img" src="{{ user_photo }}" onload="FitImage(this,300,300)">
     <br>
     <div id="get"></div>
-    <form id="form" method="post" enctype="multipart/form-data">
+    <form id="form" method="post" action="/pic" enctype="multipart/form-data">
     {% csrf_token %}
+        <input type="hidden" name="action" value="first">
+
     {{ form }}
+
     </form>
     <br>
     <!-- 模态框（Modal） -->
@@ -97,11 +125,21 @@ a.src = Img.src;
                请裁剪你的头像
             </h4>
          </div>
+          <form method='post' action="/pic" enctype="multipart/form-data" id="form2">
+              <input type="hidden" name="action" value="second"/>
+              <input type="hidden" id="x1" name="x1">
+              <input type="hidden" id="y1" name="y1">
+              <input type="hidden" id="x2" name="x2">
+              <input type="hidden" id="y2" name="y2">
+              <input type="hidden" id="w" name="w">
+              <input type="hidden" id="radio" name="radio"/>
+              {% csrf_token %}
          <div class="modal-body">
 
          </div>
+          </form>
          <div class="modal-footer">
-            <button type="button" class="btn btn-primary">
+            <button type="button" class="btn btn-primary" id="second">
                提交更改
             </button>
          </div>
@@ -109,15 +147,39 @@ a.src = Img.src;
 </div><!-- /.modal -->
 </div>
 
-{% trans "Welcome to your account. Here you can find your orders, you can change your addresses, email address and your password." %}
-    <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.js"></script>
-        <script src="{{ STATIC_URL }}js/jquery.Jcrop.js"></script>
-    <script src="{{ STATIC_URL }}js/jquery.Jcrop.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.js"></script>
-   <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-    <script>
 
-    $("#form").on('submit',(function (e) {
+    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog"
+   aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close"
+               data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="myModalLabel">
+               上传图片进度
+            </h4>
+         </div>
+         <div class="modal-body">
+            <div class="progress">
+   <div class="progress-bar" role="progressbar" aria-valuenow="60"
+      aria-valuemin="0" aria-valuemax="100" style="width: 0;">
+
+   </div>
+</div>
+         </div>
+         <div class="modal-footer">
+
+         </div>
+      </div><!-- /.modal-content -->
+</div><!-- /.modal -->
+</div>
+
+{% trans "Welcome to your account. Here you can find your orders, you can change your addresses, email address and your password." %}
+<script>
+
+ $("#form").on('submit',(function (e) {
         e.preventDefault();
         var serializeData = $(this).serialize();
 
@@ -130,23 +192,43 @@ a.src = Img.src;
             cache:false,
             processData:false,
             beforeSubmit:function () {
+                $("#myModal2").modal("show");
+                $(".progress-bar").css("width","0")
+
 
             },
             uploadProgress:function (event, position, total, percentComplete) {
+                var percentval = percentComplete+"%";
+                $(".progress-bar").css("width",percentval);
+
 
 
             },
             error:function (data) {
-                alert("上传头像失败");
+                if (data=1){
+                    alert("请选择4M以下的图片上传");
+                }
+                $("#myModal2").modal("hide");
+
+
 
             },
             success:function (data) {
 
-                alert("上传头像成功");
-                var txt= "<img id='pic' src='"+data+"' alt='用户头像' onload='FitImage(this,400,400)'>"
-                +" <div id='preview-pane'> <div class='preview-container'> <img id='pic2' src='"+data+"' class='jcrop-preview' alt='Preview' /> </div> </div>";
+                $("#myModal2").modal("hide");
+                var txt= "<img id='pic' src='"+data+"' alt='用户头像' onload='Fit(this)'>"
+                +"<div id='preview-pane'> <div class='preview-container'> <img id='pic2' src='"+data+"' class='jcrop-preview' alt='Preview' /> </div> </div>";
                 $(".modal-body").html(txt);
                 $("#myModal").modal('show');
+                document.getElementById("pic").onload=function () {
+                    var a =this.height;
+                    Fit(this);
+                    var b =this.height;
+                    var radio2 = a/b;
+                    $("#radio").val(radio2)
+
+
+                };
                  var jcrop_api,
         boundx,
         boundy,
@@ -159,7 +241,7 @@ a.src = Img.src;
         xsize = $pcnt.width(),
         ysize = $pcnt.height();
 
-    console.log('init',[xsize,ysize]);
+      console.log('init',[xsize,ysize]);
     $('#pic').Jcrop({
       onChange: updatePreview,
       onSelect: updatePreview,
@@ -178,6 +260,11 @@ a.src = Img.src;
 
     function updatePreview(c)
     {
+        $('#x1').val(c.x);
+  $('#y1').val(c.y);
+  $('#x2').val(c.x2);
+  $('#y2').val(c.y2);
+        $('#w').val(c.w);
       if (parseInt(c.w) > 0)
       {
         var rx = xsize / c.w;
@@ -191,29 +278,58 @@ a.src = Img.src;
         });
       }
     }
+ }
+ })}));
 
 
-
-
-
-            }})}));
-    $("#go").click(function () {
-        $("#myModal").modal('show');
-
-
-
-    });
-
-
-
-
-
+      $("#second").click(function () {
+          $("#form2").submit();
+      });
       $("#id_image").on("change", function() {
        $(this).parent().submit();
 });
+ function checkCoords(){
+  if (parseInt($('#w').val())) {
+    return true;
+  }
+  alert('请先选择要裁剪的区域后，再提交。');
+  return false;
+}
+ $('#myModal').on('hide.bs.modal', function () {
+  $("#id_image").val("")
+})
+$("#form2").on('submit',function (e) {
+    e.preventDefault();
+    var serializeData = $(this).serialize();
+    $(this).ajaxSubmit({
+        type:'POST',
+        url:'/pic',
+        dataType:'json',
+        data:serializeData,
+        contentType:false,
+        cache:false,
+        processData:false,
+        beforeSubmit:function () {
+            checkCoords()
+        },
+        uploadProgress:function (event, position, total, percentComplete) {
 
 
 
+            },
+        error:function (data) {
+                alert("修改头像失败");
 
-    </script>
+            },
+        success:function (data) {
+            alert("修改头像成功");
+            $("#myModal").modal("hide");
+            $("#img").attr("src",data);
+       }
+
+
+   })
+
+});
+</script>
 {% endblock %}
