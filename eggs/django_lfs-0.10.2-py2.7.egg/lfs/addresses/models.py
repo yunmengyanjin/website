@@ -1,3 +1,4 @@
+# coding=utf-8
 # django imports
 from django.db import models
 from django.db.models import SET_NULL
@@ -44,10 +45,16 @@ class BaseAddress(models.Model):
 
     firstname = models.CharField(_("Firstname"), max_length=50)
     lastname = models.CharField(_("Lastname"), max_length=50)
+    name = models.CharField(u'姓名', max_length=20, blank=True, null=True)
+    province = models.CharField(u'省份', max_length=10, blank=True, null=True)
+    city = models.CharField(u'城市', max_length=10, blank=True, null=True)
+    ciry_3 = models.CharField(u'县区', max_length=10, blank=True, null=True)
+    tel = models.CharField(u'手机号码', max_length=13, blank=True, null=True)
+    address_detail = models.CharField(u'详细地址', max_length=256, blank=True, null=True)
+    zip_code = models.CharField(u'邮编', max_length=10, default=u"")
     line1 = models.CharField(_("Line 1"), max_length=100, blank=True, null=True)
     line2 = models.CharField(_("Line 2"), max_length=100, blank=True, null=True)
-    zip_code = models.CharField(_("Zip code"), max_length=10, default=u"")
-    city = models.CharField(_("City"), max_length=50)
+
     state = models.CharField(_("State"), max_length=50, blank=True, null=True)
     country = models.ForeignKey(Country, verbose_name=_("Country"), blank=True, null=True)
     created = models.DateTimeField(_(u"Created"), auto_now_add=True)
