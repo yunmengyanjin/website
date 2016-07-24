@@ -30,7 +30,7 @@ class Customer(models.Model):
 
        * The customer browses to the check out page.
     """
-    user = models.ForeignKey(User, blank=True, null=True,db_index=True )
+    user = models.ForeignKey(User, blank=True, null=True,db_index=True)
     session = models.CharField(blank=True, max_length=100)
 
     selected_shipping_method = models.ForeignKey(ShippingMethod, verbose_name=_(u"Selected shipping method"),

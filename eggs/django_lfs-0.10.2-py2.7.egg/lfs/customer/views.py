@@ -15,7 +15,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response, render
 from django.template import RequestContext
-from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse, HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -29,6 +29,8 @@ from .forms import User_image
 from lfs.customer.forms import RegisterForm
 from lfs.customer.utils import create_unique_username
 from lfs.order.models import Order
+from lfs.addresses.forms import User_Address
+from lfs.addresses.models import Address
 from lfs_project.settings import MEDIA_ROOT
 
 
@@ -269,37 +271,33 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
     """
     Provides a form to edit addresses in my account.
     """
-    customer = lfs.customer.utils.get_or_create_customer(request)
+    address_form = User_Address()
+    user = request.user
+    if not user:
+        return HttpResponseRedirect(reverse("lfs_login"))
 
-    if request.method == "POST":
-        iam = AddressManagement(customer, customer.default_invoice_address, "invoice", request.POST)
-        sam = AddressManagement(customer, customer.default_shipping_address, "shipping", request.POST)
-
-        if iam.is_valid() and sam.is_valid():
-            iam.save()
-            sam.save()
-
-            customer.sync_default_to_selected_addresses(force=True)
-
-            return lfs.core.utils.MessageHttpResponseRedirect(
-                redirect_to=reverse("lfs_my_addresses"),
-                msg=_(u"Your addresses have been saved."),
+    customer = Customer.objects.get(user=user)
+    if request.method == 'POST':
+        address_form = User_Address(data=request.POST)
+        if address_form.is_valid():
+            name = address_form.cleaned_data['name']
+            address_detail = address_form.cleaned_data['address_detail']
+            tel = address_form.cleaned_data['tel']
+            phone = address_form.cleaned_data['phone']
+            zip_code = address_form.cleaned_data['zip_code']
+            Address.objects.create(
+                customer=customer,
+                name=name,
+                address_detail=address_detail,
+                tel=tel,
+                phone=phone,
+                zip_code=zip_code
             )
-        else:
-            msg = _(u"An error has occured.")
-    else:
-        msg = None
-        iam = AddressManagement(customer, customer.default_invoice_address, "invoice")
-        sam = AddressManagement(customer, customer.default_shipping_address, "shipping")
+            return HttpResponse('添加地址成功')
+    return render(request,template_name,{
+        'form':address_form
+    })
 
-    return lfs.core.utils.render_to_message_response(
-        template_name, RequestContext(request, {
-            "shipping_address_inline": sam.render(request),
-            "invoice_address_inline": iam.render(request),
-            "current": "addresses"
-        }),
-        msg=msg,
-    )
 
 
 @login_required
