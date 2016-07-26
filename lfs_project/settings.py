@@ -31,23 +31,55 @@ LANGUAGES = (
 LOCALE_PATHS = (
     os.path.join(DIRNAME, 'locale'),
 )
-
-
-DATABASES = {
-    'default': {
-        # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or
-        # 'oracle'.
-        'ENGINE': 'django.db.backends.mysql',
-        # Or path to database file if using sqlite3.
-        'NAME': 'test_yunmengyanjin',
-        'USER': 'root',  # Not used with sqlite3.
-        'PASSWORD': 'yunmengyanjin',  # Not used with sqlite3.
-        # Set to empty string for localhost. Not used with sqlite3.
-        'HOST': '127.0.0.1',
-        # Set to empty string for default. Not used with sqlite3.
-        'PORT': '3306',
+ENV = os.environ.get('ENV', 'DEV')
+if ENV == "TEST":
+    DATABASES = {
+        'default': {
+            # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or
+            # 'oracle'.
+            'ENGINE': 'django.db.backends.mysql',
+            # Or path to database file if using sqlite3.
+            'NAME': 'yunmengyanjindev',
+            'USER': 'ymyjdev',  # Not used with sqlite3.
+            'PASSWORD': 'Ymyjdev2016',  # Not used with sqlite3.
+            # Set to empty string for localhost. Not used with sqlite3.
+            'HOST': 'rm-uf60of4wvveu082pq.mysql.rds.aliyuncs.com',
+            # Set to empty string for default. Not used with sqlite3.
+            'PORT': '3306',
+        }
     }
-}
+elif ENV == "PRODUCTION":
+    DATABASES = {
+        'default': {
+            # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or
+            # 'oracle'.
+            'ENGINE': 'django.db.backends.mysql',
+            # Or path to database file if using sqlite3.
+            'NAME': 'yunmengyanjin',
+            'USER': 'yunmengyanjin',  # Not used with sqlite3.
+            'PASSWORD': 'Yunmengyanjin2016',  # Not used with sqlite3.
+            # Set to empty string for localhost. Not used with sqlite3.
+            'HOST': 'rm-uf60of4wvveu082pq.mysql.rds.aliyuncs.com',
+            # Set to empty string for default. Not used with sqlite3.
+            'PORT': '3306',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or
+            # 'oracle'.
+            'ENGINE': 'django.db.backends.mysql',
+            # Or path to database file if using sqlite3.
+            'NAME': 'test_yunmengyanjin',
+            'USER': 'root',  # Not used with sqlite3.
+            'PASSWORD': 'yunmengyanjin',  # Not used with sqlite3.
+            # Set to empty string for localhost. Not used with sqlite3.
+            'HOST': '127.0.0.1',
+            # Set to empty string for default. Not used with sqlite3.
+            'PORT': '3306',
+        }
+    }
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
