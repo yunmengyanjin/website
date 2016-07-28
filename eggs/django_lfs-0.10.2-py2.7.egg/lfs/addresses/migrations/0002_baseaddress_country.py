@@ -7,13 +7,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('addresses', '0002_auto_20160724_1716'),
+        ('addresses', '0001_initial'),
+        ('core', '0001_initial'),
     ]
 
     operations = [
-        migrations.RenameField(
+        migrations.AddField(
             model_name='baseaddress',
-            old_name='address_1',
-            new_name='address_detail',
+            name='country',
+            field=models.ForeignKey(verbose_name='Country', blank=True, to='core.Country', null=True),
         ),
     ]

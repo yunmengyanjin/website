@@ -125,10 +125,7 @@ class RegisterForm(forms.Form):
 
         if not (p1 and p2 and p1 == p2):
             raise forms.ValidationError(u'两次输入的密码不一致')
-        if len(p2) < 8:
-            raise forms.ValidationError(u'密码必须要8位字符以上,请重新设定密码')
-        if not re.compile(r'[A-Za-z]').match(p2):
-            raise forms.ValidationError(u'请不要使用纯数字密码')
+
 
         return p2
 

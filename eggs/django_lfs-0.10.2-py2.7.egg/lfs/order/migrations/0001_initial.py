@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models, migrations
+from django.db import migrations, models
 import django.db.models.deletion
 from django.conf import settings
 import lfs.order.models
@@ -10,11 +10,11 @@ import lfs.order.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('shipping', '__first__'),
-        ('contenttypes', '0002_remove_content_type_name'),
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('payment', '__first__'),
         ('catalog', '0001_initial'),
+        ('contenttypes', '0002_remove_content_type_name'),
+        ('payment', '0001_initial'),
+        ('shipping', '0001_initial'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
