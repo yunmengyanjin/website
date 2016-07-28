@@ -1,9 +1,11 @@
 # coding=utf-8
 
-
+import sys
 import os
 from django.utils.translation import gettext_lazy as _
-
+print os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath('__file__'))))
+from ENV import ENV
 DIRNAME = os.path.dirname(__file__)
 
 DEBUG = False
@@ -34,7 +36,7 @@ LANGUAGES = (
 LOCALE_PATHS = (
     os.path.join(DIRNAME, 'locale'),
 )
-ENV = os.environ.get('ENV', 'DEV')
+
 
 if ENV == "TEST":
     DATABASES = {

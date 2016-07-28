@@ -5,6 +5,7 @@ from os.path import join,dirname,abspath
 PROJECT_DIR = dirname(dirname(abspath(__file__)))#3
 import sys # 4
 sys.path[0:0] = [
+  '/home/lyf1999',
   '/home/lyf1999/website/eggs/django_lfs-0.10.2-py2.7.egg',
   '/home/lyf1999/website/eggs/djangorecipe-1.9-py2.7.egg',
   '/home/lyf1999/website/eggs/Django-1.8-py2.7.egg',
