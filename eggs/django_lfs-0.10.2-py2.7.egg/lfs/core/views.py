@@ -41,9 +41,11 @@ def server_error(request):
     response += "TRACEBACK:\n"
     for tb in traceback.format_tb(tb):
         response += "%s\n" % tb
-
-   #  if request.user:
-     #   response += "User: %s\n" % request.user.username
+    try:
+        if request.user:
+            response += "User: %s\n" % request.user.username
+    except Exception as e:
+        pass
 
     response += "\nREQUEST:\n%s" % request
 

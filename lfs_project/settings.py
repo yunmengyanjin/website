@@ -5,7 +5,10 @@ import os
 from django.utils.translation import gettext_lazy as _
 print os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath('__file__'))))
-from ENV import ENV
+try:
+   from ENV import ENV
+except Exception as e:
+   ENV = ""
 DIRNAME = os.path.dirname(__file__)
 
 DEBUG = False
