@@ -13,7 +13,15 @@ DEFAULT_FROM_EMAIL = 'your_email@domain.com'
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
+    ('Pure White', 'daniel48@126.com'),
+    ('lyf', 'NGNL_lyf@163.com'),
+    ('ymyjadmin', 'yunmengyanjin@126.com'),
 )
+
+EMAIL_HOST = 'smtp.126.com'
+EMAIL_PORT = '25'
+EMAIL_HOST_USER = 'yunmengyanjin@126.com'
+EMAIL_HOST_PASSWORD = 'ymyjadmin'
 
 MANAGERS = ADMINS
 
