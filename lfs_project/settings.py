@@ -7,12 +7,12 @@ print os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath('__file__'))))
 try:
    from ENV import ENV
-except Exception as e:
+except ImportError as e:
    ENV = ""
 DIRNAME = os.path.dirname(__file__)
 
-DEBUG = False
-ALLOWED_HOSTS = ['139.196.176.216']
+DEBUG = True
+
 TEMPLATE_DEBUG = DEBUG
 
 DEFAULT_FROM_EMAIL = 'your_email@domain.com'
@@ -58,6 +58,9 @@ if ENV == "TEST":
         }
     }
 elif ENV == "PRODUCTION":
+    DEBUG = False
+    ALLOWED_HOSTS = ['139.196.176.216']
+    TEMPLATE_DEBUG = DEBUG
     DATABASES = {
         'default': {
             # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or
@@ -105,15 +108,17 @@ SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
-
-
-# media files settings
 MEDIA_URL = '/media/'
-MEDIA_ROOT = "/home/lyf1999/ymyjdev/media/"
-
-# static files settings
 STATIC_URL = '/static/'
-STATIC_ROOT = "/home/lyf1999/ymyjdev/sitestatic/"
+if ENV == "TEST":
+    MEDIA_ROOT = "/home/lyf1999/ymyjdev/media/"
+    STATIC_ROOT = "/home/lyf1999/ymyjdev/sitestatic/"
+elif ENV == "PRODUCTION":
+    MEDIA_ROOT = "/home/lyf1999/yunmengyanjin/media/"
+    STATIC_ROOT = "/home/lyf1999/yunmengyanjin/sitestatic/"
+else:
+    MEDIA_ROOT = DIRNAME + "/media/"
+    STATIC_ROOT = DIRNAME + "/sitestatic/"
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '+0zsw5n@v7*rhl6r6ufqhoc6jlqq0f-u8c+gh(hjb+_jmg@rh6'
