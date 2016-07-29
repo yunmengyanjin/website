@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models, migrations
+from django.db import migrations, models
 import django.db.models.deletion
 import lfs.core.fields.thumbs
 import lfs.catalog.models
@@ -10,10 +10,10 @@ import lfs.catalog.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tax', '__first__'),
+        ('tax', '0001_initial'),
         ('contenttypes', '0002_remove_content_type_name'),
-        ('supplier', '__first__'),
-        ('manufacturer', '__first__'),
+        ('supplier', '0001_initial'),
+        ('manufacturer', '0001_initial'),
     ]
 
     operations = [

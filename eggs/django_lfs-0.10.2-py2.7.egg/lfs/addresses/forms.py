@@ -2,6 +2,7 @@
 # coding=utf-8
 from __future__ import unicode_literals
 from django import forms
+import re
 
 # lfs imports
 from lfs.addresses.models import Address
@@ -10,17 +11,19 @@ from lfs.addresses import settings
 
 class User_Address(forms.Form):
     name = forms.CharField(label=u'收货人姓名', required=True)
-    address_detail = forms.CharField(label=u'详细地址', required=True)
-    tel = forms.CharField(label=u'手机号码', required=False, max_length=11, widget=forms.NumberInput)
-    phone = forms.CharField(label=u'电话号码', required=False, widget=forms.NumberInput, max_length=10)
+    detail_address = forms.CharField(label=u'详细地址', required=True)
+    telephone = forms.CharField(label=u'手机号码', required=False, max_length=11, widget=forms.NumberInput)
+    mobile_phone = forms.CharField(label=u'电话号码', required=False, widget=forms.NumberInput, max_length=10)
     zip_code = forms.CharField(label=u'邮政编码', required=False, max_length=10)
 
     def clean_phone(self):
-        tel = self.cleaned_data.get("tel")
-        phone = self.cleaned_data.get("phone")
-        if tel == "" and phone == "":
+        telephone = self.cleaned_data.get("telephone")
+        mobile_phone = self.cleaned_data.get("mobile_phone")
+        if telephone == "" and mobile_phone == "":
             raise forms.ValidationError(u'手机号码、电话号码必须填一项')
-        return tel
+        if re.compile(r'^1[3578]\d{9}$').match(telephone):
+            raise forms.ValidationError(u'手机号码的格式错误,请检查重新输入')
+        return telephone
 
 
 

@@ -18,6 +18,7 @@ from lfs.core.models import Shop
 
 # Load logger
 import logging
+
 logger = logging.getLogger("default")
 
 
@@ -46,8 +47,12 @@ def server_error(request):
             response += "User: %s\n" % request.user.username
     except Exception as e:
         pass
+<<<<<<< HEAD
+=======
 
+>>>>>>> master
     response += "\nREQUEST:\n%s" % request
+    print response
 
     try:
         from_email = settings.ADMINS[0][1]
@@ -75,4 +80,8 @@ def one_time_setup():
 class TextTemplateView(TemplateView):
     def render_to_response(self, context, **kwargs):
         return super(TextTemplateView, self).render_to_response(context,
+<<<<<<< HEAD
+                                                                content_type='text/plain', **kwargs)
+=======
                         content_type='text/plain', **kwargs)
+>>>>>>> master

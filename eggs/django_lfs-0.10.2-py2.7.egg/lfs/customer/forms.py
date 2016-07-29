@@ -1,6 +1,7 @@
 # payment imports
 # coding=utf-8
 import datetime
+import re
 
 # django imports
 from django import forms
@@ -123,7 +124,8 @@ class RegisterForm(forms.Form):
         p2 = self.cleaned_data.get('password_2')
 
         if not (p1 and p2 and p1 == p2):
-            raise forms.ValidationError(_(u"The two passwords do not match."))
+            raise forms.ValidationError(u'两次输入的密码不一致')
+
 
         return p2
 
@@ -131,15 +133,18 @@ class RegisterForm(forms.Form):
         """Validates that the entered e-mail is unique.
         """
         username = self.cleaned_data.get('username')
+        if not re.compile(r'[A-Za-z]').match(username):
+            raise forms.ValidationError(u'请不要使用纯数字作为用户名')
 
-        if username and User.objects.filter(Q(username=username)).count() > 0:
+        if username and User.objects.filter(username=username).exists():
             raise forms.ValidationError(
                 u'该用户名已占用')
+
         return username
 
     def clean_tel(self):
         tel = self.cleaned_data.get('tel')
-        if tel and Customer.objects.filter(Q(tel=tel)).count() > 0:
+        if tel and Customer.objects.filter(tel=tel).exists() > 0:
             raise forms.ValidationError(
                 u'该手机号已经注册账号'
             )

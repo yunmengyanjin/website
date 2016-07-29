@@ -11,10 +11,15 @@ except ImportError as e:
    ENV = ""
 DIRNAME = os.path.dirname(__file__)
 
+<<<<<<< HEAD
+DEBUG = False
+ALLOWED_HOSTS = ['0.0.0.0']
+=======
 DEBUG = True
 
 TEMPLATE_DEBUG = DEBUG
 
+>>>>>>> master
 DEFAULT_FROM_EMAIL = 'your_email@domain.com'
 
 ADMINS = (
@@ -26,10 +31,13 @@ MANAGERS = ADMINS
 LANGUAGE_CODE = 'zh-Hans'
 
 TIME_ZONE = 'Asia/Shanghai'
+<<<<<<< HEAD
+=======
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+>>>>>>> master
 
 LANGUAGES = (
     ('en', ('English')),
@@ -40,6 +48,21 @@ LOCALE_PATHS = (
     os.path.join(DIRNAME, 'locale'),
 )
 
+<<<<<<< HEAD
+DATABASES = {
+    'default': {
+        # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or
+        # 'oracle'.
+        'ENGINE': 'django.db.backends.mysql',
+        # Or path to database file if using sqlite3.
+        'NAME': 'test_yunmengyanjin',
+        'USER': 'root',  # Not used with sqlite3.
+        'PASSWORD': 'yunmengyanjin',  # Not used with sqlite3.
+        # Set to empty string for localhost. Not used with sqlite3.
+        'HOST': '127.0.0.1',
+        # Set to empty string for default. Not used with sqlite3.
+        'PORT': '3306',
+=======
 
 if ENV == "TEST":
     DATABASES = {
@@ -91,6 +114,7 @@ else:
             # Set to empty string for default. Not used with sqlite3.
             'PORT': '3306',
         }
+>>>>>>> master
     }
 
 # Local time zone for this installation. Choices can be found here:
@@ -109,6 +133,13 @@ SITE_ID = 1
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 MEDIA_URL = '/media/'
+<<<<<<< HEAD
+MEDIA_ROOT = DIRNAME + "/media/"
+
+# static files settings
+STATIC_URL = '/static/'
+STATIC_ROOT = DIRNAME + "/sitestatic/"
+=======
 STATIC_URL = '/static/'
 if ENV == "TEST":
     MEDIA_ROOT = "/home/lyf1999/ymyjdev/media/"
@@ -119,6 +150,7 @@ elif ENV == "PRODUCTION":
 else:
     MEDIA_ROOT = DIRNAME + "/media/"
     STATIC_ROOT = DIRNAME + "/sitestatic/"
+>>>>>>> master
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '+0zsw5n@v7*rhl6r6ufqhoc6jlqq0f-u8c+gh(hjb+_jmg@rh6'
@@ -188,6 +220,9 @@ INSTALLED_APPS = (
     'lfs.tests',
     'lfs.utils',
     'lfs.voucher',
+    'lfs.buy_record',
+    'lfs.coupon',
+    'lfs.vip',
     'lfs_contact',
     'lfs_order_numbers',
     'localflavor',

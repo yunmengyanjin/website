@@ -7,13 +7,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('addresses', '0004_baseaddress_tel'),
+        ('order', '0001_initial'),
+        ('addresses', '0003_baseaddress_customer'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='baseaddress',
-            name='phone_1',
-            field=models.CharField(max_length=10, null=True, verbose_name='\u7535\u8bdd\u53f7\u7801', blank=True),
+            name='order',
+            field=models.ForeignKey(related_name='addresses', verbose_name='Order', blank=True, to='order.Order', null=True),
         ),
     ]
