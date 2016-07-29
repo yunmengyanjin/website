@@ -1,13 +1,25 @@
 # coding=utf-8
 
-
+import sys
 import os
 from django.utils.translation import gettext_lazy as _
-
+print os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath('__file__'))))
+try:
+   from ENV import ENV
+except ImportError as e:
+   ENV = ""
 DIRNAME = os.path.dirname(__file__)
 
+<<<<<<< HEAD
 DEBUG = False
 ALLOWED_HOSTS = ['0.0.0.0']
+=======
+DEBUG = True
+
+TEMPLATE_DEBUG = DEBUG
+
+>>>>>>> master
 DEFAULT_FROM_EMAIL = 'your_email@domain.com'
 
 ADMINS = (
@@ -16,9 +28,16 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-LANGUAGE_CODE = 'zh_Hans'
+LANGUAGE_CODE = 'zh-Hans'
 
 TIME_ZONE = 'Asia/Shanghai'
+<<<<<<< HEAD
+=======
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
+
+>>>>>>> master
 
 LANGUAGES = (
     ('en', ('English')),
@@ -29,6 +48,7 @@ LOCALE_PATHS = (
     os.path.join(DIRNAME, 'locale'),
 )
 
+<<<<<<< HEAD
 DATABASES = {
     'default': {
         # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or
@@ -42,8 +62,60 @@ DATABASES = {
         'HOST': '127.0.0.1',
         # Set to empty string for default. Not used with sqlite3.
         'PORT': '3306',
+=======
+
+if ENV == "TEST":
+    DATABASES = {
+        'default': {
+            # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or
+            # 'oracle'.
+            'ENGINE': 'django.db.backends.mysql',
+            # Or path to database file if using sqlite3.
+            'NAME': 'yunmengyanjindev',
+            'USER': 'ymyjdev',  # Not used with sqlite3.
+            'PASSWORD': 'Ymyjdev2016',  # Not used with sqlite3.
+            # Set to empty string for localhost. Not used with sqlite3.
+            'HOST': 'rm-uf60of4wvveu082pq.mysql.rds.aliyuncs.com',
+            # Set to empty string for default. Not used with sqlite3.
+            'PORT': '3306',
+        }
     }
-}
+elif ENV == "PRODUCTION":
+    DEBUG = False
+    ALLOWED_HOSTS = ['139.196.176.216']
+    TEMPLATE_DEBUG = DEBUG
+    DATABASES = {
+        'default': {
+            # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or
+            # 'oracle'.
+            'ENGINE': 'django.db.backends.mysql',
+            # Or path to database file if using sqlite3.
+            'NAME': 'yunmengyanjin',
+            'USER': 'yunmengyanjin',  # Not used with sqlite3.
+            'PASSWORD': 'Yunmengyanjin2016',  # Not used with sqlite3.
+            # Set to empty string for localhost. Not used with sqlite3.
+            'HOST': 'rm-uf60of4wvveu082pq.mysql.rds.aliyuncs.com',
+            # Set to empty string for default. Not used with sqlite3.
+            'PORT': '3306',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or
+            # 'oracle'.
+            'ENGINE': 'django.db.backends.mysql',
+            # Or path to database file if using sqlite3.
+            'NAME': 'test_yunmengyanjin',
+            'USER': 'root',  # Not used with sqlite3.
+            'PASSWORD': 'yunmengyanjin',  # Not used with sqlite3.
+            # Set to empty string for localhost. Not used with sqlite3.
+            'HOST': '127.0.0.1',
+            # Set to empty string for default. Not used with sqlite3.
+            'PORT': '3306',
+        }
+>>>>>>> master
+    }
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -60,15 +132,25 @@ SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
-
-
-# media files settings
 MEDIA_URL = '/media/'
+<<<<<<< HEAD
 MEDIA_ROOT = DIRNAME + "/media/"
 
 # static files settings
 STATIC_URL = '/static/'
 STATIC_ROOT = DIRNAME + "/sitestatic/"
+=======
+STATIC_URL = '/static/'
+if ENV == "TEST":
+    MEDIA_ROOT = "/home/lyf1999/ymyjdev/media/"
+    STATIC_ROOT = "/home/lyf1999/ymyjdev/sitestatic/"
+elif ENV == "PRODUCTION":
+    MEDIA_ROOT = "/home/lyf1999/yunmengyanjin/media/"
+    STATIC_ROOT = "/home/lyf1999/yunmengyanjin/sitestatic/"
+else:
+    MEDIA_ROOT = DIRNAME + "/media/"
+    STATIC_ROOT = DIRNAME + "/sitestatic/"
+>>>>>>> master
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '+0zsw5n@v7*rhl6r6ufqhoc6jlqq0f-u8c+gh(hjb+_jmg@rh6'
