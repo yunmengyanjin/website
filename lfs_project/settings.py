@@ -6,9 +6,8 @@ from django.utils.translation import gettext_lazy as _
 
 DIRNAME = os.path.dirname(__file__)
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
+DEBUG = False
+ALLOWED_HOSTS = ['0.0.0.0']
 DEFAULT_FROM_EMAIL = 'your_email@domain.com'
 
 ADMINS = (
@@ -21,8 +20,6 @@ LANGUAGE_CODE = 'zh_Hans'
 
 TIME_ZONE = 'Asia/Shanghai'
 
-
-
 LANGUAGES = (
     ('en', ('English')),
     ('zh_Hans', ('中文简体')),
@@ -31,7 +28,6 @@ LANGUAGES = (
 LOCALE_PATHS = (
     os.path.join(DIRNAME, 'locale'),
 )
-
 
 DATABASES = {
     'default': {
@@ -68,11 +64,11 @@ SITE_ID = 1
 
 # media files settings
 MEDIA_URL = '/media/'
-MEDIA_ROOT = DIRNAME + "/media"
+MEDIA_ROOT = DIRNAME + "/media/"
 
 # static files settings
 STATIC_URL = '/static/'
-STATIC_ROOT = DIRNAME + "/sitestatic"
+STATIC_ROOT = DIRNAME + "/sitestatic/"
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '+0zsw5n@v7*rhl6r6ufqhoc6jlqq0f-u8c+gh(hjb+_jmg@rh6'
