@@ -281,21 +281,21 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
         address_form = User_Address(data=request.POST)
         if address_form.is_valid():
             name = address_form.cleaned_data['name']
-            address_detail = address_form.cleaned_data['address_detail']
-            tel = address_form.cleaned_data['tel']
+            detail_address = address_form.cleaned_data['detail_address']
+            telephone = address_form.cleaned_data['tel']
             phone = address_form.cleaned_data['phone']
             zip_code = address_form.cleaned_data['zip_code']
             Address.objects.create(
                 customer=customer,
                 name=name,
-                address_detail=address_detail,
-                tel=tel,
+                detail_address=detail_address,
+                telephone=telephone,
                 phone=phone,
                 zip_code=zip_code
             )
             return HttpResponse('添加地址成功')
     return render(request,template_name,{
-        'form':address_form
+        'form': address_form
     })
 
 
@@ -349,7 +349,7 @@ def pic(request):
             user = request.user
             path = MEDIA_ROOT+"/people/"+user.username
             if image.size > 4096000:
-                return JsonResponse("1")
+                return JsonResponse("1", safe=False)
             else:
                 if not os.path.exists(path):
                     os.mkdir(path)
@@ -371,7 +371,7 @@ def pic(request):
             crop_img = img.crop(region)
             crop_img.save(MEDIA_ROOT+"/people/"+user.username+"/pic.jpg")
 
-            Customer.objects.filter(user=user).update(people_image="/people/"+user.username+"/pic.jpg")
+            Customer.objects.filter(user=user).update(avatar="/people/"+user.username+"/pic.jpg")
 
             src = "/media/people/"+user.username+"/pic.jpg"
             os.remove(MEDIA_ROOT+"/people/"+user.username+"/pic_old.jpg")

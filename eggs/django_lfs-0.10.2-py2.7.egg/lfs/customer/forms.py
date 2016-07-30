@@ -132,14 +132,14 @@ class RegisterForm(forms.Form):
         """
         username = self.cleaned_data.get('username')
 
-        if username and User.objects.filter(Q(username=username)).count() > 0:
+        if username and User.objects.filter(username=username).exists():
             raise forms.ValidationError(
                 u'该用户名已占用')
         return username
 
     def clean_tel(self):
         tel = self.cleaned_data.get('tel')
-        if tel and Customer.objects.filter(Q(tel=tel)).count() > 0:
+        if tel and Customer.objects.filter(tel=tel).exists():
             raise forms.ValidationError(
                 u'该手机号已经注册账号'
             )
