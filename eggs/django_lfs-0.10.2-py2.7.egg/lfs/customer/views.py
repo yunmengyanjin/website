@@ -244,21 +244,10 @@ def account(request, template_name="lfs/customer/account.html"):
     """Displays the main screen of the current user's account.
     """
     user = request.user
-    user_photo = Customer.objects.get(user=user).people_image
+    user_photo = Customer.objects.get(user=user).avatar
     user_photo = "/media/%s" % user_photo
 
-    if request.method == 'POST':
-        if 'image' in request.FILES:
-            image = request.FILES['image']
-            people_image = Customer.objects.get(user=user)
-            people_image.people_image = image
-            people_image.save()
-            return HttpResponse("修改头像成功")
-        else:
-            return HttpResponse("请提交头像")
-
-    else:
-        return render_to_response(template_name, RequestContext(request, {
+    return render_to_response(template_name, RequestContext(request, {
             "user": user,
             "current": "welcome",
             "user_photo": user_photo,

@@ -57,7 +57,7 @@ $(document).ready(function () {
 　　　　　　}else{
 　　　　　　}
 　　　　}else{
-　　　　　　if(image.height!=400){
+　　　　　　if(Img.height!=400){
 　　　　　　　　Img.height=400;
 　　　　　　　　Img.width=Img.height * radio;
 　　　　　　}else{
@@ -205,9 +205,10 @@ $(document).ready(function () {
 
             },
             error:function (data) {
-                if (data=1){
+                if (data==1){
                     alert("请选择4M以下的图片上传");
                 }
+                alert("上传图片失败");
                 $("#myModal2").modal("hide");
 
 
@@ -222,8 +223,10 @@ $(document).ready(function () {
                 $("#myModal").modal('show');
                 document.getElementById("pic").onload=function () {
                     var a =this.height;
+                    alert(a);
                     Fit(this);
                     var b =this.height;
+                    alert(b);
                     var radio2 = a/b;
                     $("#radio").val(radio2)
 

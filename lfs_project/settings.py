@@ -110,14 +110,14 @@ SITE_ID = 1
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 if ENV == "TEST":
-    MEDIA_ROOT = "/home/lyf1999/ymyjdev/media/"
-    STATIC_ROOT = "/home/lyf1999/ymyjdev/sitestatic/"
+    MEDIA_ROOT = "/home/lyf1999/ymyjdev/media"
+    STATIC_ROOT = "/home/lyf1999/ymyjdev/sitestatic"
 elif ENV == "PRODUCTION":
-    MEDIA_ROOT = "/home/lyf1999/yunmengyanjin/media/"
-    STATIC_ROOT = "/home/lyf1999/yunmengyanjin/sitestatic/"
+    MEDIA_ROOT = "/home/lyf1999/yunmengyanjin/media"
+    STATIC_ROOT = "/home/lyf1999/yunmengyanjin/sitestatic"
 else:
-    MEDIA_ROOT = DIRNAME + "/media/"
-    STATIC_ROOT = DIRNAME + "/sitestatic/"
+    MEDIA_ROOT = DIRNAME + "/media"
+    STATIC_ROOT = DIRNAME + "/sitestatic"
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '+0zsw5n@v7*rhl6r6ufqhoc6jlqq0f-u8c+gh(hjb+_jmg@rh6'
