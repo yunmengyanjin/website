@@ -10,13 +10,13 @@ from lfs.addresses import settings
 
 class User_Address(forms.Form):
     name = forms.CharField(label=u'收货人姓名', required=True)
-    address_detail = forms.CharField(label=u'详细地址', required=True)
-    tel = forms.CharField(label=u'手机号码', required=False, max_length=11, widget=forms.NumberInput)
+    detail_address = forms.CharField(label=u'详细地址', required=True)
+    telephone = forms.CharField(label=u'手机号码', required=False, max_length=11, widget=forms.NumberInput)
     phone = forms.CharField(label=u'电话号码', required=False, widget=forms.NumberInput, max_length=10)
     zip_code = forms.CharField(label=u'邮政编码', required=False, max_length=10)
 
     def clean_phone(self):
-        tel = self.cleaned_data.get("tel")
+        tel = self.cleaned_data.get("telephone")
         phone = self.cleaned_data.get("phone")
         if tel == "" and phone == "":
             raise forms.ValidationError(u'手机号码、电话号码必须填一项')

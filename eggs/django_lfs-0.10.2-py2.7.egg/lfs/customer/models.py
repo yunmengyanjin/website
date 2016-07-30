@@ -30,7 +30,7 @@ class Customer(models.Model):
 
        * The customer browses to the check out page.
     """
-    user = models.ForeignKey(User, blank=True, null=True,db_index=True)
+    user = models.ForeignKey(User, blank=True, null=True, db_index=True)
     session = models.CharField(blank=True, max_length=100)
 
     selected_shipping_method = models.ForeignKey(ShippingMethod, verbose_name=_(u"Selected shipping method"),
@@ -44,26 +44,14 @@ class Customer(models.Model):
     tel = models.CharField(u'手机号码', blank=True, max_length=12)
     name = models.CharField(u'姓名', blank=True, max_length=16)
     nickname = models.CharField(u'昵称', blank=True, max_length=20)
-    activation = models.BooleanField(u'激活状态', blank=True, default=False)
+    status = models.BooleanField(u'激活状态', blank=True, default=False)
     code = models.CharField(u'验证码', blank=True, max_length=6)  # 这个验证码用于注册认证和修改密码
-    code_time = models.DateTimeField(u'发送验证码的时间', blank=True, null=True)  # 用于验证激活码是否过期
-    mail = models.EmailField(u'邮箱',blank=True, max_length=30)
-    viplevel = (
-        ('1', '黄金VIP'),
-        ('2', '白金VIP'),
-        ('3', '钻石VIP'),
-    )
-    vip = models.CharField(u'会员等级', max_length=1, choices=viplevel)
-
-    discount  = models.DecimalField(u'折扣', max_digits=3, decimal_places=2, default=1)
-
+    expire_at = models.DateTimeField(u'发送验证码的时间', blank=True, null=True)  # 用于验证激活码是否过期
+    mail = models.EmailField(u'邮箱', blank=True, max_length=30)
     # 新建一个收藏表
     invoice = models.CharField(u'发票', blank=True, max_length=100)
-
-    people_image = models.ImageField(u'头像', upload_to="people", blank=True, null=True)
-
+    avatar = models.ImageField(u'头像', upload_to="people", blank=True, null=True)
     donation = models.IntegerField(u'捐款', blank=True, default=0)
-    point = models.IntegerField(u'积分', default=0)
     sa_content_type = models.ForeignKey(ContentType, related_name="sa_content_type", null=True)
     sa_object_id = models.PositiveIntegerField(null=True)
     selected_shipping_address = generic.GenericForeignKey('sa_content_type', 'sa_object_id')

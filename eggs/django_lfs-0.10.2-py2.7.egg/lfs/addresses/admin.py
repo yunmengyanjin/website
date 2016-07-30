@@ -5,5 +5,5 @@ from lfs.addresses.models import Address
 
 class AddressAdmin(admin.ModelAdmin):
     search_fields = ('name', 'customer__user__email')
-    list_display = ('name', 'lastname', 'customer', 'order')
+    list_display = ('name', 'telephone', 'customer', 'order')
 admin.site.register(Address, AddressAdmin)
