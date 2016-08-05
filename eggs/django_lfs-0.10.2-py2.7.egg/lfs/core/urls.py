@@ -12,6 +12,13 @@ from lfs.core.views import one_time_setup, TextTemplateView
 urlpatterns = patterns('django.views.generic.simple',
     (r'^robots.txt$', TextTemplateView.as_view(template_name='lfs/shop/robots.txt'))
 )
+# LYF_project
+
+urlpatterns += patterns("ymyj_customer.views",
+    url(r'^login$', "user_login", name="lfs_login"),
+    url(r'^register$', "register", name='register'),
+    url(r'^my-account', "customer", name="lfs_my_account"),
+                        )
 
 # Sitemaps
 urlpatterns += patterns("django.contrib.sitemaps.views",
@@ -19,8 +26,8 @@ urlpatterns += patterns("django.contrib.sitemaps.views",
 )
 
 # Shop
-urlpatterns += patterns('lfs.core.views',
-    url(r'^$', "shop_view", name="lfs_shop_view"),
+urlpatterns += patterns('home.views',
+    url(r'^$', "home", name="lfs_shop_view"),
 )
 
 # Cart
@@ -71,11 +78,9 @@ urlpatterns += patterns('lfs.checkout.views',
 
 # Customer
 urlpatterns += patterns('lfs.customer.views',
-    url(r'^register',"register", name='register'),
     url(r'^pic',"pic", name='pic'),
-    url(r'^login', "login", name="lfs_login"),
     url(r'^logout', "logout", name="lfs_logout"),
-    url(r'^my-account', "account", name="lfs_my_account"),
+    #url(r'^my-account', "account", name="lfs_my_account"),
     url(r'^my-addresses', "addresses", name="lfs_my_addresses"),
     url(r'^my-email', "email", name="lfs_my_email"),
     url(r'^my-orders', "orders", name="lfs_my_orders"),

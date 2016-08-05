@@ -18,7 +18,6 @@ from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse, HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 
-
 # lfs imports
 import lfs
 from lfs.addresses.utils import AddressManagement
@@ -56,7 +55,6 @@ def login(request, template_name="lfs/customer/login.html"):
 
     if request.POST.get("action") == "login":
         login_form = CustomerAuthenticationForm(data=request.POST)
-        login_form.fields["username"].label = _(u"E-Mail")
 
         if login_form.is_valid():
             redirect_to = request.POST.get("next")
@@ -244,26 +242,15 @@ def account(request, template_name="lfs/customer/account.html"):
     """Displays the main screen of the current user's account.
     """
     user = request.user
-    user_photo = Customer.objects.get(user=user).people_image
+    user_photo = Customer.objects.get(user=user).avatar
     user_photo = "/media/%s" % user_photo
 
-    if request.method == 'POST':
-        if 'image' in request.FILES:
-            image = request.FILES['image']
-            people_image = Customer.objects.get(user=user)
-            people_image.people_image = image
-            people_image.save()
-            return HttpResponse("修改头像成功")
-        else:
-            return HttpResponse("请提交头像")
-
-    else:
-        return render_to_response(template_name, RequestContext(request, {
-            "user": user,
-            "current": "welcome",
-            "user_photo": user_photo,
-            "form": User_image,
-        }))
+    return render_to_response(template_name, RequestContext(request, {
+        "user": user,
+        "current": "welcome",
+        "user_photo": user_photo,
+        "form": User_image,
+    }))
 
 
 @login_required
@@ -281,23 +268,22 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
         address_form = User_Address(data=request.POST)
         if address_form.is_valid():
             name = address_form.cleaned_data['name']
-            address_detail = address_form.cleaned_data['address_detail']
-            tel = address_form.cleaned_data['tel']
+            detail_address = address_form.cleaned_data['detail_address']
+            telephone = address_form.cleaned_data['tel']
             phone = address_form.cleaned_data['phone']
             zip_code = address_form.cleaned_data['zip_code']
             Address.objects.create(
                 customer=customer,
                 name=name,
-                address_detail=address_detail,
-                tel=tel,
+                detail_address=detail_address,
+                telephone=telephone,
                 phone=phone,
                 zip_code=zip_code
             )
             return HttpResponse('添加地址成功')
-    return render(request,template_name,{
-        'form':address_form
+    return render(request, template_name, {
+        'form': address_form
     })
-
 
 
 @login_required
@@ -347,9 +333,9 @@ def pic(request):
         if request.POST['action'] == "first":
             image = request.FILES['image']
             user = request.user
-            path = MEDIA_ROOT+"/people/"+user.username
+            path = MEDIA_ROOT + "/people/" + user.username
             if image.size > 4096000:
-                return JsonResponse("1")
+                return JsonResponse("1", safe=False)
             else:
                 if not os.path.exists(path):
                     os.mkdir(path)
@@ -366,16 +352,14 @@ def pic(request):
             y2 = float(request.POST['y2'])
             radio = float(request.POST['radio'])
             user = request.user
-            img = Image.open(MEDIA_ROOT+"/people/"+user.username+"/pic_old.jpg")
-            region = (x1*radio, y1*radio, x2*radio, y2*radio)
+            img = Image.open(MEDIA_ROOT + "/people/" + user.username + "/pic_old.jpg")
+            region = (x1 * radio, y1 * radio, x2 * radio, y2 * radio)
             crop_img = img.crop(region)
-            crop_img.save(MEDIA_ROOT+"/people/"+user.username+"/pic.jpg")
+            crop_img.save(MEDIA_ROOT + "/people/" + user.username + "/pic.jpg")
 
-            Customer.objects.filter(user=user).update(people_image="/people/"+user.username+"/pic.jpg")
+            Customer.objects.filter(user=user).update(avatar="/people/" + user.username + "/pic.jpg")
 
-            src = "/media/people/"+user.username+"/pic.jpg"
-            os.remove(MEDIA_ROOT+"/people/"+user.username+"/pic_old.jpg")
+            src = "/media/people/" + user.username + "/pic.jpg"
+            os.remove(MEDIA_ROOT + "/people/" + user.username + "/pic_old.jpg")
 
             return JsonResponse(src, safe=False)
-
-

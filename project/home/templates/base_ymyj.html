@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<!-- saved from url=(0037)http://www.maiff.cn/login/index.html# -->
+<html lang="en" slick-uniqueid="3"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<title>{% block title %}主页{% endblock %}-云梦盐津</title>
+	<link rel="stylesheet" type="text/css" href="/static/index_main.css">
+	<link rel="stylesheet" type="text/css" href="/static/unslider.css">
+	<link rel="stylesheet" type="text/css" href="/static/unslider-dots.css">
+
+</head>
+<body>
+<header>
+	<div class="logo">云梦盐津</div>
+	<ul>
+		<li>
+			<a href="/" class="active">首页
+				<em class=""></em>
+			</a>
+		</li>
+		<li>
+			<a href="#">我们的文化
+				<em class=""></em>
+			</a>
+		</li>
+		<li>
+			<a href="#">所有商品
+				<em class=""></em>
+			</a>
+		</li>
+		<li>
+			<a href="#">关于我们
+				<em class=""></em>
+			</a>
+		</li>
+
+	</ul>
+	<div class="index-search">
+		<form action="http://www.maiff.cn/login/index.html">
+			<span><input type="text"><input type="button" value="搜索">
+			</span>
+		</form>
+	</div>
+
+{% if user.is_authenticated %}
+
+
+
+    <a href="{% url 'lfs_my_account' %}" class="index-login" style="width: 70px">
+                个人中心
+            </a>
+    <img src="{{ avatar }}" class="avatar" width="50px" height="50px" style="float: right; margin-right: 20px; margin-top: 13px">
+
+{% endif %}
+{% if not user.is_authenticated %}
+	<a href="/login" class="index-login">登录</a>
+    <a href="{% url 'register' %}" class="index-login">注册</a>
+{% endif %}
+</header>
+{% block content %}{% endblock %}
+{% block bottom %}
+<div class="footer-comfirm">
+	<div class="comfirm-container">
+		<dl>
+			<dt>
+			正品承诺
+
+			</dt>
+			<dd>
+				        严格控制供应渠道，全部
+商品均从品牌经销商直接采购
+供货，品质保障
+
+			</dd>
+
+		</dl>
+		<dl>
+			<dt>
+			关于退换货
+			</dt>
+			<dd>
+				         支持退换货，退货请在
+商品收到后7天内进行退换货
+申请，并将商品寄回
+			</dd>
+
+		</dl>
+		<dl>
+			<dt>
+			关于发货
+			</dt>
+			<dd>
+         我们将尽快为您安排
+发货，发货之后一般在2-7
+天左右送达。
+			</dd>
+
+		</dl>
+		<dl>
+			<dt>
+			关于色差
+			</dt>
+			<dd>
+          所卖的物品均为实物拍摄，
+ 但难免会因灯光等原因出现略微
+色差，宝贝颜色一律以实物为准
+			</dd>
+
+		</dl>
+	</div>
+</div>
+{% endblock %}
+<footer>
+	Copyright 东华大学云梦盐津公益项目. All Rights Reserved
+
+</footer>
+
+
+<script type="text/javascript" src="/static/jquery.min.js"></script>
+
+<script src="/static/unslider-min.js"></script>
+<script type="text/javascript" src="/static/index-main.js"></script>
+
+
+</body></html>

@@ -48,9 +48,9 @@ class BaseAddress(models.Model):
     name = models.CharField(u'姓名', max_length=20, blank=True, null=True)
     province = models.CharField(u'省份', max_length=10, blank=True, null=True)
     city = models.CharField(u'城市', max_length=10, blank=True, null=True)
-    ciry_3 = models.CharField(u'县区', max_length=10, blank=True, null=True)
-    tel = models.CharField(u'手机号码', max_length=13, blank=True, null=True)
-    address_detail = models.CharField(u'详细地址', max_length=256, blank=True, null=True)
+    city_3 = models.CharField(u'县区', max_length=10, blank=True, null=True)
+    telephone = models.CharField(u'手机号码', max_length=13, blank=True, null=True)
+    detail_address = models.CharField(u'详细地址', max_length=256, blank=True, null=True)
     zip_code = models.CharField(u'邮编', max_length=10, default=u"")
     line1 = models.CharField(_("Line 1"), max_length=100, blank=True, null=True)
     line2 = models.CharField(_("Line 2"), max_length=100, blank=True, null=True)
@@ -122,7 +122,7 @@ class Address(BaseAddress):
     values_after_postal = ("phone", "email")
 
     company_name = models.CharField(_("Company name"), max_length=50, blank=True, null=True)
-    phone = models.CharField(_("Phone"), blank=True, null=True, max_length=20)
+    phone = models.CharField(u'电话号码', blank=True, null=True, max_length=20)
     email = models.EmailField(_("E-Mail"), blank=True, null=True)
 
     def __unicode__(self):

@@ -3,7 +3,6 @@
 import sys
 import os
 from django.utils.translation import gettext_lazy as _
-print os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath('__file__'))))
 try:
    from ENV import ENV
@@ -111,14 +110,14 @@ SITE_ID = 1
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 if ENV == "TEST":
-    MEDIA_ROOT = "/home/lyf1999/ymyjdev/media/"
-    STATIC_ROOT = "/home/lyf1999/ymyjdev/sitestatic/"
+    MEDIA_ROOT = "/home/lyf1999/ymyjdev/media"
+    STATIC_ROOT = "/home/lyf1999/ymyjdev/sitestatic"
 elif ENV == "PRODUCTION":
-    MEDIA_ROOT = "/home/lyf1999/yunmengyanjin/media/"
-    STATIC_ROOT = "/home/lyf1999/yunmengyanjin/sitestatic/"
+    MEDIA_ROOT = "/home/lyf1999/yunmengyanjin/media"
+    STATIC_ROOT = "/home/lyf1999/yunmengyanjin/sitestatic"
 else:
-    MEDIA_ROOT = DIRNAME + "/media/"
-    STATIC_ROOT = DIRNAME + "/sitestatic/"
+    MEDIA_ROOT = DIRNAME + "/media"
+    STATIC_ROOT = DIRNAME + "/sitestatic"
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '+0zsw5n@v7*rhl6r6ufqhoc6jlqq0f-u8c+gh(hjb+_jmg@rh6'
@@ -180,6 +179,9 @@ INSTALLED_APPS = (
     'lfs.order',
     'lfs.page',
     'lfs.payment',
+    'lfs.vip',
+    'lfs.coupon',
+    'lfs.buy_record',
     'lfs.portlet',
     'lfs.search',
     'lfs.shipping',
@@ -191,6 +193,9 @@ INSTALLED_APPS = (
     'lfs_contact',
     'lfs_order_numbers',
     'localflavor',
+    'home',
+    'ymyj_customer',
+    'ymyj_context',
     'postal',
     'paypal.standard.ipn',
     'paypal.standard.pdt',
@@ -208,6 +213,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.core.context_processors.static',
     'lfs.core.context_processors.main',
+    'ymyj_context.context_processors.avatar',
+
+
+
 
 )
 
