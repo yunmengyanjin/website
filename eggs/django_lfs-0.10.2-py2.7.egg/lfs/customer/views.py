@@ -18,7 +18,6 @@ from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse, HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 
-
 # lfs imports
 import lfs
 from lfs.addresses.utils import AddressManagement
@@ -56,7 +55,6 @@ def login(request, template_name="lfs/customer/login.html"):
 
     if request.POST.get("action") == "login":
         login_form = CustomerAuthenticationForm(data=request.POST)
-        login_form.fields["username"].label = _(u"E-Mail")
 
         if login_form.is_valid():
             redirect_to = request.POST.get("next")
@@ -248,11 +246,11 @@ def account(request, template_name="lfs/customer/account.html"):
     user_photo = "/media/%s" % user_photo
 
     return render_to_response(template_name, RequestContext(request, {
-            "user": user,
-            "current": "welcome",
-            "user_photo": user_photo,
-            "form": User_image,
-        }))
+        "user": user,
+        "current": "welcome",
+        "user_photo": user_photo,
+        "form": User_image,
+    }))
 
 
 @login_required
@@ -283,10 +281,9 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
                 zip_code=zip_code
             )
             return HttpResponse('添加地址成功')
-    return render(request,template_name,{
+    return render(request, template_name, {
         'form': address_form
     })
-
 
 
 @login_required
@@ -336,7 +333,7 @@ def pic(request):
         if request.POST['action'] == "first":
             image = request.FILES['image']
             user = request.user
-            path = MEDIA_ROOT+"/people/"+user.username
+            path = MEDIA_ROOT + "/people/" + user.username
             if image.size > 4096000:
                 return JsonResponse("1", safe=False)
             else:
@@ -355,16 +352,14 @@ def pic(request):
             y2 = float(request.POST['y2'])
             radio = float(request.POST['radio'])
             user = request.user
-            img = Image.open(MEDIA_ROOT+"/people/"+user.username+"/pic_old.jpg")
-            region = (x1*radio, y1*radio, x2*radio, y2*radio)
+            img = Image.open(MEDIA_ROOT + "/people/" + user.username + "/pic_old.jpg")
+            region = (x1 * radio, y1 * radio, x2 * radio, y2 * radio)
             crop_img = img.crop(region)
-            crop_img.save(MEDIA_ROOT+"/people/"+user.username+"/pic.jpg")
+            crop_img.save(MEDIA_ROOT + "/people/" + user.username + "/pic.jpg")
 
-            Customer.objects.filter(user=user).update(avatar="/people/"+user.username+"/pic.jpg")
+            Customer.objects.filter(user=user).update(avatar="/people/" + user.username + "/pic.jpg")
 
-            src = "/media/people/"+user.username+"/pic.jpg"
-            os.remove(MEDIA_ROOT+"/people/"+user.username+"/pic_old.jpg")
+            src = "/media/people/" + user.username + "/pic.jpg"
+            os.remove(MEDIA_ROOT + "/people/" + user.username + "/pic_old.jpg")
 
             return JsonResponse(src, safe=False)
-
-

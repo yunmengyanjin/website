@@ -25,6 +25,7 @@ sys.path[0:0] = [
   '/vagrant/eggs/six-1.10.0-py2.7.egg',
   '/vagrant/eggs/django_appconf-1.0.2-py2.7.egg',
   '/vagrant',
+  '/vagrant/project',
   '/vagrant/lfs_project',
   '/home/lyf1999/website/eggs/django_lfs-0.10.2-py2.7.egg',
   '/home/lyf1999/website/eggs/djangorecipe-1.9-py2.7.egg',

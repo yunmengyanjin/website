@@ -3,5 +3,5 @@ from .models import Vip
 
 
 class VIPAdmin(admin.ModelAdmin):
-    list_display = ('customer', 'name', 'discount', 'experience')
+    list_display = ('level', 'discount')
 admin.site.register(Vip, VIPAdmin)

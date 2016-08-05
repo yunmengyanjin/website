@@ -14,6 +14,7 @@ from lfs.core.models import Country
 from lfs.shipping.models import ShippingMethod
 from lfs.payment.models import PaymentMethod
 from lfs.addresses import settings
+from lfs.vip.models import Vip
 
 
 class Customer(models.Model):
@@ -51,7 +52,9 @@ class Customer(models.Model):
     # 新建一个收藏表
     invoice = models.CharField(u'发票', blank=True, max_length=100)
     avatar = models.ImageField(u'头像', upload_to="people", blank=True, null=True)
+    vip = models.ForeignKey(Vip, blank=True, null=True, on_delete=models.SET_NULL)
     donation = models.IntegerField(u'捐款', blank=True, default=0)
+    expreience = models.IntegerField(u'积分', blank=True, default=0)
     sa_content_type = models.ForeignKey(ContentType, related_name="sa_content_type", null=True)
     sa_object_id = models.PositiveIntegerField(null=True)
     selected_shipping_address = generic.GenericForeignKey('sa_content_type', 'sa_object_id')

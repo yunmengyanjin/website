@@ -193,6 +193,9 @@ INSTALLED_APPS = (
     'lfs_contact',
     'lfs_order_numbers',
     'localflavor',
+    'home',
+    'ymyj_customer',
+    'ymyj_context',
     'postal',
     'paypal.standard.ipn',
     'paypal.standard.pdt',
@@ -210,6 +213,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.core.context_processors.static',
     'lfs.core.context_processors.main',
+    'ymyj_context.context_processors.avatar',
+
+
+
 
 )
 

@@ -1,0 +1,200 @@
+@charset "UTF-8";
+/* line 4, E:/前端项目/云南盐津/start/input/sass/tool/base.scss */
+* {
+  padding: 0;
+  margin: 0;
+}
+
+/* line 8, E:/前端项目/云南盐津/start/input/sass/tool/base.scss */
+a {
+  text-decoration: none;
+}
+
+/* line 5, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+/* line 9, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+body {
+  background: url("../img/loginBgmin.png");
+  background-size: 100% 100%;
+  min-width: 350px;
+  min-height: 350px;
+}
+
+/* line 15, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+header {
+  height: 80px;
+  font-family: '黑体';
+}
+
+/* line 19, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+.logo {
+  width: 60px;
+  height: 60px;
+  background: #ff7368;
+  font-size: 25px;
+  text-align: center;
+  line-height: 30px;
+  padding: 10px;
+  color: white;
+  margin-left: 50px;
+}
+
+/* line 29, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+.return-home {
+  width: 60px;
+  height: 20px;
+  background: #ff7368;
+  text-align: center;
+  padding: 5px 5px 0 5px;
+  font-size: 13px;
+  float: right;
+  margin-right: 50px;
+  margin-top: -80px;
+}
+
+/* line 38, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+.return-home a {
+  color: white;
+  display: block;
+}
+
+/* line 44, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+.mask {
+  display: none;
+  width: 300px;
+  height: 300px;
+  background: rgba(1, 1, 1, 0.8);
+  font-family: "微软雅黑";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  -ms-tranform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  transition: all 0.3s;
+}
+
+/* line 51, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+.mask:hover {
+  box-shadow: 1px 1px 10px  #000;
+}
+
+/* line 54, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+.mask h3 {
+  color: white;
+  font-weight: normal;
+  text-align: center;
+}
+
+/* line 59, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+.mask a:hover {
+  text-decoration: underline;
+}
+
+/* line 62, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+.mask .notice-item1 {
+  color: #fff;
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  font-size: 10px;
+}
+
+/* line 69, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+.mask .notice-item2 {
+  color: #ff7368;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  font-size: 10px;
+}
+
+/* line 78, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+#close {
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+  font-family: 'Microsoft YaHe';
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+/* line 87, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+#close:hover {
+  transform: rotate(180deg);
+}
+
+/* line 91, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+form {
+  width: 200px;
+  height: 160px;
+  margin: 0 auto;
+  margin-top: 30px;
+  opacity: 1;
+}
+
+/* line 96, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+form .person {
+  width: 36px;
+  height: 37px;
+  float: left;
+}
+
+/* line 100, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+form .user, form .password {
+  width: 164px;
+  height: 36px;
+  float: left;
+  border: none;
+  font-size: 13px;
+  margin-bottom: 1px;
+  outline: none;
+}
+
+/* line 109, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+form .gap1 {
+  margin-top: 19px;
+}
+
+/* line 112, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+form .gap {
+  margin-top: 20px;
+}
+
+/* line 115, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+form .button {
+  width: 100px;
+  height: 35px;
+  margin: 25px 50px;
+  border-radius: 3px;
+  background: #ff7368;
+  color: #fff;
+  border: none;
+  font-family: '黑体';
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+/* line 125, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+form .button:hover {
+  background: #ff6155;
+}
+
+/* line 132, E:/前端项目/云南盐津/start/input/sass/login_main.scss */
+.copyright {
+  font-size: 10px;
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  font-family: "微软雅黑";
+}
+
