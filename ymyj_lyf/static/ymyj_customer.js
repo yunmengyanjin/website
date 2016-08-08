@@ -95,24 +95,7 @@
                 <div class=""><a href="#">修改评价</a></div>
             </td>
         </tr>
+
         </table>
 //售后退款
-<p class="title">售后服务</p>
-        <table class="shouhou" cellspacing="0">
-            <tr class="first">
-                <td colspan="5">日期:2016.5.14   订单号 1895723432432</td>
-                <td>已经退款</td>
-            </tr>
-            <tr class="second">
-                <td width="400px">
-                    <img src="none">
-                    <p class="introduce">商品介绍</p>
-                    <p class="standard">商品规格</p>
-                </td>
-                <td>58</td>
-                <td>2</td>
-                <td class="price">126<br>(含10元运费)</td>
-                <td>物流信息</td>
-                <td width="80px"><div><a href="#">查看</a></div></td>
-            </tr>
-        </table>
+

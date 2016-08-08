@@ -6,16 +6,6 @@
 a {
   text-decoration: none; }
 
-.p, .assess .my_assess p {
-  text-align: center; }
-
-.lianjie, .collect_cargo .pic_1, .collect_cargo .pic_2, .assess .my_assess div, .shouhou .second div {
-  line-height: 30px;
-  height: 30px;
-  text-align: center;
-  border-radius: 5px;
-  background-color: #ff7266; }
-
 .customer {
   width: auto;
   height: 1200px;
@@ -143,82 +133,16 @@ table {
 a.operate {
   color: #000000; }
 
-.collect_cargo {
-  margin-left: 80px;
-  margin-top: 130px;
-  width: 200px;
+.main .collect_cargo {
+  width: 300px;
   height: 300px; }
-  .collect_cargo img {
-    width: 200px;
-    height: 200px; }
-  .collect_cargo .pic_1 {
-    text-align: center;
-    width: 80px;
-    margin-top: -35px; }
-  .collect_cargo .pic_2 {
-    text-align: center;
-    width: 80px;
-    margin-top: -30px;
-    margin-right: 0px;
-    margin-left: auto; }
-  .collect_cargo p {
-    margin-top: 10px;
-    text-align: center;
-    width: 200px; }
+  .main .collect_cargo a {
+    width: 130px;
+    height: 20px;
+    border-radius: 10px; }
 
-.assess {
-  width: 820px;
-  margin-left: 80px;
-  margin-top: 130px; }
-  .assess th {
-    text-align: left;
-    background-color: #ffffff; }
-    .assess th p {
-      background-color: #000000;
-      color: #ffffff;
-      text-align: center; }
-    .assess th p.pingjia {
-      width: 40px; }
-    .assess th p.detail {
-      width: 80px; }
-    .assess th p.operate {
-      width: 40px; }
-  .assess th.pingjia {
-    width: 400px; }
-  .assess th.detail {
-    width: 300px; }
-  .assess .my_assess {
-    background-color: #eeeeee; }
-    .assess .my_assess img {
-      float: left; }
-    .assess .my_assess p {
-      float: left;
-      height: 100px;
-      line-height: 100px; }
-    .assess .my_assess div {
-      width: 80px; }
+.collect_cargo {
+  width: 300px;
+  height: 300px; }
 
-.shouhou {
-  width: 900px; }
-  .shouhou .first {
-    height: 30px;
-    background-color: #ff7266; }
-  .shouhou .second {
-    height: 100px;
-    background-color: #eeeeee; }
-    .shouhou .second img {
-      float: left;
-      width: 100px;
-      height: 100px; }
-    .shouhou .second p.introduce {
-      margin-left: 120px;
-      height: 70px;
-      text-align: left;
-      line-height: 70px; }
-    .shouhou .second p.standard {
-      margin-left: 140px;
-      color: #8a8a8a; }
-    .shouhou .second .price {
-      text-align: center; }
-
-/*# sourceMappingURL=ymyj_customer.css.map */
+/*# sourceMappingURL=ymyj_customer..css.map */

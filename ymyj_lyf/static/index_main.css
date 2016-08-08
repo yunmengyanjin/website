@@ -1,0 +1,356 @@
+@charset "UTF-8";
+/* line 4, E:/前端项目/云南盐津/start/input/sass/tool/base.scss */
+* {
+  padding: 0;
+  margin: 0;
+}
+
+/* line 8, E:/前端项目/云南盐津/start/input/sass/tool/base.scss */
+a {
+  text-decoration: none;
+}
+
+/* line 6, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+body {
+  font-family: "微软雅黑";
+}
+
+/* line 10, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+header {
+  width: 100%;
+  height: 70px;
+  background: #fff;
+  position: relative;
+}
+
+/* line 14, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+header .logo {
+  width: 40px;
+  height: 60px;
+  background: #ff7368;
+  font-family: "微软雅黑";
+  font-size: 20px;
+  padding: 0 15px;
+  color: #fff;
+  margin-left: 30px;
+  line-height: 30px;
+  float: left;
+}
+
+/* line 25, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+header ul {
+  list-style: none;
+  height: 18px;
+  position: absolute;
+  top: 21px;
+  left: 120px;
+}
+
+/* line 31, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+header ul li {
+  float: left;
+  margin-left: 20px;
+}
+
+/* line 34, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+header ul li a {
+  position: relative;
+  color: #777;
+  cursor: pointer;
+  font-family: '微软雅黑';
+}
+
+/* line 39, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+header ul li a em {
+  display: block;
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 0;
+  border-bottom: 1px solid #777;
+  transition: all .5s ease;
+}
+
+/* line 48, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+header ul li a em.wi1 {
+  width: 100%;
+}
+
+/* line 52, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+header ul li a.active {
+  color: #ff7368;
+}
+
+/* line 54, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+header ul li a.active em {
+  width: 100%;
+  border-bottom: 1px solid #ff7368;
+}
+
+/* line 64, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+header form {
+  position: absolute;
+  right: 200px;
+  top: 21px;
+}
+
+/* line 68, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+header form input[type="text"] {
+  border: 1px solid #ff7368;
+  outline: none;
+  width: 120px;
+  height: 20px;
+}
+
+/* line 74, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+header form input[type="button"] {
+  width: 50px;
+  height: 22px;
+  background: #ff7368;
+  color: #fff;
+  border: none;
+}
+
+/* line 81, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+header a.index-login {
+  float: right;
+  margin-right: 30px;
+  width: 50px;
+  height: 30px;
+  background: #ff7368;
+  color: #fff;
+  display: block;
+  text-align: center;
+  line-height: 30px;
+  margin-top: 19px;
+}
+
+/* line 95, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.banner {
+  position: relative;
+  height: 450px;
+  /*ol{
+		position: absolute; 
+	    left: 0;
+	    right: 0;
+	    bottom: 20px;*/
+  /*		li{
+			display: inline-block;
+		    width: 10px;
+		    height: 10px;
+		    margin: 0 4px;
+		    text-indent: -999em;
+		    border: 2px solid #fff;
+		    border-radius: 6px;
+		    cursor: pointer;
+		    opacity: .4;
+		    -webkit-transition: background .5s, opacity .5s;
+		    -moz-transition: background .5s, opacity .5s;
+		    transition: background .5s, opacity .5s;
+		}
+		li.active{
+			background: #fff;
+    		opacity: 1;
+		}*/
+  /*}*/
+}
+
+/* line 98, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.banner li {
+  position: relative;
+}
+
+/* line 100, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.banner li div {
+  position: absolute;
+  right: 0;
+  bottom: 50px;
+  width: 300px;
+  height: 50px;
+  background: #ff7368;
+  color: #fff;
+  text-align: right;
+  opacity: 0.8;
+  line-height: 50px;
+  font-family: "微软雅黑";
+}
+
+/* line 114, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.banner img {
+  width: 100%;
+  height: 450px;
+}
+
+/* line 144, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.hot-items {
+  width: 100%;
+  height: 200px;
+  background: #ff7368;
+  line-height: 200px;
+  overflow: hidden;
+}
+
+/* line 149, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.hot-items ul {
+  list-style: none;
+  width: 80%;
+  text-align: center;
+  margin: 0 auto;
+  font-size: 300%;
+}
+
+/* line 155, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.hot-items ul li {
+  width: 150px;
+  height: 150px;
+  display: inline-block;
+  background: #ffe1df;
+  line-height: 150px;
+  font-size: 20px;
+}
+
+/* line 163, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.hot-items ul li:nth-child(2) {
+  margin: 0 100px;
+}
+
+/* line 169, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.culture-container {
+  background: #eaeaea;
+  overflow: hidden;
+}
+
+/* line 172, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.culture-container .culture-title {
+  width: 250px;
+  height: 40px;
+  background: #ff7368;
+  color: #fff;
+  font-family: "微软雅黑";
+  line-height: 40px;
+  padding-left: 50px;
+  margin-top: 30px;
+}
+
+/* line 183, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.culture-container .video-content {
+  margin: 30px 30px;
+  background: #fff;
+  height: 500px;
+  line-height: 500px;
+  text-align: center;
+}
+
+/* line 191, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.detail-content-container {
+  margin-top: 50px;
+}
+
+/* line 193, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.detail-content-container .c-right {
+  text-align: right;
+}
+
+/* line 196, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.detail-content-container .detail-content {
+  margin: 30px 30px;
+  position: relative;
+  height: 300px;
+}
+
+/* line 200, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.detail-content-container .detail-content dl {
+  line-height: 30px;
+  margin-top: 70px;
+  width: 30%;
+  display: inline-block;
+}
+
+/* line 205, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.detail-content-container .detail-content dl dt {
+  text-align: center;
+}
+
+/* line 209, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.detail-content-container .detail-content .img-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  -ms-tranform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  display: inline-block;
+  text-align: center;
+  background: #ff7368;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  line-height: 200px;
+  width: 200px;
+  height: 200px;
+}
+
+/* line 222, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.detail-content-square-container {
+  margin-top: 100px;
+}
+
+/* line 224, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.detail-content-square-container .square-items {
+  width: 40%;
+  margin: 50px auto;
+}
+
+/* line 227, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.detail-content-square-container .square-items .square-img {
+  height: 300px;
+  margin-bottom: 30px;
+  background: #fff;
+}
+
+/* line 235, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.footer-comfirm {
+  background: #eaeaea;
+  overflow: hidden;
+  height: 200px;
+}
+
+/* line 239, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.footer-comfirm .comfirm-container {
+  width: 800px;
+  margin: 0 auto;
+}
+
+/* line 244, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.footer-comfirm dl {
+  width: 200px;
+  color: #ff7368;
+  float: left;
+}
+
+/* line 248, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.footer-comfirm dl dt {
+  text-align: center;
+  font-weight: 700;
+}
+
+/* line 252, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+.footer-comfirm dl dd {
+  text-indent: 35px;
+  padding: 10% 10% 0 10%;
+  height: 100px;
+  margin-top: 10%;
+  border-right: 1px #ff7368 solid;
+}
+
+/* line 262, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
+footer {
+  height: 70px;
+  text-align: right;
+  line-height: 70px;
+  padding-right: 30px;
+}
+.avatar{
+   border-radius:50%;
+}
