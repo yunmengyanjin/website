@@ -8,5 +8,6 @@ def avatar(request):
         src = Customer.objects.get(user=user).avatar
         src = "/media/%s" % src
         return {"avatar": src}
-    except TypeError:
+    except Exception as e:
         return {"avatar": None}
+
