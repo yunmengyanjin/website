@@ -19,7 +19,9 @@ urlpatterns += patterns("ymyj_customer.views",
     url(r'^register$', "register", name='register'),
     url(r'^my-account', "customer", name="lfs_my_account"),
                         )
-
+urlpatterns += patterns("ymyj_cargo.views",
+    url(r'^product/$', "product", name="product"),
+                        )
 # Sitemaps
 urlpatterns += patterns("django.contrib.sitemaps.views",
     url(r'^sitemap.xml$', 'sitemap', {'sitemaps': {"products": ProductSitemap, "categories": CategorySitemap, "pages": PageSitemap, "shop": ShopSitemap}})
@@ -44,7 +46,7 @@ urlpatterns += patterns('lfs.cart.views',
 # Catalog
 urlpatterns += patterns('lfs.catalog.views',
     url(r'^category-(?P<slug>[-\w]*)$', "category_view", name="lfs_category"),
-    url(r'^product/(?P<slug>[-\w]*)$', "product_view", name="lfs_product"),
+    # url(r'^product/(?P<slug>[-\w]*)$', "product_view", name="lfs_product"),
     url(r'^product-form-dispatcher', "product_form_dispatcher", name="lfs_product_dispatcher"),
     url(r'^set-sorting', "set_sorting", name="lfs_catalog_set_sorting"),
     url(r'^set-product-number-filter', "set_number_filter", name="lfs_set_product_number_filter"),

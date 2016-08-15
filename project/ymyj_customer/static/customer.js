@@ -1,37 +1,13 @@
 
-function go_order() {
+function go_url(str) {
 	var stateObj = { foo: "bar" };
-    history.pushState(stateObj,"title","/my-account/order");
-    go();
-    return false;
-}
-function go_cargo(){
-	var stateObj = { foo: "bar" };
-    history.pushState(stateObj,"title","/my-account/cargo");
-    go();
-    return false;
-}
-function go_collect(){
-	var stateObj = { foo: "bar" };
-    history.pushState(stateObj,"title","/my-account/collect");
-    go();
-    return false;
-}
-function go_assess(){
-	var stateObj = { foo: "bar" };
-    history.pushState(stateObj,"title","/my-account/assess");
-    go();
-    return false;
-}
-function go_shouhou(){
-	var stateObj = { foo: "bar" };
-    history.pushState(stateObj,"title","/my-account/shouhou");
+    history.pushState(stateObj,"title","/my-account/"+str);
     go();
     return false;
 }
 function go(){
-	switch(window.location.href){
-		case "http://0.0.0.0:8000/my-account/order":
+	switch(window.location.href.substring(window.location.host.length+8)){
+		case "my-account/order":
 		    $(".main").html("<p class='title'>我的订单</p>"+
 		    	"<table cellspacing='0'>"+
 		    	"<tr class='first'>"+
@@ -55,7 +31,7 @@ function go(){
 		    	"<td>买家已付款</td><td><div class='queren'><a href='#' >确认收货</a></div></td>"+
 		    	"</tr></table>")
             break;
-        case "http://0.0.0.0:8000/my-account/cargo":
+        case "my-account/cargo":
             $(".main").html("<p class='title'>我的购物车</p>"+
             	"<div class='jiesuan'><a href='#'>立即结算</a></div>"+
                 "<p class='total_price'> 已选商品(不含运费)¥68.00</p>"+
@@ -83,7 +59,7 @@ function go(){
                 "</tr>"+
                 "<tr class='space'></tr>"+
                 "<tr class='detail' id='1'>"+
-                "<td style='padding-left: 20px'><input type='checkbox' class='checkbox' id='1' onchange='return change(this)'></td>"+
+                "<td style='padding-left: 20px'><input type='checkbox' class='checkbox' id='1'></td>"+
                 "<td>"+
                 " <img src=''>商品文字介绍"+
                 "</td>"+
@@ -96,7 +72,7 @@ function go(){
                 "</table>"+
                 "</form>")
             break;
-        case "http://0.0.0.0:8000/my-account/collect":
+        case "my-account/collect":
             $(".main").html("<p class='title'>我的收藏</p>"+
                 "<div class='collect'>"+
                 "<div class='collect_cargo'>"+
@@ -107,7 +83,7 @@ function go(){
                 "</div>"+
                 "</div>")
             break;
-        case "http://0.0.0.0:8000/my-account/assess":
+        case "my-account/assess":
             $(".main").html("<p class='title'>我的评价</p>"+
             	"<table class='assess' cellspacing='0'>"+
                 "<tr>"+
@@ -129,7 +105,7 @@ function go(){
                 "</tr>"+
                 "</table>")
             break;
-        case "http://0.0.0.0:8000/my-account/shouhou":
+        case "my-account/shouhou":
             $(".main").html("<p class='title'>售后服务</p>"+
                 "<table class='shouhou' cellspacing='0'>"+
                 "<tr class='first'>"+
@@ -153,16 +129,14 @@ function go(){
 	}
 }
 function check(){
-	if($("#0").is(":checked")){
-		$(".checkbox").each(function(){
-			$(this).attr("checked",true)
-		})
-	}
-	if (!$("#0").is(":checked")){
-		$(".checkbox").each(function(){
-			$(this).attr("checked",false)
-		})
-	}
+	$(".checkbox").prop("checked",$("#0").prop("checked"));}
 
-}
+$("body").on("click",".checkbox",function(){
+    if($(this).prop("checked")){
+        $("tr#"+$(this).attr("id")).css("background-color","#ff7266")
+    }
+    else{
+        $("tr#"+$(this).attr("id")).css("background-color","#eeeeee")
+    }
+})
 

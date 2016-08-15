@@ -196,6 +196,7 @@ INSTALLED_APPS = (
     'home',
     'ymyj_customer',
     'ymyj_context',
+    'ymyj_cargo',
     'postal',
     'paypal.standard.ipn',
     'paypal.standard.pdt',
@@ -271,7 +272,6 @@ LFS_SHIPPING_METHOD_PRICE_CALCULATORS = [
 ]
 
 LFS_UNITS = [
-    u"l",
     u"m",
     u"qm",
     u"cm",
