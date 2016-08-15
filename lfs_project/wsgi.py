@@ -29,6 +29,7 @@ sys.path[0:0] = [
   '/home/lyf1999/website/eggs/django_appconf-1.0.2-py2.7.egg',
   '/home/lyf1999/website',
   '/home/lyf1999/website/lfs_project',
+  '/home/lyf1999/website/project',
   ]
 
 os.environ["DJANGO_SETTINGS_MODULE"] = "lfs_project.settings"

@@ -4,15 +4,18 @@
 <div class="unslider"><div class="banner unslider-fade" style="overflow: hidden;">
     <ul class="unslider-wrap">
         <li class="" style="opacity: 0;">
-        	<img src="{{ pic1 }}">
+           <a href="{{ pic.1.url }}">
+        	<img src="/media/{{ pic.1.pic }}"></a>
 			<div id="info-0">东华大学“云梦盐津”公益项目</div>
         </li>
         <li class="unslider-active" style="opacity: 1;">
-        	<img src="{{ pic2 }}">
+            <a href="{{ pic.2.url }}">
+        	<img src="/media/{{ pic.2.pic }}"></a>
         	<div id="info-0">只是简单的字</div>
         </li>
         <li class="" style="opacity: 0;">
-        	<img src="{{ pic3 }}">
+            <a href="{{ pic.0.url }}">
+        	<img src="/media/{{ pic.0.pic }}"></a>
         	<div id="info-0">第二个简单的字</div>
         </li>
     </ul>
@@ -109,57 +112,5 @@
 		</div>
 	</div>
 
-</div>
-
-
-<div class="footer-comfirm">
-	<div class="comfirm-container">
-		<dl>
-			<dt>
-			正品承诺
-
-			</dt>
-			<dd>
-				        严格控制供应渠道，全部
-商品均从品牌经销商直接采购
-供货，品质保障
-
-			</dd>
-
-		</dl>
-		<dl>
-			<dt>
-			关于退换货
-			</dt>
-			<dd>
-				         支持退换货，退货请在
-商品收到后7天内进行退换货
-申请，并将商品寄回
-			</dd>
-
-		</dl>
-		<dl>
-			<dt>
-			关于发货
-			</dt>
-			<dd>
-         我们将尽快为您安排
-发货，发货之后一般在2-7
-天左右送达。
-			</dd>
-
-		</dl>
-		<dl>
-			<dt>
-			关于色差
-			</dt>
-			<dd>
-          所卖的物品均为实物拍摄，
- 但难免会因灯光等原因出现略微
-色差，宝贝颜色一律以实物为准
-			</dd>
-
-		</dl>
-	</div>
 </div>
 {% endblock %}
