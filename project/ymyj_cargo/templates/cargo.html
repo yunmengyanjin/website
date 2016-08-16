@@ -20,9 +20,10 @@
 
             <label>数量</label><input type="number" id="number">件
             <br>
-            <label>库存</label><label>50件</label><label id="songda">(商品估计2-3天送达)</label><br>
+            <label>库存</label><label id="stock" style="width: 22px">50</label><label>件</label><label id="songda">(商品估计2-3天送达)</label><br>
             <input type="hidden" >
-            <div class="cart"><a href="#">加入购物车</a></div><div><a href="#">立即购买</a></div>
+            <label>价格</label><label style="font-size: 15px; width: 20px">¥</label><label id="money">56</label><br>
+            <div class="cart"><a href="#">加入购物车</a></div><div class="buy"><a href="#">立即购买</a></div>
           </form>
         </div>
     <div class="relevant">
@@ -62,4 +63,27 @@
 
 </div>
     <link rel="stylesheet" type="text/css" href="/static/product.css">
+    <script type="text/javascript">
+     var price = {{ price|safe }};
+     function check() {
+         if (!$(":radio:checked").attr("value")){
+        alert("请选择商品分规格");
+             return false
+    }
+     }
+    $(document).ready(function () {
+        $("label#money").text(price[0]);
+        $("div.cart a").click(check);
+
+
+        $("div.buy a").click(check)
+
+
+
+    });
+    $(":radio").click(function () {
+        $("label#money").text(price[$(this).attr("value")])
+    });
+
+    </script>
 {% endblock %}

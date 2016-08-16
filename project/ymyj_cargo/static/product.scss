@@ -67,6 +67,10 @@ a{
 	            width:120px;
 	            font-size:13px;
 	    }
+	    label#money{
+	            width:50px;
+	            font-size:30px;
+	    }
 	    div{
 	        display:inline-block;
 	        background-color:$cs;
@@ -132,9 +136,14 @@ a{
 
 	}
 	#mage_text{
-	    padding-top:80px;
+	    padding-top:30px;
 	    background-color:$hs;
 	    padding-bottom:40px;
+	    p{
+	        margin-top:50px;
+	        display:block;
+	        margin-bottom:20px;
+	    }
 	    img{
 	        display:block;
 	        width:700px;
