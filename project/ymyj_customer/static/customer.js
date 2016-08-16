@@ -3,7 +3,7 @@ function go_url(str) {
 	var stateObj = { foo: "bar" };
     history.pushState(stateObj,"title","/my-account/"+str);
     go();
-    return false;
+    return false
 }
 function go(){
 	switch(window.location.href.substring(window.location.host.length+8)){
@@ -29,7 +29,7 @@ function go(){
 		    	"<td>58</td><td>2</td>"+
 		    	"<td class='money'>126<br>(含10元运费)</td>"+
 		    	"<td>买家已付款</td><td><div class='queren'><a href='#' >确认收货</a></div></td>"+
-		    	"</tr></table>")
+		    	"</tr></table>");
             break;
         case "my-account/cargo":
             $(".main").html("<p class='title'>我的购物车</p>"+
@@ -70,7 +70,7 @@ function go(){
                 "<a class='operate' href='#'>移入购物车</a></td>"+
                 "</tr>"+
                 "</table>"+
-                "</form>")
+                "</form>");
             break;
         case "my-account/collect":
             $(".main").html("<p class='title'>我的收藏</p>"+
@@ -81,7 +81,7 @@ function go(){
                 "<div class='pic_2'><a href='#'>移除收藏</a></div>"+
                 "<p>商品的详细信息</p>"+
                 "</div>"+
-                "</div>")
+                "</div>");
             break;
         case "my-account/assess":
             $(".main").html("<p class='title'>我的评价</p>"+
@@ -103,7 +103,7 @@ function go(){
                 "<div class=''><a href='#'>修改评价</a></div>"+
                 "</td>"+
                 "</tr>"+
-                "</table>")
+                "</table>");
             break;
         case "my-account/shouhou":
             $(".main").html("<p class='title'>售后服务</p>"+
@@ -124,7 +124,7 @@ function go(){
                 "<td>物流信息</td>"+
                 "<td width='80px'><div><a href='#'>查看</a></div></td>"+
                 "</tr>"+
-                "</table>")
+                "</table>");
             break;
 	}
 }
@@ -138,5 +138,8 @@ $("body").on("click",".checkbox",function(){
     else{
         $("tr#"+$(this).attr("id")).css("background-color","#eeeeee")
     }
-})
+});
+window.onpopstate = function (e) {go();
+
+};
 

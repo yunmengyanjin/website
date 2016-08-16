@@ -55,6 +55,9 @@ a {
     .cargo form label#songda {
       width: 120px;
       font-size: 13px; }
+    .cargo form label#money {
+      width: 50px;
+      font-size: 30px; }
     .cargo form div {
       display: inline-block;
       background-color: #f27973;
@@ -105,9 +108,13 @@ a {
     background-color: #a2a2a2;
     height: 200px; }
   .cargo #mage_text {
-    padding-top: 80px;
+    padding-top: 30px;
     background-color: #dcdcdc;
     padding-bottom: 40px; }
+    .cargo #mage_text p {
+      margin-top: 50px;
+      display: block;
+      margin-bottom: 20px; }
     .cargo #mage_text img {
       display: block;
       width: 700px;
