@@ -1,0 +1,32 @@
+.container{
+  height: 100%;
+  padding-top: 150px;
+  div{
+    width: 50%;
+    height: 100px;
+    margin: auto;
+    background-color: #ff7266;
+    margin-top: 1px;
+    color: #FFFFFF;
+    font-size: 25px;
+    font-weight: 900;
+    font-family: "黑体-简";
+    line-height: 100px;
+    text-align: center;
+  }
+  div.second{
+    height: 200px;
+    line-height: 200px;
+    a{
+      color: #FFFFFF;
+      font-weight: 100;
+    }
+  }
+}
+footer{
+  position: absolute;
+  bottom: 0px;
+  right: 1px;
+  color: #ff7266;
+  font-size: small;
+}

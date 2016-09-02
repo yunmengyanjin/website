@@ -21,7 +21,10 @@ urlpatterns += patterns("ymyj_customer.views",
                         )
 urlpatterns += patterns("ymyj_cargo.views",
     url(r'^product/$', "product", name="product"),
+    url(r'^pay/$', "pay", name="pay"),
+    url(r'^pay-failed/$', "failed", name='pay_failed'),
                         )
+urlpatterns += patterns("")
 # Sitemaps
 urlpatterns += patterns("django.contrib.sitemaps.views",
     url(r'^sitemap.xml$', 'sitemap', {'sitemaps': {"products": ProductSitemap, "categories": CategorySitemap, "pages": PageSitemap, "shop": ShopSitemap}})
