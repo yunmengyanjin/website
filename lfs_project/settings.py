@@ -58,7 +58,7 @@ if ENV == "TEST":
     }
 elif ENV == "PRODUCTION":
     DEBUG = False
-    ALLOWED_HOSTS = ['139.196.176.216']
+    ALLOWED_HOSTS = ['.yunyanjin.com']
     TEMPLATE_DEBUG = DEBUG
     DATABASES = {
         'default': {
