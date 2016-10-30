@@ -20,6 +20,8 @@ def product_detail(request):
     price.insert(0, min(price))
 
     if request.method == 'POST':
+        if not request.user.is_authenticated():
+            return HttpResponseRedirect('/login')
         number = request.POST.get('number')
         option = request.POST.get('options')
         pay_prince = price[int(option)] * int(number)
