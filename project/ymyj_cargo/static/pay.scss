@@ -1,0 +1,120 @@
+@import "tool/_center";
+@import "tool/_clearfix";
+@import "tool/_size";
+$cs:#ff7266;
+$ht:"黑体-简";
+$hs:#f7f7f7;
+div.line{
+      background-color: $cs;
+      height: 2px;
+      width: 100%;
+    }
+.container{
+  @include clearfix;
+  font-family: $ht;
+  padding-top: 50px;
+  padding-left: 40px;
+  padding-bottom: 50px;
+  .order_information{
+    width: 90%;
+    @include clearfix;
+    padding-bottom: 50px;
+    p{
+      margin-bottom: 20px;
+      font-weight: 200;
+    }
+
+    table{
+      img{
+        float: left;
+        margin-left: 40px;
+        @include size(100px)
+      }
+      margin-top: 50px;
+      float: right;
+      width: 90%;
+      tr{
+        background-color: $hs;
+      }
+      tr.space{
+        height: 20px;
+      }
+      tr.head{
+        background-color: #fff;
+
+      }
+      tr.product{
+        height: 180px;
+      }
+      label{
+        margin-top: 20px;
+        font-weight: 100;
+        float: left;
+        font-size: 13px;
+        width: 100px;
+      }
+      th.small{
+        width: 15%;
+      }
+      td{
+        text-align: center;
+      }
+    }
+  }
+  .address_information{
+    @extend .order_information;
+    table{
+      border: 1px solid #eeeeee;
+      padding: 10px 2px 2px 10px;
+      tr{
+        height: 120px;
+      }
+      tr.more_small{
+        width: 10%;
+      }
+      tr.head{
+        height: 30px;
+      }
+      .radio{
+        background-color: #fff;
+      }
+
+    }
+    .add{
+      width: 90%;
+      background-color: #eeeeee;
+      float: right;
+      height: 120px;
+      line-height: 120px;
+      a{
+        margin-left: 7%;
+        color: #000000;
+      }
+    }
+
+  }
+  .money {
+    width: 16%;
+    float: right;
+    .zhifu{
+      width: 120px;
+      background-color: $cs;
+      height: 40px;
+      text-align: center;
+      border-radius: 8px;
+      margin-top: 30px;
+      a{
+        width: 100%;
+        color: #efcd54;
+        line-height: 40px;
+      }
+    }
+    #money{
+      color: red;
+      margin-left: 30px;
+    }
+    #unit{
+      color: red;
+    }
+  }
+}

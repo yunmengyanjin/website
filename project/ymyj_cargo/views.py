@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 import simplejson
 from decimal import Decimal
 
+
 def product(request):
     product_id = request.GET['id']
     cargo = get_object_or_404(Product, id=product_id)
@@ -13,4 +14,14 @@ def product(request):
     price.insert(0, min(price))
 
     return render(request, "cargo.html", {"product": cargo,
-                                          "price":simplejson.dumps(price)})
+                                          "price": simplejson.dumps(price)})
+
+
+def pay(request):
+    order_id = request.GET['id']
+    return render(request, "pay.html", )
+
+
+def failed(request):
+    return render(request, "pay_failed.html")
+

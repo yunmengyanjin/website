@@ -1,0 +1,93 @@
+@charset "UTF-8";
+div.line {
+  background-color: #ff7266;
+  height: 2px;
+  width: 100%; }
+
+.container {
+  font-family: "黑体-简";
+  padding-top: 50px;
+  padding-left: 40px;
+  padding-bottom: 50px; }
+  .container:after {
+    content: "";
+    display: table;
+    clear: both; }
+  .container .order_information, .container .address_information {
+    width: 90%;
+    padding-bottom: 50px; }
+    .container .order_information:after, .container .address_information:after {
+      content: "";
+      display: table;
+      clear: both; }
+    .container .order_information p, .container .address_information p {
+      margin-bottom: 20px;
+      font-weight: 200; }
+    .container .order_information table, .container .address_information table {
+      margin-top: 50px;
+      float: right;
+      width: 90%; }
+      .container .order_information table img, .container .address_information table img {
+        float: left;
+        margin-left: 40px;
+        width: 100px;
+        height: 100px; }
+      .container .order_information table tr, .container .address_information table tr {
+        background-color: #f7f7f7; }
+      .container .order_information table tr.space, .container .address_information table tr.space {
+        height: 20px; }
+      .container .order_information table tr.head, .container .address_information table tr.head {
+        background-color: #fff; }
+      .container .order_information table tr.product, .container .address_information table tr.product {
+        height: 180px; }
+      .container .order_information table label, .container .address_information table label {
+        margin-top: 20px;
+        font-weight: 100;
+        float: left;
+        font-size: 13px;
+        width: 100px; }
+      .container .order_information table th.small, .container .address_information table th.small {
+        width: 15%; }
+      .container .order_information table td, .container .address_information table td {
+        text-align: center; }
+  .container .address_information table {
+    border: 1px solid #eeeeee;
+    padding: 10px 2px 2px 10px; }
+    .container .address_information table tr {
+      height: 120px; }
+    .container .address_information table tr.more_small {
+      width: 10%; }
+    .container .address_information table tr.head {
+      height: 30px; }
+    .container .address_information table .radio {
+      background-color: #fff; }
+  .container .address_information .add {
+    width: 90%;
+    background-color: #eeeeee;
+    float: right;
+    height: 120px;
+    line-height: 120px; }
+    .container .address_information .add a {
+      margin-left: 7%;
+      color: #000000; }
+  .container .money {
+    width: 16%;
+    float: right; }
+    .container .money .zhifu {
+      width: 120px;
+      background-color: #ff7266;
+      height: 40px;
+      text-align: center;
+      border-radius: 8px;
+      margin-top: 30px; }
+      .container .money .zhifu a {
+        width: 100%;
+        color: #efcd54;
+        line-height: 40px; }
+    .container .money #money {
+      color: red;
+      margin-left: 30px; }
+    .container .money #unit {
+      color: red; }
+
+/*# sourceMappingURL=pay.css.map */

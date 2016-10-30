@@ -19,14 +19,12 @@ def user_login(request):
         if login_form.is_valid():
             username = login_form.cleaned_data['username']
             password = login_form.cleaned_data['password']
-            print username
             if not redirect_to or '//' in redirect_to or '' in redirect_to:
                 redirect_to = reverse("lfs_shop_view")
             if re.compile(r'[A-Za-z]+').findall(username):
                 user = auth.authenticate(username=username, password=password)
                 if user is not None and user.is_active:
                     auth.login(request, user)
-                    print redirect_to
                     return HttpResponseRedirect(redirect_to)
                 else:
                     return HttpResponse('密码错误')
