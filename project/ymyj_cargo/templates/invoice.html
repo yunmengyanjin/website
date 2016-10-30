@@ -1,0 +1,22 @@
+{% extends 'base_ymyj.html' %}
+{% block title %}支付{% endblock %}
+{% block content %}
+  <div class="container">
+    <div>请用支付宝扫描二维码<br/>您需要支付金额{{ order.total_price }}元, 转账时请备注用户名.<br/>
+    </div>
+    <div class="second"><img src="/static/WechatIMG1.jpeg">
+      <button type="button" id="pay">我已付款</button>
+    </div>
+  </div>
+  <link rel="stylesheet" href="/static/failed.css">
+  <form method="post" style="display: none" id="pay-form">
+    <input type="hidden" name="action" value="payed">
+  {% csrf_token %}
+  </form>
+  <script type="text/javascript">
+    $("button#pay").click(function () {
+      $("#pay-form").submit()
+    })
+  </script>
+{% endblock %}
+{% block bottom %}{% endblock %}

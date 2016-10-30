@@ -1,12 +1,19 @@
 # coding=utf-8
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import Login
 from django.contrib import auth
-from lfs.customer.models import Customer
-from .forms import RegisterForm
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+
+from .forms import Login
+from lfs.customer.models import Customer
+from lfs.addresses.models import BaseAddress
+from lfs.buy_record.models import Buy_Record
+from lfs.buy_record.constants import PayStatus
+
+from .forms import RegisterForm
+
 import re
 
 
@@ -76,8 +83,46 @@ def register(request):
         'next': redirect_to
     })
 
-def customer(request):
-    return render(request, 'customer.html')
 
+@login_required
+def order(request):
+    customer = request.user.customer_set.all()[0]
+    orders = Buy_Record.objects.filter(customer=customer).exclude(status=None)
+    PAY_STATUS = PayStatus
+    return render(request, 'my_order.html', locals())
+
+
+@login_required
+def address(request):
+    user = request.user
+    customer = request.user.customer_set.all()[0]
+
+    if request.method == 'POST':
+        province = request.POST.get('s_province')
+        city = request.POST.get('s_city')
+        county = request.POST.get('s_county')
+        detail_address = request.POST.get('address_detail')
+        name = request.POST.get('name')
+        tel = request.POST.get('tel')
+        zip_code = request.POST.get('zip_code')
+        default = request.POST.get('default')
+
+        if default == 'on':
+            BaseAddress.objects.filter(customer=customer, default=True).update(default=False)
+
+        BaseAddress.objects.create(
+            customer=customer,
+            province=province,
+            city=city,
+            city_3=county,
+            detail_address=detail_address,
+            name=name,
+            telephone=tel,
+            zip_code=zip_code,
+            default=(default == u'on')
+        )
+        return HttpResponseRedirect('/my-account/address/')
+
+    return render(request, 'address.html', locals())
 
 # Create your views here.

@@ -1,37 +1,39 @@
 {% extends 'base_ymyj.html' %}
 {% block title %}支付{% endblock %}
 {% block content %}
-<div class="container">
-<div class="order_information">
+  <div class="container">
+    <form method="post" id="pay">
+    {% csrf_token %}
+      <div class="order_information">
 
-    <p>确认订单信息</p>
-    <div class="line"></div>
-    <table cellspacing="0">
-        <tr class="head">
+        <p>确认订单信息</p>
+        <div class="line"></div>
+        <table cellspacing="0">
+          <tr class="head">
             <th>宝贝</th>
             <th class="small">单价</th>
             <th class="small">数量</th>
             <th class="small">优惠</th>
             <th class="small">小计(元)</th>
-        </tr>
-        <tr class="space">
-        <tr class="product">
+          </tr>
+          <tr class="space">
+          <tr class="product">
             <td>
-                <img>
-                <label>干竹笋, 无任何添加剂，原生态 食品，在中国自古被当作'菜中 珍品'</label>
+              <img src="/media/{{ order.product.productimage_set.all.1.image }}">
+              <label>干竹笋, 无任何添加剂，原生态 食品，在中国自古被当作'菜中 珍品'</label>
             </td>
-            <td>68</td>
-            <td>2</td>
+            <td>{{ order.unit_price }}</td>
+            <td>{{ order.number }}</td>
             <td>无</td>
-            <td>136</td>
-        </tr>
-    </table>
-</div>
-<div class="address_information">
-    <p>确定收货信息</p>
-    <div class="line"></div>
-    <table cellspacing="0">
-        <tr class="head">
+            <td>{{ order.total_price }}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="address_information">
+        <p>确定收货信息</p>
+        <div class="line"></div>
+        <table cellspacing="0">
+          <tr class="head">
             <th class="more_small radio">
 
             </th>
@@ -40,30 +42,38 @@
             <th class="small">邮编</th>
             <th class="small">电话/手机</th>
             <th class="small">操作</th>
-        </tr>
-        <tr>
-            <td class="radio">
-                <input type="radio" name="address" id="address1" value="1">
-            </td>
-            <td>刘翼飞</td>
-            <td>上海 上海市 松江区 文汇路300弄</td>
-            <td>201600</td>
-            <td>133****3124</td>
-            <td>
+          </tr>
+          {% for address in customer.addresses.all %}
+            <tr>
+              <td class="radio">
+                <input type="radio" name="address" id="address1" value="{{ forloop.counter0 }}">
+              </td>
+              <td>{{ address.name }}</td>
+              <td>{{ address.province }} {{ address.city }} {{ address.city_3 }} {{ address.detail_address }}</td>
+              <td>{{ address.zip_code }}</td>
+              <td>{{ address.telephone }}</td>
+              <td>
                 <a href="#">修改</a>|<a href="#">删除</a>
-            </td>
-        </tr>
-    </table>
-    <div class="add">
-        <a href="#">新增地址</a>
-    </div>
-</div>
-<div class="money">
-    <label id="all">总金额</label><label id="money">136</label><label id="unit">元</label>
-    <div class="zhifu">
-        <a href="#">立即支付</a>
-    </div>
-</div>
-</div>
-    <link rel="stylesheet" href="/static/pay.css">
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
+        <div class="add">
+          <a href="#">新增地址</a>
+        </div>
+      </div>
+      <div class="money">
+        <label id="all">总金额</label><label id="money">136</label><label id="unit">元</label>
+        <div class="zhifu">
+          <a href="#" id="pay">立即支付</a>
+        </div>
+      </div>
+    </form>
+  </div>
+  <script type="application/javascript">
+    $("a#pay").click(function () {
+      $("form#pay").submit()
+    })
+  </script>
+  <link rel="stylesheet" href="/static/pay.css">
 {% endblock %}

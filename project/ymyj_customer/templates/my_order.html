@@ -1,0 +1,43 @@
+{% extends 'person_center.html' %}
+{% block right-container %}
+  <p class="title">我的订单</p>
+  <table cellspacing="0">
+    <tr class="first">
+      <th class="cargo">宝贝</th>
+      <th>单价(元)</th>
+      <th>数量</th>
+      <th class="money">实付款(元)</th>
+      <th>交易状态</th>
+      <th>交易操作</th>
+    </tr>
+    {% for order in orders %}
+      <tr class="space"></tr>
+      <tr class="order">
+        <td class="date" colspan="3">日期:{{ buy_time }} 订单号 {{ order.order_no }}</td>
+        <td class="watch" colspan="2"><a href="#">查看详细</a></td>
+        <td><a href="#">申请售后</a></td>
+      </tr>
+      <tr class="detail">
+        <td><img src="/media/{{ order.product.productimage_set.all.1.image }}">{{ order.product.description }}</td>
+        <td>{{ order.unit_price }}</td>
+        <td>{{ order.number }}</td>
+        <td class="money">{{ order.total_price }}<br>(含10元运费)</td>
+        <td>{{ order.get_status_display }}</td>
+        <td>
+          {% if order.status == PAY_STATUS.WAIT_PAY %}
+            <div class="queren">
+              <a href="/pay/invoice/{{ order.order_no }}">
+                继续付款
+              </a></div>
+          {% elif order == PAY_STATUS.SENDING %}
+            <div class="queren">
+              <a href="#">
+                {{ order.expressage }}配送 {{ order.express_no }}
+              </a>
+            </div>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

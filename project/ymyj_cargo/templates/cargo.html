@@ -1,89 +1,108 @@
 {% extends 'base_ymyj.html' %}
 {% block title %}{{ product.name }}{% endblock %}
 {% block content %}
-    <div class="cargo" xmlns="http://www.w3.org/1999/html">
+  <div class="cargo" xmlns="http://www.w3.org/1999/html">
     <div id="introduction">
-    <p id="introduce">商品介绍 | Commodity introduction</p>
-    <div class="kefu"><a href="#">联系客服</a></div>
-    <img src="/media/{{ product.productimage_set.all.1.image }}" id="tupian">
-        <form method="post">
-            <label>规格选择</label>
-            {% for foo in product.productstandard_set.all %}
-                <label for="options{{ forloop.counter }}">
-                <input type="radio" name="options" id="options{{ forloop.counter }}" value="{{ forloop.counter }}">
-                {{ foo.standard }}
-                </label>
+      <p id="introduce">商品介绍 | Commodity introduction</p>
+      <div class="kefu"><a href="#">联系客服</a></div>
+      <img src="/media/{{ product.productimage_set.all.1.image }}" id="tupian">
+      <form method="post">
+        <label>规格选择</label>
+        {% for foo in product.productstandard_set.all %}
+          <label for="options{{ forloop.counter }}">
+            <input type="radio" name="options" id="options{{ forloop.counter }}" value="{{ forloop.counter }}">
+            {{ foo.standard }}
+          </label>
+        {% endfor %}
+        <br>
 
-            {% endfor %}
-            <br>
 
-
-            <label>数量</label><input type="number" id="number">件
-            <br>
-            <label>库存</label><label id="stock" style="width: 22px">50</label><label>件</label><label id="songda">(商品估计2-3天送达)</label><br>
-            <input type="hidden" >
-            <label>价格</label><label style="font-size: 15px; width: 20px">¥</label><label id="money">56</label><br>
-            <div class="cart"><a href="#">加入购物车</a></div><div class="buy"><a href="#">立即购买</a></div>
-          </form>
-        </div>
+        <label>数量</label><input type="number" id="number" name="number">件
+        <br>
+        <label>库存</label><label id="stock" style="width: 22px">50</label><label>件</label><label
+              id="songda">(商品估计2-3天送达)</label><br>
+        <input type="hidden">
+        <label>价格</label><label style="font-size: 15px; width: 20px">¥</label><label id="money">56</label><br>
+        <div class="cart"><a href="#">加入购物车</a></div>
+        <div class="buy"><a href="#">立即购买</a></div>
+      {% csrf_token %}
+      </form>
+    </div>
     <div class="relevant">
-        <p>相关<br>热卖<br>产品</p>
-        <img src="none"><img src="none"><img src="none"><img src="none"><img src="none">
+      <p>相关<br>热卖<br>产品</p>
+      <img src="none"><img src="none"><img src="none"><img src="none"><img src="none">
     </div>
     <div class="transition">
-        <p id="detail">商品详细  |  Detailed commodity</p>
-        <div class="navigation">
+      <p id="detail">商品详细 | Detailed commodity</p>
+      <div class="navigation">
         <p><a href="#detail">商品详细</a>
-        <a href="#mage_text">商品图文</a>
-        <a href="#review">商品评论</a>
-        <a href="#">立即购买</a>
-        <a href="#">联系客服</a></p>
-        </div></div>
-        <div class="detail">
-            商品的各类详细信息
+          <a href="#mage_text">商品图文</a>
+          <a href="#review">商品评论</a>
+          <a href="#">立即购买</a>
+          <a href="#">联系客服</a></p>
+      </div>
     </div>
-        <div id="mage_text">
-            <p>图文 |  mage & Text</p>
-            {% for foo in product.productimage_set.all%}
-            <img src="/media/{{ foo.image }}">
-            {% endfor %}
+    <div class="detail">
+      商品的各类详细信息
+    </div>
+    <div id="mage_text">
+      <p>图文 | mage & Text</p>
+      {% for foo in product.productimage_set.all %}
+        <img src="/media/{{ foo.image }}">
+      {% endfor %}
 
-            <p id="review">商品评论 |Commodity review</p>
-        </div>
-        <div class="review">
-            <table cellspacing="0">
-                <tr>
-                    <td class="nickname"><img><br>会员昵称</td><td class="pinglun">这个东西不错哟</td>
-                </tr>
-                <tr>
-                    <td class="nickname"><img><br>会员昵称</td><td class="pinglun">很好哟</td>
-                </tr>
-            </table>
-        </div>
+      <p id="review">商品评论 |Commodity review</p>
+    </div>
+    <div class="review">
+      <table cellspacing="0">
+        <tr>
+          <td class="nickname"><img><br>会员昵称</td>
+          <td class="pinglun">这个东西不错哟</td>
+        </tr>
+        <tr>
+          <td class="nickname"><img><br>会员昵称</td>
+          <td class="pinglun">很好哟</td>
+        </tr>
+      </table>
+    </div>
 
-</div>
-    <link rel="stylesheet" type="text/css" href="/static/product.css">
-    <script type="text/javascript">
-     var price = {{ price|safe }};
-     function check() {
-         if (!$(":radio:checked").attr("value")){
+  </div>
+  <link rel="stylesheet" type="text/css" href="/static/product.css">
+  <script type="text/javascript">
+    var price = {{ price|safe }};
+    function check() {
+      if (!$(":radio:checked").attr("value")) {
         alert("请选择商品分规格");
-             return false
+        return false
+      }
+      else {
+        $("form").submit()
+      }
     }
-     }
     $(document).ready(function () {
-        $("label#money").text(price[0]);
-        $("div.cart a").click(check);
-
-
-        $("div.buy a").click(check)
-
-
-
+      $("label#money").text(price[0]);
+      $("div.cart a").click(check);
+      $("#number").keyup(function () {
+        var checkd_radio = $(":radio:checked")
+        if (!checkd_radio.attr("value")){
+          var s_price = price[0]
+        }
+        else {
+          var s_price = price[parseInt(checkd_radio.attr("value"))]
+        }
+        if (! parseInt($(this).val())){
+          var number = 1
+        }
+        else {
+          var number = parseInt($(this).val())
+        }
+        $("label#money").text(s_price * number)
+      })
+      $("div.buy a").click(check)
     });
     $(":radio").click(function () {
-        $("label#money").text(price[$(this).attr("value")])
+      $("label#money").text(price[$(this).attr("value")])
     });
 
-    </script>
+  </script>
 {% endblock %}

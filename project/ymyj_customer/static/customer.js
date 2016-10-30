@@ -126,6 +126,63 @@ function go(){
                 "</tr>"+
                 "</table>");
             break;
+        case "my-account/address":
+            $(".main").html('<div class="address"'+
+        '<p class="title">收货地址</p>'+
+        '<div class="add">'+
+            '<p class="title">新增地址</p>'+
+            '<form method="post">'+
+               '<p><label id="detail_address" for="detail_address">详细地址</label>'+
+               '<textarea type="text" name="detai_address" id="detail_address"></textarea></p>'+
+               '<p><label for="name">收货人姓名</label>'+
+                '<input type="text" name="name" id="name">'+
+                '</p>'+
+                '<p><label for="tel">联系电话</label>'+
+                    '<input type="text" name="tel" id="tel">'+
+                '</p>'+
+                '<p><label for="zip_code">邮编</label>'+
+                    '<input type="text" name="zip_code" id="zip_code">'+
+                '</p>'+
+                '<p>'+
+                    '<input type="checkbox" name="default" id="default"><label id="default" for="default">此为默认地址'+
+                '</label></p>'+
+                '<button>保存</button>'+
+            '</form>'+
+        '</div>'+
+            '<div class="manage_address">'+
+                '<p class="title">管理地址</p>'+
+                '<table cellspacing="0">'+
+                    '<tr>'+
+                        '<th>收货人</th>'+
+                        '<th>详细地址</th>'+
+                        '<th>邮编</th>'+
+                        '<th>手机</th>'+
+                        '<th>操作</th>'+
+                    '</tr>'+
+                    '<tr>'+
+                        '<td>谁谁谁</td>'+
+                        '<td>上海 上海市 松江区 松江大学城</td>'+
+                        '<td>201620</td>'+
+                        '<td>123213213213</td>'+
+                        '<td><a href="#">修改</a>|<a href="#">删除</a></td>'+
+                    '</tr>'+
+                '</table>'+
+            '</div></div>');
+            break;
+        case "my-account":
+            $(".main").html('<div class="change_password">'+
+            '<form method="post">'+
+                '<p><label for="original_password">原密码</label>'+
+                '<input id="original_password" type="text"></p>'+
+                '<p><label for="new_password">请输入新密码</label>'+
+                '<input id="new_password" type="text"></p>'+
+                '<p><label for="password_2">请再次输入密码确认</label>'+
+                '<input id="password_2" type="text"></p>'+
+            '</form>'+
+            '<button type="button">确认修改</button>'+
+        '</div>');
+            break;
+
 	}
 }
 function check(){

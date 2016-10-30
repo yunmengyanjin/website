@@ -1,0 +1,31 @@
+{% extends 'person_center.html' %}
+{% block right-container %}
+  <div class="main"><p class="title">我的购物车</p>
+    <div class="jiesuan"><a href="#">立即结算</a></div>
+    <p class="total_price"> 已选商品(不含运费)¥68.00</p>
+    <form method="post">
+      <table cellspacing="0">
+        <tbody>
+        <tr class="first">
+          <th style="padding-left: 20px"><input type="checkbox" id="0" onclick="return check()">全选</th>
+          <th class="cargo">商品信息</th>
+          <th>单价(元)</th>
+          <th>数量</th>
+          <th>金额(元)</th>
+          <th style="text-align: center">操作</th>
+        </tr>
+        <tr class="space"></tr>
+        <tr class="detail" id="1">
+          <td style="padding-left: 20px"><input type="checkbox" class="checkbox" id="1"></td>
+          <td><img src="">商品文字介绍</td>
+          <td>58</td>
+          <td>2</td>
+          <td>116</td>
+          <td style="text-align: center;"><a class="operate" href="#">移入收藏</a><br><a class="operate" href="#">移入购物车</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </form>
+  </div>
+{% endblock %}
