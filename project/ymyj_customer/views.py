@@ -87,7 +87,7 @@ def register(request):
 @login_required
 def order(request):
     customer = request.user.customer_set.all()[0]
-    orders = Buy_Record.objects.filter(customer=customer).exclude(status=None)
+    orders = Buy_Record.objects.filter(customer=customer).exclude(status=PayStatus.WAIT_USER_CONFIRM)
     PAY_STATUS = PayStatus
     return render(request, 'my_order.html', locals())
 
