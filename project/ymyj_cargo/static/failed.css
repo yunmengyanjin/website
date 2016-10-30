@@ -4,7 +4,7 @@
   padding-top: 150px; }
   .container div {
     width: 50%;
-    height: 100px;
+    margin-bottom: 30px;
     margin: auto;
     background-color: #ff7266;
     margin-top: 1px;
@@ -15,11 +15,23 @@
     line-height: 100px;
     text-align: center; }
   .container div.second {
-    height: 200px;
+    padding-top: 30px;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
     line-height: 200px; }
     .container div.second a {
       color: #FFFFFF;
       font-weight: 100; }
+
+button {
+  margin: -30px auto 20px auto;
+  color: #fff;
+  font-size: 20px;
+  border: none;
+  background-color: transparent;
+  display: block;
+  outline: none;
+  cursor: pointer; }
 
 footer {
   position: absolute;

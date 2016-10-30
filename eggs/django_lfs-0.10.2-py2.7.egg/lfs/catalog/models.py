@@ -608,7 +608,7 @@ class Product(models.Model):
     price_unit = models.CharField(u'价格单位', blank=True, max_length=20, choices=LFS_PRICE_UNITS)
     unit = models.CharField(_(u"Quantity field unit"), blank=True, max_length=20, choices=LFS_UNITS)
     short_description = models.TextField(_(u"Short description"), blank=True)
-    description = models.TextField(_(u"Description"), blank=True)
+    description = models.TextField(u'商品介绍', blank=True)
     images = generic.GenericRelation("Image", verbose_name=_(u"Images"),
                                      object_id_field="content_id", content_type_field="content_type")
 

@@ -52,6 +52,7 @@ class BaseAddress(models.Model):
     telephone = models.CharField(u'手机号码', max_length=13, blank=True, null=True)
     detail_address = models.CharField(u'详细地址', max_length=256, blank=True, null=True)
     zip_code = models.CharField(u'邮编', max_length=10, default=u"")
+    default = models.BooleanField(u'默认地址', default=False)
     line1 = models.CharField(_("Line 1"), max_length=100, blank=True, null=True)
     line2 = models.CharField(_("Line 2"), max_length=100, blank=True, null=True)
 

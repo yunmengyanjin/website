@@ -1,0 +1,146 @@
+@charset "UTF-8";
+/* line 4, E:/前端项目/云南盐津/start/input/sass/tool/base.scss */
+* {
+    padding: 0;
+    margin: 0;
+}
+
+/* line 8, E:/前端项目/云南盐津/start/input/sass/tool/base.scss */
+a {
+    text-decoration: none;
+}
+
+textarea {
+    resize: none;
+}
+
+/* line 8, E:/前端项目/云南盐津/start/input/sass/address.scss */
+.address-form-field {
+    width: 600px;
+    background: #eeeeee;
+    margin: 60px auto;
+    position: relative;
+    border: #eee 1px solid;
+}
+p.title{
+    float: right!important;
+    margin: auto -20px auto auto!important;
+}
+/* line 14, E:/前端项目/云南盐津/start/input/sass/address.scss */
+.address-form-field .form-field-title {
+    width: 70px;
+    height: 25px;
+    text-align: center;
+    background: #ff7266;
+    color: #fff;
+    margin-top: 20px;
+    position: absolute;
+}
+
+/* line 23, E:/前端项目/云南盐津/start/input/sass/address.scss */
+.address-form-field form {
+    margin: 70px 70px;
+}
+
+/* line 26, E:/前端项目/云南盐津/start/input/sass/address.scss */
+.address-form-field form .item-form-t span {
+    position: relative;
+    bottom: 17px;
+    text-align: left;
+}
+
+/* line 31, E:/前端项目/云南盐津/start/input/sass/address.scss */
+.address-form-field form .item-form-t textarea {
+    margin-top: 50px;
+    margin-left: 30px;
+    width: 300px;
+    height: 60px;
+    font-size: 16px;
+}
+
+/* line 37, E:/前端项目/云南盐津/start/input/sass/address.scss */
+.address-form-field form .item-form {
+    margin-top: 20px;
+}
+
+/* line 39, E:/前端项目/云南盐津/start/input/sass/address.scss */
+.address-form-field form .item-form span {
+    position: absolute;
+    margin-top: 3px;
+}
+
+/* line 44, E:/前端项目/云南盐津/start/input/sass/address.scss */
+.address-form-field form .item-form input {
+    font-size: 20px;
+    margin-left: 103px;
+    height: 30px;
+}
+
+/* line 49, E:/前端项目/云南盐津/start/input/sass/address.scss */
+.address-form-field form .item-form input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+/* line 53, E:/前端项目/云南盐津/start/input/sass/address.scss */
+.address-form-field form .item-form-c {
+    margin-top: 10px;
+}
+
+/* line 56, E:/前端项目/云南盐津/start/input/sass/address.scss */
+.address-form-field form button[type="submit"] {
+    float: right;
+    border: none;
+    color: #fff;
+    background: #ff7266;
+    width: 50px;
+    height: 30px;
+    cursor: pointer;
+}
+
+/* line 64, E:/前端项目/云南盐津/start/input/sass/address.scss */
+.address-form-field form input[value="确认修改"] {
+    margin-top: 20px;
+    width: 70px;
+    height: 30px;
+}
+
+/* line 72, E:/前端项目/云南盐津/start/input/sass/address.scss */
+.address-field {
+    width: 600px;
+    background: #eeeeee;
+    margin: 60px auto;
+    position: relative;
+    border: #eee 1px solid;
+}
+
+/* line 79, E:/前端项目/云南盐津/start/input/sass/address.scss */
+.address-field .address-title {
+    width: 70px;
+    height: 25px;
+    text-align: center;
+    background: #ff7266;
+    color: #fff;
+    margin-top: 20px;
+    position: absolute;
+}
+
+/* line 88, E:/前端项目/云南盐津/start/input/sass/address.scss */
+.address-field table {
+    margin: 100px 30px;
+    border: 1px solid #fff;
+    text-align: center;
+    font-size: 13px;
+    border-collapse: collapse;
+}
+
+/* line 96, E:/前端项目/云南盐津/start/input/sass/address.scss */
+.address-field table tr th {
+    background: #fff;
+    padding: 0 15px;
+    height: 30px;
+}
+
+/* line 101, E:/前端项目/云南盐津/start/input/sass/address.scss */
+.address-field table tr td {
+    height: 50px;
+}

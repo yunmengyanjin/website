@@ -1,0 +1,87 @@
+@charset "UTF-8";
+/* line 4, E:/前端项目/云南盐津/start/input/sass/tool/base.scss */
+* {
+  padding: 0;
+  margin: 0;
+}
+
+/* line 8, E:/前端项目/云南盐津/start/input/sass/tool/base.scss */
+a {
+  text-decoration: none;
+}
+
+/* line 5, E:/前端项目/云南盐津/start/input/sass/person_css.scss */
+ul {
+  list-style: none;
+}
+
+/* line 8, E:/前端项目/云南盐津/start/input/sass/person_css.scss */
+main {
+  background: #eeeeee;
+  overflow: hidden;
+}
+
+/* line 11, E:/前端项目/云南盐津/start/input/sass/person_css.scss */
+main .left-container {
+  float: left;
+  width: 150px;
+  height: 600px;
+}
+
+/* line 15, E:/前端项目/云南盐津/start/input/sass/person_css.scss */
+main .left-container .slide-nav {
+  color: white;
+  background: #ff7266;
+  width: 150px;
+  height: 350px;
+  padding: 10px;
+  position: fixed;
+  top: 50%;
+  margin-top: -175px;
+}
+
+/* line 23, E:/前端项目/云南盐津/start/input/sass/person_css.scss */
+main .left-container .slide-nav .nav-container {
+  margin: 10px 0 0 10px;
+}
+
+/* line 26, E:/前端项目/云南盐津/start/input/sass/person_css.scss */
+main .left-container .slide-nav .nav-container li {
+  font-size: 10px;
+  margin: 6px 0 0 30px;
+}
+
+/* line 27, E:/前端项目/云南盐津/start/input/sass/person_css.scss */
+main .left-container .slide-nav .nav-container li a {
+  color: white;
+}
+
+/* line 39, E:/前端项目/云南盐津/start/input/sass/person_css.scss */
+main .right-container {
+  margin-left: 200px;
+  margin-top: 30px;
+  width: 100%;
+  padding: 30px;
+}
+
+/* line 46, E:/前端项目/云南盐津/start/input/sass/person_css.scss */
+main .right-container .right-white-container {
+  background: #fff;
+  position: relative;
+  min-width: 700px;
+  margin: 0 300px 0 50px;
+  border: 1px solid #fff;
+}
+
+/* line 53, E:/前端项目/云南盐津/start/input/sass/person_css.scss */
+main .right-container .right-white-container .right-white-container-title {
+  position: absolute;
+  width: 100px;
+  height: 30px;
+  top: 20px;
+  right: -30px;
+  background: #ff7266;
+  color: #fff;
+  line-height: 30px;
+  text-align: center;
+}
