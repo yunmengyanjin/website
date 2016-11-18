@@ -24,6 +24,9 @@ def product_detail(request):
             return HttpResponseRedirect('/login')
         number = request.POST.get('number')
         option = request.POST.get('options')
+        if int(number) <=0 or not number:
+            number_error = True
+            return render(request, "cargo.html", locals())
         pay_prince = price[int(option)] * int(number)
         order = Buy_Record.objects.create(
             customer=request.user.customer_set.all()[0],
