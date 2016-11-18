@@ -2,7 +2,7 @@
 {% block title %}支付{% endblock %}
 {% block content %}
   <div class="container">
-    <div>请用支付宝扫描二维码<br/>您需要支付金额{{ order.total_price }}元, 转账时请备注用户名.<br/>
+    <div>请用支付宝扫描二维码<br/>您需要支付金额{{ order.get_all_price }}元, 转账时请备注用户名.<br/>
     </div>
     <div class="second"><img src="/static/WechatIMG1.jpeg">
       <button type="button" id="pay">我已付款</button>

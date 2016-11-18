@@ -638,7 +638,7 @@ class Product(models.Model):
                                    related_name="products_order_time")
     ordered_at = models.DateField(_(u"Ordered at"), blank=True, null=True)
     manage_stock_amount = models.BooleanField(_(u"Manage stock amount"), default=False)
-    stock_amount = models.FloatField(_(u"Stock amount"), default=0)
+    stock_amount = models.IntegerField(u'库存', default=0)
 
     active_packing_unit = models.PositiveSmallIntegerField(_(u"Active packing"), default=0)
     packing_unit = models.FloatField(_(u"Amount per packing"), blank=True, null=True)

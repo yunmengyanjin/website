@@ -17,16 +17,18 @@
             <th class="small">小计(元)</th>
           </tr>
           <tr class="space">
-          <tr class="product">
+          {% for buy_record in order.buy_record_set.all %}
+            <tr class="product">
             <td>
-              <img src="/media/{{ order.product.productimage_set.all.1.image }}">
+              <img src="/media/{{ buy_record.productimage_set.all.1.image }}">
               <label>干竹笋, 无任何添加剂，原生态 食品，在中国自古被当作'菜中 珍品'</label>
             </td>
-            <td>{{ order.unit_price }}</td>
-            <td>{{ order.number }}</td>
+            <td>{{ buy_record.unit_price }}</td>
+            <td>{{ buy_record.number }}</td>
             <td>无</td>
-            <td>{{ order.total_price }}</td>
+            <td>{{ buy_record.total_price }}</td>
           </tr>
+          {% endfor %}
         </table>
       </div>
       <div class="address_information">
@@ -61,9 +63,13 @@
         <div class="add">
           <a href="#">新增地址</a>
         </div>
+      {% if no_address %}
+      <p style="color: orangered">没有选择地址</p>
+      {% endif %}
       </div>
+
       <div class="money">
-        <label id="all">总金额</label><label id="money">136</label><label id="unit">元</label>
+        <label id="all">总金额</label><label id="money">{{ order.get_all_price }}</label><label id="unit">元</label>
         <div class="zhifu">
           <a href="#" id="pay">立即支付</a>
         </div>

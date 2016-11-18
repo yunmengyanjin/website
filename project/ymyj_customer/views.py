@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import Login
 from lfs.customer.models import Customer
 from lfs.addresses.models import BaseAddress
-from lfs.buy_record.models import Buy_Record
+from lfs.buy_record.models import Buy_Record, UserOrder
 from lfs.buy_record.constants import PayStatus
 
 from .forms import RegisterForm
@@ -87,7 +87,7 @@ def register(request):
 @login_required
 def order(request):
     customer = request.user.customer_set.all()[0]
-    orders = Buy_Record.objects.filter(customer=customer).exclude(status=PayStatus.WAIT_USER_CONFIRM)
+    orders = UserOrder.objects.filter(customer=customer).exclude(status=PayStatus.WAIT_USER_CONFIRM)
     PAY_STATUS = PayStatus
     return render(request, 'my_order.html', locals())
 

@@ -11,24 +11,29 @@
         {% for foo in product.productstandard_set.all %}
           <label for="options{{ forloop.counter }}">
             <input type="radio" name="options" id="options{{ forloop.counter }}" value="{{ forloop.counter }}">
-            {% if number_error %}
-              <p>请输入正确的数量</p>
-            {% endif %}
             {{ foo.standard }}
           </label>
         {% endfor %}
         <br>
-
+      {% if no_option %}
+        <P style="color: orangered">没有选择规格</P>
+      {% endif %}
 
         <label>数量</label><input type="number" id="number" name="number">件
         <br>
-        <label>库存</label><label id="stock" style="width: 22px">50</label><label>件</label><label
+        {% if number_error %}
+          <p style="color: orangered">请输入正确的数量</p>
+        {% endif %}
+        <label>库存</label><label id="stock" style="width: 22px">{{ product.stock_amount }}</label><label>件</label><label
               id="songda">(商品估计2-3天送达)</label><br>
         <input type="hidden">
         <label>价格</label><label style="font-size: 15px; width: 20px">¥</label><label id="money">56</label><br>
+        {% if no_stock %}
+          <p style="color: orangered">库存不足</p>
+        {% endif %}
         <div class="cart"><a href="#">加入购物车</a></div>
         <div class="buy"><a href="#">立即购买</a></div>
-      {% csrf_token %}
+        {% csrf_token %}
       </form>
     </div>
     <div class="relevant">
@@ -78,8 +83,12 @@
         alert("请选择商品分规格");
         return false
       }
-      if (parseInt($("#number").val()) <= 0){
+      if (parseInt($("#number").val()) <= 0) {
         alert("请输入正确的数量");
+        return false
+      }
+      if (parseInt($("#number").val()) > parseInt("{{ product.stock_amount }}") || parseInt("{{ product.stock_amount }}") == 0) {
+        alert("库存不足");
         return false
       }
       $("#buy_form").submit()
@@ -89,13 +98,13 @@
       $("div.cart a").click(check);
       $("#number").keyup(function () {
         var checkd_radio = $(":radio:checked")
-        if (!checkd_radio.attr("value")){
+        if (!checkd_radio.attr("value")) {
           var s_price = price[0]
         }
         else {
           var s_price = price[parseInt(checkd_radio.attr("value"))]
         }
-        if (! parseInt($(this).val())){
+        if (!parseInt($(this).val())) {
           var number = 1
         }
         else {
@@ -106,7 +115,7 @@
       $("div.buy a").click(check)
     });
     $(":radio").click(function () {
-      $("label#money").text(price[$(this).attr("value")] * parseInt($("#number").val()))
+      $("label#money").text(price[$(this).attr("value")] * parseInt($("#number").val() ? $("#number").val() : '1'))
     });
 
   </script>
