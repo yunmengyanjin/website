@@ -256,7 +256,6 @@ header a.index-login {
 .detail-content-container .detail-content {
     margin: 30px 30px;
     position: relative;
-    height: 300px;
 }
 
 /* line 200, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
@@ -288,8 +287,7 @@ header a.index-login {
     border: 5px solid #fff;
     border-radius: 50%;
     line-height: 200px;
-    width: 200px;
-    height: 200px;
+    width: 400px;
 }
 
 /* line 222, E:/前端项目/云南盐津/start/input/sass/index_main.scss */
@@ -355,4 +353,10 @@ footer {
 
 .avatar {
     border-radius: 50%;
+}
+
+
+.img-responsive {
+    width: 100%;
+    height: auto;
 }

@@ -1,116 +1,132 @@
 {% extends 'base_ymyj.html' %}
 {% block title %}主页{% endblock %}
 {% block content %}
-<div class="unslider"><div class="banner unslider-fade" style="overflow: hidden;">
-    <ul class="unslider-wrap">
+  <link href="//cdn.bootcss.com/video.js/6.0.0-RC.5/alt/video-js-cdn.min.css" rel="stylesheet">
+  <script src="//cdn.bootcss.com/video.js/6.0.0-RC.5/alt/video.novtt.min.js"></script>
+  <div class="unslider">
+    <div class="banner unslider-fade" style="overflow: hidden;">
+      <ul class="unslider-wrap">
         <li class="" style="opacity: 0;">
-           <a href="{{ pic.1.url }}">
-        	<img src="/media/{{ pic.1.pic }}"></a>
-			<div id="info-0">东华大学“云梦盐津”公益项目</div>
+          <a href="{{ pic.1.url }}">
+            <img src="/media/{{ pic.1.pic }}"></a>
+          <div id="info-0">东华大学“云梦盐津”公益项目</div>
         </li>
         <li class="unslider-active" style="opacity: 1;">
-            <a href="{{ pic.2.url }}">
-        	<img src="/media/{{ pic.2.pic }}"></a>
-        	<div id="info-0">只是简单的字</div>
+          <a href="{{ pic.2.url }}">
+            <img src="/media/{{ pic.2.pic }}"></a>
+          <div id="info-0">只是简单的字</div>
         </li>
         <li class="" style="opacity: 0;">
-            <a href="{{ pic.0.url }}">
-        	<img src="/media/{{ pic.0.pic }}"></a>
-        	<div id="info-0">第二个简单的字</div>
+          <a href="{{ pic.0.url }}">
+            <img src="/media/{{ pic.0.pic }}"></a>
+          <div id="info-0">第二个简单的字</div>
         </li>
+      </ul>
+    </div>
+    <nav class="unslider-nav">
+      <ol>
+        <li data-slide="0" class="">1</li>
+        <li data-slide="1" class="unslider-active">2</li>
+        <li data-slide="2" class="">3</li>
+      </ol>
+    </nav>
+  </div>
+
+  <div class="hot-items">
+    <ul>
+      <li>热门产品</li>
+      <li>热门产品</li>
+      <li>热门产品</li>
     </ul>
-</div><nav class="unslider-nav"><ol><li data-slide="0" class="">1</li><li data-slide="1" class="unslider-active">2</li><li data-slide="2" class="">3</li></ol></nav></div>
+  </div>
 
-<div class="hot-items">
-	<ul>
-		<li>热门产品</li>
-		<li>热门产品</li>
-		<li>热门产品</li>
-	</ul>
-</div>
+  <div class="culture-container" style="padding: 0px 30px">
+    <div class="culture-title">
+      我们&amp;文化
+    </div>
+    <div style="padding: 30px 0 ">
+      <video
+              id="my-player"
+              class="video-js"
+              controls
+              preload="auto"
+              data-setup='{}'>
+        <source src="http://7xpser.com1.z0.glb.clouddn.com/%E4%BA%91%E6%A2%A6%E7%9B%90%E6%B4%A5%E8%B0%83%E7%A0%94%E5%AE%A3%E4%BC%A0%E8%A7%86%E9%A2%91.mp4"
+                type="video/mp4">
+        </source>
+        To view this video please enable JavaScript, and consider upgrading to a
+        web browser that
+        </p>
+      </video>
+    </div>
 
-<div class="culture-container">
-	<div class="culture-title">
-		我们&amp;文化
-	</div>
-	<div class="video-content">
-		视频介绍
-	</div>
 
+    <div class="detail-content-container">
+      <div class="detail-content">
+        <dl class="left-content">
+          <dt>盐津简介</dt>
+          <dd>
+            云南省盐津县，位于云南省东北部，昭通市下辖县，是国开办发[2012]78号《关于做好新一轮中央、国家机关和有关单位定点扶贫工作的通知》东华大学对口帮扶的国家级贫困县。盐津属典型的山区县，优越的地理气候条件，造就了盐津良好的生态环境。盐津自古是入滇的要冲，素有“咽喉西蜀、锁钥南滇”之称，地处乌蒙山脉关河深谷的中段，位于四川和云南结合之处，也是古丝绸之路入滇的第一站。全县有着丰富的自然资源、独特的区位优势、厚重的人文情怀，更有着乌骨鸡、天麻、竹笋、腊肉、白酒等品种多样、品质优良、健康生态的众多农特产品。
+          </dd>
+        </dl>
+        <img src="/static/1-1.jpg" class="img-responsive img-content" />
+      </div>
+      <div class="detail-content c-right">
+        <dl class="left-content">
+          <dt>电商助力扶贫</dt>
+          <dd>2015年10月，东华大学计算机学院派出调研小组赴盐津调研，发现当地有极具竞争优势的农特产品诸如天麻、竹笋、盐津乌骨鸡等，由于交通不便，市场小，导致积压生产，难以打开销路。结合专业知识，东华大学计算机学院慈善义工队从电商扶贫出发，希望通过联合当地政府与特产生产企业（农户），在盐津与东华大学之间搭建农产品输出通道，通过互联网电商平台为当地优势农产品谋求销路与市场，以“公益+创业”的模式助力精准扶贫。
+          </dd>
+        </dl>
+        <img class="img-content img-responsive" src="/static/2-1.jpg" />
+      </div>
+      <div class="detail-content">
+        <dl class="left-content">
+          <dt>"云梦盐津”公益计划</dt>
+          <dd>2015年11月17日，借东华大学慈善文化月为契机，计算机学院“云梦盐津”公益扶贫项目正式启动，计算机学院慈善义工服务队志愿者组成“云梦盐津”公益志愿团队。项目开通线上营销微店，线下设交易仓储点以对接云南盐津的产品。团队通过不定期的团购促销活动，向东华大学广大师生引荐了盐津乌骨鸡、竹笋、天麻等农特产品，为盐津人民开辟了一个销售通道。微店全部收入用于资助盐津发展扶贫产业。
 
-	<div class="detail-content-container">
-		<div class="detail-content">
-			<dl class="left-content">
-				<dt>深山农货攀“云”巅</dt>
-				<dd>二是与东华大学合作启动“云梦盐津”项目。东华大学
-组建了“云梦盐津”项目团队，目前盐津特色农产品已
-经在东华大学慈善爱心屋进行展示，通过线上线下展示
-推广，盐津农产品在东华大学教师群体中火爆销售。</dd>
-			</dl>
-			<div class="img-content">图片</div>
-		</div>
-		<div class="detail-content c-right">
-			<dl class="left-content">
-				<dt>深山农货攀“云”巅</dt>
-				<dd>二是与东华大学合作启动“云梦盐津”项目。东华大学
-组建了“云梦盐津”项目团队，目前盐津特色农产品已
-经在东华大学慈善爱心屋进行展示，通过线上线下展示
-推广，盐津农产品在东华大学教师群体中火爆销售。</dd>
-			</dl>
-			<div class="img-content">图片</div>
-		</div>
-		<div class="detail-content">
-			<dl class="left-content">
-				<dt>深山农货攀“云”巅</dt>
-				<dd>二是与东华大学合作启动“云梦盐津”项目。东华大学
-组建了“云梦盐津”项目团队，目前盐津特色农产品已
-经在东华大学慈善爱心屋进行展示，通过线上线下展示
-推广，盐津农产品在东华大学教师群体中火爆销售。</dd>
-			</dl>
-			<div class="img-content">图片</div>
-		</div>
-		<div class="detail-content c-right">
-			<dl class="left-content">
-				<dt>深山农货攀“云”巅</dt>
-				<dd>二是与东华大学合作启动“云梦盐津”项目。东华大学
-组建了“云梦盐津”项目团队，目前盐津特色农产品已
-经在东华大学慈善爱心屋进行展示，通过线上线下展示
-推广，盐津农产品在东华大学教师群体中火爆销售。</dd>
-			</dl>
-			<div class="img-content">图片</div>
-		</div>
-	</div>
+          </dd>
+        </dl>
+        <img class="img-content img-responsive" src="/static/3-1.jpg" />
+      </div>
+      <div class="detail-content c-right">
+        <dl class="left-content">
+          <dt>“电商扶贫+教育扶贫”项目方针</dt>
+          <dd>自2016年以来，“云梦盐津”团队积极发挥学生骨干力量，与计算机学院科创中心、计算机学院平行专业学生党支部相互合作，开展暑期实践调研，以“电商扶贫+教育扶贫”为主要方针推动项目发展。一方面，团队开展各类网络促销活动，为盐津县黄草社区电商孵化基地的发展提供技术支持，促进当地“农货”向“网货”的转型；另一方面，团队面向计算机学院各支部发起“特殊党费”捐赠活动，资助当地贫困学子，并制定面向盐津当地中小学生开展爱国主义教育活动的有关计划。
 
-	<div class="detail-content-square-container">
-		<div class="square-items">
-			<div class="square-img">相关图片</div>
-			<p> （文字介绍）与上海都市菜园发展有限公司联系开展“云品入沪”项目。2015年12月18日，
-			由县经科局牵头，盐津特色农产品已正式入驻上海环球港云品展示中心进行孵化，并已经开展两次
-			买手品鉴活动，受到大量消费顾客咨询，起到良好的宣传效果。
-			</p>
-		</div>
-		<div class="square-items">
-			<div class="square-img">相关图片</div>
-			<p> （文字介绍）与上海都市菜园发展有限公司联系开展“云品入沪”项目。2015年12月18日，
-			由县经科局牵头，盐津特色农产品已正式入驻上海环球港云品展示中心进行孵化，并已经开展两次
-			买手品鉴活动，受到大量消费顾客咨询，起到良好的宣传效果。
-			</p>
-		</div>
-		<div class="square-items">
-			<div class="square-img">相关图片</div>
-			<p> （文字介绍）与上海都市菜园发展有限公司联系开展“云品入沪”项目。2015年12月18日，
-			由县经科局牵头，盐津特色农产品已正式入驻上海环球港云品展示中心进行孵化，并已经开展两次
-			买手品鉴活动，受到大量消费顾客咨询，起到良好的宣传效果。
-			</p>
-		</div>
-		<div class="square-items">
-			<div class="square-img">相关图片</div>
-			<p> （文字介绍）与上海都市菜园发展有限公司联系开展“云品入沪”项目。2015年12月18日，
-			由县经科局牵头，盐津特色农产品已正式入驻上海环球港云品展示中心进行孵化，并已经开展两次
-			买手品鉴活动，受到大量消费顾客咨询，起到良好的宣传效果。
-			</p>
-		</div>
-	</div>
+          </dd>
+        </dl>
+        <img class="img-content img-responsive" src="/static/4-1.jpg"/>
+      </div>
+    </div>
 
-</div>
+    <div class="detail-content-square-container">
+      <div class="square-items">
+        <img class="square-img img-responsive" src="/static/5.jpg" />
+        <p> 【慈善义卖】2015年11月17日，东华大学大学生活动中心举办“慈善义卖----爱心的汇聚”慈善文化月活动。“云梦盐津”盐津农家特产展摊的盐津乌骨鸡汤引得了师生们的驻足品尝。这碗乌骨鸡汤是由来自盐津当地的村民不远千里来到上海亲自现场熬制。
+
+        </p>
+      </div>
+      <div class="square-items">
+        <img class="square-img img-responsive" src="/static/6.jpg" />
+        <p> 【东华大学爱心屋】2015年12月，在东华大学学生处资助管理中心的支持下，“云梦盐津”农家特产展区入驻东华大学慈善爱心屋，展区摆放乌骨鸡蛋、天麻、干竹笋等产品，介绍盐津当地贫困情况及“云梦盐津”项目的运作情况。
+
+        </p>
+      </div>
+      <div class="square-items">
+        <img class="square-img img-responsive" src="/static/7.jpg" />
+        <p> 【暑期社会实践】2016年7月，“云梦盐津”暑期社会实践团远赴盐津，在当地开展国家资助政策宣讲、留守儿童结对帮扶等教育帮扶活动。期间，团队代表跟随政府领导、阿里巴巴及农村淘宝有关人员组建的政企考察团，前往当地各大农业合作社开展盐津农产品有关调研，并在县委县政府举办的电商交流座谈会上为盐津农产品电商提出可持续发展意见。
+
+      </div>
+      <div class="square-items">
+        <img class="square-img img-responsive" src="/static/8.jpg" />
+        <p> 【党支部会议】2016年6月以来，东华大学计算机学院平行专业学生党支部与“云梦盐津”项目团队达成合作，开展支部组织生活会，讨论并制定“云梦盐津”教育帮扶有关计划。从特殊党费捐赠、中小学爱国主义教育、两地支部共建等方面开展系列结对帮扶活动。
+
+        </p>
+      </div>
+    </div>
+
+  </div>
+  <script type="text/javascript">
+    var player = videojs('my-player');
+  </script>
 {% endblock %}
