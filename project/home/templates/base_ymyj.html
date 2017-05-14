@@ -17,6 +17,7 @@
       justify-content: center;
       align-items: center;
     }
+
     .img-250 {
       width: 100%;
       height: 100%;
@@ -32,7 +33,7 @@
   <div class="logo">云梦盐津</div>
   <ul>
     <li>
-      <a href="/" class="active">首页
+      <a href="/" {% if request.path == '/' %} class="active" {% endif %}>首页
         <em class=""></em>
       </a>
     </li>
@@ -42,7 +43,9 @@
       </a>
     </li>
     <li>
-      <a href="/product/">所有商品
+      <a href="/product/" {% if request.path == '/product/' %}
+         class="active"
+      {% endif %}>所有商品
         <em class=""></em>
       </a>
     </li>
@@ -52,7 +55,7 @@
       </a>
     </li>
     <li>
-      <a href="/partybuilding">党建
+      <a href="/partybuilding/" {% if request.path == '/partybuilding/' %} class="active" {% endif %}>党建
         <em class=""></em>
       </a>
     </li>
