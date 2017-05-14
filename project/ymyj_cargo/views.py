@@ -9,10 +9,20 @@ from lfs.buy_record.constants import PayStatus
 
 import simplejson
 from decimal import Decimal
+from home.models import Home
 
 
 def product_detail(request):
-    product_id = request.GET['id']
+    product_id = request.GET.get('id', '')
+
+    if not product_id:
+        try:
+            pic = Home.objects.all()
+        except Exception as e:
+            pass
+        products = Product.objects.all()
+        return render(request, 'allitems.html', locals())
+
     product = get_object_or_404(Product, id=product_id)
     price = []
     for i in Product.objects.get(id=product_id).productstandard_set.all():

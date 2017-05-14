@@ -73,7 +73,7 @@ def register(request):
                                     tel=tel)
             user = auth.authenticate(username=username, password=password)
             auth.login(request, user)
-            return HttpResponseRedirect(redirect_to)
+            return HttpResponseRedirect('/')
     if not redirect_to:
         redirect_to = request.META.get("HTTP_REFERER")
     if not redirect_to:

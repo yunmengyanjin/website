@@ -334,4 +334,5 @@ LOGGING = {
 try:
     from local_settings import *
 except ImportError:
+    print 'can\'t import local_settings'
     pass

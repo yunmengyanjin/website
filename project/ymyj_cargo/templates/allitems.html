@@ -1,0 +1,116 @@
+{% extends 'base_ymyj.html' %}
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="/static/allitems.css">
+{% endblock %}
+{% block content %}
+  <div class="unslider">
+    <div class="banner unslider-fade" style="overflow: hidden;">
+      <ul class="unslider-wrap">
+        <li class="" style="opacity: 0;">
+          <a href="{{ pic.1.url }}">
+            <img src="/media/{{ pic.1.pic }}"></a>
+          <div id="info-0">{{ pic.1.desc }}</div>
+        </li>
+        <li class="unslider-active" style="opacity: 1;">
+          <a href="{{ pic.2.url }}">
+            <img src="/media/{{ pic.2.pic }}"></a>
+          <div id="info-0">{{ pic.2.desc }}</div>
+        </li>
+        <li class="" style="opacity: 0;">
+          <a href="{{ pic.0.url }}">
+            <img src="/media/{{ pic.0.pic }}"></a>
+          <div id="info-0">{{ pic.0.desc }}</div>
+        </li>
+      </ul>
+    </div>
+    <nav class="unslider-nav">
+      <ol>
+        <li data-slide="0" class="">1</li>
+        <li data-slide="1" class="unslider-active">2</li>
+        <li data-slide="2" class="">3</li>
+      </ol>
+    </nav>
+  </div>
+
+
+  <div class="hot-items">
+    <ul>
+      <li>
+        <a href="{{ pic.1.url }}">
+          <img src="/media/{{ pic.1.pic }}">
+        </a>
+      </li>
+      <li>
+        <a href="{{ pic.2.url }}">
+          <img src="/media/{{ pic.2.pic }}"></a>
+      </li>
+      <li>
+        <a href="{{ pic.0.url }}">
+          <img src="/media/{{ pic.0.pic }}"></a>
+      </li>
+    </ul>
+  </div>
+
+
+  <div class="all-goods-container">
+    <div class="all-goods-title">所有商品 &nbsp; &nbsp; |&nbsp; &nbsp; All the goods</div>
+
+    <div class="all-goods-detail-container">
+
+      {% for product in products %}
+        {% if forloop.counter0|divisibleby:'2' %}
+          <div class="goods-item">
+            <div class="left-goods-item">
+              <div class="goods-item-view">
+                <div class="goods-img"><img src="{{  product.productimage_set.all.0.url }}" /></div>
+                <div class="goods-information">
+                  <span>价格</span>
+                  <i class="iconfont">{{ product.productstandard_set.all.0.price }}</i>
+                </div>
+              </div>
+            </div>
+            <div class="right-goods-item">
+              <div class="goods-item-content">
+                <dl>
+                  <dt>{{ product.name }}</dt>
+                  <dd>
+                   {{ product.desc }}
+                  </dd>
+                </dl>
+                <a href="/product/?id={{ product.id }}">立即购买</a>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <div class="goods-item colorD2">
+            <div class="right-goods-item">
+              <div class="goods-item-view colorF1">
+                <div class="goods-img"><img src="{{  product.productimage_set.all.0.url }}" /></div>
+                <div class="goods-information">
+                  <span>价格</span>
+                  <i class="iconfont ">{{ product.productstandard_set.all.0.price }}</i>
+                </div>
+              </div>
+            </div>
+            <div class="left-goods-item">
+              <div class="goods-item-content">
+                <dl>
+                  <dt>{{ product.name }}</dt>
+                  <dd>
+                   {{ product.desc }}
+                  </dd>
+
+                </dl>
+                <a href="/product/?id={{ product.id }}">立即购买</a>
+              </div>
+            </div>
+          </div>
+
+        {% endif %}
+      {% endfor %}
+      </div>
+      <a href="#top">返回顶部</a>
+    </div>
+
+  </div>
+{% endblock %}

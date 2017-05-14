@@ -14,17 +14,6 @@ urlpatterns = patterns('django.views.generic.simple',
                        )
 # LYF_project
 
-urlpatterns += patterns("ymyj_customer.views",
-                        url(r'^login$', "user_login", name="lfs_login"),
-                        url(r'^register$', "register", name='register'),
-                        url(r'^my-account/order/$', "order", name="order"),
-                        url(r'^my-account/address/$', "address", name="address"),
-                        )
-urlpatterns += patterns("ymyj_cargo.views",
-                        url(r'^product/$', "product_detail", name="product"),
-                        url(r'^pay/(?P<order_no>[\d]+)/$', "pay", name="pay"),
-                        url(r'^pay/invoice/(?P<order_no>[\d]+)/$', 'invoice', name='invoice')
-                        )
 urlpatterns += patterns("")
 # Sitemaps
 urlpatterns += patterns("django.contrib.sitemaps.views",

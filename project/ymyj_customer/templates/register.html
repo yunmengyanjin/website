@@ -1,49 +1,66 @@
 <!DOCTYPE html>
 <!-- saved from url=(0036)http://www.maiff.cn/login/login.html -->
-<html lang="en" slick-uniqueid="3"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="en" slick-uniqueid="3">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-	<title>注册-云梦盐津</title>
-	<link rel="stylesheet" type="text/css" href="/static/login_main.css">
+  <title>注册-云梦盐津</title>
+  <style>
+    .errorlist {
+      color: red;
+    }
+  </style>
+  <link rel="stylesheet" type="text/css" href="/static/login_main.css">
 </head>
 <body style="background: url(&quot;./img/loginBg.png&quot;) 0% 0% / 100% 100%;">
 <header>
-	<div class="logo">
-		云梦盐津
-	</div>
-	<div class="return-home">
-		<a href="/">返回首页</a>
-	</div>
+  <div class="logo">
+    云梦盐津
+  </div>
+  <div class="return-home">
+    <a href="/">返回首页</a>
+  </div>
 
 
 </header>
 <div class="mask" style="display: block; height: 380px">
-		<div id="close">
-			×
-		</div>
-		<h3>注 册</h3>
-		<form method="post">
-            {% csrf_token %}
-            {{ form.username }}
-            <input class="user gap" type="tel" name="tel" placeholder="请输入您的电话">
-            {{ form.password_1 }}
-            {{ form.password_2 }}
-            <input type="hidden" value="{{ next }}" name="next">
-			<input type="submit" name="login" value="注册" class="button">
-		</form>
-		<a class="notice-item1" href="http://www.maiff.cn/login/login.html#">忘记登陆密码？</a>
-		<a class="notice-item2" href="/login">登录</a>
-	</div>
-	<p class="copyright">Copyright 东华大学云梦盐津公益项目. All Rights Reserved  </p>
+  <div id="close">
+    ×
+  </div>
+  <h3>注 册</h3>
+  <form method="post">
+    {% csrf_token %}
+
+    {% if form.errors %}
+      <script type="text/javascript">
+      alert('注册失败')
+      </script>
+    {% endif %}
+    {{ form.username }}
+
+    <input class="user gap" type="tel" name="tel" placeholder="请输入您的电话">
+    {{ form.password_1 }}
+
+    {{ form.password_2 }}
+
+    <input type="hidden" value="{{ next }}" name="next">
+    <input type="submit" name="login" value="注册" class="button">
+  </form>
+  <a class="notice-item1" href="http://www.maiff.cn/login/login.html#">忘记登陆密码？</a>
+  <a class="notice-item2" href="/login">登录</a>
+</div>
+<p class="copyright">Copyright 东华大学云梦盐津公益项目. All Rights Reserved </p>
 
 <script type="text/javascript">
-	window.onload=function(){
-		document.getElementsByClassName('mask')[0].style.display='block';
-		var img=new Image();
-		img.src='/static/loginBg.png';
-		img.onload=function(){
-			document.body.style.background="url('/static/loginBg.png')";
-			document.body.style.backgroundSize="100% 100%";
-		}
-	}
+  window.onload = function () {
+    document.getElementsByClassName('mask')[0].style.display = 'block';
+    var img = new Image();
+    img.src = '/static/loginBg.png';
+    img.onload = function () {
+      document.body.style.background = "url('/static/loginBg.png')";
+      document.body.style.backgroundSize = "100% 100%";
+    }
+  }
 </script>
-</body></html>
+</body>
+</html>

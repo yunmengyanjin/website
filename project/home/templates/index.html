@@ -8,18 +8,19 @@
       <ul class="unslider-wrap">
         <li class="" style="opacity: 0;">
           <a href="{{ pic.1.url }}">
-            <img src="/media/{{ pic.1.pic }}"></a>
-          <div id="info-0">东华大学“云梦盐津”公益项目</div>
+            <img src="/media/{{ pic.1.pic }}">
+          </a>
+          <div id="info-0">{{ pic.1.desc }}</div>
         </li>
         <li class="unslider-active" style="opacity: 1;">
           <a href="{{ pic.2.url }}">
             <img src="/media/{{ pic.2.pic }}"></a>
-          <div id="info-0">只是简单的字</div>
+          <div id="info-0">{{ pic.2.desc }}</div>
         </li>
         <li class="" style="opacity: 0;">
           <a href="{{ pic.0.url }}">
             <img src="/media/{{ pic.0.pic }}"></a>
-          <div id="info-0">第二个简单的字</div>
+          <div id="info-0">{{ pic.0.desc }}</div>
         </li>
       </ul>
     </div>
@@ -34,23 +35,33 @@
 
   <div class="hot-items">
     <ul>
-      <li>热门产品</li>
-      <li>热门产品</li>
-      <li>热门产品</li>
+      <li>
+        <a href="{{ pic.1.url }}">
+          <img src="/media/{{ pic.1.pic }}">
+        </a>
+      </li>
+      <li>
+        <a href="{{ pic.2.url }}">
+          <img src="/media/{{ pic.2.pic }}"></a>
+      </li>
+      <li>
+        <a href="{{ pic.0.url }}">
+          <img src="/media/{{ pic.0.pic }}"></a>
+      </li>
     </ul>
   </div>
 
   <div class="culture-container" style="padding: 0px 30px">
-    <div class="culture-title">
+    <div class="culture-title" id="our-culture">
       我们&amp;文化
     </div>
-    <div style="padding: 30px 0 ">
+    <div style="padding: 30px 0 " class="flex-center">
       <video
-              id="my-player"
-              class="video-js"
-              controls
-              preload="auto"
-              data-setup='{}'>
+          id="my-player"
+          class="video-js"
+          controls
+          preload="auto"
+          data-setup='{}'>
         <source src="http://7xpser.com1.z0.glb.clouddn.com/%E4%BA%91%E6%A2%A6%E7%9B%90%E6%B4%A5%E8%B0%83%E7%A0%94%E5%AE%A3%E4%BC%A0%E8%A7%86%E9%A2%91.mp4"
                 type="video/mp4">
         </source>
@@ -74,7 +85,8 @@
       <div class="detail-content c-right">
         <dl class="left-content">
           <dt>电商助力扶贫</dt>
-          <dd>2015年10月，东华大学计算机学院派出调研小组赴盐津调研，发现当地有极具竞争优势的农特产品诸如天麻、竹笋、盐津乌骨鸡等，由于交通不便，市场小，导致积压生产，难以打开销路。结合专业知识，东华大学计算机学院慈善义工队从电商扶贫出发，希望通过联合当地政府与特产生产企业（农户），在盐津与东华大学之间搭建农产品输出通道，通过互联网电商平台为当地优势农产品谋求销路与市场，以“公益+创业”的模式助力精准扶贫。
+          <dd>
+            2015年10月，东华大学计算机学院派出调研小组赴盐津调研，发现当地有极具竞争优势的农特产品诸如天麻、竹笋、盐津乌骨鸡等，由于交通不便，市场小，导致积压生产，难以打开销路。结合专业知识，东华大学计算机学院慈善义工队从电商扶贫出发，希望通过联合当地政府与特产生产企业（农户），在盐津与东华大学之间搭建农产品输出通道，通过互联网电商平台为当地优势农产品谋求销路与市场，以“公益+创业”的模式助力精准扶贫。
           </dd>
         </dl>
         <img class="img-content img-responsive" src="/static/2-1.jpg" />
@@ -82,7 +94,8 @@
       <div class="detail-content">
         <dl class="left-content">
           <dt>"云梦盐津”公益计划</dt>
-          <dd>2015年11月17日，借东华大学慈善文化月为契机，计算机学院“云梦盐津”公益扶贫项目正式启动，计算机学院慈善义工服务队志愿者组成“云梦盐津”公益志愿团队。项目开通线上营销微店，线下设交易仓储点以对接云南盐津的产品。团队通过不定期的团购促销活动，向东华大学广大师生引荐了盐津乌骨鸡、竹笋、天麻等农特产品，为盐津人民开辟了一个销售通道。微店全部收入用于资助盐津发展扶贫产业。
+          <dd>
+            2015年11月17日，借东华大学慈善文化月为契机，计算机学院“云梦盐津”公益扶贫项目正式启动，计算机学院慈善义工服务队志愿者组成“云梦盐津”公益志愿团队。项目开通线上营销微店，线下设交易仓储点以对接云南盐津的产品。团队通过不定期的团购促销活动，向东华大学广大师生引荐了盐津乌骨鸡、竹笋、天麻等农特产品，为盐津人民开辟了一个销售通道。微店全部收入用于资助盐津发展扶贫产业。
 
           </dd>
         </dl>
@@ -91,18 +104,20 @@
       <div class="detail-content c-right">
         <dl class="left-content">
           <dt>“电商扶贫+教育扶贫”项目方针</dt>
-          <dd>自2016年以来，“云梦盐津”团队积极发挥学生骨干力量，与计算机学院科创中心、计算机学院平行专业学生党支部相互合作，开展暑期实践调研，以“电商扶贫+教育扶贫”为主要方针推动项目发展。一方面，团队开展各类网络促销活动，为盐津县黄草社区电商孵化基地的发展提供技术支持，促进当地“农货”向“网货”的转型；另一方面，团队面向计算机学院各支部发起“特殊党费”捐赠活动，资助当地贫困学子，并制定面向盐津当地中小学生开展爱国主义教育活动的有关计划。
+          <dd>
+            自2016年以来，“云梦盐津”团队积极发挥学生骨干力量，与计算机学院科创中心、计算机学院平行专业学生党支部相互合作，开展暑期实践调研，以“电商扶贫+教育扶贫”为主要方针推动项目发展。一方面，团队开展各类网络促销活动，为盐津县黄草社区电商孵化基地的发展提供技术支持，促进当地“农货”向“网货”的转型；另一方面，团队面向计算机学院各支部发起“特殊党费”捐赠活动，资助当地贫困学子，并制定面向盐津当地中小学生开展爱国主义教育活动的有关计划。
 
           </dd>
         </dl>
-        <img class="img-content img-responsive" src="/static/4-1.jpg"/>
+        <img class="img-content img-responsive" src="/static/4-1.jpg" />
       </div>
     </div>
 
     <div class="detail-content-square-container">
       <div class="square-items">
         <img class="square-img img-responsive" src="/static/5.jpg" />
-        <p> 【慈善义卖】2015年11月17日，东华大学大学生活动中心举办“慈善义卖----爱心的汇聚”慈善文化月活动。“云梦盐津”盐津农家特产展摊的盐津乌骨鸡汤引得了师生们的驻足品尝。这碗乌骨鸡汤是由来自盐津当地的村民不远千里来到上海亲自现场熬制。
+        <p>
+          【慈善义卖】2015年11月17日，东华大学大学生活动中心举办“慈善义卖----爱心的汇聚”慈善文化月活动。“云梦盐津”盐津农家特产展摊的盐津乌骨鸡汤引得了师生们的驻足品尝。这碗乌骨鸡汤是由来自盐津当地的村民不远千里来到上海亲自现场熬制。
 
         </p>
       </div>
@@ -114,12 +129,14 @@
       </div>
       <div class="square-items">
         <img class="square-img img-responsive" src="/static/7.jpg" />
-        <p> 【暑期社会实践】2016年7月，“云梦盐津”暑期社会实践团远赴盐津，在当地开展国家资助政策宣讲、留守儿童结对帮扶等教育帮扶活动。期间，团队代表跟随政府领导、阿里巴巴及农村淘宝有关人员组建的政企考察团，前往当地各大农业合作社开展盐津农产品有关调研，并在县委县政府举办的电商交流座谈会上为盐津农产品电商提出可持续发展意见。
+        <p>
+          【暑期社会实践】2016年7月，“云梦盐津”暑期社会实践团远赴盐津，在当地开展国家资助政策宣讲、留守儿童结对帮扶等教育帮扶活动。期间，团队代表跟随政府领导、阿里巴巴及农村淘宝有关人员组建的政企考察团，前往当地各大农业合作社开展盐津农产品有关调研，并在县委县政府举办的电商交流座谈会上为盐津农产品电商提出可持续发展意见。
 
       </div>
       <div class="square-items">
         <img class="square-img img-responsive" src="/static/8.jpg" />
-        <p> 【党支部会议】2016年6月以来，东华大学计算机学院平行专业学生党支部与“云梦盐津”项目团队达成合作，开展支部组织生活会，讨论并制定“云梦盐津”教育帮扶有关计划。从特殊党费捐赠、中小学爱国主义教育、两地支部共建等方面开展系列结对帮扶活动。
+        <p>
+          【党支部会议】2016年6月以来，东华大学计算机学院平行专业学生党支部与“云梦盐津”项目团队达成合作，开展支部组织生活会，讨论并制定“云梦盐津”教育帮扶有关计划。从特殊党费捐赠、中小学爱国主义教育、两地支部共建等方面开展系列结对帮扶活动。
 
         </p>
       </div>

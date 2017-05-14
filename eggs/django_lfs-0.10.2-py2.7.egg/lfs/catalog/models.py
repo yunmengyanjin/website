@@ -597,6 +597,7 @@ class Product(models.Model):
     name = models.CharField(u'商品名称', max_length=80, blank=True)
     slug = models.SlugField(_(u"Slug"), help_text=_(u"The unique last part of the Product's URL."),
                             max_length=120, blank=True, null=True)
+    desc = models.CharField(u'商品介绍', max_length=255, blank=True, null=True)
     sku = models.CharField(_(u"SKU"), help_text=_(u"Your unique article number of the product."), blank=True,
                            max_length=30)
     price = models.FloatField(u'价格', default=0.0)
@@ -2812,3 +2813,7 @@ class ProductImage(models.Model):
         ordering = ["order"]
         verbose_name = u"商品图片"
         verbose_name_plural = u'商品图片'
+
+    @property
+    def url(self):
+        return '/media/{}/'.format(self.image)

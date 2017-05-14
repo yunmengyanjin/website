@@ -1,0 +1,57 @@
+{% extends 'base_ymyj.html' %}
+{% block css %}
+  <style>
+    .left-container {
+      float: left;
+      width: 70%;
+    }
+
+    .unslider {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .right-container {
+      float: right;
+      width: 25%;
+    }
+
+    .right-container li {
+
+      margin-bottom: 30px;
+    }
+
+    .right-container h3 {
+      text-align: center;
+      color: #ff7368;
+      margin-bottom: 20px;
+    }
+
+    a {
+      color: #000;
+    }
+  </style>
+{% endblock %}
+{% block content %}
+  <div class="left-container">
+    <div class="banner">
+      <ul id="pic">
+
+      </ul>
+    </div>
+
+  </div>
+  <div class="right-container">
+    <h3>新闻头条</h3>
+    <ul id="content">
+
+    </ul>
+  </div>
+  <script type="text/javascript" src="/static/partyBuilding.js">
+  </script>
+{% endblock %}
+
+{% block bottom %}
+{% endblock %}
+{% block footer %}
+{% endblock %}
