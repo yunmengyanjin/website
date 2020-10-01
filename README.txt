@@ -1,4 +1,4 @@
-What is it?
+What is it? An Amazing project
 ===========
 
 This is the installer for LFS
