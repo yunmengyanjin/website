@@ -1,6 +1,6 @@
 What is it?
 ===========
-
+Its help you to install LFS
 This is the installer for LFS
 
 LFS is an online shop based on Python, Django and jQuery.
